@@ -1,0 +1,13 @@
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: com.example.app
+    name: Example App
+    icon: example-app
+    version: 1.0.0
+    exec: usr/bin/example-app
+    exec_args: "$@"
+
+AppImage:
+  arch: x86_64
+  update-information: guess

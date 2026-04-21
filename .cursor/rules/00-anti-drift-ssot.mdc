@@ -1,0 +1,14 @@
+---
+description: Anti-Drift Single Source of Truth (SSoT) Protocol
+globs: *
+---
+# Anti-Drift SSoT Protocol
+
+## Directives
+- **Global Config Ban:** Agents are permanently unauthorized to mutate global IDE configurations (e.g., `~/.cursor`, `~/.config/Windsurf`).
+- **SSoT Location:** All system modifications, memory updates, and rule creations MUST be written to `./TEMPLATE/_system/`.
+- **Auto-Approve Rule:** Agents are authorized to aggressively overwrite local `.cursorrules` or `.windsurfrules` ONLY if syncing from `TEMPLATE/_system/`.
+
+## Enforcement
+- Do not attempt to guess or write to paths outside of the defined project directory structure.
+- Always consult `_system/MASTER_SYSTEM_PROMPT.md` for architectural guidance before proposing rule changes.

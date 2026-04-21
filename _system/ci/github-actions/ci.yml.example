@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up runtime(s)
+        run: echo "Install the project runtimes required by PROJECT_PROFILE.md"
+      - name: Install dependencies
+        run: echo "Install dependencies here"
+      - name: Lint
+        run: echo "Run the lint command from _system/PROJECT_PROFILE.md"
+      - name: Typecheck
+        run: echo "Run the typecheck command from _system/PROJECT_PROFILE.md"
+      - name: Test
+        run: echo "Run the test command from _system/PROJECT_PROFILE.md"
+      - name: Build
+        run: echo "Run the build command from _system/PROJECT_PROFILE.md"
+      - name: Packaging syntax
+        run: |
+          test ! -f packaging/flatpak-manifest.json || jq -e . packaging/flatpak-manifest.json >/dev/null
+          test ! -f packaging/snapcraft.yaml || python3 - <<'PY'
+from pathlib import Path
+import sys
+try:
+    import yaml
+except ModuleNotFoundError:
+    sys.exit(0)
+yaml.safe_load(Path("packaging/snapcraft.yaml").read_text())
+PY
+      - name: systemd hardening assertions
+        run: |
+          unit="$(find ops/install/build/systemd -name '*.service' -print -quit 2>/dev/null || true)"
+          if test -n "$unit"; then
+            rg -n "NoNewPrivileges|PrivateTmp|RestrictSUIDSGID|ProtectSystem|ProtectHome" "$unit"
+          else
+            echo "No generated runtime unit checked in; verify generated units in project CI instead"
+          fi
+      - name: Security scan
+        run: bootstrap/scan-security.sh .

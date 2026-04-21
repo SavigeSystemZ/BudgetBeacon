@@ -1,0 +1,11 @@
+---
+description: "Validation is required before handoff or release claims"
+alwaysApply: true
+---
+
+# Validation Gate
+
+- Run the relevant checks from `_system/PROJECT_PROFILE.md`.
+- Do not report success without actual command evidence.
+- If validation fails, fix it or record the failure before handoff.
+- Use `_system/VALIDATION_GATES.md` for the correct ladder and impact mapping.

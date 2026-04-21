@@ -1,0 +1,10 @@
+---
+description: "Keep runtime code separate from the agent operating system"
+alwaysApply: true
+---
+
+# Project Boundaries
+
+- Runtime code must not depend on `_system/`.
+- Agent-only prompts, rules, skills, and MCP guidance belong in `_system/` or `.cursor/`.
+- Do not blur runtime changes and governance changes without documenting both.

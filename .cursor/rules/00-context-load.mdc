@@ -1,0 +1,16 @@
+---
+description: "Load the canonical repo context before making meaningful changes"
+alwaysApply: true
+---
+
+# Context Load
+
+Read the load order from `AGENTS.md` and `_system/LOAD_ORDER.md`.
+
+For a one-page map of how major surfaces connect and the recommended review/validation order, also know `_system/SYSTEM_ORCHESTRATION_GUIDE.md` exists.
+
+If context appears reset, incomplete, or stale:
+
+1. reload the canonical docs
+2. confirm readiness
+3. only then continue with implementation

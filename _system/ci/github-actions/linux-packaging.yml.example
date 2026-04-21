@@ -1,0 +1,39 @@
+name: linux-packaging
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "packaging/**"
+      - "ops/**"
+      - ".github/workflows/**"
+
+jobs:
+  packaging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Flatpak manifest
+        run: test ! -f packaging/flatpak-manifest.json || jq -e . packaging/flatpak-manifest.json >/dev/null
+      - name: Validate AppImage manifest
+        run: test ! -f packaging/appimage.yml || python3 - <<'PY'
+from pathlib import Path
+import sys
+try:
+    import yaml
+except ModuleNotFoundError:
+    sys.exit(0)
+yaml.safe_load(Path("packaging/appimage.yml").read_text())
+PY
+      - name: Validate Snap manifest
+        run: test ! -f packaging/snapcraft.yaml || python3 - <<'PY'
+from pathlib import Path
+import sys
+try:
+    import yaml
+except ModuleNotFoundError:
+    sys.exit(0)
+yaml.safe_load(Path("packaging/snapcraft.yaml").read_text())
+PY
+      - name: Verify systemd hardening
+        run: rg -n "NoNewPrivileges|PrivateTmp|RestrictSUIDSGID|ProtectSystem|ProtectHome" _system/systemd bootstrap || true

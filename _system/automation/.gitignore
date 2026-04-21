@@ -1,0 +1,4 @@
+# Created by run-autonomous-guardrails.sh / full system-doctor — not source-of-truth
+*.log
+*.json
+latest.log

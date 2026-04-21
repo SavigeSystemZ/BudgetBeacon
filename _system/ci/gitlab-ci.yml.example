@@ -1,0 +1,31 @@
+stages:
+  - lint
+  - test
+  - build
+  - package
+  - security
+
+lint:
+  stage: lint
+  script:
+    - echo "Run lint command from _system/PROJECT_PROFILE.md"
+
+test:
+  stage: test
+  script:
+    - echo "Run unit and integration tests"
+
+build:
+  stage: build
+  script:
+    - echo "Run build and packaging verification"
+
+package:
+  stage: package
+  script:
+    - echo "Validate packaging manifests and Android build surfaces when present"
+
+security:
+  stage: security
+  script:
+    - bootstrap/scan-security.sh .

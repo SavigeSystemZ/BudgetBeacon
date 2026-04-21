@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "project-filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/ABSOLUTE/PATH/TO/PROJECT"
+      ]
+    }
+  }
+}

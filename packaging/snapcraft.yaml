@@ -1,0 +1,25 @@
+name: budget-beacon
+base: core24
+version: "0.1.0"
+summary: Budget Beacon packaged from an AIAST project scaffold
+description: |
+  Generic Snap scaffold for Budget Beacon.
+  Review plugs, confinement, and launch command before release.
+
+grade: devel
+confinement: strict
+
+apps:
+  budget-beacon:
+    command: bin/budget-beacon
+    plugs:
+      - network
+      - network-bind
+      - home
+
+parts:
+  budget-beacon:
+    plugin: dump
+    source: .
+    organize:
+      dist/budget-beacon: bin/budget-beacon

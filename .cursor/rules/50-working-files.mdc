@@ -1,0 +1,13 @@
+---
+description: "Use the correct working files for planning, design, testing, risk, and release state"
+alwaysApply: true
+---
+
+# Working Files
+
+- `PLAN.md` is the active execution plan.
+- `DESIGN_NOTES.md` and `ARCHITECTURE_NOTES.md` hold durable direction, not task chatter.
+- `TEST_STRATEGY.md` captures confidence expectations and known validation gaps.
+- `RISK_REGISTER.md` tracks active delivery, quality, security, and release risk.
+- `RELEASE_NOTES.md` holds the current milestone or release-facing summary.
+- Update only the files whose domain actually changed, but do not leave important repo state only in chat.

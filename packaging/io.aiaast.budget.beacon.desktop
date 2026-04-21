@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Budget Beacon
+Comment=Launch Budget Beacon
+Exec=budget-beacon
+Icon=io.aiaast.budget.beacon
+Terminal=false
+Categories=Utility;
+StartupNotify=true

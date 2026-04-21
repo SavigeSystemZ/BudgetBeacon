@@ -1,0 +1,11 @@
+{
+  "name": "security-scan",
+  "version": "1.1.0",
+  "description": "Integrated SAST/DAST security scanning for AIAST repos.",
+  "aiast_min_version": "1.22.1",
+  "hooks": ["security.scan", "security.audit", "validation.report"],
+  "capabilities": ["security-scanner", "audit-reporter"],
+  "owned_paths": ["_system/plugins/security-scan/"],
+  "requires": ["semgrep", "nmap"],
+  "enabled": true
+}

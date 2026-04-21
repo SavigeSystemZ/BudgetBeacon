@@ -1,0 +1,14 @@
+app-id: com.example.App
+runtime: org.freedesktop.Platform
+runtime-version: "23.08"
+sdk: org.freedesktop.Sdk
+command: example-app
+
+modules:
+  - name: example-app
+    buildsystem: simple
+    build-commands:
+      - install -D example-app /app/bin/example-app
+    sources:
+      - type: file
+        path: ./example-app

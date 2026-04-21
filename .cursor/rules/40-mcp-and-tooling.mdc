@@ -1,0 +1,10 @@
+---
+description: "Use MCP with least privilege and do not block normal work on MCP failure"
+alwaysApply: true
+---
+
+# MCP And Tooling
+
+- Use read-only or discovery-first MCP servers by default.
+- Keep project-scoped MCP config separate from user-level config.
+- If an MCP fails, note it once and continue with repo context unless the task truly depends on it.

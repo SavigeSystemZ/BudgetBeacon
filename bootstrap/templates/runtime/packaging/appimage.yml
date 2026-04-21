@@ -1,0 +1,32 @@
+version: 1
+
+script:
+  - mkdir -p AppDir/usr/bin
+  - mkdir -p AppDir/usr/share/applications
+  - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+  - install -Dm755 ./dist/__AIAST_APP_SLUG__ AppDir/usr/bin/__AIAST_APP_SLUG__
+  - install -Dm644 ./packaging/__AIAST_DESKTOP_ID__.desktop AppDir/usr/share/applications/__AIAST_DESKTOP_ID__.desktop
+
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: __AIAST_APP_ID__
+    name: __AIAST_APP_NAME__
+    icon: __AIAST_DESKTOP_ID__
+    version: __AIAST_VERSION__
+    exec: usr/bin/__AIAST_APP_SLUG__
+    exec_args: "$@"
+
+  runtime:
+    env:
+      APP_BIND_ADDRESS: __AIAST_BIND_ADDRESS__
+      APP_CONFIG_DIR: /etc/__AIAST_APP_SLUG__
+      APP_DATA_DIR: /var/lib/__AIAST_APP_SLUG__
+
+  test:
+    fedora-latest:
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
+  update-information: guess

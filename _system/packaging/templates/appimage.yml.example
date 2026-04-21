@@ -1,0 +1,17 @@
+version: 1
+
+script:
+  - mkdir -p AppDir/usr/bin
+  - install -Dm755 ./dist/example-app AppDir/usr/bin/example-app
+
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: io.example.example-app
+    name: Example App
+    icon: example-app
+    version: 0.1.0
+    exec: usr/bin/example-app
+
+AppImage:
+  arch: x86_64

@@ -1,0 +1,12 @@
+---
+description: "Assume multiple agents take turns and require repo-based handoff"
+alwaysApply: true
+---
+
+# Multi-Agent Awareness
+
+- Another tool may continue this work.
+- Persist decisions in `TODO.md`, `FIXME.md`, and `WHERE_LEFT_OFF.md`.
+- Use the matching working files for the task domain instead of leaving important state only in chat.
+- Do not silently overwrite unresolved work from another agent.
+- Use the single-writer model.

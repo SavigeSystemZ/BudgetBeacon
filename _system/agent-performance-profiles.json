@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-03-27",
+  "rating_scale": "1-5 (1=poor, 3=adequate, 5=excellent)",
+  "tier_definitions": {
+    "A": { "label": "Full context", "min_tokens": 200000 },
+    "B": { "label": "Standard context", "min_tokens": 32000 },
+    "C": { "label": "Compact context", "min_tokens": 8000 },
+    "D": { "label": "Minimal context", "min_tokens": 1000 }
+  },
+  "fleet_profiles": {
+    "fleet_architect": {
+      "role": "Heavy context loading",
+      "authorized_files": ["ARCHITECTURE.md", "PLAN.md"],
+      "permissions": "Read-only on source code"
+    },
+    "fleet_builder": {
+      "role": "Bulk code generation",
+      "authorized_files": ["src/", "lib/", "api/"],
+      "permissions": "Auto-approved writes. Must utilize git-swarm-manager.sh"
+    },
+    "fleet_secops": {
+      "role": "Aggressive DAST/SAST scanning profile",
+      "permissions": "Authorized to execute semgrep and nmap against localhost"
+    },
+    "fleet_researcher": {
+      "role": "Context building",
+      "permissions": "Authorized to execute unrestricted curl, grep, and web searches"
+    }
+  },
+  "authorized_auto_run": [
+    "npm run lint",
+    "pytest",
+    "cargo clippy",
+    "docker compose up",
+    "./TEMPLATE/bootstrap/git-swarm-manager.sh auto-push"
+  ],
+  "models": {
+    "claude-opus-4": {
+      "tier": "A",
+      "context_tokens": 200000,
+      "generation_quality": 5,
+      "planning": 5,
+      "review": 5,
+      "speed": 3,
+      "cost": "high",
+      "best_for": ["architecture", "complex-debug", "security-audit", "refactoring"]
+    },
+    "claude-sonnet-4": {
+      "tier": "A",
+      "context_tokens": 200000,
+      "generation_quality": 5,
+      "planning": 5,
+      "review": 5,
+      "speed": 4,
+      "cost": "medium",
+      "best_for": ["feature-implementation", "review", "debugging", "documentation"]
+    },
+    "claude-haiku-4": {
+      "tier": "B",
+      "context_tokens": 200000,
+      "generation_quality": 4,
+      "planning": 3,
+      "review": 4,
+      "speed": 5,
+      "cost": "low",
+      "best_for": ["quick-edits", "tests", "documentation", "ci-automation"]
+    },
+    "gpt-4o": {
+      "tier": "A",
+      "context_tokens": 128000,
+      "generation_quality": 5,
+      "planning": 4,
+      "review": 4,
+      "speed": 4,
+      "cost": "high",
+      "best_for": ["feature-implementation", "multi-language", "documentation"]
+    },
+    "gpt-4o-mini": {
+      "tier": "B",
+      "context_tokens": 128000,
+      "generation_quality": 4,
+      "planning": 3,
+      "review": 3,
+      "speed": 5,
+      "cost": "low",
+      "best_for": ["quick-edits", "tests", "documentation", "ci-automation"]
+    },
+    "o3": {
+      "tier": "A",
+      "context_tokens": 200000,
+      "generation_quality": 5,
+      "planning": 5,
+      "review": 5,
+      "speed": 2,
+      "cost": "high",
+      "best_for": ["architecture", "complex-reasoning", "security-audit"]
+    },
+    "gemini-2.5-pro": {
+      "tier": "S",
+      "context_tokens": 1000000,
+      "generation_quality": 4,
+      "planning": 4,
+      "review": 4,
+      "speed": 4,
+      "cost": "medium",
+      "best_for": ["whole-repo-analysis", "large-context-tasks", "documentation"]
+    },
+    "gemini-2.5-flash": {
+      "tier": "B",
+      "context_tokens": 1000000,
+      "generation_quality": 3,
+      "planning": 3,
+      "review": 3,
+      "speed": 5,
+      "cost": "low",
+      "best_for": ["quick-edits", "ci-automation", "tests"]
+    },
+    "deepseek-v3": {
+      "tier": "B",
+      "context_tokens": 64000,
+      "generation_quality": 4,
+      "planning": 3,
+      "review": 3,
+      "speed": 4,
+      "cost": "low",
+      "best_for": ["feature-implementation", "python", "systems-code"]
+    },
+    "deepseek-r1": {
+      "tier": "A",
+      "context_tokens": 128000,
+      "generation_quality": 4,
+      "planning": 5,
+      "review": 4,
+      "speed": 2,
+      "cost": "medium",
+      "best_for": ["complex-reasoning", "architecture", "debugging"]
+    },
+    "codestral": {
+      "tier": "C",
+      "context_tokens": 32000,
+      "generation_quality": 4,
+      "planning": 2,
+      "review": 2,
+      "speed": 5,
+      "cost": "low",
+      "best_for": ["code-completion", "quick-edits", "inline-suggestions"]
+    },
+    "mistral-large": {
+      "tier": "B",
+      "context_tokens": 128000,
+      "generation_quality": 4,
+      "planning": 3,
+      "review": 3,
+      "speed": 4,
+      "cost": "medium",
+      "best_for": ["feature-implementation", "documentation", "multi-language"]
+    },
+    "qwen-2.5-coder": {
+      "tier": "C",
+      "context_tokens": 32000,
+      "generation_quality": 4,
+      "planning": 2,
+      "review": 2,
+      "speed": 5,
+      "cost": "low",
+      "best_for": ["code-completion", "quick-edits", "tests"]
+    },
+    "codellama-34b": {
+      "tier": "C",
+      "context_tokens": 16000,
+      "generation_quality": 3,
+      "planning": 2,
+      "review": 2,
+      "speed": 4,
+      "cost": "free-local",
+      "best_for": ["code-completion", "quick-edits"]
+    },
+    "codellama-7b": {
+      "tier": "D",
+      "context_tokens": 4000,
+      "generation_quality": 2,
+      "planning": 1,
+      "review": 1,
+      "speed": 5,
+      "cost": "free-local",
+      "best_for": ["simple-completion", "formatting"]
+    },
+    "llama-3.3-70b": {
+      "tier": "B",
+      "context_tokens": 128000,
+      "generation_quality": 4,
+      "planning": 3,
+      "review": 3,
+      "speed": 3,
+      "cost": "free-local",
+      "best_for": ["feature-implementation", "documentation", "general"]
+    },
+    "phi-4": {
+      "tier": "D",
+      "context_tokens": 16000,
+      "generation_quality": 3,
+      "planning": 2,
+      "review": 2,
+      "speed": 5,
+      "cost": "free-local",
+      "best_for": ["quick-edits", "simple-tasks", "ci-automation"]
+    },
+    "starcoder2-15b": {
+      "tier": "D",
+      "context_tokens": 8000,
+      "generation_quality": 3,
+      "planning": 1,
+      "review": 1,
+      "speed": 5,
+      "cost": "free-local",
+      "best_for": ["code-completion", "inline-suggestions"]
+    }
+  }
+}
+best_for": ["code-completion", "inline-suggestions"]
+    }
+  }
+}

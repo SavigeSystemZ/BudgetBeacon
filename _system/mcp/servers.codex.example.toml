@@ -1,0 +1,6 @@
+[projects."/ABSOLUTE/PATH/TO/PROJECT"]
+trust_level = "trusted"
+
+[mcp_servers.project_filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/ABSOLUTE/PATH/TO/PROJECT"]

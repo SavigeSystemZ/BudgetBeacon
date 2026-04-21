@@ -1,0 +1,25 @@
+[Unit]
+Description=Example hardened background worker
+After=network.target
+
+[Service]
+Type=simple
+User=appuser
+Group=appgroup
+WorkingDirectory=/usr/lib/example-app
+EnvironmentFile=-/etc/example-app/env
+ExecStart=/usr/lib/example-app/bin/example-worker
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectKernelModules=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

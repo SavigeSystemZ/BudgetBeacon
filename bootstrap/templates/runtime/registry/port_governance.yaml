@@ -1,0 +1,17 @@
+global_default_bind_host: 127.0.0.1
+require_preflight: true
+frontend_start: 46300
+frontend_end: 46319
+backend_start: 46320
+backend_end: 46349
+admin_start: 46350
+admin_end: 46359
+memory_start: 46360
+memory_end: 46369
+ephemeral_dev_pool_start: 46370
+ephemeral_dev_pool_end: 46399
+reserved_ports:
+  - 46300
+  - 46301
+  - 46320
+  - 46350

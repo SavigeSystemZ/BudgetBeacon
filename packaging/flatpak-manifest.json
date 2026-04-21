@@ -1,0 +1,31 @@
+{
+  "app-id": "io.aiaast.budget.beacon",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "24.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "budget-beacon",
+  "finish-args": [
+    "--share=network",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri",
+    "--filesystem=xdg-config/budget-beacon:create",
+    "--filesystem=xdg-data/budget-beacon:create"
+  ],
+  "modules": [
+    {
+      "name": "budget-beacon",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm755 ./dist/budget-beacon /app/bin/budget-beacon",
+        "install -Dm644 ./packaging/io.aiaast.budget.beacon.desktop /app/share/applications/io.aiaast.budget.beacon.desktop"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": ".."
+        }
+      ]
+    }
+  ]
+}

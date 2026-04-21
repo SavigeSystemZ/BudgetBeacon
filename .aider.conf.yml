@@ -1,0 +1,48 @@
+# AIAST repo contract for Aider
+# See AGENTS.md for the full operating rules.
+#
+# These files are loaded into context at session start.
+
+read:
+  - AGENTS.md
+  - _system/INSTRUCTION_PRECEDENCE_CONTRACT.md
+  - _system/REPO_OPERATING_PROFILE.md
+  - _system/PROJECT_PROFILE.md
+  - _system/CONTEXT_INDEX.md
+  - _system/LOAD_ORDER.md
+  - _system/WORKING_FILES_GUIDE.md
+  - _system/TEMPLATE_NEUTRALITY_POLICY.md
+  - _system/MASTER_SYSTEM_PROMPT.md
+  - _system/PROJECT_RULES.md
+  - _system/EXECUTION_PROTOCOL.md
+  - _system/MULTI_AGENT_COORDINATION.md
+  - _system/AGENT_ROLE_CATALOG.md
+  - _system/AGENT_DISCOVERY_MATRIX.md
+  - _system/VALIDATION_GATES.md
+  - _system/SYSTEM_AWARENESS_PROTOCOL.md
+  - _system/HALLUCINATION_DEFENSE_PROTOCOL.md
+  - WHERE_LEFT_OFF.md
+  - TODO.md
+  - FIXME.md
+  - PLAN.md
+  - PRODUCT_BRIEF.md
+
+# Also load these when the task touches their domain:
+#  - ROADMAP.md
+#  - DESIGN_NOTES.md
+#  - ARCHITECTURE_NOTES.md
+#  - RESEARCH_NOTES.md
+#  - TEST_STRATEGY.md
+#  - RISK_REGISTER.md
+#  - RELEASE_NOTES.md
+#  - CHANGELOG.md
+#  - _system/prompt-packs/M15_WHOLE_REPO_ANALYSIS.md
+#  - _system/ports/PORT_POLICY.md
+#  - _system/design-system/THEME_GOVERNANCE.md
+
+# Aider-specific conventions
+#  - Keep runtime code independent from _system/.
+#  - Treat host-level orchestration as context only; repo-local files remain authoritative.
+#  - Produce minimal, validated diffs.
+#  - Update handoff files (TODO.md, WHERE_LEFT_OFF.md) before ending the session.
+#  - If context appears inconsistent, run bootstrap/system-doctor.sh.

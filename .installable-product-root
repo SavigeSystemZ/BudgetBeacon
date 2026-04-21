@@ -1,0 +1,3 @@
+product=AIAST
+kind=installable-template
+source_root_policy=point_installers_at_this_product_root_not_the_master_repo_root

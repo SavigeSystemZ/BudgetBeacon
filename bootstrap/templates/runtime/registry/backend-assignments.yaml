@@ -1,0 +1,14 @@
+project: __AIAST_APP_NAME__
+backends:
+  - name: postgres
+    role: primary-database
+    internal_port: 5432
+    host_port: 0
+    exposure: internal-only
+    owner_path: ops/compose/compose.yml
+  - name: redis
+    role: cache-queue-session
+    internal_port: 6379
+    host_port: 0
+    exposure: internal-only
+    owner_path: ops/compose/compose.yml

@@ -1,0 +1,60 @@
+services:
+  app:
+    image: ghcr.io/example/__AIAST_APP_SLUG__:latest
+    restart: unless-stopped
+    env_file:
+      - ../env/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${OPS_DATABASE_URL:-postgresql+asyncpg://__AIAST_APP_SLUG__:change-me@postgres:5432/__AIAST_APP_SLUG__}
+      REDIS_URL: ${OPS_REDIS_URL:-redis://redis:6379/0}
+    # Set a unique APP_PORT per repo (see _system/ports/PORT_POLICY.md) when many stacks run on one host.
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:${APP_PORT:-8080}"
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: __AIAST_APP_SLUG__
+      POSTGRES_USER: __AIAST_APP_SLUG__
+      POSTGRES_PASSWORD: ${OPS_POSTGRES_PASSWORD:-change-me}
+    expose:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U __AIAST_APP_SLUG__"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --save
+      - "60"
+      - "1"
+      - --appendonly
+      - "yes"
+      - --loglevel
+      - warning
+    expose:
+      - "6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+  redis-data:

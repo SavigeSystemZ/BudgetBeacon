@@ -1,0 +1,119 @@
+{
+  "boundaries": {
+    "agent_system_root": "_system/",
+    "host_overwrite_policy": "Host-level orchestration context must not silently overwrite repo-local truth.",
+    "runtime_system_boundary": "Runtime code must remain independent from _system/."
+  },
+  "canonical_instruction_files": [
+    "AGENTS.md",
+    "_system/PROJECT_PROFILE.md",
+    "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+    "_system/REPO_OPERATING_PROFILE.md",
+    "_system/LOAD_ORDER.md",
+    "_system/MASTER_SYSTEM_PROMPT.md",
+    "_system/PROJECT_RULES.md",
+    "_system/AGENT_ROLE_CATALOG.md",
+    "_system/AGENT_DISCOVERY_MATRIX.md"
+  ],
+  "change_impact_policy_path": "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md",
+  "golden_examples": {
+    "manifest_path": "_system/golden-examples/golden-example-manifest.json",
+    "pattern_index_path": "_system/golden-examples/PATTERN_INDEX.md",
+    "policy_path": "_system/GOLDEN_EXAMPLES_POLICY.md"
+  },
+  "host_ingestion": {
+    "host_adapter_generator": "bootstrap/generate-host-adapters.sh",
+    "host_adapter_manifest": "_system/host-adapter-manifest.json",
+    "host_adapter_validator": "bootstrap/check-host-adapter-alignment.sh",
+    "host_bundle_contract": "_system/HOST_BUNDLE_CONTRACT.md",
+    "host_bundle_emitter": "bootstrap/emit-host-bundle.sh",
+    "host_bundle_validator": "bootstrap/check-host-bundle.sh",
+    "prompt_emitter": "bootstrap/emit-host-prompt.sh",
+    "prompt_validator": "bootstrap/check-host-ingestion.sh"
+  },
+  "load_order_anchor": [
+    "AGENTS.md",
+    "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+    "_system/REPO_OPERATING_PROFILE.md",
+    "_system/PROJECT_PROFILE.md",
+    "_system/CONTEXT_INDEX.md",
+    "_system/LOAD_ORDER.md"
+  ],
+  "packaging_install_expectations": {
+    "default_bind_model": "loopback-only by default",
+    "default_port_range": "8000-9000",
+    "expected_ai_config": "ai/llm_config.yaml",
+    "expected_installer_commands": [
+      "ops/install/install.sh",
+      "ops/install/repair.sh",
+      "ops/install/uninstall.sh",
+      "ops/install/purge.sh"
+    ],
+    "expected_mobile_scaffold": "mobile/flutter",
+    "expected_packaging_manifests": [
+      "packaging/appimage.yml",
+      "packaging/flatpak-manifest.json",
+      "packaging/snapcraft.yaml"
+    ],
+    "runtime_foundation_generator": "bootstrap/generate-runtime-foundations.sh",
+    "runtime_roots_present": [
+      "packaging",
+      "ops",
+      "mobile",
+      "ai"
+    ]
+  },
+  "precedence_contract": {
+    "contract_path": "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+    "manifest_path": "_system/instruction-precedence.json"
+  },
+  "preferred_bundle_ids": [
+    "template-evolution",
+    "repo-onboarding",
+    "runtime-foundations",
+    "packaging-distribution",
+    "adapter-host-emission",
+    "release-readiness",
+    "repo-pivot"
+  ],
+  "profile_state": "configured-project",
+  "prompt_emission_contract": "_system/PROMPT_EMISSION_CONTRACT.md",
+  "read_bundles_contract_path": "_system/READ_BUNDLES.md",
+  "schema_version": "1.0.0",
+  "self_healing_boundary_path": "_system/SELF_HEALING_BOUNDARY.md",
+  "system_readme_path": "README.md",
+  "template_name": "AIAST",
+  "template_version": "1.23.0",
+  "terminology_mappings": {
+    "host_level_orchestration_context": "Task framing or operator intent emitted outside the repo.",
+    "repo_local_truth": "Facts stored in repo-local runtime/config/docs and the authoritative AIAST core docs.",
+    "runtime_system_boundary": "Runtime code must remain independent from _system/.",
+    "tool_overlay": "A tool-specific adapter or rules layer that sits on top of the repo-local core."
+  },
+  "tool_adapters_present": {
+    "claude": "CLAUDE.md",
+    "codex": "CODEX.md",
+    "copilot": ".github/copilot-instructions.md",
+    "cursor": ".cursorrules",
+    "gemini": "GEMINI.md",
+    "windsurf": "WINDSURF.md"
+  },
+  "validation_commands": [
+    "bootstrap/validate-system.sh <repo>",
+    "bootstrap/check-install-boundary.sh <repo>",
+    "bootstrap/validate-instruction-layer.sh <repo>",
+    "bootstrap/check-host-adapter-alignment.sh <repo>",
+    "bootstrap/check-host-ingestion.sh <repo>",
+    "bootstrap/check-host-bundle.sh <repo>",
+    "bootstrap/check-system-awareness.sh <repo>",
+    "bootstrap/detect-instruction-conflicts.sh <repo> --strict",
+    "bootstrap/system-doctor.sh <repo>",
+    "bootstrap/check-packaging-targets.sh <repo>"
+  ],
+  "version_markers": {
+    "capabilities_manifest": "_system/aiaast-capabilities.json",
+    "human_version": "AIAST_VERSION.md",
+    "installed_version": "_system/.template-version"
+  },
+  "version_sensitive_research_protocol_path": "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"
+}

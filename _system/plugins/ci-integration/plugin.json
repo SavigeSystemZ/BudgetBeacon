@@ -1,0 +1,11 @@
+{
+  "name": "ci-integration",
+  "version": "1.1.0",
+  "description": "GitHub Actions and local CI pipeline integration.",
+  "aiast_min_version": "1.22.1",
+  "hooks": ["ci.pre_commit", "ci.post_test", "validation.report"],
+  "capabilities": ["ci-reporter", "scaffold-generator"],
+  "owned_paths": ["_system/plugins/ci-integration/"],
+  "requires": [],
+  "enabled": true
+}

@@ -1,0 +1,32 @@
+version: 1
+
+script:
+  - mkdir -p AppDir/usr/bin
+  - mkdir -p AppDir/usr/share/applications
+  - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+  - install -Dm755 ./dist/budget-beacon AppDir/usr/bin/budget-beacon
+  - install -Dm644 ./packaging/io.aiaast.budget.beacon.desktop AppDir/usr/share/applications/io.aiaast.budget.beacon.desktop
+
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: io.aiaast.budget.beacon
+    name: Budget Beacon
+    icon: io.aiaast.budget.beacon
+    version: 0.1.0
+    exec: usr/bin/budget-beacon
+    exec_args: "$@"
+
+  runtime:
+    env:
+      APP_BIND_ADDRESS: 127.0.0.1
+      APP_CONFIG_DIR: /etc/budget-beacon
+      APP_DATA_DIR: /var/lib/budget-beacon
+
+  test:
+    fedora-latest:
+      command: ./AppRun --version
+
+AppImage:
+  arch: x86_64
+  update-information: guess

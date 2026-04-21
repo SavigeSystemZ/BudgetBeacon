@@ -1,0 +1,25 @@
+name: __AIAST_APP_SLUG__
+base: core24
+version: "__AIAST_VERSION__"
+summary: __AIAST_APP_NAME__ packaged from an AIAST project scaffold
+description: |
+  Generic Snap scaffold for __AIAST_APP_NAME__.
+  Review plugs, confinement, and launch command before release.
+
+grade: devel
+confinement: strict
+
+apps:
+  __AIAST_APP_SLUG__:
+    command: bin/__AIAST_APP_SLUG__
+    plugs:
+      - network
+      - network-bind
+      - home
+
+parts:
+  __AIAST_APP_SLUG__:
+    plugin: dump
+    source: .
+    organize:
+      dist/__AIAST_APP_SLUG__: bin/__AIAST_APP_SLUG__

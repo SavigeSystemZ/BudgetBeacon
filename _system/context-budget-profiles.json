@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "profiles": {
+    "claude-opus": {"tier": "A", "context_tokens": 200000},
+    "claude-sonnet": {"tier": "A", "context_tokens": 200000},
+    "claude-haiku": {"tier": "B", "context_tokens": 200000},
+    "gpt-4-turbo": {"tier": "A", "context_tokens": 128000},
+    "gpt-4o": {"tier": "B", "context_tokens": 128000},
+    "gpt-4o-mini": {"tier": "B", "context_tokens": 128000},
+    "o1": {"tier": "A", "context_tokens": 200000},
+    "o3": {"tier": "A", "context_tokens": 200000},
+    "gemini-pro-1.5": {"tier": "A", "context_tokens": 1000000},
+    "gemini-flash": {"tier": "B", "context_tokens": 1000000},
+    "deepseek-coder-v2": {"tier": "B", "context_tokens": 128000},
+    "deepseek-v3": {"tier": "B", "context_tokens": 64000},
+    "codex": {"tier": "B", "context_tokens": 128000},
+    "llama-70b": {"tier": "B", "context_tokens": 128000},
+    "llama-8b": {"tier": "C", "context_tokens": 8192},
+    "mistral-large": {"tier": "B", "context_tokens": 128000},
+    "mistral-7b": {"tier": "C", "context_tokens": 32000},
+    "qwen-72b": {"tier": "B", "context_tokens": 128000},
+    "qwen-7b": {"tier": "C", "context_tokens": 32000},
+    "phi-3-mini": {"tier": "D", "context_tokens": 4096},
+    "ollama-default": {"tier": "C", "context_tokens": 8192}
+  },
+  "tier_definitions": {
+    "A": {"label": "Full", "min_tokens": 200000, "load_tiers": ["0", "1", "2", "3"]},
+    "B": {"label": "Standard", "min_tokens": 32000, "load_tiers": ["0", "1", "2-targeted"]},
+    "C": {"label": "Compact", "min_tokens": 8000, "load_tiers": ["fast-path"]},
+    "D": {"label": "Minimal", "min_tokens": 4000, "load_tiers": ["core-only"]}
+  }
+}

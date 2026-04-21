@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=__AIAST_APP_NAME__
+Comment=Launch __AIAST_APP_NAME__
+Exec=__AIAST_APP_SLUG__
+Icon=__AIAST_DESKTOP_ID__
+Terminal=false
+Categories=Utility;
+StartupNotify=true

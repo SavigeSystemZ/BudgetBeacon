@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0.0",
+  "selection_model": {
+    "mode": "curated-per-pattern",
+    "neutrality_rule": "Installed repos consume only neutralized examples, never donor-app truth."
+  },
+  "policy_path": "_system/GOLDEN_EXAMPLES_POLICY.md",
+  "pattern_index_path": "_system/golden-examples/PATTERN_INDEX.md",
+  "patterns": [
+    {
+      "id": "continuity-handoff",
+      "title": "Continuity And Handoff",
+      "path": "_system/golden-examples/patterns/CONTINUITY_AND_HANDOFF.md",
+      "donors": [
+        "CandleCompass",
+        "LedgerLoop"
+      ],
+      "load_when": [
+        "handoff quality needs improvement",
+        "working-file structure is weak",
+        "context recovery after reset"
+      ]
+    },
+    {
+      "id": "governance-prompting",
+      "title": "Governance And Prompting",
+      "path": "_system/golden-examples/patterns/GOVERNANCE_AND_PROMPTING.md",
+      "donors": [
+        "IdeaForge",
+        "EtherWeave"
+      ],
+      "load_when": [
+        "prompt pack restructuring",
+        "governance refactor",
+        "adapter deduplication"
+      ]
+    },
+    {
+      "id": "multi-agent-mcp",
+      "title": "Multi-Agent And MCP",
+      "path": "_system/golden-examples/patterns/MULTI_AGENT_AND_MCP.md",
+      "donors": [
+        "EtherWeave",
+        "IdeaForge"
+      ],
+      "load_when": [
+        "multi-agent workflow design",
+        "MCP selection policy",
+        "tool fallback design"
+      ]
+    },
+    {
+      "id": "validation-release",
+      "title": "Validation And Release",
+      "path": "_system/golden-examples/patterns/VALIDATION_AND_RELEASE.md",
+      "donors": [
+        "LedgerLoop",
+        "CandleCompass"
+      ],
+      "load_when": [
+        "runtime verification",
+        "install or packaging changes",
+        "release signoff"
+      ]
+    },
+    {
+      "id": "platform-surfaces",
+      "title": "Platform Surfaces",
+      "path": "_system/golden-examples/patterns/PLATFORM_SURFACES.md",
+      "donors": [
+        "PromptMage",
+        "LedgerLoop",
+        "CandleCompass"
+      ],
+      "load_when": [
+        "multi-surface repo design",
+        "runtime root shaping",
+        "ops/mobile/ai boundary planning"
+      ]
+    },
+    {
+      "id": "microservices-architecture",
+      "title": "Microservices Architecture",
+      "path": "_system/golden-examples/patterns/MICROSERVICES_ARCHITECTURE.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "service boundary design",
+        "API gateway architecture",
+        "inter-service communication"
+      ]
+    },
+    {
+      "id": "event-driven-cqrs",
+      "title": "Event-Driven And CQRS",
+      "path": "_system/golden-examples/patterns/EVENT_DRIVEN_AND_CQRS.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "read/write model separation",
+        "event sourcing design",
+        "saga pattern implementation"
+      ]
+    },
+    {
+      "id": "serverless-edge",
+      "title": "Serverless And Edge",
+      "path": "_system/golden-examples/patterns/SERVERLESS_AND_EDGE.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "cloud function design",
+        "edge worker architecture",
+        "scale-to-zero design"
+      ]
+    },
+    {
+      "id": "realtime-collaboration",
+      "title": "Real-Time Collaboration",
+      "path": "_system/golden-examples/patterns/REALTIME_COLLABORATION.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "WebSocket or SSE architecture",
+        "conflict resolution design",
+        "presence tracking"
+      ]
+    },
+    {
+      "id": "data-pipeline-ml",
+      "title": "Data Pipeline And ML",
+      "path": "_system/golden-examples/patterns/DATA_PIPELINE_AND_ML.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "ETL pipeline design",
+        "model serving architecture",
+        "experiment tracking"
+      ]
+    },
+    {
+      "id": "error-handling-patterns",
+      "title": "Error Handling Patterns",
+      "path": "_system/golden-examples/patterns/ERROR_HANDLING_PATTERNS.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "error handling review",
+        "retry and circuit breaker design",
+        "user-facing error messages"
+      ]
+    },
+    {
+      "id": "testing-patterns",
+      "title": "Testing Patterns",
+      "path": "_system/golden-examples/patterns/TESTING_PATTERNS.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "test suite structure",
+        "fixture management",
+        "CI test integration"
+      ]
+    },
+    {
+      "id": "code-snippet-examples",
+      "title": "Code Snippet Examples",
+      "path": "_system/golden-examples/patterns/CODE_SNIPPET_EXAMPLES.md",
+      "donors": ["community-knowledge"],
+      "load_when": [
+        "code quality calibration",
+        "structural reference needed",
+        "new agent onboarding"
+      ]
+    }
+  ],
+  "working_file_examples": [
+    {
+      "id": "project-profile-example",
+      "path": "_system/golden-examples/working-files/PROJECT_PROFILE_EXAMPLE.md"
+    },
+    {
+      "id": "plan-example",
+      "path": "_system/golden-examples/working-files/PLAN_EXAMPLE.md"
+    },
+    {
+      "id": "where-left-off-example",
+      "path": "_system/golden-examples/working-files/WHERE_LEFT_OFF_EXAMPLE.md"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Reference port matrix for template authors (read-only guidance).
+# Live policy for generated repos: registry/port_governance.yaml
+# Live bindings: registry/port_assignments.yaml and registry/ports.yaml
+
+version: 1.0.0
+global_policy:
+  default_bind_host: "127.0.0.1"
+  default_exposure: "internal_only"
+  conflict_action: "fail_and_reallocate"
+  production_exposure_mode: "reverse_proxy_first"
+
+reserved:
+  system: [22, 44, 53, 80, 443]
+  local_infra: [5432, 6379, 8766]
+
+ranges:
+  frontend: { start: 46300, end: 46319 }
+  backend: { start: 46320, end: 46349 }
+  admin: { start: 46350, end: 46359 }
+  memory: { start: 46360, end: 46369 }
+  ephemeral_dev_pool: { start: 46370, end: 46399 }

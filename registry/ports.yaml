@@ -1,0 +1,6 @@
+generated_at: UNSET
+ports:
+  - name: APP_PORT
+    port: 0
+    bind_address: 127.0.0.1
+    source: ops/env/.env

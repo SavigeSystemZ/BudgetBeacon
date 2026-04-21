@@ -1,0 +1,84 @@
+{
+  "canonical_repo_local_files": [
+    "AGENTS.md",
+    "_system/PROJECT_PROFILE.md",
+    "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+    "_system/REPO_OPERATING_PROFILE.md",
+    "_system/LOAD_ORDER.md",
+    "_system/MASTER_SYSTEM_PROMPT.md",
+    "_system/PROJECT_RULES.md",
+    "_system/AGENT_ROLE_CATALOG.md",
+    "_system/AGENT_DISCOVERY_MATRIX.md"
+  ],
+  "canonical_terms": {
+    "host_level_orchestration_context": "Task framing or operator intent emitted outside the repo.",
+    "repo_local_truth": "Facts stored in repo-local runtime/config/docs and the authoritative AIAST core docs.",
+    "runtime_system_boundary": "Runtime code must remain independent from _system/.",
+    "tool_overlay": "A tool-specific adapter or rules layer that sits on top of the repo-local core."
+  },
+  "conflict_resolution": {
+    "adapter_conflicts": "Tool-specific overlays may add workflow detail but must not contradict the shared repo-local core.",
+    "fact_conflicts": "Favor repo-local runtime and product truth over generic host assumptions.",
+    "host_overwrite_policy": "Host systems must not silently overwrite repo-local truth.",
+    "rule_conflicts": "Favor the repo-local AIAST core over tool overlays, prompt emission surfaces, and host-level orchestration context."
+  },
+  "consistency_surfaces": [
+    "_system/LOAD_ORDER.md",
+    "_system/REPO_OPERATING_PROFILE.md",
+    "_system/repo-operating-profile.json",
+    "_system/PROMPT_EMISSION_CONTRACT.md",
+    "_system/HOST_BUNDLE_CONTRACT.md",
+    "_system/READ_BUNDLES.md",
+    "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md",
+    "_system/SELF_HEALING_BOUNDARY.md",
+    "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"
+  ],
+  "contract_path": "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+  "precedence_layers": [
+    {
+      "description": "Runtime code, config, migrations, schemas, tests, deployment files, and repo-owned product docs.",
+      "name": "repo_runtime_and_product_truth"
+    },
+    {
+      "description": "AGENTS.md plus the authoritative repo-local AIAST contract files.",
+      "name": "repo_local_aiaast_core"
+    },
+    {
+      "description": "Tool adapter files and tool-local rules that extend but do not replace the shared repo contract.",
+      "name": "tool_specific_overlays"
+    },
+    {
+      "description": "Prompt templates, prompt packs, and the prompt emission contract.",
+      "name": "repo_local_prompt_emission_surfaces"
+    },
+    {
+      "description": "External orchestration prompts, wrappers, or agent-host context supplied outside the repo.",
+      "name": "host_level_orchestration_context"
+    }
+  ],
+  "required_adapter_references": [
+    "AGENTS.md",
+    "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+    "_system/REPO_OPERATING_PROFILE.md",
+    "_system/LOAD_ORDER.md",
+    "_system/VALIDATION_GATES.md"
+  ],
+  "required_consistency_surfaces": [
+    "_system/READ_BUNDLES.md",
+    "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md",
+    "_system/SELF_HEALING_BOUNDARY.md",
+    "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"
+  ],
+  "schema_version": "1.0.0",
+  "template_name": "AIAST",
+  "template_version": "1.23.0",
+  "tool_adapters": {
+    "claude": "CLAUDE.md",
+    "codex": "CODEX.md",
+    "copilot": ".github/copilot-instructions.md",
+    "cursor": ".cursorrules",
+    "cursor_overlay": ".cursor/",
+    "gemini": "GEMINI.md",
+    "windsurf": "WINDSURF.md"
+  }
+}

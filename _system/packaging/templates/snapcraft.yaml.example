@@ -1,0 +1,16 @@
+name: example-app
+base: core22
+version: "1.0.0"
+summary: Example packaged app
+description: |
+  Replace this with the actual application summary.
+
+grade: stable
+confinement: strict
+
+apps:
+  example-app:
+    command: bin/example-app
+    plugs:
+      - network
+      - home

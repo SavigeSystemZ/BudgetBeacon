@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Prompt effectiveness tracking log. See _system/PROMPT_EFFECTIVENESS_TRACKING.md for protocol.",
+  "entries": []
+}

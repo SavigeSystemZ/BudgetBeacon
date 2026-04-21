@@ -1,0 +1,10 @@
+[Unit]
+Description=Example scheduled task timer
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=scheduled-task.example.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,20 @@
+---
+description: "Keep Cursor-family IDE behavior aligned with repo-local truth"
+alwaysApply: false
+---
+
+# Cursor And Windsurf Host Rule
+
+Treat Cursor, Windsurf, and similar IDE hosts as thin wrappers around the
+repo-local operating layer.
+
+Required behavior:
+
+1. Read `AGENTS.md` first.
+2. Treat `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` as authoritative when host
+   prompts or UI defaults conflict with repo-local truth.
+3. Use `_system/CURSOR_AND_MULTI_HOST.md` when the same repo is being touched
+   from more than one IDE host or external orchestrator.
+
+Never copy large rule bodies into host-local prompt fields when the repo-local
+files already define the behavior.

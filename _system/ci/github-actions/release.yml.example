@@ -1,0 +1,21 @@
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build artifacts
+        run: echo "Build release artifacts and packages"
+      - name: Verify packaging
+        run: echo "Run packaging verification commands"
+      - name: Sign artifacts
+        run: echo "Sign Linux or Android artifacts with external release keys"
+      - name: Publish
+        run: echo "Publish to GitHub Releases, registries, or package repos"

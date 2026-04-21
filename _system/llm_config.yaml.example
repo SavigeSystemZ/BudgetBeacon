@@ -1,0 +1,43 @@
+default_provider: openai
+
+providers:
+  openai:
+    kind: openai
+    model: gpt-5.4
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout_seconds: 60
+    retry_attempts: 2
+
+  anthropic:
+    kind: anthropic
+    model: claude-sonnet-4-5
+    base_url: https://api.anthropic.com
+    api_key_env: ANTHROPIC_API_KEY
+    temperature: 0.2
+    top_p: 1.0
+    timeout_seconds: 60
+    retry_attempts: 2
+
+  ollama:
+    kind: ollama
+    model: llama3.1:8b
+    base_url: http://127.0.0.1:11434
+    api_key_env: ""
+    temperature: 0.2
+    top_p: 0.95
+    timeout_seconds: 120
+    retry_attempts: 1
+
+chatbot:
+  repl_enabled: true
+  rest_enabled: true
+  gui_side_panel_enabled: true
+  docs_sources:
+    - README.md
+    - USER_GUIDE.md
+    - docs/
+  permission_hook: app.chatbot.authorize
+  audit_logger: app.chatbot.audit

@@ -1,0 +1,31 @@
+{
+  "app-id": "__AIAST_APP_ID__",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "24.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "__AIAST_APP_SLUG__",
+  "finish-args": [
+    "--share=network",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri",
+    "--filesystem=xdg-config/__AIAST_APP_SLUG__:create",
+    "--filesystem=xdg-data/__AIAST_APP_SLUG__:create"
+  ],
+  "modules": [
+    {
+      "name": "__AIAST_APP_SLUG__",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm755 ./dist/__AIAST_APP_SLUG__ /app/bin/__AIAST_APP_SLUG__",
+        "install -Dm644 ./packaging/__AIAST_DESKTOP_ID__.desktop /app/share/applications/__AIAST_DESKTOP_ID__.desktop"
+      ],
+      "sources": [
+        {
+          "type": "dir",
+          "path": ".."
+        }
+      ]
+    }
+  ]
+}
