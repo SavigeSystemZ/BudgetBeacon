@@ -4,40 +4,34 @@ Use this file as the current implementation plan for the active repo milestone o
 
 ## Objective
 
-- Current target outcome: define and deliver the first real Budget Beacon milestone around budget setup, transaction capture, and month-to-date budget visibility.
-- Why it matters now: the repo now has the operating system installed, but the next pass needs a concrete budgeting slice so the product shape and validation baseline become real.
-- Deadline or forcing function: note if one exists.
+- Current target outcome: User testing on live host and maintenance following the initial release.
+- Why it matters now: Budget Beacon has been fully delivered and installed to the host environment. The core functionality (budget setup, transaction capture, month-to-date visibility) is live.
+- Deadline or forcing function: None currently.
 
 ## Success criteria
 
-- User or operator outcome: a user can create a starter budget, record a small set of transactions, and understand remaining budget by category.
-- Technical outcome: the repo has a chosen runtime shape, initial code roots, and at least one real validation lane for budgeting rules.
-- Design or product-quality outcome: the first visible surface feels like a trustworthy finance product rather than a generic scaffold.
+- User or operator outcome: A user can reliably use the application from their Linux desktop environment.
+- Technical outcome: The repo is aligned, context is tailored to the app (React/Vite/TypeScript/Dexie), and meta-system checks pass.
+- Design or product-quality outcome: The application operates securely and performantly as a local-first PWA.
 
 ## Scope lock
 
-- In scope: tasks actively tracked in `TODO.md` for this phase.
-- Out of scope: deferred items unless promoted from `FIXME.md` or `RISK_REGISTER.md`.
-- Dependencies: repo inspection, `PRODUCT_BRIEF.md`, available toolchain, and at least one real validation command.
-- Known unknowns: platform choice, persistence model, transaction import scope, deployment assumptions, and missing environment details.
+- In scope: Meta-system alignment, documentation updates, and bug fixes if reported during user testing.
+- Out of scope: Major new feature additions until the next milestone is defined.
+- Dependencies: User feedback.
 
 ## Assumptions
 
-- Record only assumptions that materially affect current execution.
+- The app functions correctly on the host system using the installed `budget-beacon` binary.
 
 ## Execution slices
 
-1. Choose the initial delivery surface and starter blueprint, then define code roots and validation entrypoints.
-2. Implement the first budgeting slice: budget categories, transaction capture or import stub, month-to-date rollups, and a basic status view.
-3. Add validation for budget calculations and state transitions, then close out with updated handoff evidence.
+1. Tailor the meta-system (`PROJECT_PROFILE.md`, `ROADMAP.md`, docs) to align with the delivered React/Vite application.
+2. Complete all `system-doctor.sh` checks to ensure a perfectly clean and healthy repo state.
+3. Stand by for user feedback or new feature requests.
 
 ## Validation plan
 
-- Commands to run: per `_system/PROJECT_PROFILE.md`.
-- Evidence to capture: command, scope, pass/fail in `WHERE_LEFT_OFF.md`.
-- Stop conditions: per `_system/FAILURE_MODES_AND_RECOVERY.md`.
-- Release-blocking checks: per `_system/RELEASE_READINESS_PROTOCOL.md` when shipping.
-
----
-
-*Template baseline reviewed: 2026-04-06 — replace placeholders when this file is copied into a live product repo.*
+- Commands to run: `./bootstrap/system-doctor.sh`
+- Evidence to capture: All checks pass without errors.
+- Stop conditions: Core functionality fails during testing.

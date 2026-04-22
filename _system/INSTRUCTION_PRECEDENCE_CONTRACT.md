@@ -11,6 +11,7 @@ The goal is not to pretend collisions never happen. The goal is to minimize them
 - Repo-local runtime and product files hold factual truth about the app.
 - Repo-local AIAST core files hold the authoritative repo operating contract.
 - Tool adapters translate the shared repo contract into tool-specific entrypoints.
+- Adapter placeholders are compatibility entrypoints and cannot redefine shared policy.
 - Prompt packs and prompt templates are reusable emission surfaces, not primary authority.
 - Host-level systems may add task framing, sequencing, and operator intent, but they are not allowed to silently replace repo-local truth.
 
@@ -66,6 +67,7 @@ Resolve instruction layers in this order:
 1. Repo-local runtime and product truth.
 2. Repo-local AIAST core contract.
 3. Tool-specific overlays such as `CODEX.md`, `CLAUDE.md`, `GEMINI.md`, `WINDSURF.md`, `.cursorrules`, `.windsurfrules`, `.cursor/`, and `.github/copilot-instructions.md`.
+   Compatibility placeholders such as `CURSOR.md`, `COPILOT.md`, `AIDER.md`, and `AGENT_ZERO.md` are overlays in this same layer.
 4. Repo-local prompt emission surfaces such as `_system/PROMPT_EMISSION_CONTRACT.md`, `_system/prompt-templates/`, and `_system/prompt-packs/`.
 5. Host-level orchestration context emitted outside the repo.
 

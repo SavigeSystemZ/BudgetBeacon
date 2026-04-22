@@ -72,6 +72,8 @@ If context appears reset, incomplete, or stale, reload the canonical docs before
 - Use `_system/READ_BUNDLES.md` before defaulting to the full load order when the
   task maps cleanly to a smaller, bounded context bundle.
 - Use `_system/HOST_ADAPTER_POLICY.md`, `bootstrap/generate-host-adapters.sh`, and `bootstrap/check-host-adapter-alignment.sh` when tool-entry or adapter-load surfaces change.
+- Use `_system/AGENT_SURFACE_TAXONOMY.md` for canonical adapter file classes, naming, and placeholder rules.
+- Use `_system/AGENT_INIT_CONVERGENCE.md` when merging external init patterns into installable repo contracts.
 - Use `_system/HOST_BUNDLE_CONTRACT.md`, `bootstrap/emit-host-bundle.sh`, and `bootstrap/check-host-bundle.sh` when an external host cannot read repo-local paths directly or when host-bundle export surfaces change.
 - Use `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md` when the task changes installable
   AIAST contracts, validators, adapters, or lifecycle flows.
@@ -118,6 +120,7 @@ If context appears reset, incomplete, or stale, reload the canonical docs before
 - Add or update tests for material behavior changes.
 - Use `_system/DESIGN_EXCELLENCE_FRAMEWORK.md` for UI quality and `_system/review-playbooks/` for structured reviews.
 - Use `_system/PROMPT_EMISSION_CONTRACT.md` when generating prompts for external tools or host systems.
+- Use `_system/OPERATOR_PROMPTING_PLAYBOOK.md` for execution-contract prompts, continuous-run protocol, and multi-agent orchestration patterns.
 - Use the host-bundle contract when external consumers need a self-contained prompt-and-context snapshot instead of live repo-path access.
 - Use the golden example pack for structure and quality level only; never copy donor-app product facts, ports, credentials, or runtime code into a different repo.
 - Keep the master template clean: do not let app-specific product facts, credentials, repo URLs, or environment details flow back into this source template.

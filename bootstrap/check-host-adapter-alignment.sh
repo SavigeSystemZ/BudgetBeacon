@@ -58,6 +58,8 @@ fi
 
 required_files=(
   "_system/HOST_ADAPTER_POLICY.md"
+  "_system/AGENT_SURFACE_TAXONOMY.md"
+  "_system/AGENT_INIT_CONVERGENCE.md"
   "_system/host-adapter-manifest.json"
   "bootstrap/generate-host-adapters.sh"
   "bootstrap/check-host-adapter-alignment.sh"
@@ -91,11 +93,15 @@ issues: list[str] = []
 docs_to_scan = {
     repo / "AGENTS.md": [
         "_system/HOST_ADAPTER_POLICY.md",
+        "_system/AGENT_SURFACE_TAXONOMY.md",
+        "_system/AGENT_INIT_CONVERGENCE.md",
         "bootstrap/generate-host-adapters.sh",
         "bootstrap/check-host-adapter-alignment.sh",
     ],
     repo / "_system" / "AGENT_DISCOVERY_MATRIX.md": [
         "_system/HOST_ADAPTER_POLICY.md",
+        "_system/AGENT_SURFACE_TAXONOMY.md",
+        "_system/AGENT_INIT_CONVERGENCE.md",
         "bootstrap/generate-host-adapters.sh",
         "bootstrap/check-host-adapter-alignment.sh",
     ],
@@ -129,6 +135,81 @@ tool_paths = {str(spec["path"]) for spec in generated.values()}
 for rel in sorted(tool_paths):
     if not (repo / rel).is_file():
         issues.append(f"Manifest references missing generated host adapter: {rel}")
+
+required_placeholders = manifest.get("required_placeholder_files", [])
+for rel in sorted(set(str(item) for item in required_placeholders)):
+    if not (repo / rel).is_file():
+        issues.append(f"Missing required placeholder adapter: {rel}")
+
+
+def parse_version(value: str) -> tuple[int, ...]:
+    cleaned = str(value).strip().lstrip("vV")
+    if not cleaned:
+        return tuple()
+    parts: list[int] = []
+    for piece in cleaned.split("."):
+        if not piece.isdigit():
+            return tuple()
+        parts.append(int(piece))
+    return tuple(parts)
+
+
+template_version = ""
+version_path = repo / "_system" / ".template-version"
+if version_path.is_file():
+    template_version = version_path.read_text().strip()
+template_version_tuple = parse_version(template_version)
+
+deprecated_aliases = manifest.get("deprecated_aliases", {})
+if not isinstance(deprecated_aliases, dict):
+    issues.append("deprecated_aliases must be an object in host-adapter-manifest.json")
+else:
+    for alias, entry in deprecated_aliases.items():
+        if not str(alias).strip():
+            issues.append("deprecated_aliases contains empty key")
+        if isinstance(entry, str):
+            if not entry.strip():
+                issues.append(f"deprecated_aliases entry {alias!r} has empty target")
+            continue
+        if not isinstance(entry, dict):
+            issues.append(f"deprecated_aliases entry {alias!r} must be a string or object")
+            continue
+
+        target = str(entry.get("target", "")).strip()
+        deprecated_since = str(entry.get("deprecated_since", "")).strip()
+        remove_after = str(entry.get("remove_after", "")).strip()
+        migration_doc = str(entry.get("migration_doc", "")).strip()
+        if not target:
+            issues.append(f"deprecated_aliases entry {alias!r} is missing target")
+        if not deprecated_since:
+            issues.append(f"deprecated_aliases entry {alias!r} is missing deprecated_since")
+        if not remove_after:
+            issues.append(f"deprecated_aliases entry {alias!r} is missing remove_after")
+        if not migration_doc:
+            issues.append(f"deprecated_aliases entry {alias!r} is missing migration_doc")
+        elif not (repo / migration_doc).is_file():
+            issues.append(
+                f"deprecated_aliases entry {alias!r} migration_doc does not exist: {migration_doc}"
+            )
+
+        deprecated_tuple = parse_version(deprecated_since)
+        remove_after_tuple = parse_version(remove_after)
+        if deprecated_since and not deprecated_tuple:
+            issues.append(
+                f"deprecated_aliases entry {alias!r} has invalid deprecated_since: {deprecated_since}"
+            )
+        if remove_after and not remove_after_tuple:
+            issues.append(
+                f"deprecated_aliases entry {alias!r} has invalid remove_after: {remove_after}"
+            )
+        if deprecated_tuple and remove_after_tuple and remove_after_tuple <= deprecated_tuple:
+            issues.append(
+                f"deprecated_aliases entry {alias!r} remove_after must be greater than deprecated_since"
+            )
+        if template_version_tuple and remove_after_tuple and template_version_tuple >= remove_after_tuple:
+            issues.append(
+                f"deprecated_aliases entry {alias!r} expired at {remove_after}; remove alias or extend window"
+            )
 
 profile_json = repo / "_system" / "repo-operating-profile.json"
 if profile_json.is_file():

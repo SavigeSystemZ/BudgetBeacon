@@ -2,7 +2,7 @@
 
 This file is the exhaustive agent-facing key for the installable AIAST surface.
 
-It covers 478 managed files and is generated from the canonical managed-file inventory.
+It covers 494 managed files and is generated from the canonical managed-file inventory.
 
 ## How To Use This File
 
@@ -64,6 +64,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/README.md` - Operator guide to the install, repair, validation, and generation scripts. Read before running lifecycle scripts or debugging bootstrap flows.
 - `bootstrap/apply-starter-blueprint.sh` - Bootstrap command for Apply Starter Blueprint. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-agent-orchestration.sh` - Bootstrap command for Check Agent Orchestration. Run when performing the named install, repair, validation, emission, or generation task.
+- `bootstrap/check-agent-surface-integrity.sh` - Bootstrap command for Check Agent Surface Integrity. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-bootstrap-permissions.sh` - Bootstrap command for Check Bootstrap Permissions. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-delivery-gate-alignment.sh` - Bootstrap command for Check Delivery Gate Alignment. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-environment.sh` - Validates runtime prerequisites: CLI tools, ports, disk space, env files. Run when diagnosing environment issues or after changing project profile.
@@ -104,6 +105,8 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/install-autonomous-guardrails.sh` - Bootstrap command for Install Autonomous Guardrails. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/install-missing-files.sh` - Additive recovery flow for newly introduced template files and safe defaults. Run when an installed repo is missing newer AIAST-managed surfaces.
 - `bootstrap/lib/aiaast-lib.sh` - Shared bootstrap helper library for AIAST Lib. Used indirectly by install, repair, update, generation, and validation scripts.
+- `bootstrap/migrate-agent-surface-upgrade.sh` - Bootstrap command for Migrate Agent Surface Upgrade. Run when performing the named install, repair, validation, emission, or generation task.
+- `bootstrap/patch-agent-surface-contracts.sh` - Bootstrap command for Patch Agent Surface Contracts. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/print-agent-map.sh` - Bootstrap command for Print Agent Map. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/recommend-starter-blueprint.sh` - Bootstrap command for Recommend Starter Blueprint. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/repair-myappz-root-ownership.sh` - Bootstrap command for Repair Myappz Root Ownership. Run when performing the named install, repair, validation, emission, or generation task.
@@ -122,6 +125,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/seed-working-state.sh` - Bootstrap command for Seed Working State. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/suggest-project-profile.sh` - Bootstrap command for Suggest Project Profile. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/sync-agent-adapters.sh` - Bootstrap command for Sync Agent Adapters. Run when performing the named install, repair, validation, emission, or generation task.
+- `bootstrap/sync-metasystem-contracts.sh` - Bootstrap command for Sync Metasystem Contracts. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/system-doctor.sh` - Full diagnostic wrapper for awareness, integrity, drift, and hallucination checks. Supports --report and --record. Run when the system picture feels inconsistent or suspect.
 - `bootstrap/templates/runtime/.credits-hidden` - Bootstrap template asset for Credits Hidden. Copied or rendered into repo-owned runtime or system surfaces during init, update, repair, or runtime-foundation generation.
 - `bootstrap/templates/runtime/LICENSE` - Bootstrap template asset for License. Copied or rendered into repo-owned runtime or system surfaces during init, update, repair, or runtime-foundation generation.
@@ -189,9 +193,11 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/.template-version` - Core operating-system reference for Template Version. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/ACCESSIBILITY_STANDARDS.md` - Core operating-system reference for Accessibility Standards. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AGENT_DISCOVERY_MATRIX.md` - Matrix of which tools and hosts load which repo surfaces. Use when checking host coverage or adapter expectations.
+- `_system/AGENT_INIT_CONVERGENCE.md` - Core operating-system reference for Agent Init Convergence. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AGENT_INSTALLER_AND_HOST_VALIDATION_PROTOCOL.md` - Core operating-system reference for Agent Installer And Host Validation Protocol. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AGENT_PERFORMANCE_GUIDE.md` - Model capability dimensions, task-to-model mapping, and multi-agent delegation guidance. Read when choosing which model to use for a specific task type.
 - `_system/AGENT_ROLE_CATALOG.md` - Canonical role catalog and ownership model for delegated work. Read when selecting or defining agent roles.
+- `_system/AGENT_SURFACE_TAXONOMY.md` - Core operating-system reference for Agent Surface Taxonomy. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AI_RULES.md` - Core operating-system reference for AI Rules. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/API_DESIGN_STANDARDS.md` - Core operating-system reference for API Design Standards. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/ARCHITECTURE_DIAGRAM.md` - ASCII box diagrams of the three-layer model, loading flow, adapter pipeline, and validation chain. Read when understanding the system architecture or explaining it to others.
@@ -235,6 +241,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/MODERN_UI_PATTERNS.md` - Core operating-system reference for Modern UI Patterns. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/MULTI_AGENT_COORDINATION.md` - Turn-taking and ownership rules for multi-agent work. Use when planning delegated or parallel execution.
 - `_system/OBSERVABILITY_STANDARDS.md` - Core operating-system reference for Observability Standards. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/OPERATOR_PROMPTING_PLAYBOOK.md` - Core operating-system reference for Operator Prompting Playbook. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/PACKAGING_GUIDE.md` - Core operating-system reference for Packaging Guide. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/PERFORMANCE_BUDGET.md` - Core operating-system reference for Performance Budget. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/PLUGIN_CONTRACT.md` - Contract for optional AIAST extensions with 12 hook points, manifest schema, and lifecycle. Read when creating, validating, or understanding plugins.
@@ -561,8 +568,13 @@ These files are managed but do not currently fit a more specific category.
 - `distribution/platforms/macos/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
 - `distribution/platforms/windows/Install.ps1` - Managed AIAST surface for Install Ps1. Use it when the task clearly touches the surface named by this file.
 - `distribution/platforms/windows/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
+- `docs/ARCHITECTURE.md` - Managed AIAST surface for Architecture. Use it when the task clearly touches the surface named by this file.
 - `docs/CONTEXT_COMPRESS_PILOT.md` - Managed AIAST surface for Context Compress Pilot. Use it when the task clearly touches the surface named by this file.
+- `docs/DATA_MODEL.md` - Managed AIAST surface for Data Model. Use it when the task clearly touches the surface named by this file.
+- `docs/NFR.md` - Managed AIAST surface for Nfr. Use it when the task clearly touches the surface named by this file.
+- `docs/PRD.md` - Managed AIAST surface for Prd. Use it when the task clearly touches the surface named by this file.
 - `docs/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
+- `docs/UX_SYSTEM.md` - Managed AIAST surface for UX System. Use it when the task clearly touches the surface named by this file.
 - `docs/security/architecture.md` - Managed AIAST surface for Architecture. Use it when the task clearly touches the surface named by this file.
 - `docs/security/backend-inventory.md` - Managed AIAST surface for Backend Inventory. Use it when the task clearly touches the surface named by this file.
 - `docs/security/rollback.md` - Managed AIAST surface for Rollback. Use it when the task clearly touches the surface named by this file.

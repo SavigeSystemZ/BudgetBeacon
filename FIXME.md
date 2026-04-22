@@ -15,7 +15,7 @@ Use this file for unresolved problems that materially affect delivery confidence
 
 ## Known Bugs
 
-- None recorded in the master template snapshot (2026-04-06). Replace this line in downstream repos when real bugs exist.
+- None recorded as of 2026-04-22.
 
 ## Known Risks
 
@@ -27,7 +27,8 @@ Use this file for unresolved problems that materially affect delivery confidence
 
 ## Deferred Improvements
 
-- None recorded yet.
+- Setup automated CI/CD for distribution if scaling beyond local host.
+- Push to remote once git credentials are authenticated on the host.
 
 ## Blockers
 

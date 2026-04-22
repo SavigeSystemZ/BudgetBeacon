@@ -44,6 +44,39 @@
     "_system/HOST_ADAPTER_POLICY.md",
     "_system/PROMPT_EMISSION_CONTRACT.md"
   ],
+  "required_placeholder_files": [
+    "CURSOR.md",
+    "COPILOT.md",
+    "AIDER.md",
+    "AGENT_ZERO.md"
+  ],
+  "deprecated_aliases": {
+    "CURSOR_RULES_ONLY": {
+      "target": ".cursorrules",
+      "deprecated_since": "1.24.0",
+      "remove_after": "1.26.0",
+      "migration_doc": "_system/MIGRATION_GUIDE.md"
+    },
+    "COPILOT_RULES_ONLY": {
+      "target": ".github/copilot-instructions.md",
+      "deprecated_since": "1.24.0",
+      "remove_after": "1.26.0",
+      "migration_doc": "_system/MIGRATION_GUIDE.md"
+    },
+    "AIDER_RULES_ONLY": {
+      "target": ".aider.conf.yml",
+      "deprecated_since": "1.24.0",
+      "remove_after": "1.26.0",
+      "migration_doc": "_system/MIGRATION_GUIDE.md"
+    }
+  },
+  "agent_init_convergence_sources": [
+    "AGENTS.md",
+    "PROJECT_CONTEXT.md",
+    "INITIALIZATION_GUIDE.md",
+    "AGENT_INIT_LOG.md",
+    "AGENT_TEMPLATE.md"
+  ],
   "generated_adapters": {
     "codex": {
       "path": "CODEX.md",

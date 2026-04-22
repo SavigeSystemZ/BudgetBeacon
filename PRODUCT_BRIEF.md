@@ -5,33 +5,33 @@ Use this file to capture the product idea, intended user value, and chosen build
 ## Product frame
 
 - Product name: Budget Beacon
-- Product category: personal budgeting and spending-awareness app
-- One-line summary: Budget Beacon helps people plan monthly budgets, capture spending, and see budget pressure before they overspend.
-- Why it should exist: many people only notice category overspend after the money is already gone; the first product slice should make day-to-day budget status visible, trustworthy, and easy to act on.
-- Primary users: individuals and households who want a clear view of budget targets, transaction activity, and remaining spend room.
-- Primary workflows: create budget categories and monthly targets; capture or import transactions and assign categories; review month-to-date spending vs budget; surface remaining budget and overspending risk.
-- Success indicators: a new user can set up a starter budget, record realistic transactions, and understand current category-level budget status without outside help.
-- Non-goals: tax preparation, investment management, multi-entity bookkeeping, or speculative AI-generated financial advice.
+- Product category: Personal budgeting and spending-awareness app
+- One-line summary: Build Budget Beacon, a budgeting app that helps people track spending against planned monthly budgets and notice budget pressure early.
+- Why it should exist: capture the user pain, operator leverage, or market opportunity this app resolves
+- Primary users: Individuals and households managing everyday budgets
+- Primary workflows: Set budget categories and monthly targets; capture or import transactions; review month-to-date spend vs budget; inspect remaining budget and overspending risk
+- Success indicators: Users can create a budget, record realistic transactions, and understand current budget status from trustworthy totals and category rollups
+- Non-goals: Tax preparation, investment advice, or multi-entity accounting in the first phase
 
 ## Experience bar
 
-- Visual direction: calm, high-clarity finance UI with strong hierarchy, readable numbers, and trust-building restraint instead of dashboard clutter.
-- Interaction bar: fast budget review and low-friction transaction capture on both desktop and mobile-sized layouts.
-- Performance bar: dashboard summaries and transaction flows should feel immediate on a normal personal-finance dataset.
-- Reliability bar: totals, category rollups, remaining-budget indicators, and period summaries must stay internally consistent and explainable.
-- Trust and safety bar: treat financial data as sensitive, avoid invented balances or sync claims, and make any risky or destructive action explicit.
+- Visual direction: Calm, polished, high-signal finance UI with intentional hierarchy
+- Interaction bar: Quick budget review, clear transaction flows, and obvious state transitions
+- Performance bar: Core budget status and transaction views should feel immediate on normal datasets
+- Reliability bar: clear degraded states, explicit error handling, and no fake capability claims
+- Trust and safety bar: security-conscious defaults, honest validation claims, and explicit handling of risky actions
 
 ## Build shape
 
-- Recommended starter blueprint: manual review required
-- Recommendation confidence: low
-- Recommendation rationale: No single starter blueprint is dominant yet. Current signals are too weak or too generic. Refine PRODUCT_BRIEF.md or add real runtime signals, then review the recommendation again.
+- Recommended starter blueprint: REACT_VITE_TYPESCRIPT - React Vite TypeScript Blueprint
+- Recommendation confidence: high
+- Recommendation rationale: Best fit: REACT_VITE_TYPESCRIPT - React Vite TypeScript Blueprint. Signals: React dependency detected.; Vite config detected.; Product framing points to an interactive frontend surface.. Top alternatives: STATIC_FRONTEND (2).
 - Selected starter blueprint: not yet selected
-- Why this blueprint fits: the product clearly needs a user-facing budgeting surface and durable domain state, but the delivery surface is still open enough that forcing a blueprint now would be premature.
-- Planned repo shape: choose a runtime shape that cleanly models budgets, categories, transactions, rollups, and reporting, then keep packaging and AI scaffolds aligned to that choice.
-- First milestone: prove budget setup, transaction capture, category assignment, and month-to-date budget status in one end-to-end slice with real validation.
-- Initial validation focus: establish one real launch path and one real automated lane that checks budget calculations and transaction/category state transitions.
-- Next decision gates: starter blueprint, runtime surface (web, desktop, mobile, or hybrid), persistence model, import strategy, deployment targets, packaging expectations, and AI scope.
+- Why this blueprint fits: choose a starter blueprint after the product frame and delivery surfaces are clearer
+- Planned repo shape: decide after selecting a starter blueprint
+- First milestone: prove one end-to-end user-facing or operator-facing slice with real validation
+- Initial validation focus: confirm one real build, launch, test, or smoke path early and keep it passing
+- Next decision gates: starter blueprint, persistence model, deployment targets, packaging expectations, and AI scope
 
 ## Usage rules
 

@@ -15,6 +15,8 @@ This policy governs the tool-specific adapter files that sit on top of the share
 - `_system/REPO_OPERATING_PROFILE.md`
 - `_system/LOAD_ORDER.md`
 - `_system/PROMPT_EMISSION_CONTRACT.md`
+- `_system/AGENT_SURFACE_TAXONOMY.md`
+- `_system/AGENT_INIT_CONVERGENCE.md`
 - `_system/host-adapter-manifest.json`
 
 ## Generated adapter surfaces
@@ -32,6 +34,17 @@ The following files are generated from `_system/host-adapter-manifest.json`:
 - `.cursor/commands/session-start.md`
 - `.cursor/skills/load-context/SKILL.md`
 - `.cursor/rules/00-context-load.mdc`
+
+## Compatibility placeholder surfaces
+
+The following top-level files are intentionally lightweight compatibility placeholders and are validated for presence:
+
+- `CURSOR.md`
+- `COPILOT.md`
+- `AIDER.md`
+- `AGENT_ZERO.md`
+
+They must point to shared contracts and must not duplicate or override policy.
 
 ## Change rules
 
@@ -55,3 +68,13 @@ The following files are generated from `_system/host-adapter-manifest.json`:
 3. Run `bootstrap/check-host-adapter-alignment.sh <repo>`.
 4. Run `bootstrap/validate-instruction-layer.sh <repo>`.
 5. Regenerate system metadata if the repo is in a managed write flow.
+
+## Deprecation lifecycle
+
+- `deprecated_aliases` in `_system/host-adapter-manifest.json` supports lifecycle metadata:
+  - `target`
+  - `deprecated_since`
+  - `remove_after`
+  - `migration_doc`
+- Validators fail when an alias passes `remove_after` for the current template version.
+- Alias removals must update migration and release docs in the same change set.

@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- **Enhancement — Contract sync command:** added
+  `bootstrap/sync-metasystem-contracts.sh` to run adapter generation, system registry/profile regeneration, integrity generation, and core validation checks in one deterministic flow.
+- **Enhancement — Downstream migration assistant:** added
+  `bootstrap/migrate-agent-surface-upgrade.sh` with `--dry-run` and `--write`
+  modes to roll out dual-metasystem agent-surface upgrades to existing
+  downstream repos.
+- **Enhancement — Parity and quality gates:** added
+  `_TEMPLATE_FACTORY/check-aiast-mos-parity.sh` and
+  `_TEMPLATE_FACTORY/check-metasystem-quality-gate.sh`; both are now integrated
+  into `_TEMPLATE_FACTORY/validate-master-template.sh`.
+- **Enhancement — Adapter alias lifecycle enforcement:** extended
+  `_system/host-adapter-manifest.json` `deprecated_aliases` entries with
+  `target`, `deprecated_since`, `remove_after`, and `migration_doc`, and
+  updated validators to fail on expired alias windows.
+- **Enhancement — Dual metasystem unification:** added installable adapter governance and convergence contracts:
+  - `_system/AGENT_SURFACE_TAXONOMY.md`
+  - `_system/AGENT_INIT_CONVERGENCE.md`
+  - `_system/OPERATOR_PROMPTING_PLAYBOOK.md`
+- **Enhancement — Adapter parity placeholders:** added `CURSOR.md`, `COPILOT.md`, `AIDER.md`, and `AGENT_ZERO.md` as thin compatibility pointer files for scaffold comparability across mixed agent ecosystems.
+- **Enhancement — Validation lane hardening:** added `bootstrap/check-agent-surface-integrity.sh`, integrated it into `_TEMPLATE_FACTORY/validate-master-template.sh`, and extended host-adapter alignment checks to enforce required placeholder presence and taxonomy/convergence references.
+- **Enhancement — Meta-of-meta governance:** added `_META_AGENT_SYSTEM/META_GOVERNANCE_FRAMEWORK.md` for proposal lifecycle, compatibility tiers, and evidence-backed release gates.
+- **Enhancement — MOS parity crosswalk:** added `MOS_TEMPLATE/meta_system/META_AGENT_SURFACE_CROSSWALK.md` and wired MOS host-adapter policy/load/context docs to the crosswalk.
+
 - **Fix — `bootstrap/lib/aiaast-lib.sh`:** `aiaast_refresh_onboarding_baseline`
   no longer propagates its `force` parameter to
   `generate-runtime-foundations.sh`. Runtime foundation templates under

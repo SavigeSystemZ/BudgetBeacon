@@ -90,9 +90,10 @@ def git_last_modified(path: Path) -> datetime | None:
 
 def has_uncommitted_changes(path: Path) -> bool:
     """Check if a file has uncommitted changes."""
+    rel = str(path.relative_to(repo))
     try:
         result = subprocess.run(
-            ["git", "diff", "--name-only", "--", str(path)],
+            ["git", "diff", "--name-only", "--", rel],
             cwd=repo,
             capture_output=True,
             text=True,
@@ -101,7 +102,7 @@ def has_uncommitted_changes(path: Path) -> bool:
         if result.stdout.strip():
             return True
         result = subprocess.run(
-            ["git", "diff", "--cached", "--name-only", "--", str(path)],
+            ["git", "diff", "--cached", "--name-only", "--", rel],
             cwd=repo,
             capture_output=True,
             text=True,
@@ -143,6 +144,11 @@ for rel in WORKING_FILES + CONTEXT_FILES:
 
     # Skip template-default files (not yet filled in)
     if "not set yet" in text and rel == "WHERE_LEFT_OFF.md":
+        continue
+
+    # If the file has pending local edits, treat it as actively maintained
+    # even when the last commit is old.
+    if has_uncommitted_changes(path):
         continue
 
     # Check git modification age

@@ -2,10 +2,10 @@
   "app_name": "Budget Beacon",
   "install_mode": "copied-template",
   "installed_at": "2026-04-20T19:42:31Z",
-  "last_event": "install",
+  "last_event": "update-template",
   "source_template": "TEMPLATE",
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.23.0",
-  "updated_at": "2026-04-20T19:42:31Z"
+  "updated_at": "2026-04-22T21:49:39Z"
 }

@@ -5,18 +5,28 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 ## Current Priority
 
-- [x] HIGH: Project Completion. All milestones (M0-M7) and Final Polish (M8) are fully delivered.
+- [ ] HIGH: Verification of VA Assistance Seed Data (Confirm exact values for property tax, SimpliSafe, Aaron's, etc.).
 
 ## Immediate Queue
 
-- None.
+- [ ] MEDIUM: Attach Kehley M. Smith's Market Basket pay stubs and SNAP/food benefit verification.
+- [ ] MEDIUM: Attach official SSDI/SSA benefit letter when available.
+- [ ] MEDIUM: Update current bank balances before submitting any means-tested asset disclosure.
+- [ ] MEDIUM: Confirm exact Aaron's monthly payment and balance from statement.
+- [ ] MEDIUM: Confirm SimpliSafe actual monthly amount ($10 vs $30).
+- [ ] MEDIUM: Confirm exact property tax monthly equivalent and any veteran tax credit/abatement options.
 
-## Next Queue
+## Next Queue (Optional Maintenance)
 
-- [ ] LOW: Production Deployment. Deploy the static `dist/` folder to a host like Netlify or GitHub Pages for global access.
+- [ ] LOW: Push to remote once git credentials are authenticated on the host.
+- [ ] LOW: Setup automated CI/CD for distribution if scaling beyond local host.
 
 ## Completed
 
+- [x] HIGH: Generate and export VA Assistance Seed Data to `va-assistance-seed.json`.
+- [x] HIGH: Tailor meta-system for Budget Beacon (`PROJECT_PROFILE.md`, `ROADMAP.md`, `PLAN.md`, `docs/`).
+- [x] HIGH: Project Wrap-up. Git initialized, remote `SavigeSystemZ/BudgetBeacon` added.
+- [x] HIGH: Advanced Installer. Built `install.sh` and successfully installed Budget Beacon to `/home/whyte/.local/bin`.
 - [x] HIGH: M8 — Final Polish (Dark Mode + PWA).
 - [x] HIGH: M7 — Backup + Polish + Hardening.
 - [x] HIGH: M6 — Credit Snapshot + Reports.

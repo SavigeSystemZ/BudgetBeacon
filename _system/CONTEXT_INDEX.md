@@ -13,6 +13,8 @@ This file is the map of the local agent operating system.
 - `SUB_AGENT_HOST_DELEGATION.md` — optional parallel host CLI / auxiliary sessions, scope rules, and primary takeover when auxiliaries fail; pair with `bootstrap/emit-auxiliary-brief.sh` for standardized briefs
 - `KEY.md` — exhaustive file-by-file key with when-to-use guidance
 - `HOST_ADAPTER_POLICY.md` — policy for generated tool-entry and adapter-load surfaces
+- `AGENT_SURFACE_TAXONOMY.md` — canonical adapter classes, naming, and placeholder boundaries
+- `AGENT_INIT_CONVERGENCE.md` — mapping from external init workspaces to installable AIAST contracts
 - `HOST_BUNDLE_CONTRACT.md` — contract for self-contained external host bundles
 - `_system/READ_BUNDLES.md` — smallest-useful-context bundles for common AIAST task families
 - `LOAD_ORDER.md` — what to read and in what order
@@ -155,6 +157,7 @@ This file is the map of the local agent operating system.
 
 - `PROMPTS_INDEX.md`
 - `PROMPT_EMISSION_CONTRACT.md`
+- `OPERATOR_PROMPTING_PLAYBOOK.md`
 - `HOST_BUNDLE_CONTRACT.md`
 - `prompt-templates/`
 - `prompt-packs/`
@@ -183,6 +186,9 @@ This file is the map of the local agent operating system.
 - `../bootstrap/generate-host-adapters.sh`
 - `../bootstrap/generate-operating-profile.sh`
 - `../bootstrap/check-host-adapter-alignment.sh`
+- `../bootstrap/check-agent-surface-integrity.sh`
+- `../bootstrap/sync-metasystem-contracts.sh`
+- `../bootstrap/migrate-agent-surface-upgrade.sh`
 - `../bootstrap/emit-host-prompt.sh`
 - `../bootstrap/check-host-ingestion.sh`
 - `../bootstrap/emit-host-bundle.sh`
@@ -252,6 +258,10 @@ This file is the map of the local agent operating system.
 - `../DEEPSEEK.md`
 - `../PEARAI.md`
 - `../LOCAL_MODELS.md`
+- `../CURSOR.md`
+- `../COPILOT.md`
+- `../AIDER.md`
+- `../AGENT_ZERO.md`
 - `../.aider.conf.yml`
 - `../.continuerules`
 - `../.clinerules`

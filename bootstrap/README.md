@@ -39,6 +39,10 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `generate-operating-profile.sh` — rebuild the compact host-ingestion profile
 - `detect-instruction-conflicts.sh` — scan adapters, prompt surfaces, and manifests for overlap or contradiction
 - `check-host-adapter-alignment.sh` — verify generated tool adapters are aligned with the canonical manifest
+- `check-agent-surface-integrity.sh` — verify taxonomy/convergence contracts and required placeholder adapters are present
+- `sync-metasystem-contracts.sh` — one-command adapter/registry/profile/integrity regeneration plus validation checks
+- `migrate-agent-surface-upgrade.sh` — downstream migration assistant for the dual-metasystem agent-surface upgrade
+- `patch-agent-surface-contracts.sh` — idempotent patcher for legacy downstream `AGENTS.md` / `_system/AGENT_DISCOVERY_MATRIX.md` references required by newer adapter-contract validators
 - `check-system-awareness.sh` — verify registry coverage and path references in core docs
 - `check-hallucination.sh` — detect claim-evidence mismatches and suspicious confidence drift
 - `check-install-boundary.sh` — fail if maintainer-only or foreign product layers leaked into an installed repo
@@ -76,7 +80,11 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 12. When shaping new working files, prompt packs, or system docs, use `_system/GOLDEN_EXAMPLES_POLICY.md` and `_system/golden-examples/` as the quality-bar reference instead of copying another app
 13. Re-run `validate-system.sh <target-repo> --strict`
 14. Use `generate-host-adapters.sh <target-repo> --write` and `check-host-adapter-alignment.sh <target-repo>` when tool-entry or load-context adapter files change
-15. Use `validate-instruction-layer.sh <target-repo>` or `detect-instruction-conflicts.sh <target-repo> --strict` when adapters, prompt packs, or host-safe contracts change
+15. Use `check-agent-surface-integrity.sh <target-repo>` when adapter naming, placeholder coverage, or convergence contracts change
+16. Use `validate-instruction-layer.sh <target-repo>` or `detect-instruction-conflicts.sh <target-repo> --strict` when adapters, prompt packs, or host-safe contracts change
+17. Use `sync-metasystem-contracts.sh <target-repo> --write` as the preferred all-in-one regeneration + validation flow after contract-level changes
+18. Use `migrate-agent-surface-upgrade.sh <downstream-repo> --dry-run` before broad downstream rollout, then `--write` for applied upgrades
+19. Use `patch-agent-surface-contracts.sh <downstream-repo> --write` when a downstream repo has the files but fails alignment due to missing AGENTS/discovery references
 16. Use `emit-host-prompt.sh <target-repo> --task ...` when an upstream host or orchestrator needs a canonical repo-safe startup prompt instead of ad hoc assembly
 17. Use `emit-host-bundle.sh <target-repo> --task ... --output <file>` when an external host needs a self-contained snapshot instead of live repo-path access
 18. Use `check-host-ingestion.sh <target-repo>`, `check-host-bundle.sh <target-repo>`, and `check-packaging-targets.sh <target-repo>` when prompt emission, host-bundle, or packaging/systemd surfaces change materially

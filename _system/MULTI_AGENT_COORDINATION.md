@@ -39,6 +39,7 @@ This repo is designed to survive tool changes, interrupted sessions, and handoff
    - `RISK_REGISTER.md`
    - `RELEASE_NOTES.md`
 8. Tool-specific helpers may extend behavior but must not contradict `AGENTS.md` or `_system/`.
+9. Adapter placeholders (`CURSOR.md`, `COPILOT.md`, `AIDER.md`, `AGENT_ZERO.md`) are compatibility pointers only; shared governance stays in `AGENTS.md` and `_system/`.
 9. Hook and orchestration surfaces (Cursor rules/commands/skills/agents, plugins, CI, MCP) must stay coherent; see `_system/HOOK_AND_ORCHESTRATION_INDEX.md`.
 
 ## Role activation
@@ -128,6 +129,7 @@ Each meaningful handoff should include:
 - Prefer additive follow-up patches over silent rewrites.
 - If overlapping work is unavoidable, reduce the scope and stabilize the handoff first.
 - If a previous agent updated design or architecture direction, load those files before changing course.
+- If a conflict appears between generated adapters and placeholder adapters, generated adapter policy and shared `_system/` contracts take precedence.
 
 ## Tool fit
 

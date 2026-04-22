@@ -1,0 +1,430 @@
+{
+  "package_name": "Budget Beacon Financial Seed Data - VA Assistance Version",
+  "prepared_for": "Michael Todd Spaulding",
+  "prepared_date": "2026-04-22",
+  "intended_use": "Populate the user's local Budget Beacon application and its Pay Path/Stash Map modules with currently available household budget data for VA/utility bill assistance planning.",
+  "important_agent_instruction": "Do not invent missing account numbers, balances, due dates, or creditor data. Use zero for non-applicable categories and mark unconfirmed items as estimated or not_provided. Preserve the distinction between applicant-only income and estimated household income.",
+  "profiles": [
+    {
+      "person_id": "self_michael",
+      "role": "applicant_account_holder",
+      "legal_name": "Michael Todd Spaulding",
+      "dob": "1987-03-25",
+      "last_four_identifier": "7620",
+      "address": "136 North Road, Warner, NH 03278",
+      "phone": "603-748-7684",
+      "relationship_to_household": "Applicant, disabled veteran, Eversource account holder, primarily responsible for electric utility payment.",
+      "notes": "Receives SSDI/Social Security and VA disability compensation. Food and finances are separated from partner where practical."
+    },
+    {
+      "person_id": "partner_kehley",
+      "role": "significant_other_household_member_property_manager",
+      "legal_name": "Kehley M. Smith",
+      "also_known_as": "Kaylee M. Smith",
+      "dob": "1990-02-23",
+      "address": "136 North Road, Warner, NH 03278",
+      "phone": "603-456-4380",
+      "relationship_to_household": "Significant other / same property. Not legally married to applicant. Maintains separate food and finances, has separate living space, contributes to shared bills as able, and performs property-management role in lieu of rent.",
+      "notes": "Estimated part-time Market Basket income pending pay stubs. Food benefits are estimated and should be confirmed by benefit paperwork."
+    }
+  ],
+  "income_monthly": {
+    "self": [
+      {
+        "category": "Social Security / SSDI",
+        "amount": 2140.0,
+        "frequency": "monthly",
+        "source_confidence": "document_supported_by_bank_statements",
+        "source_note": "Recurring SSA TREAS 310 deposits shown on January, February, and March 2026 Chime checking statements. Official SSA award letter should be attached later if available."
+      },
+      {
+        "category": "VA Disability Compensation",
+        "amount": 552.47,
+        "frequency": "monthly",
+        "source_confidence": "document_verified",
+        "source_note": "VA Benefit Summary Letter dated 2026-04-18 lists 30% combined service-connected evaluation and current monthly award amount of $552.47."
+      }
+    ],
+    "partner": [
+      {
+        "category": "Net Wages - Market Basket dairy stocker, part-time",
+        "amount": 1300.0,
+        "frequency": "monthly_estimate_from_300_per_week",
+        "source_confidence": "user_estimated_pending_pay_stubs",
+        "source_note": "$300/week x 52 / 12 = $1,300/month. Replace with pay-stub average when available."
+      },
+      {
+        "category": "Food Stamps / SNAP",
+        "amount": 75.0,
+        "frequency": "monthly_estimate",
+        "source_confidence": "user_estimated",
+        "source_note": "User stated approximately $75-$100/month. Use $75 as conservative estimate unless later proof shows otherwise."
+      }
+    ],
+    "totals": {
+      "applicant_cash_income_only": 2692.47,
+      "partner_estimated_cash_income": 1300.0,
+      "estimated_household_cash_income": 3992.47,
+      "estimated_household_income_including_snap": 4067.47,
+      "note": "Use applicant-only and household scenarios separately if Budget Beacon supports multiple views. Assistance program may decide whether partner income counts."
+    }
+  },
+  "expenses_monthly": {
+    "housing_and_property": [
+      {
+        "category": "Mortgage/Rent",
+        "amount": 0.0,
+        "confidence": "user_stated",
+        "notes": "No rent payment listed for applicant. Partner pays no rent; property-management services are in lieu of rent."
+      },
+      {
+        "category": "Property Taxes",
+        "amount": 550.0,
+        "confidence": "user_estimated",
+        "notes": "User stated approximately $500-$600/month; use midpoint $550/month."
+      },
+      {
+        "category": "Home/Rental Insurance",
+        "amount": 0.0,
+        "confidence": "not_provided",
+        "notes": "No documented monthly amount provided."
+      }
+    ],
+    "utilities": [
+      {
+        "category": "Electricity - Eversource payment plan",
+        "amount": 665.0,
+        "confidence": "user_stated_and_bill_supported_hardship",
+        "notes": "Primary assistance target. User stated payment plan is $665/month, but affordable amount is approximately $400/month, leaving a $265/month gap. Latest uploaded Eversource bill shows $5,248.58 total due and $585.74 current charges."
+      },
+      {
+        "category": "Internet - DS",
+        "amount": 65.0,
+        "confidence": "user_stated",
+        "notes": "Provider described as DS."
+      },
+      {
+        "category": "Cell Phone",
+        "amount": 40.0,
+        "confidence": "user_stated",
+        "notes": "Provider uncertain: SafeLink/SafeNet/TracFone-like service."
+      },
+      {
+        "category": "Trash Disposal",
+        "amount": 75.0,
+        "confidence": "user_stated",
+        "notes": "Trash company: NOT recycling. Current amount owed approximately $165 due to arrears."
+      },
+      {
+        "category": "Water",
+        "amount": 0.0,
+        "confidence": "user_stated",
+        "notes": "Artesian well; no separate water bill."
+      },
+      {
+        "category": "Gas/Oil Heat",
+        "amount": 0.0,
+        "confidence": "user_stated",
+        "notes": "No gas/oil heat bill provided; heating is pellets plus electric."
+      },
+      {
+        "category": "Wood/Pellets Heat",
+        "amount": 175.0,
+        "confidence": "seasonal_estimate",
+        "notes": "Summer approximately $50-$100/month; winter approximately $300+/month. Use $175/month average; consider seasonal budget mode."
+      }
+    ],
+    "transportation": [
+      {
+        "category": "Auto Payment/Lease",
+        "amount": 300.0,
+        "confidence": "user_stated",
+        "notes": "User stated car payment is $300/month."
+      },
+      {
+        "category": "Auto Insurance - USAA",
+        "amount": 30.15,
+        "confidence": "statement_supported",
+        "notes": "USAA insurance payment of $30.15 appears in February 2026 Chime statement."
+      },
+      {
+        "category": "Auto Fuel",
+        "amount": 217.0,
+        "confidence": "user_estimated",
+        "notes": "User stated approximately $50/week; partner often handles this from her funds."
+      }
+    ],
+    "food_household_pet": [
+      {
+        "category": "Groceries / Food",
+        "amount": 800.0,
+        "confidence": "user_estimated",
+        "notes": "Baseline $200/week. Actual range can reach $300/week depending on available cash. Food/finances are mostly separated; partner SNAP should be tracked separately."
+      },
+      {
+        "category": "Household Supplies / Cleaning / Personal Care",
+        "amount": 217.0,
+        "confidence": "user_estimated",
+        "notes": "User stated toothpaste, cleaning supplies, and similar items are approximately $50/week; often handled by partner."
+      },
+      {
+        "category": "Pet Food/Care",
+        "amount": 104.0,
+        "confidence": "user_stated",
+        "notes": "$24/week dog food x 52/12 = approximately $104/month."
+      }
+    ],
+    "debts_loans_and_rentals": [
+      {
+        "category": "Rent-A-Center",
+        "amount": 230.0,
+        "confidence": "user_stated_and_statement_supported",
+        "notes": "March statement showed Rent-A-Center purchase/payment of $220.95; user stated approximately $230/month."
+      },
+      {
+        "category": "Aaron's / furniture or lease payment",
+        "amount": 400.0,
+        "confidence": "user_estimated_pending_statement_match",
+        "notes": "User stated approximately $400/month. Replace with exact statement amount when available."
+      },
+      {
+        "category": "Family Debt Repayment",
+        "amount": 100.0,
+        "confidence": "user_stated_payment_plan_choice",
+        "notes": "Total owed to family approximately $400. User can pay $100-$200 increments; use $100/month default until stabilized."
+      },
+      {
+        "category": "Partner Student Loans",
+        "amount": 200.0,
+        "confidence": "user_estimated_pending_partner_statement",
+        "notes": "User believes partner student loans are around $200/month. Confirm from partner bank/student-loan statement."
+      },
+      {
+        "category": "Credit Cards - Minimum",
+        "amount": 0.0,
+        "confidence": "user_context",
+        "notes": "User and partner have debts/collections but no reliable required minimum payment currently documented."
+      },
+      {
+        "category": "Collections / Old Debts",
+        "amount": 0.0,
+        "confidence": "user_context",
+        "notes": "Applicant debts around $2,000 and partner debts in excess of $2,000, but no required monthly payment currently documented. Track as debt inventory, not active monthly obligation, unless payment agreement exists."
+      }
+    ],
+    "subscriptions_security_discretionary": [
+      {
+        "category": "SimpliSafe",
+        "amount": 30.0,
+        "confidence": "user_estimated",
+        "notes": "User believes it should be $10 but may currently be around $30; track for verification/cancellation review."
+      },
+      {
+        "category": "Subscriptions - Amazon Prime and AI/hobby tools",
+        "amount": 100.0,
+        "confidence": "user_estimated_and_statement_supported_general",
+        "notes": "Combination of Amazon Prime and AI subscriptions used for hobby/flash-work-related activity; not current formal employment."
+      },
+      {
+        "category": "Dining Out",
+        "amount": 50.0,
+        "confidence": "statement_supported_estimate",
+        "notes": "Small food/fast-food charges appear in statements; set low baseline."
+      },
+      {
+        "category": "Clothing",
+        "amount": 25.0,
+        "confidence": "budget_placeholder_zero_or_low",
+        "notes": "No specific amount provided; low practical estimate."
+      },
+      {
+        "category": "Recreation",
+        "amount": 0.0,
+        "confidence": "not_applicable_or_not_provided",
+        "notes": "No required monthly amount."
+      },
+      {
+        "category": "Savings",
+        "amount": 0.0,
+        "confidence": "cashflow_deficit",
+        "notes": "No practical savings capacity while electric arrears/payment plan remain unresolved."
+      }
+    ],
+    "health_legal_support": [
+      {
+        "category": "Health/Dental Insurance",
+        "amount": 0.0,
+        "confidence": "not_provided",
+        "notes": "No monthly amount provided."
+      },
+      {
+        "category": "Medical Co-Pays",
+        "amount": 0.0,
+        "confidence": "not_provided",
+        "notes": "No monthly amount provided."
+      },
+      {
+        "category": "Prescriptions including medical marijuana",
+        "amount": 0.0,
+        "confidence": "not_provided",
+        "notes": "No monthly amount provided."
+      },
+      {
+        "category": "Alimony",
+        "amount": 0.0,
+        "confidence": "not_applicable",
+        "notes": "No alimony obligation stated."
+      },
+      {
+        "category": "Child Support",
+        "amount": 0.0,
+        "confidence": "not_applicable",
+        "notes": "No child support obligation stated."
+      },
+      {
+        "category": "Childcare / children activities / tuition",
+        "amount": 0.0,
+        "confidence": "not_applicable",
+        "notes": "No child-related expense stated."
+      },
+      {
+        "category": "Alcohol/Other Substances",
+        "amount": 0.0,
+        "confidence": "not_applicable",
+        "notes": "No budgeted expense."
+      },
+      {
+        "category": "Cigarettes",
+        "amount": 0.0,
+        "confidence": "not_applicable",
+        "notes": "No budgeted expense."
+      }
+    ],
+    "totals": {
+      "estimated_monthly_expenses": 4373.15,
+      "estimated_monthly_cashflow_using_household_cash_income": -380.68,
+      "estimated_monthly_cashflow_including_snap_value": -305.68,
+      "estimated_monthly_cashflow_applicant_only": -1680.68,
+      "electric_payment_gap": 265.0,
+      "note": "These totals use the active required/estimated obligations listed above. Budget Beacon should allow editing after pay stubs and exact creditor statements are uploaded."
+    }
+  },
+  "arrears_and_balances": [
+    {
+      "account": "Eversource electric",
+      "balance_or_amount_due": 5248.58,
+      "current_charges_latest_bill": 585.74,
+      "balance_forward_latest_bill": 4662.84,
+      "confidence": "document_verified",
+      "notes": "Latest uploaded Eversource bill dated 2026-04-16 shows total due $5,248.58; assistance target is avoiding shutoff and reducing required $665/month payment plan toward affordable $400/month."
+    },
+    {
+      "account": "Trash disposal",
+      "balance_or_amount_due": 165.0,
+      "monthly_payment": 75.0,
+      "confidence": "user_stated",
+      "notes": "Behind by a couple payments."
+    },
+    {
+      "account": "Family debt",
+      "balance_or_amount_due": 400.0,
+      "monthly_payment": 100.0,
+      "confidence": "user_stated",
+      "notes": "Can pay in $100-$200 increments depending on budget."
+    },
+    {
+      "account": "Applicant collections/old debts",
+      "balance_or_amount_due": 2000.0,
+      "monthly_payment": 0.0,
+      "confidence": "user_estimated",
+      "notes": "No current required monthly payment confirmed."
+    },
+    {
+      "account": "Partner collections/old debts",
+      "balance_or_amount_due": 2000.0,
+      "monthly_payment": 0.0,
+      "confidence": "user_estimated_minimum",
+      "notes": "User stated partner likely has more than $2,000 debt; no current required monthly payment confirmed."
+    }
+  ],
+  "pay_path_priorities": [
+    {
+      "priority": 1,
+      "item": "Eversource electric shutoff prevention/payment plan",
+      "required_monthly": 665.0,
+      "affordable_monthly": 400.0,
+      "gap": 265.0,
+      "action": "Flag as urgent assistance target. Track arrears balance and any VA/CAP/EAP/medical-protection assistance. Avoid shutoff."
+    },
+    {
+      "priority": 2,
+      "item": "Property taxes",
+      "required_monthly": 550.0,
+      "action": "Track as essential housing/property obligation. Consider veterans tax credit/abatement/deferment workflow separately."
+    },
+    {
+      "priority": 3,
+      "item": "Vehicle payment and insurance",
+      "required_monthly": 330.15,
+      "action": "Preserve transportation needed for appointments, errands, and household stability."
+    },
+    {
+      "priority": 4,
+      "item": "Food, pet food, and household supplies",
+      "required_monthly": 1121.0,
+      "action": "Track separately from partner SNAP and partner-paid supplies."
+    },
+    {
+      "priority": 5,
+      "item": "Trash, phone, and internet",
+      "required_monthly": 180.0,
+      "action": "Maintain sanitation, communication, and access to benefits/telehealth/VA coordination."
+    },
+    {
+      "priority": 6,
+      "item": "Rental furniture/lease obligations",
+      "required_monthly": 630.0,
+      "action": "Review for payoff, renegotiation, return, or hardship reduction because this is large relative to income."
+    },
+    {
+      "priority": 7,
+      "item": "Discretionary subscriptions",
+      "required_monthly": 100.0,
+      "action": "Review for cancellation/pause during electric hardship unless needed for income-generating work."
+    }
+  ],
+  "stash_map_goals": [
+    {
+      "goal": "Electric payment gap reserve",
+      "target_monthly": 265.0,
+      "target_total": 795.0,
+      "notes": "Three-month reserve for the gap between affordable $400 and required $665 payment plan."
+    },
+    {
+      "goal": "Winter pellet reserve",
+      "target_monthly": 75.0,
+      "target_total": 900.0,
+      "notes": "Build outside peak winter months if possible."
+    },
+    {
+      "goal": "Trash arrears payoff",
+      "target_monthly": 30.0,
+      "target_total": 165.0,
+      "notes": "Small catch-up target in addition to regular trash billing if cashflow allows."
+    },
+    {
+      "goal": "Emergency utility/transport buffer",
+      "target_monthly": 25.0,
+      "target_total": 300.0,
+      "notes": "Only if electric assistance stabilizes cashflow."
+    }
+  ],
+  "data_quality_and_followups": [
+    "Attach official SSDI/SSA benefit letter when available.",
+    "Attach Kehley M. Smith's Market Basket pay stubs and SNAP/food benefit verification if the program counts household income.",
+    "Confirm exact Aaron's monthly payment and balance from statement.",
+    "Confirm SimpliSafe actual monthly amount ($10 vs $30).",
+    "Confirm exact property tax monthly equivalent and any veteran tax credit/abatement/deferment options.",
+    "Update current bank balances before submitting any means-tested asset disclosure. March statements show historical balances only."
+  ]
+}

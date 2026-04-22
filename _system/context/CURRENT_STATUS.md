@@ -10,7 +10,7 @@
 
 ## Verified state
 
-- Latest known passing validation: bootstrap/validate-system.sh /home/whyte/.MyAppZ/BudgetBeacon --strict -> pass
+- Latest known passing validation: bootstrap/update-template.sh /home/whyte/.MyAppZ/BudgetBeacon --source <template-root> --strict -> pass
 - Latest known failing validation: none blocking; `system-doctor` may warn on working-file staleness if placeholders are not committed on a cadence
 - Known degraded modes: none for template product itself
 - Current confidence level: Partial but structurally validated
@@ -24,7 +24,7 @@
 
 ## Freshness
 
-- Last updated: 2026-04-20T19:42:45Z
+- Last updated: 2026-04-22T21:49:54Z
 - Updated by: bootstrap lifecycle validation
 
 ## Usage rules

@@ -4,6 +4,8 @@ This file tells each supported tool which files it should load first, which adap
 
 Tool-entry files and shared load-context overlays are governed by `_system/HOST_ADAPTER_POLICY.md` and may be regenerated via `bootstrap/generate-host-adapters.sh`. Validate them with `bootstrap/check-host-adapter-alignment.sh`.
 
+Canonical adapter classes, naming rules, and placeholder boundaries are defined in `_system/AGENT_SURFACE_TAXONOMY.md`. External initialization pattern ingestion is defined in `_system/AGENT_INIT_CONVERGENCE.md`.
+
 External host exports are governed by `_system/HOST_BUNDLE_CONTRACT.md` and may be emitted via `bootstrap/emit-host-bundle.sh`. Validate them with `bootstrap/check-host-bundle.sh`.
 
 ## Orientation (optional)
@@ -186,6 +188,8 @@ Load `_system/AGENT_ROLE_CATALOG.md` whenever work is being split across roles, 
 ## Coexistence rule
 
 No adapter may contradict the shared core. If an adapter needs a different emphasis, it may add tool-specific handling only on top of the shared rules.
+
+Compatibility placeholders (`CURSOR.md`, `COPILOT.md`, `AIDER.md`, `AGENT_ZERO.md`) exist for cross-agent scaffold comparability and must remain thin pointer surfaces.
 
 When a host/orchestrator layer exists, it must defer to repo-local truth and the precedence contract rather than redefining the shared core.
 
