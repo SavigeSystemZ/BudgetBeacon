@@ -5,6 +5,7 @@ import { incomeSourceSchema } from "../income/income.schema";
 import { billSchema, debtSchema } from "../pay-path/pay-path.schema";
 import { savingsGoalSchema } from "../stash-map/stash-map.schema";
 import { creditSnapshotSchema } from "../credit/credit.schema";
+import { transactionSchema } from "../ledger/ledger.schema";
 
 // We validate the backup file format heavily to prevent corrupted data
 const backupSchema = z.object({
@@ -17,6 +18,7 @@ const backupSchema = z.object({
   debts: z.array(debtSchema),
   savingsGoals: z.array(savingsGoalSchema),
   creditSnapshots: z.array(creditSnapshotSchema),
+  transactions: z.array(transactionSchema).optional(),
 });
 
 export async function importDatabaseFromJson(file: File): Promise<void> {
@@ -30,7 +32,7 @@ export async function importDatabaseFromJson(file: File): Promise<void> {
 
         // Execute overwrite within a Dexie transaction for safety
         await db.transaction("rw", 
-          [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots], 
+          [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions], 
           async () => {
             // Clear existing
             await db.households.clear();
@@ -40,6 +42,7 @@ export async function importDatabaseFromJson(file: File): Promise<void> {
             await db.debts.clear();
             await db.savingsGoals.clear();
             await db.creditSnapshots.clear();
+            await db.transactions.clear();
 
             // Insert backup
             await db.households.bulkAdd(parsed.households);
@@ -49,6 +52,7 @@ export async function importDatabaseFromJson(file: File): Promise<void> {
             await db.debts.bulkAdd(parsed.debts);
             await db.savingsGoals.bulkAdd(parsed.savingsGoals);
             await db.creditSnapshots.bulkAdd(parsed.creditSnapshots);
+            if (parsed.transactions) await db.transactions.bulkAdd(parsed.transactions);
           }
         );
 

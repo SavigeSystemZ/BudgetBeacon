@@ -105,7 +105,7 @@ export default function IncomeRoute() {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Active Incomes</h2>
         {incomes.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+          <div className="rounded-2xl border border-dashed border-white/20 dark:border-white/10 bg-background/20 backdrop-blur-xl p-8 text-center text-muted-foreground">
             Add your first income source so Budget Beacon can calculate what you have available.
           </div>
         ) : (

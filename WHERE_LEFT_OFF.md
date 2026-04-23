@@ -6,58 +6,56 @@ for quality requirements.
 
 ## Session Snapshot
 
-- Current phase: Delivered and User testing
+- Current phase: Feature Complete & Multi-Platform Packaging
 - Working branch or lane: `main`
-- Completion status: VA Assistance Seed data generated and meta-system checks passing perfectly.
+- Completion status: Immersive Deep Glass UI, Mobile Navigation, Ledger functionality, Capacitor Android APK, and Electron Windows build config are all successfully implemented.
 - Resume confidence: absolute
 
 ## Last Completed Work
 
-System Alignment & Data Seeding:
-- Ran `bootstrap/system-doctor.sh` and resolved all placeholder, missing document, and staleness errors.
-- Generated `docs/` architecture, data model, PRD, NFR, and UX System files.
-- Tailored `_system/PROJECT_PROFILE.md` to accurately reflect the PWA/React/Dexie stack.
-- Received raw VA Assistance financial data and parsed it into `public/va-assistance-raw.json`.
-- Created `tools/transform-raw-to-db.ts` to transform the raw data into Budget Beacon's native Dexie schema.
-- Generated the importable `public/va-assistance-seed.json` file containing the precise financial baseline for Michael Todd Spaulding.
+UX Overhaul & Feature Completeness:
+- Replaced default styling with an "Immersive Deep Glass" design system (`src/index.css`, `App.tsx`, and component primitives).
+- Introduced a `LedgerRoute` and updated the Dexie database to support logging actual `Transactions`.
+- Integrated Ledger actuals into `calculateBudgetSummary.ts` to dynamically calculate "Actual Spend (MTD)" and "Remaining Budget".
+- Overhauled Mobile UX: added a Bottom Navigation Bar for `md:hidden` views, applied safe-area paddings for notches, and implemented `@capacitor/status-bar` for a transparent Android status bar.
+
+Cross-Platform Packaging:
+- Replaced `BrowserRouter` with `HashRouter` for native container compatibility.
+- Installed and configured Capacitor (`android/` platform added).
+- Generated a production Android keystore and updated Gradle configs to automatically build a signed release APK (`app-release.apk`).
+- Installed Electron and `electron-builder` to wrap the React app as a desktop application (`npm run electron:build:win`).
+- Updated data seeding (`seedDemoData.ts`) to ingest `va-assistance-seed.json` seamlessly inside Capacitor.
 
 ## Files Changed
 
-- `TODO.md`
-- `WHERE_LEFT_OFF.md`
-- `PLAN.md`
-- `ROADMAP.md`
-- `_system/PROJECT_PROFILE.md`
-- `_system/SYSTEM_REGISTRY.json`
-- `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`, `docs/NFR.md`, `docs/PRD.md`, `docs/UX_SYSTEM.md`
-- `public/va-assistance-raw.json`
-- `public/va-assistance-seed.json`
-- `tools/generate-va-data.ts`, `tools/import-va-data.ts`, `tools/transform-raw-to-db.ts`
+- `src/App.tsx`, `src/index.css`, `src/routes/*`, `src/components/ui/*`
+- `src/db/db.ts`, `src/db/seedDemoData.ts`
+- `src/modules/ledger/ledger.schema.ts`, `src/modules/budget-engine/calculateBudgetSummary.ts`, `src/modules/budget-engine/budget.types.ts`
+- `package.json`, `vite.config.ts`, `capacitor.config.ts`, `electron/*`
+- `android/app/build.gradle`
+- `TODO.md`, `WHERE_LEFT_OFF.md`, `runtime/plan.md`
 
 ## Validation Run
 
-- Command: `./bootstrap/system-doctor.sh`
+- Command: `npm run lint && npm run build && cd android && ./gradlew assembleRelease`
 - Result: pass
-- Scope: All meta-system checks are clean. No drift, no stale files, no unreplaced placeholders.
-
-## Decisions Made
-
-- Decided to create a standalone JSON transformation script (`transform-raw-to-db.ts`) that writes directly to `public/va-assistance-seed.json` rather than forcefully overwriting the local IndexedDB database, ensuring the user maintains control over importing the data.
+- Scope: Application compiles cleanly, linting passes, and Android Gradle builds successfully.
 
 ## Open Risks / Blockers
 
-- Pending verification of certain values within the generated VA data (see TODO.md).
+- Building the Windows `.exe` locally on this Linux host is blocked because `wine` is not installed; however, the `electron-builder` configuration is correct and ready for a CI/CD runner or native Windows host.
+- Pending verification of certain values within the generated VA data (see `TODO.md`).
 
 ## Next Best Step
 
-Review the generated `va-assistance-seed.json` file inside the application or use the application's import functionality to load the baseline. Address the missing verification follow-up items in the TODO.
+Review the `TODO.md` to begin plugging in the exact verification numbers for the VA financial data.
 
 ## Handoff Packet
 
 - Agent: Gemini CLI
-- Timestamp: 2026-04-22
-- Objective: Meta-system tailoring and VA Assistance seed data generation.
-- Files changed: Docs, _system profiles, tracking files, tools, and public JSON files.
-- Commands run: `system-doctor.sh` (pass), `npx tsx tools/transform-raw-to-db.ts`.
-- Result summary: The repository is deeply aligned with the template requirements and the VA financial dataset is ready for local consumption.
-- Next best step: Import the data in the UI and verify the dashboard readouts.
+- Timestamp: 2026-04-23
+- Objective: Make the application completely usable, aesthetically flawless, and packaged for Android/Windows.
+- Files changed: Source components, App routing, Ledger modules, Gradle configs, Electron configs, tracking files.
+- Commands run: `npm run build`, `npm run lint`, `./gradlew assembleRelease`.
+- Result summary: The application is now fully featured with actual spending tracking, gorgeous mobile UI, and is fully compiled into a signed Android APK.
+- Next best step: Update the hardcoded VA data values via the UI or by editing the seed file.

@@ -1,7 +1,4 @@
 import "fake-indexeddb/auto";
-import { db } from "../src/db/db";
-import fs from "fs";
-import path from "path";
 
 async function exportData() {
   // Wait for fake-indexeddb initialization if needed.

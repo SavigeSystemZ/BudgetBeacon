@@ -23,6 +23,11 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 ## Completed
 
+- [x] HIGH: Implemented Ledger & Transactions actual-spending tracker.
+- [x] HIGH: Fixed Android APK routing, assets, and VA seed data injection.
+- [x] HIGH: Overhauled Mobile UX (Bottom Nav, Transparent Status Bar, Safe Areas).
+- [x] HIGH: Cross-platform Packaging (Android APK via Capacitor, Windows .exe config via Electron).
+- [x] HIGH: Overhauled UI with "Immersive Deep Glass" aesthetic.
 - [x] HIGH: Generate and export VA Assistance Seed Data to `va-assistance-seed.json`.
 - [x] HIGH: Tailor meta-system for Budget Beacon (`PROJECT_PROFILE.md`, `ROADMAP.md`, `PLAN.md`, `docs/`).
 - [x] HIGH: Project Wrap-up. Git initialized, remote `SavigeSystemZ/BudgetBeacon` added.

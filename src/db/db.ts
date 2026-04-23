@@ -4,6 +4,7 @@ import type { IncomeSource } from "../modules/income/income.schema";
 import type { Bill, Debt } from "../modules/pay-path/pay-path.schema";
 import type { SavingsGoal } from "../modules/stash-map/stash-map.schema";
 import type { CreditSnapshot } from "../modules/credit/credit.schema";
+import type { Transaction } from "../modules/ledger/ledger.schema";
 
 export class BudgetBeaconDatabase extends Dexie {
   households!: Table<Household, string>;
@@ -13,6 +14,7 @@ export class BudgetBeaconDatabase extends Dexie {
   debts!: Table<Debt, string>;
   savingsGoals!: Table<SavingsGoal, string>;
   creditSnapshots!: Table<CreditSnapshot, string>;
+  transactions!: Table<Transaction, string>;
 
   constructor() {
     super("BudgetBeaconDB");
@@ -28,6 +30,18 @@ export class BudgetBeaconDatabase extends Dexie {
       debts: "&id, householdId, ownerPersonId, category, dueDay",
       savingsGoals: "&id, householdId, category",
       creditSnapshots: "&id, householdId, personId, snapshotDate"
+    });
+
+    // Schema version 2: Adding transactions
+    this.version(2).stores({
+      households: "&id",
+      persons: "&id, householdId",
+      incomeSources: "&id, householdId, personId",
+      bills: "&id, householdId, ownerPersonId, category, dueDay",
+      debts: "&id, householdId, ownerPersonId, category, dueDay",
+      savingsGoals: "&id, householdId, category",
+      creditSnapshots: "&id, householdId, personId, snapshotDate",
+      transactions: "&id, householdId, date, category, type"
     });
   }
 }

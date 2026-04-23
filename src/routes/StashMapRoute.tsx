@@ -106,7 +106,7 @@ export default function StashMapRoute() {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Active Goals & Forecasts</h2>
         {goals.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+          <div className="rounded-2xl border border-dashed border-white/20 dark:border-white/10 bg-background/20 backdrop-blur-xl p-8 text-center text-muted-foreground">
             Create your first savings goal to see how long it will take.
           </div>
         ) : (

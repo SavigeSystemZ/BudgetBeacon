@@ -86,7 +86,7 @@ export default function CreditRoute() {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Snapshot History</h2>
         {snapshots.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+          <div className="rounded-2xl border border-dashed border-white/20 dark:border-white/10 bg-background/20 backdrop-blur-xl p-8 text-center text-muted-foreground">
             No credit score snapshots recorded yet.
           </div>
         ) : (

@@ -1,25 +1,33 @@
-# Budget Beacon — Final Polish Plan
+# Mobile UX Polish & Navigation Overhaul
 
-## Objective
-The core MVP functionality is fully implemented. The objective of this final phase is to enhance the user experience (UX) and native feel of Budget Beacon by adding a Dark Mode toggle and Progressive Web App (PWA) support.
+## Background & Motivation
+The user noted that when they launched the APK, they were stuck on a single page with no menus or options, and the graphics were lacking. This was due to two major bugs:
+1. The deep glass styles for `App.tsx` were accidentally reverted during a previous merge conflict fix.
+2. The navigation sidebar was hidden on mobile devices (`md:hidden`), but no mobile-specific navigation menu (like a hamburger or bottom nav) was implemented.
 
-## Scope of Work
+To make the app truly perfect and complete on Android, we must add a mobile-native navigation paradigm and restore the immersive deep glass effects.
 
-1. **Dark Mode Integration:**
-   - Create a `ThemeProvider` context in `src/components/theme-provider.tsx` to manage the `dark` class on the root HTML element.
-   - Create a `ModeToggle` component using `lucide-react` icons (Sun/Moon).
-   - Integrate the `ModeToggle` into the `AppShell` sidebar navigation so users can easily switch themes.
+## Scope & Impact
+- **In Scope**: Rewriting `src/App.tsx` to include a persistent, app-like **Bottom Navigation Bar** for mobile screens.
+- **In Scope**: Restoring the "Deep Glass" transparent backgrounds and frosted sidebar styles to the App Shell.
+- **In Scope**: Adding the missing `<Route path="/ledger" />` back into the router.
+- **In Scope**: Updating global CSS (`src/index.css`) to respect `env(safe-area-inset-*)` so the app doesn't underlap behind Android notches/status bars.
+- **Out of Scope**: Changing existing route components (they are already responsive).
 
-2. **Progressive Web App (PWA):**
-   - Install `vite-plugin-pwa` as a dev dependency.
-   - Configure `vite.config.ts` to generate a Web App Manifest and Service Worker. This will allow users to "Install" the Budget Beacon application directly to their home screen or desktop, ensuring a snappy, offline-first native feel.
-   - Update `index.html` with basic meta tags for theme color and PWA compatibility.
+## Proposed Solution
+1. **AppShell Redesign**: I will refactor `AppShell` in `src/App.tsx`. 
+   - On desktop (`md:flex`), it will use the frosted glass sidebar.
+   - On mobile (`md:hidden`), it will feature a fixed Bottom Navigation Bar, built with `lucide-react` icons and a frosted glass (`backdrop-blur-xl`) aesthetic.
+2. **Safe Areas**: I will add `padding-bottom: env(safe-area-inset-bottom)` to the bottom nav and `padding-top: env(safe-area-inset-top)` to the main view to prevent Android OS system UI overlapping.
+3. **Capacitor Configuration**: I will install `@capacitor/status-bar` to make the Android status bar transparent, allowing the deep glass gradient to bleed into the system tray beautifully.
 
-3. **Final Polish:**
-   - Ensure the UI looks consistent in both Light and Dark themes (Tailwind `dark:` variants are already configured in `index.css`).
+## Implementation Plan
+1. **Phase 1: Capacitor Plugins**: Install the Capacitor status bar plugin and sync.
+2. **Phase 2: Safe Areas & CSS**: Update `src/index.css` for safe area handling.
+3. **Phase 3: AppShell & Mobile Nav**: Rewrite `src/App.tsx` completely to include the Bottom Navigation component with `lucide-react` icons (LayoutDashboard, Wallet, CreditCard, PiggyBank, Receipt, Settings).
+4. **Phase 4: Re-package**: Rebuild the Vite app and re-assemble the final Android APK.
 
-## Execution Steps
-1. Write the new components (`theme-provider.tsx`, `mode-toggle.tsx`).
-2. Update `App.tsx` and `AppShell` layout.
-3. Install PWA dependencies and modify `vite.config.ts`.
-4. Run a final build and lint check to verify completion.
+## Verification
+- Verify the mobile bottom nav appears when shrinking the browser window.
+- Verify clicking bottom nav icons changes the route correctly.
+- Verify the Android APK builds successfully.

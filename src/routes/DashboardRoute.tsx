@@ -11,12 +11,13 @@ export default function DashboardRoute() {
   const bills = useLiveQuery(() => db.bills.toArray(), []);
   const debts = useLiveQuery(() => db.debts.toArray(), []);
   const goals = useLiveQuery(() => db.savingsGoals.toArray(), []);
+  const transactions = useLiveQuery(() => db.transactions.toArray(), []);
 
-  if (!incomes || !bills || !debts || !goals) {
+  if (!incomes || !bills || !debts || !goals || !transactions) {
     return <div className="p-4 text-muted-foreground">Mapping budget telemetry...</div>;
   }
 
-  const summary = calculateBudgetSummary(incomes, bills, debts, goals);
+  const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions);
 
   return (
     <div className="space-y-6">
@@ -47,27 +48,36 @@ export default function DashboardRoute() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
         <MetricCard
           title="Monthly Income"
           value={summary.totalMonthlyIncome}
           description="Total active inflow"
+          className="md:col-span-1 lg:col-span-2"
         />
         <MetricCard
-          title="Pay Path Required"
-          value={summary.requiredOutflow}
-          description="Bills + minimum debts"
+          title="Planned Outflow"
+          value={summary.requiredOutflow + summary.totalStashMapScheduled}
+          description="Bills, debt, & savings"
+          className="md:col-span-1 lg:col-span-2"
         />
         <MetricCard
-          title="Stash Map Scheduled"
-          value={summary.totalStashMapScheduled}
-          description="Planned savings"
-        />
-        <MetricCard
-          title="Leftover Margin"
+          title="Planned Margin"
           value={summary.leftoverAfterSavings}
-          description={summary.leftoverAfterSavings >= 0 ? "Surplus after goals" : "Shortfall"}
-          className={summary.leftoverAfterSavings < 0 ? "border-destructive" : ""}
+          description="Expected end-of-month surplus"
+          className={cn("md:col-span-1 lg:col-span-2", summary.leftoverAfterSavings < 0 ? "border-destructive" : "")}
+        />
+        <MetricCard
+          title="Actual Spend (MTD)"
+          value={summary.actualSpend}
+          description="Logged transactions this month"
+          className="md:col-span-1 lg:col-span-3 border-orange-500/30 dark:border-orange-500/30 bg-orange-500/5 dark:bg-orange-500/10"
+        />
+        <MetricCard
+          title="Remaining Budget"
+          value={summary.remainingBudget}
+          description="Income - Savings - Actual Spend"
+          className={cn("md:col-span-1 lg:col-span-3", summary.remainingBudget < 0 ? "border-destructive bg-destructive/10" : "border-green-500/30 dark:border-green-500/30 bg-green-500/5 dark:bg-green-500/10")}
         />
       </div>
 
@@ -111,7 +121,7 @@ export default function DashboardRoute() {
           <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Cash Flow Pressure</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="w-full h-4 bg-secondary rounded-full overflow-hidden flex relative">
+          <div className="w-full h-4 bg-secondary/30 dark:bg-secondary/10 backdrop-blur-md rounded-full overflow-hidden flex relative border border-white/10 dark:border-white/5">
             {summary.totalMonthlyIncome > 0 && (
               <>
                 <div 

@@ -120,7 +120,19 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #f1f5f9, #ffffff);
+    background-size: 400% 400%;
+    animation: gradient-x 15s ease infinite;
+    @apply text-foreground min-h-screen;
     font-feature-settings: "rlig" 1, "calt" 1;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .dark body {
+    background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #000000);
+    background-size: 400% 400%;
+    animation: gradient-x 15s ease infinite;
   }
 }

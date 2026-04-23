@@ -11,6 +11,7 @@ export async function exportDatabaseToJson(): Promise<void> {
     debts: await db.debts.toArray(),
     savingsGoals: await db.savingsGoals.toArray(),
     creditSnapshots: await db.creditSnapshots.toArray(),
+    transactions: await db.transactions.toArray(),
   };
 
   const jsonString = JSON.stringify(exportData, null, 2);

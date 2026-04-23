@@ -2,6 +2,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
 import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { format } from "date-fns";
 
 export default function ReportsRoute() {
@@ -9,12 +10,13 @@ export default function ReportsRoute() {
   const bills = useLiveQuery(() => db.bills.toArray(), []);
   const debts = useLiveQuery(() => db.debts.toArray(), []);
   const goals = useLiveQuery(() => db.savingsGoals.toArray(), []);
+  const transactions = useLiveQuery(() => db.transactions.toArray(), []);
 
-  if (!incomes || !bills || !debts || !goals) {
+  if (!incomes || !bills || !debts || !goals || !transactions) {
     return <div className="p-4 text-muted-foreground">Generating report...</div>;
   }
 
-  const summary = calculateBudgetSummary(incomes, bills, debts, goals);
+  const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions);
 
   const handlePrint = () => {
     window.print();
@@ -30,7 +32,7 @@ export default function ReportsRoute() {
         <Button onClick={handlePrint} variant="outline">Print Monthly Report</Button>
       </div>
 
-      <div className="bg-card border rounded-xl shadow-sm p-8 space-y-8 print:shadow-none print:border-none print:p-0">
+      <Card className="p-8 space-y-8 print:shadow-none print:border-none print:p-0 print:bg-transparent print:backdrop-blur-none">
         <div className="border-b pb-4">
           <h2 className="text-2xl font-bold">Monthly Budget Summary</h2>
           <p className="text-muted-foreground">Generated on {format(new Date(summary.generatedAt), "MMMM do, yyyy 'at' h:mm a")}</p>
@@ -126,7 +128,7 @@ export default function ReportsRoute() {
             </ul>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

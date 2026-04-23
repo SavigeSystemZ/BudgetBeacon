@@ -1,5 +1,4 @@
 import "fake-indexeddb/auto";
-import { db } from "../src/db/db";
 import { createId } from "../src/lib/ids/createId";
 import type { Household, Person } from "../src/modules/household/household.schema";
 import type { IncomeSource } from "../src/modules/income/income.schema";
