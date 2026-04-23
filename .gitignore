@@ -26,3 +26,6 @@ dist-ssr
 # Electron builds
 dist-electron/
 release/
+
+# npm cache
+.npm-cache/
