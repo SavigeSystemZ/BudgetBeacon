@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 import { HashRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import "./index.css";
 import DashboardRoute from "./routes/DashboardRoute";
@@ -20,6 +20,7 @@ import { ensureHousehold } from "./db/seedDemoData";
 import { ThemeProvider } from "./components/theme-provider";
 import { ModeToggle } from "./components/mode-toggle";
 import { BeaconChatbot } from "./components/BeaconChatbot";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
   FolderLock, Compass, Library, ShieldCheck, Share2, Wallet, 
@@ -166,30 +167,36 @@ function App() {
     ensureHousehold().catch(console.error);
   }, []);
 
+  const wrap = (scope: string, node: ReactNode) => (
+    <ErrorBoundary scope={scope}>{node}</ErrorBoundary>
+  );
+
   return (
-    <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
-      <HashRouter>
-        <AppShell>
-          <Routes>
-            <Route path="/" element={<DashboardRoute />} />
-            <Route path="/mission-control" element={<BudgetMissionControlRoute />} />
-            <Route path="/ledger" element={<LedgerRoute />} />
-            <Route path="/income" element={<IncomeRoute />} />
-            <Route path="/pay-path" element={<PayPathRoute />} />
-            <Route path="/stash-map" element={<StashMapRoute />} />
-            <Route path="/debt-center" element={<DebtCenterRoute />} />
-            <Route path="/tax-taxi" element={<TaxTaxiRoute />} />
-            <Route path="/documents" element={<DocumentStoreRoute />} />
-            <Route path="/subscriptions" element={<SubscriptionsShelfRoute />} />
-            <Route path="/insurance" element={<InsuranceInspectRoute />} />
-            <Route path="/bridge" element={<BeaconBridgeRoute />} />
-            <Route path="/credit" element={<CreditRoute />} />
-            <Route path="/reports" element={<ReportsRoute />} />
-            <Route path="/settings" element={<SettingsRoute />} />
-          </Routes>
-        </AppShell>
-      </HashRouter>
-    </ThemeProvider>
+    <ErrorBoundary scope="root">
+      <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
+        <HashRouter>
+          <AppShell>
+            <Routes>
+              <Route path="/" element={wrap("Dashboard", <DashboardRoute />)} />
+              <Route path="/mission-control" element={wrap("Mission Control", <BudgetMissionControlRoute />)} />
+              <Route path="/ledger" element={wrap("Ledger", <LedgerRoute />)} />
+              <Route path="/income" element={wrap("Income", <IncomeRoute />)} />
+              <Route path="/pay-path" element={wrap("Pay Path", <PayPathRoute />)} />
+              <Route path="/stash-map" element={wrap("Stash Map", <StashMapRoute />)} />
+              <Route path="/debt-center" element={wrap("Debt Center", <DebtCenterRoute />)} />
+              <Route path="/tax-taxi" element={wrap("Tax Taxi", <TaxTaxiRoute />)} />
+              <Route path="/documents" element={wrap("Vault", <DocumentStoreRoute />)} />
+              <Route path="/subscriptions" element={wrap("Subscriptions", <SubscriptionsShelfRoute />)} />
+              <Route path="/insurance" element={wrap("Insurance", <InsuranceInspectRoute />)} />
+              <Route path="/bridge" element={wrap("Beacon Bridge", <BeaconBridgeRoute />)} />
+              <Route path="/credit" element={wrap("Credit", <CreditRoute />)} />
+              <Route path="/reports" element={wrap("Reports", <ReportsRoute />)} />
+              <Route path="/settings" element={wrap("Settings", <SettingsRoute />)} />
+            </Routes>
+          </AppShell>
+        </HashRouter>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

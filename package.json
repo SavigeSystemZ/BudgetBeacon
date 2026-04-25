@@ -26,7 +26,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b --noEmit",
+    "audit:controls": "tsx tools/audit-controls.ts"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",

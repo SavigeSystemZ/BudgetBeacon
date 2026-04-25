@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { incomeSourceSchema } from "../modules/income/income.schema";
+import { toMonthlyEquivalent } from "../modules/budget-engine/frequency";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -37,11 +38,7 @@ export default function IncomeRoute() {
     if (!incomes) return 0;
     return incomes.reduce((acc, inc) => {
       if (!inc.isActive) return acc;
-      // Simple normalization for the list view
-      if (inc.frequency === "annual") return acc + (inc.amount / 12);
-      if (inc.frequency === "biweekly") return acc + (inc.amount * 2.16);
-      if (inc.frequency === "weekly") return acc + (inc.amount * 4.33);
-      return acc + inc.amount;
+      return acc + toMonthlyEquivalent(inc.amount, inc.frequency, inc.customMonthlyAmount);
     }, 0);
   }, [incomes]);
 
