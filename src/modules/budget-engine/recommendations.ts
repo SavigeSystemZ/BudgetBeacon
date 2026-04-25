@@ -22,6 +22,10 @@ export function generateRecommendations(summary: Omit<BudgetSummary, "recommenda
     recs.push(`You are successfully planning to save ${(summary.savingsRate * 100).toFixed(1)}% of your income.`);
   }
 
+  if (summary.subscriptionPressureRatio > 0.15) {
+    recs.push(`Subscriptions consume ${(summary.subscriptionPressureRatio * 100).toFixed(1)}% of your income. Audit the Subscriptions Shelf for potential cuts.`);
+  }
+
   // Missing data safeguards
   if (summary.totalMonthlyIncome === 0) {
     recs.push("Add an active income source to see accurate budget pressure.");

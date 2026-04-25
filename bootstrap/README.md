@@ -14,7 +14,7 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 
 - `scaffold-system.sh` — smart entrypoint that chooses first install, additive backfill, or template update based on the target repo state
 - `init-project.sh` — copy and initialize the system into a target repo
-- `install-missing-files.sh` — add newly introduced template files into an existing installed repo without overwriting existing repo state, then backfill missing runtime scaffolds and safe onboarding defaults
+- `install-missing-files.sh` — add newly introduced template files into an existing installed repo without overwriting existing repo state, then backfill missing runtime scaffolds and safe onboarding defaults; pass `--skip-onboarding-seeds` when you must not re-run suggest/seed passes (same as `migrate-agent-surface-upgrade.sh --write`)
 - `update-template.sh` — compare an installed repo with a newer template source and apply additive updates; always refresh version and contract-manifest surfaces needed for truthful upgrade state, optionally refresh broader template-managed drift, then re-run the safe onboarding backfill path
 - `repair-system.sh` — restore missing or drifted template-managed files while preserving app-owned state
 - `uninstall-system.sh` — remove the operating layer cleanly while leaving runtime app code intact
@@ -41,7 +41,7 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `check-host-adapter-alignment.sh` — verify generated tool adapters are aligned with the canonical manifest
 - `check-agent-surface-integrity.sh` — verify taxonomy/convergence contracts and required placeholder adapters are present
 - `sync-metasystem-contracts.sh` — one-command adapter/registry/profile/integrity regeneration plus validation checks
-- `migrate-agent-surface-upgrade.sh` — downstream migration assistant for the dual-metasystem agent-surface upgrade
+- `migrate-agent-surface-upgrade.sh` — downstream migration assistant for the dual-metasystem agent-surface upgrade (runs `install-missing-files.sh --skip-onboarding-seeds` so product brief, working files, and context are not re-seeded; use plain `install-missing-files.sh` / `update-template.sh` when you intentionally want onboarding seeds)
 - `patch-agent-surface-contracts.sh` — idempotent patcher for legacy downstream `AGENTS.md` / `_system/AGENT_DISCOVERY_MATRIX.md` references required by newer adapter-contract validators
 - `check-system-awareness.sh` — verify registry coverage and path references in core docs
 - `check-hallucination.sh` — detect claim-evidence mismatches and suspicious confidence drift

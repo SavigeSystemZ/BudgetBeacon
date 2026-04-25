@@ -2,6 +2,8 @@ export interface BudgetSummary {
   totalMonthlyIncome: number;
   totalMonthlyBills: number;
   totalDebtMinimums: number;
+  totalMonthlySubscriptions: number;
+  totalMonthlyInsurance: number;
   totalPayPathRequired: number;
   totalStashMapScheduled: number;
   requiredOutflow: number;
@@ -13,6 +15,7 @@ export interface BudgetSummary {
   savingsRate: number;
   billPressureRatio: number;
   debtMinimumRatio: number;
+  subscriptionPressureRatio: number;
   payPathPressureRatio: number;
   budgetStatus: "GREEN" | "YELLOW" | "RED";
   recommendations: string[];

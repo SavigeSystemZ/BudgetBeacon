@@ -584,13 +584,39 @@ fi
 strict_gate_flag=()
 [[ ${STRICT} -eq 1 ]] && strict_gate_flag+=(--strict)
 
-bash "${VALIDATOR_ROOT}/bootstrap/validate-instruction-layer.sh" "${TARGET}" --validator-root "${VALIDATOR_ROOT}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-system-awareness.sh" "${TARGET}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-repo-permissions.sh" "${TARGET}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-runtime-foundations.sh" "${TARGET}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-network-bindings.sh" "${TARGET}" --include-template-assets >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-delivery-gate-alignment.sh" "${TARGET}" "${strict_gate_flag[@]}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/check-environment.sh" "${TARGET}" >/dev/null
-bash "${VALIDATOR_ROOT}/bootstrap/validate-mcp-health.sh" "${TARGET}" >/dev/null
+# Sub-validators run quietly on success so CI logs stay readable; on failure,
+# print their full output (otherwise a root-vs-owner mismatch looks like a
+# silent exit 1 with no diagnostics).
+_run_aiaast_subvalidator() {
+  local label="$1"
+  shift
+  local tmp
+  tmp="$(mktemp 2>/dev/null || mktemp -t aiaast_validate.XXXXXX)"
+  if "$@" >"${tmp}" 2>&1; then
+    rm -f "${tmp}"
+    return 0
+  fi
+  echo "validate-system: sub-check '${label}' failed" >&2
+  cat "${tmp}" >&2
+  rm -f "${tmp}"
+  return 1
+}
+
+_run_aiaast_subvalidator "validate-instruction-layer" \
+  bash "${VALIDATOR_ROOT}/bootstrap/validate-instruction-layer.sh" "${TARGET}" --validator-root "${VALIDATOR_ROOT}"
+_run_aiaast_subvalidator "check-system-awareness" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-system-awareness.sh" "${TARGET}"
+_run_aiaast_subvalidator "check-repo-permissions" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-repo-permissions.sh" "${TARGET}"
+_run_aiaast_subvalidator "check-runtime-foundations" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-runtime-foundations.sh" "${TARGET}"
+_run_aiaast_subvalidator "check-network-bindings" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-network-bindings.sh" "${TARGET}" --include-template-assets
+_run_aiaast_subvalidator "check-delivery-gate-alignment" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-delivery-gate-alignment.sh" "${TARGET}" "${strict_gate_flag[@]}"
+_run_aiaast_subvalidator "check-environment" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-environment.sh" "${TARGET}"
+_run_aiaast_subvalidator "validate-mcp-health" \
+  bash "${VALIDATOR_ROOT}/bootstrap/validate-mcp-health.sh" "${TARGET}"
 
 echo "system_ok"

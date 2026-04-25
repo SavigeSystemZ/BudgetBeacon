@@ -19,6 +19,7 @@ This contract maps external initialization workspaces (for example `AgentInits`)
 | `AGENT_INIT_LOG.md` handoff ledger | `WHERE_LEFT_OFF.md` + `TODO.md` + `_system/checkpoints/` | adapted |
 | `AGENT_TEMPLATE.md` new-agent scaffold | `_system/host-adapter-manifest.json` + placeholder adapter set | adopted |
 | conflict-safe additive sectioning (`Additions - Agent - Date`) | `_system/MULTI_AGENT_COORDINATION.md` additive follow-up policy | adopted |
+| workspace/target identity gates | `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` + `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` + bootstrap consistency checks | adopted |
 
 ## Installable Defaults vs Maintainer-Only State
 
@@ -50,6 +51,16 @@ The installable system maintains these canonical top-level adapter names:
 - `AGENT_ZERO.md` (placeholder pointer)
 
 Additional adapters may be added as long as they are declared in `_system/host-adapter-manifest.json` and reflected in `_system/AGENT_DISCOVERY_MATRIX.md`.
+
+## Preserve-first downstream operations
+
+Rollouts must not silently erase project-specific truth.
+
+- **Stateful surfaces (never overwritten by template diff refresh):** paths classified in `bootstrap/lib/aiaast-lib.sh` as `aiaast_is_stateful_path` — for example `TODO.md`, `PLAN.md`, `WHERE_LEFT_OFF.md`, `PRODUCT_BRIEF.md`, `TEST_STRATEGY.md`, `RISK_REGISTER.md`, `_system/PROJECT_PROFILE.md`, and `_system/context/*.md` continuity files.
+- **Product-owned runtime seeds:** files under `bootstrap/templates/runtime/` are materialized once into the app tree and then owned by the product; refresh paths must not force-overwrite them (see `aiaast_refresh_onboarding_baseline` commentary on `generate-runtime-foundations.sh`).
+- **`migrate-agent-surface-upgrade.sh`:** when `--write` runs `install-missing-files.sh --skip-onboarding-seeds` so suggest/seed passes that would rewrite `PRODUCT_BRIEF.md`, working files, or context bullets are skipped (same contract as `export AIAST_SKIP_ONBOARDING_SEEDS=1` for that refresh only). Only missing template files are copied (rsync `--ignore-existing`), then append-only contract patches and regenerators run.
+- **`update-template.sh --refresh-managed`:** still refreshes drifted template-managed files that are not stateful. Operators should commit or use an isolated backup snapshot before broad refreshes on active product branches.
+- **Local operator context:** `.ai/` and host-local adapter experiments are normally untracked; keep them out of shared policy merges and do not treat them as authoritative over `AGENTS.md` or `_system/` contracts.
 
 ## Merge Protocol
 

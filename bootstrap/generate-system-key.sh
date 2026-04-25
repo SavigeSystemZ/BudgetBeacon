@@ -504,13 +504,18 @@ exact = {
     ),
     "bootstrap/install-missing-files.sh": register_exact(
         "bootstrap/install-missing-files.sh",
-        "Additive recovery flow for newly introduced template files and safe defaults.",
+        "Additive recovery flow for newly introduced template files and safe defaults; supports --skip-onboarding-seeds to avoid re-seeding PRODUCT_BRIEF and working files.",
         "Run when an installed repo is missing newer AIAST-managed surfaces.",
     ),
     "bootstrap/update-template.sh": register_exact(
         "bootstrap/update-template.sh",
         "Additive upgrade flow for refreshing an installed repo from a newer source template.",
         "Run when a repo already has AIAST and should be updated to a newer release.",
+    ),
+    "bootstrap/clear-template-sync-notice.sh": register_exact(
+        "bootstrap/clear-template-sync-notice.sh",
+        "Resets `_system/TEMPLATE_SYNC_NOTICE.md` to CLEARED after the post-sync health checklist.",
+        "Run after `system-doctor` / `validate-system` review when the notice shows PENDING_HEALTH_CHECK.",
     ),
     "bootstrap/repair-system.sh": register_exact(
         "bootstrap/repair-system.sh",

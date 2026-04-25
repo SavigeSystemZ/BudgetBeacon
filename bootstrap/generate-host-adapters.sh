@@ -196,6 +196,23 @@ def render_cursor_session_command(spec: dict[str, object]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def render_cursor_environment_command(spec: dict[str, object]) -> str:
+    intro = [str(item) for item in spec.get("intro_lines", [])]
+    lines = [*intro, "", "Recommended pre-write flow:", ""]
+    lines.extend([
+        "1. `bash bootstrap/check-working-directory-alignment.sh .`",
+        "2. `bash bootstrap/check-project-target-consistency.sh .`",
+        "3. `bash bootstrap/emit-session-environment.sh .`",
+        "4. if mismatches are reported, halt writes and confirm target scope",
+    ])
+    lines.extend([
+        "",
+        "Optional JSON output for tooling:",
+        "- `bash bootstrap/emit-session-environment.sh . --json`",
+    ])
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def render_aider(spec: dict[str, object]) -> str:
     lines: list[str] = [
         "# AIAST repo contract for Aider",
@@ -252,6 +269,7 @@ renderers = {
     "cursor_command": render_cursor_command,
     "cursor_skill": render_cursor_skill,
     "cursor_session_command": render_cursor_session_command,
+    "cursor_environment_command": render_cursor_environment_command,
     "cursor_rule": render_cursor_rule,
 }
 

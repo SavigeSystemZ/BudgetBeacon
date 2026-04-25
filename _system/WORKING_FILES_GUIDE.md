@@ -43,6 +43,7 @@ In the AIAST source repo, maintainer-only planning, research, handoff, and futur
 - If the task changed product direction, user value framing, or starter-blueprint choice, update `PRODUCT_BRIEF.md`.
 - If a starter blueprint was explicitly applied, make sure the blueprint-projected operating surfaces remain aligned: `PLAN.md`, `ROADMAP.md`, `DESIGN_NOTES.md`, `TEST_STRATEGY.md`, `RISK_REGISTER.md`, `ARCHITECTURE_NOTES.md`, `TODO.md`, `WHERE_LEFT_OFF.md`, and `RELEASE_NOTES.md`.
 - If the task changed delegation rules, role ownership, or multi-agent execution shape, update `_system/AGENT_ROLE_CATALOG.md` and `_system/MULTI_AGENT_COORDINATION.md`.
+- If the task changed workspace authority, project-scope enforcement, redirect shim strategy, session environment reporting, scavenging permissions, or orphan snapshot rules, update the corresponding `_system/*_PROTOCOL.md` contract files in the same pass.
 - If the task changed design direction, update `DESIGN_NOTES.md`.
 - If the task changed architecture or boundaries, update `ARCHITECTURE_NOTES.md`.
 - If the task changed confidence, coverage, or release posture, update `TEST_STRATEGY.md`, `RISK_REGISTER.md`, or `RELEASE_NOTES.md`.

@@ -25,6 +25,7 @@ automation.
 | **Rules** `.cursor/rules/*.mdc` | Auto-loaded behavior (boundaries, validation, MCP, Composer) | After edits: `bootstrap/validate-instruction-layer.sh`, `bootstrap/detect-instruction-conflicts.sh` |
 | **Commands** `.cursor/commands/*.md` | Repeatable workflows (verify, session-start, composer-session, compress-context) | `.cursor/README.md`, `PROMPTS_INDEX.md` if command duplicates a prompt pack |
 | **Skills** `.cursor/skills/*/SKILL.md` | Portable task recipes | `SKILLS_INDEX.md` (includes opt-in `concise-communication` for token-efficient **output**; `compress-context-input` for opt-in **input** prose compression under `docs/`/`notes/`) |
+| **Environment report** `.cursor/commands/environment.md` + `bootstrap/emit-session-environment.sh` | Session authority/mode/identity reporting before write-heavy work | `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`, `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md`, `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` |
 | **Delegated agents** `.cursor/agents/*.md` | Role overlays for Composer / multi-agent UIs | `_system/AGENT_ROLE_CATALOG.md`, `.cursor/agents/README.md` |
 | **MCP config** `.cursor/mcp.json` | Tool servers for this workspace | `_system/MCP_CONFIG.md`, secrets never in git |
 

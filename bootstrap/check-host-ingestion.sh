@@ -31,6 +31,7 @@ issues: list[str] = []
 
 required_files = [
     "_system/PROMPT_EMISSION_CONTRACT.md",
+    "_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md",
     "_system/repo-operating-profile.json",
     "_system/REPO_OPERATING_PROFILE.md",
     "_system/PROMPTS_INDEX.md",

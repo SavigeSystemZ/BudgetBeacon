@@ -1,177 +1,131 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { savingsGoalSchema } from "../modules/stash-map/stash-map.schema";
-import { forecastSavingsGoal } from "../modules/stash-map/stash-map.calculations";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
+import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+import { useState } from "react";
+import { Edit2, Trash2, Target, Plus } from "lucide-react";
 import { cn } from "../lib/utils";
-import { format, parseISO } from "date-fns";
+import { PageHeader } from "../components/layout/PageHeader";
+import { GlassCard } from "../components/ui/GlassCard";
+import { EmptyState } from "../components/ui/EmptyState";
+import { BeaconModal } from "../components/ui/BeaconModal";
+import { Progress } from "../components/ui/progress";
 
 const formSchema = savingsGoalSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
-type FormData = z.infer<typeof formSchema>;
 
 export default function StashMapRoute() {
   const goals = useLiveQuery(() => db.savingsGoals.toArray(), []);
-  const households = useLiveQuery(() => db.households.toArray(), []);
+  const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
 
-  const householdId = households?.[0]?.id;
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { label: "", targetAmount: 0, currentAmount: 0, monthlyContribution: 0, category: "emergency", priority: "medium", deadline: "" },
+    defaultValues: { label: "", targetAmount: 0, currentAmount: 0, monthlyContribution: 0, category: "other" as const, deadline: "", priority: "medium" as const },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: any) => {
     if (!householdId) return;
     const now = new Date().toISOString();
-    
-    // Sanitize empty date strings
-    const sanitizedData = { ...data };
-    if (!sanitizedData.deadline) {
-      delete sanitizedData.deadline;
+    if (editingId) {
+      await db.savingsGoals.update(editingId, { ...data, updatedAt: now });
+      setEditingId(null);
     } else {
-      // Ensure it's a valid ISO string if the browser date picker just gives YYYY-MM-DD
-      sanitizedData.deadline = new Date(sanitizedData.deadline).toISOString();
+      await db.savingsGoals.add({ ...data, id: createId(), householdId, createdAt: now, updatedAt: now });
     }
-
-    await db.savingsGoals.add({ ...sanitizedData, id: createId(), householdId, createdAt: now, updatedAt: now });
     form.reset();
+    setIsModalOpen(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Delete this savings goal?")) await db.savingsGoals.delete(id);
+  const handleEdit = (goal: any) => {
+    setEditingId(goal.id);
+    form.reset({
+      label: goal.label,
+      targetAmount: goal.targetAmount,
+      currentAmount: goal.currentAmount,
+      monthlyContribution: goal.monthlyContribution,
+      category: goal.category || "other",
+      deadline: goal.deadline || "",
+      priority: goal.priority || "medium"
+    });
+    setIsModalOpen(true);
   };
 
-  if (!goals) return <div className="p-4 text-muted-foreground">Loading Stash Map data...</div>;
+  if (!goals) return <div className="p-4 text-muted-foreground animate-pulse font-black italic uppercase">Synchronizing Stash...</div>;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Stash Map</h1>
-        <p className="text-muted-foreground">Plan and track your savings goals and deadlines.</p>
-      </div>
+    <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <PageHeader 
+        title="Stash Map" 
+        subtitle="Plan and track strategic savings objectives."
+        actions={
+          <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+            <Plus className="h-5 w-5" />
+          </Button>
+        }
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Create Savings Goal</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="space-y-2">
-                <Label>Label</Label>
-                <Input {...form.register("label")} placeholder="e.g. Vacation" />
-              </div>
-              <div className="space-y-2">
-                <Label>Target Amount</Label>
-                <Input type="number" step="0.01" {...form.register("targetAmount", { valueAsNumber: true })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Current Amount</Label>
-                <Input type="number" step="0.01" {...form.register("currentAmount", { valueAsNumber: true })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Monthly Contribution</Label>
-                <Input type="number" step="0.01" {...form.register("monthlyContribution", { valueAsNumber: true })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Deadline (Optional)</Label>
-                <Input type="date" {...form.register("deadline")} />
-              </div>
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <NativeSelect {...form.register("category")}>
-                  <option value="emergency">Emergency</option>
-                  <option value="vehicle">Vehicle</option>
-                  <option value="home">Home</option>
-                  <option value="vacation">Vacation</option>
-                  <option value="debt-payoff">Debt Payoff</option>
-                  <option value="holiday">Holiday</option>
-                  <option value="other">Other</option>
-                </NativeSelect>
-              </div>
-            </div>
-            <Button type="submit" disabled={!householdId}>Add Goal</Button>
-          </form>
-        </CardContent>
-      </Card>
+      {goals.length === 0 ? (
+        <EmptyState 
+          icon={Target}
+          title="Map is Blank"
+          description="Define your strategic stash objectives—Emergency Funds, Home Down Payments, or Vacation Pools."
+          action={<Button onClick={() => setIsModalOpen(true)} className="gap-2 px-8 uppercase font-black italic text-xs tracking-widest h-12"><Plus className="h-4 w-4" /> Add Objective</Button>}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {goals.map((goal) => {
+            const progress = (goal.currentAmount / goal.targetAmount) * 100;
+            return (
+              <GlassCard hoverable key={goal.id} className={cn("group border-primary/10 overflow-hidden relative", editingId === goal.id && "border-primary ring-1 ring-primary shadow-2xl")}>
+                <CardHeader className="pb-3 border-b border-primary/5 bg-primary/5">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg font-black italic tracking-tight uppercase">{goal.label}</CardTitle>
+                      <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary opacity-70">Target: ${goal.targetAmount.toLocaleString()}</CardDescription>
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(goal)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => db.savingsGoals.delete(goal.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
+                  <div className="flex justify-between items-end">
+                    <div className="text-3xl font-black italic tracking-tighter text-foreground">${goal.currentAmount.toLocaleString()}</div>
+                    <div className="text-[10px] font-black uppercase text-primary bg-primary/10 px-2 py-1 rounded-md">{progress.toFixed(0)}% Complete</div>
+                  </div>
+                  <Progress value={progress} className="h-2 bg-primary/5" />
+                  <div className="flex justify-between text-[8px] font-black uppercase text-muted-foreground tracking-widest pt-2">
+                    <span>Active Contribution: ${goal.monthlyContribution}/mo</span>
+                    <span>Deadline: {goal.deadline || "TBD"}</span>
+                  </div>
+                </CardContent>
+              </GlassCard>
+            );
+          })}
+        </div>
+      )}
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Active Goals & Forecasts</h2>
-        {goals.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/20 dark:border-white/10 bg-background/20 backdrop-blur-xl p-8 text-center text-muted-foreground">
-            Create your first savings goal to see how long it will take.
+      <BeaconModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingId(null); }} title={editingId ? "Modify Objective" : "New Stash Target"}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 col-span-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label><Input {...form.register("label")} placeholder="e.g. Emergency Fund" className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Target Value</Label><Input type="number" step="0.01" {...form.register("targetAmount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Current Stash</Label><Input type="number" step="0.01" {...form.register("currentAmount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Monthly Fuel</Label><Input type="number" step="0.01" {...form.register("monthlyContribution", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Mission Deadline</Label><Input type="date" {...form.register("deadline")} className="bg-primary/5 border-none font-bold h-12" /></div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {goals.map((goal) => {
-              const progress = goal.targetAmount > 0 ? Math.min(100, (goal.currentAmount / goal.targetAmount) * 100) : 0;
-              const forecast = forecastSavingsGoal(goal.targetAmount, goal.currentAmount, goal.monthlyContribution, goal.deadline);
-
-              return (
-                <Card key={goal.id} className={cn(forecast.status === "UNDERFUNDED" ? "border-destructive/50" : "")}>
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-base">{goal.label}</CardTitle>
-                      <span className={cn(
-                        "text-[10px] font-bold px-2 py-0.5 rounded-full",
-                        forecast.status === "ON_TRACK" ? "bg-green-100 text-green-700" :
-                        forecast.status === "UNDERFUNDED" ? "bg-red-100 text-red-700" :
-                        forecast.status === "FUNDED" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
-                      )}>
-                        {forecast.status.replace("_", " ")}
-                      </span>
-                    </div>
-                    <CardDescription>${goal.currentAmount.toFixed(2)} / ${goal.targetAmount.toFixed(2)}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pb-4 space-y-3">
-                    <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                      <div className={cn("h-full", forecast.status === "UNDERFUNDED" ? "bg-destructive" : "bg-primary")} style={{ width: `${progress}%` }} />
-                    </div>
-                    <div className="text-sm space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Planned:</span>
-                        <span className="font-medium">${goal.monthlyContribution}/mo</span>
-                      </div>
-                      
-                      {forecast.projectedDate && forecast.status !== "FUNDED" && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Projected Finish:</span>
-                          <span className="font-medium">{format(forecast.projectedDate, "MMM yyyy")}</span>
-                        </div>
-                      )}
-                      
-                      {goal.deadline && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Deadline:</span>
-                          <span className="font-medium">{format(parseISO(goal.deadline), "MMM yyyy")}</span>
-                        </div>
-                      )}
-
-                      {forecast.status === "UNDERFUNDED" && forecast.requiredMonthlyToHitDeadline !== null && (
-                        <div className="flex justify-between text-destructive text-xs font-medium pt-1">
-                          <span>Required to hit deadline:</span>
-                          <span>${forecast.requiredMonthlyToHitDeadline.toFixed(2)}/mo</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                  <CardContent className="pt-0">
-                    <Button variant="outline" size="sm" className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive border-transparent hover:border-destructive/30" onClick={() => handleDelete(goal.id)}>Delete</Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
+          <Button type="submit" className="w-full h-12 uppercase font-black italic tracking-widest shadow-xl shadow-primary/20">{editingId ? "Update Plan" : "Commit to Map"}</Button>
+        </form>
+      </BeaconModal>
     </div>
   );
 }

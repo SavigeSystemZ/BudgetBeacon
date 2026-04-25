@@ -14,7 +14,8 @@
     "host_level_orchestration_context": "Task framing or operator intent emitted outside the repo.",
     "repo_local_truth": "Facts stored in repo-local runtime/config/docs and the authoritative AIAST core docs.",
     "runtime_system_boundary": "Runtime code must remain independent from _system/.",
-    "tool_overlay": "A tool-specific adapter or rules layer that sits on top of the repo-local core."
+    "tool_overlay": "A tool-specific adapter or rules layer that sits on top of the repo-local core.",
+    "workspace_authority": "For downstream repos, authority is the working-directory copy, not parent/global shims."
   },
   "conflict_resolution": {
     "adapter_conflicts": "Tool-specific overlays may add workflow detail but must not contradict the shared repo-local core.",

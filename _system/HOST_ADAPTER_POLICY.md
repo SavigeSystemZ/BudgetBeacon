@@ -56,6 +56,8 @@ They must point to shared contracts and must not duplicate or override policy.
 ## Boundary rules
 
 - Adapters may add tool-specific emphasis, but they must not override repo-local truth.
+- Adapters and generated command surfaces must preserve workspace authority rules:
+  project-local copies are authoritative; parent/global files are redirect shims only.
 - Adapters must keep runtime code independent from `_system/`.
 - Adapters should point back to canonical repo files instead of duplicating long rule bodies.
 - Prefer generation only for stable startup, context-load, and authority overlays. Keep richer review commands, broader skills, and agent-specific workflow docs hand-authored unless real drift proves they need the same treatment.

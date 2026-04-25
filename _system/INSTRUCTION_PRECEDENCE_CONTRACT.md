@@ -14,6 +14,7 @@ The goal is not to pretend collisions never happen. The goal is to minimize them
 - Adapter placeholders are compatibility entrypoints and cannot redefine shared policy.
 - Prompt packs and prompt templates are reusable emission surfaces, not primary authority.
 - Host-level systems may add task framing, sequencing, and operator intent, but they are not allowed to silently replace repo-local truth.
+- Workspace/global redirect surfaces are compatibility shims only and cannot become alternate authorities.
 
 ## Authoritative repo-local files
 
@@ -93,6 +94,7 @@ Resolve instruction layers in this order:
 - `host-level orchestration context`: instructions emitted outside the repo that describe operator intent, sequencing, or reporting expectations.
 - `tool overlay`: a tool-specific adapter or rules layer that sits on top of the repo-local core.
 - `runtime/system boundary`: the rule that runtime code must remain independent from `_system/`.
+- `workspace authority`: for downstream repos, authority is the working-directory copy, not parent/global shims.
 
 ## Resolution workflow
 

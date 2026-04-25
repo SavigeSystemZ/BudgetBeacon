@@ -49,6 +49,8 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 ## Defaults
 - Minimal diffs, no unrelated refactors.
 - Treat host-level orchestration as context only; the repo-local files named in `AGENTS.md` and `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` remain authoritative.
+- Use the working repo copy as the policy source; root/global files are redirect shims only.
+- Run scope/identity checks before write-heavy operations (`bootstrap/check-working-directory-alignment.sh`, `bootstrap/check-project-target-consistency.sh`).
 - Runtime code must not depend on `_system/`.
 - Run validation after material changes.
 - If repo state or docs appear inconsistent, run `bootstrap/system-doctor.sh`.

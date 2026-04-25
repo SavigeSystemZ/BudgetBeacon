@@ -11,6 +11,12 @@ usage() {
 Usage: update-template.sh <target-repo> [--source <template-root>] [--strict] [--dry-run] [--refresh-managed]
 
 Apply additive AIAST updates and optionally refresh drifted template-managed files.
+
+Preserve-first: stateful repo-owned paths (for example TODO.md, PLAN.md,
+PRODUCT_BRIEF.md, WHERE_LEFT_OFF.md, _system/context/*.md) are excluded from
+template diff refresh, but --refresh-managed still copies any other drifted
+template-managed file from the source template. Commit or snapshot the repo
+before using --refresh-managed on important branches.
 EOF
 }
 
@@ -113,6 +119,9 @@ fi
 source_version="$(aiaast_template_version "${RESOLVED_TEMPLATE}")"
 installed_version="$(aiaast_template_version "${RESOLVED_TARGET}")"
 readme_dest="$(aiaast_detect_system_readme_path "${RESOLVED_TARGET}")"
+bash "${RESOLVED_TARGET}/bootstrap/check-working-directory-alignment.sh" "${RESOLVED_TARGET}"
+bash "${RESOLVED_TARGET}/bootstrap/check-project-target-consistency.sh" "${RESOLVED_TARGET}"
+bash "${RESOLVED_TARGET}/bootstrap/emit-session-environment.sh" "${RESOLVED_TARGET}"
 always_refresh_files=(
   "AIAST_VERSION.md"
   "AIAST_CHANGELOG.md"

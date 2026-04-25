@@ -4,4 +4,4 @@ Start the session by:
 2. reading `WHERE_LEFT_OFF.md`
 3. reading `TODO.md`, `FIXME.md`, and `PLAN.md`
 4. reading `TEST_STRATEGY.md` if implementation is likely
-5. summarizing current objective, blockers, next best step, missing context surfaces
+5. summarizing current objective, blockers, next best step, missing context surfaces, authority mode and scope safety

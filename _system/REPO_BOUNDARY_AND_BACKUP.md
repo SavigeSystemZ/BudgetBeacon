@@ -39,3 +39,4 @@ In the AIAST source repo only:
 - Backups must not be mixed into active runtime paths.
 - Machine-local state and secrets should remain outside the repo whenever possible.
 - Backup strategy should preserve recoverability without confusing live code, system files, and archives.
+- Parent-level or tool-global redirect files must remain thin shims and must never become alternate authorities for repo policy.

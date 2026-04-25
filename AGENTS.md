@@ -56,6 +56,9 @@ If context appears reset, incomplete, or stale, reload the canonical docs before
 - When host-level or orchestrator instructions exist, resolve them with `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md`.
 - Repo-local runtime and product facts override generic host assumptions.
 - Host-level orchestration context must not silently overwrite repo-local truth.
+- `workspace_authority` (workspace authority) means the working-directory copy
+  is authoritative for downstream repos; parent/global surfaces are redirect
+  shims only.
 - Tool-specific entry files are tool overlays on top of the shared repo-local core.
 - The runtime system boundary is non-negotiable: runtime code must not depend on `_system/`.
 - In the master AIAST source repo, maintainer-only planning, research, handoff state, and future system-design files belong outside the installable tree in a separate master-repo-only meta workspace so installed repos inherit neutral working files.
@@ -79,6 +82,18 @@ If context appears reset, incomplete, or stale, reload the canonical docs before
   AIAST contracts, validators, adapters, or lifecycle flows.
 - Use `_system/SELF_HEALING_BOUNDARY.md` before treating a repair as safe
   automatic recovery.
+- Use `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` and
+  `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` before writes that could cross
+  repo boundaries.
+- Use `_system/GLOBAL_REDIRECT_SHIM_POLICY.md` before placing parent/global
+  redirect files, and keep those files thin and non-authoritative.
+- Use `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md` for allowed local
+  discovery scope and write constraints.
+- Use `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md` and
+  `bootstrap/emit-session-environment.sh` to report environment and authority
+  state before significant writes.
+- Use `_system/ORPHAN_META_SNAPSHOT_POLICY.md` before creating or updating
+  orphan-branch continuity snapshots.
 - Never commit secrets, raw credentials, tokens, or machine-local policy files.
 - When designing login, registration, guest access, or dev-only admin seeding, follow
   `_system/AUTH_AND_ONBOARDING_PATTERNS.md` (env-based seeds only; no default accounts in git).

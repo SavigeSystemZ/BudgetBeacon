@@ -349,6 +349,15 @@ aiaast_refresh_onboarding_baseline() {
   # generator; generate-runtime-foundations.sh already preserves existing
   # files and only fills in missing ones when no --force flag is passed.
   bash "${script_dir}/generate-runtime-foundations.sh" "${repo_root}" --app-name "${app_name}"
+
+  # Downstream-only additive installs (for example agent-surface migrations) set
+  # AIAST_SKIP_ONBOARDING_SEEDS=1 so we never re-run suggest/seed passes that can
+  # rewrite repo-owned narrative surfaces (PRODUCT_BRIEF, working files, context).
+  if [[ "${AIAST_SKIP_ONBOARDING_SEEDS:-0}" == "1" ]]; then
+    printf 'skipped_onboarding_seeds preserve-first (AIAST_SKIP_ONBOARDING_SEEDS=1)\n' >&2
+    return 0
+  fi
+
   bash "${script_dir}/suggest-project-profile.sh" "${repo_root}" --write
   bash "${script_dir}/seed-product-brief.sh" "${repo_root}" --app-name "${app_name}"
   bash "${script_dir}/recommend-starter-blueprint.sh" "${repo_root}" --write

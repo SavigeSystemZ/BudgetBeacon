@@ -165,6 +165,12 @@
     {
       "category": "cursor-command",
       "kind": "file",
+      "path": ".cursor/commands/environment.md",
+      "size_bytes": 551
+    },
+    {
+      "category": "cursor-command",
+      "kind": "file",
       "path": ".cursor/commands/github-session.md",
       "size_bytes": 679
     },
@@ -190,7 +196,7 @@
       "category": "cursor-command",
       "kind": "file",
       "path": ".cursor/commands/session-start.md",
-      "size_bytes": 359
+      "size_bytes": 392
     },
     {
       "category": "cursor-command",
@@ -321,6 +327,12 @@
     {
       "category": "cursor-skill",
       "kind": "file",
+      "path": ".cursor/skills/environment-report/SKILL.md",
+      "size_bytes": 1878
+    },
+    {
+      "category": "cursor-skill",
+      "kind": "file",
       "path": ".cursor/skills/load-context/SKILL.md",
       "size_bytes": 1826
     },
@@ -358,7 +370,7 @@
       "category": "entrypoint",
       "kind": "file",
       "path": ".cursorrules",
-      "size_bytes": 1986
+      "size_bytes": 2238
     },
     {
       "category": "copilot-overlay",
@@ -400,13 +412,13 @@
       "category": "entrypoint",
       "kind": "file",
       "path": "AGENTS.md",
-      "size_bytes": 11495
+      "size_bytes": 12377
     },
     {
       "category": "system-metadata",
       "kind": "file",
       "path": "AIAST_CHANGELOG.md",
-      "size_bytes": 54182
+      "size_bytes": 56554
     },
     {
       "category": "system-metadata",
@@ -496,7 +508,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "PRODUCT_BRIEF.md",
-      "size_bytes": 2920
+      "size_bytes": 2945
     },
     {
       "category": "system-metadata",
@@ -538,13 +550,13 @@
       "category": "working-state",
       "kind": "file",
       "path": "TODO.md",
-      "size_bytes": 1288
+      "size_bytes": 2464
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "WHERE_LEFT_OFF.md",
-      "size_bytes": 2427
+      "size_bytes": 3401
     },
     {
       "category": "entrypoint",
@@ -574,13 +586,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/AGENT_DISCOVERY_MATRIX.md",
-      "size_bytes": 8357
+      "size_bytes": 8657
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/AGENT_INIT_CONVERGENCE.md",
-      "size_bytes": 3316
+      "size_bytes": 5099
     },
     {
       "category": "system-core",
@@ -676,7 +688,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/CONTEXT_INDEX.md",
-      "size_bytes": 14873
+      "size_bytes": 15854
     },
     {
       "category": "system-core",
@@ -717,8 +729,14 @@
     {
       "category": "system-core",
       "kind": "file",
+      "path": "_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md",
+      "size_bytes": 4942
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
       "path": "_system/ENVIRONMENT_VALIDATION_CONTRACT.md",
-      "size_bytes": 1920
+      "size_bytes": 2063
     },
     {
       "category": "system-core",
@@ -737,6 +755,12 @@
       "kind": "file",
       "path": "_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md",
       "size_bytes": 9795
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/GLOBAL_REDIRECT_SHIM_POLICY.md",
+      "size_bytes": 1067
     },
     {
       "category": "system-core",
@@ -760,13 +784,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/HOOK_AND_ORCHESTRATION_INDEX.md",
-      "size_bytes": 6267
+      "size_bytes": 6598
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/HOST_ADAPTER_POLICY.md",
-      "size_bytes": 3369
+      "size_bytes": 3539
     },
     {
       "category": "system-core",
@@ -796,25 +820,25 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
-      "size_bytes": 5979
+      "size_bytes": 6199
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 49402
+      "size_bytes": 51073
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/KEY.md",
-      "size_bytes": 80926
+      "size_bytes": 84431
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/LOAD_ORDER.md",
-      "size_bytes": 7456
+      "size_bytes": 7774
     },
     {
       "category": "system-core",
@@ -838,7 +862,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/MIGRATION_GUIDE.md",
-      "size_bytes": 2939
+      "size_bytes": 3524
     },
     {
       "category": "system-core",
@@ -873,6 +897,12 @@
     {
       "category": "system-core",
       "kind": "file",
+      "path": "_system/ORPHAN_META_SNAPSHOT_POLICY.md",
+      "size_bytes": 1242
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
       "path": "_system/PACKAGING_GUIDE.md",
       "size_bytes": 848
     },
@@ -887,6 +917,12 @@
       "kind": "file",
       "path": "_system/PLUGIN_CONTRACT.md",
       "size_bytes": 3727
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md",
+      "size_bytes": 1413
     },
     {
       "category": "system-core",
@@ -928,7 +964,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/PROMPT_EMISSION_CONTRACT.md",
-      "size_bytes": 4079
+      "size_bytes": 4240
     },
     {
       "category": "system-core",
@@ -952,7 +988,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/QUICKSTART.md",
-      "size_bytes": 3863
+      "size_bytes": 3993
     },
     {
       "category": "system-core",
@@ -976,7 +1012,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/REPO_BOUNDARY_AND_BACKUP.md",
-      "size_bytes": 1152
+      "size_bytes": 1281
     },
     {
       "category": "system-core",
@@ -988,13 +1024,19 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/REPO_OPERATING_PROFILE.md",
-      "size_bytes": 4158
+      "size_bytes": 4979
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/REQUEST_ALIGNMENT_PROTOCOL.md",
       "size_bytes": 1430
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md",
+      "size_bytes": 947
     },
     {
       "category": "system-core",
@@ -1019,6 +1061,12 @@
       "kind": "file",
       "path": "_system/SELF_HEALING_BOUNDARY.md",
       "size_bytes": 1670
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md",
+      "size_bytes": 962
     },
     {
       "category": "system-core",
@@ -1060,7 +1108,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 72166
+      "size_bytes": 74454
     },
     {
       "category": "system-core",
@@ -1073,6 +1121,12 @@
       "kind": "file",
       "path": "_system/TEMPLATE_NEUTRALITY_POLICY.md",
       "size_bytes": 2744
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/TEMPLATE_SYNC_NOTICE.md",
+      "size_bytes": 530
     },
     {
       "category": "system-core",
@@ -1108,7 +1162,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/WORKING_FILES_GUIDE.md",
-      "size_bytes": 4100
+      "size_bytes": 4357
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md",
+      "size_bytes": 1843
     },
     {
       "category": "system-core",
@@ -1204,7 +1264,7 @@
       "category": "system-context",
       "kind": "file",
       "path": "_system/context/CURRENT_STATUS.md",
-      "size_bytes": 1819
+      "size_bytes": 1810
     },
     {
       "category": "system-context",
@@ -1378,13 +1438,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/host-adapter-manifest.json",
-      "size_bytes": 17527
+      "size_bytes": 18961
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/instruction-precedence.json",
-      "size_bytes": 3365
+      "size_bytes": 3483
     },
     {
       "category": "system-core",
@@ -1726,7 +1786,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/repo-operating-profile.json",
-      "size_bytes": 4632
+      "size_bytes": 5518
     },
     {
       "category": "review-playbook",
@@ -1918,7 +1978,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/README.md",
-      "size_bytes": 14412
+      "size_bytes": 14769
     },
     {
       "category": "bootstrap",
@@ -1965,6 +2025,12 @@
     {
       "category": "bootstrap",
       "kind": "file",
+      "path": "bootstrap/check-global-shim-alignment.sh",
+      "size_bytes": 1440
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
       "path": "bootstrap/check-hallucination.sh",
       "size_bytes": 4139
     },
@@ -1972,7 +2038,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-host-adapter-alignment.sh",
-      "size_bytes": 7841
+      "size_bytes": 8045
     },
     {
       "category": "bootstrap",
@@ -1984,7 +2050,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-host-ingestion.sh",
-      "size_bytes": 6392
+      "size_bytes": 6446
     },
     {
       "category": "bootstrap",
@@ -2009,6 +2075,12 @@
       "kind": "file",
       "path": "bootstrap/check-placeholders.sh",
       "size_bytes": 3813
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
+      "path": "bootstrap/check-project-target-consistency.sh",
+      "size_bytes": 3075
     },
     {
       "category": "bootstrap",
@@ -2043,8 +2115,20 @@
     {
       "category": "bootstrap",
       "kind": "file",
+      "path": "bootstrap/check-working-directory-alignment.sh",
+      "size_bytes": 2210
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
       "path": "bootstrap/check-working-file-staleness.sh",
       "size_bytes": 7620
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
+      "path": "bootstrap/clear-template-sync-notice.sh",
+      "size_bytes": 1825
     },
     {
       "category": "bootstrap",
@@ -2097,6 +2181,12 @@
     {
       "category": "bootstrap",
       "kind": "file",
+      "path": "bootstrap/emit-session-environment.sh",
+      "size_bytes": 2251
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
       "path": "bootstrap/emit-tiered-context.sh",
       "size_bytes": 4294
     },
@@ -2110,13 +2200,13 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-host-adapters.sh",
-      "size_bytes": 8921
+      "size_bytes": 9686
     },
     {
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-operating-profile.sh",
-      "size_bytes": 14889
+      "size_bytes": 16713
     },
     {
       "category": "bootstrap",
@@ -2128,7 +2218,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-system-key.sh",
-      "size_bytes": 39104
+      "size_bytes": 39520
     },
     {
       "category": "bootstrap",
@@ -2158,7 +2248,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/init-project.sh",
-      "size_bytes": 3791
+      "size_bytes": 6287
     },
     {
       "category": "bootstrap",
@@ -2170,19 +2260,31 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/install-missing-files.sh",
-      "size_bytes": 4142
+      "size_bytes": 5063
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
+      "path": "bootstrap/install-root-redirect-shims.sh",
+      "size_bytes": 1207
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
+      "path": "bootstrap/install-tool-global-redirects.sh",
+      "size_bytes": 1106
     },
     {
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/lib/aiaast-lib.sh",
-      "size_bytes": 18626
+      "size_bytes": 19043
     },
     {
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/migrate-agent-surface-upgrade.sh",
-      "size_bytes": 3136
+      "size_bytes": 3662
     },
     {
       "category": "bootstrap",
@@ -2289,6 +2391,12 @@
     {
       "category": "bootstrap",
       "kind": "file",
+      "path": "bootstrap/snapshot-meta-to-orphan-branch.sh",
+      "size_bytes": 1669
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
       "path": "bootstrap/suggest-project-profile.sh",
       "size_bytes": 32851
     },
@@ -2308,7 +2416,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/system-doctor.sh",
-      "size_bytes": 7955
+      "size_bytes": 8577
     },
     {
       "category": "bootstrap",
@@ -2470,7 +2578,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/templates/runtime/ops/install/lib/port_allocator.py",
-      "size_bytes": 9021
+      "size_bytes": 8975
     },
     {
       "category": "bootstrap",
@@ -2602,7 +2710,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/update-template.sh",
-      "size_bytes": 9035
+      "size_bytes": 9664
     },
     {
       "category": "bootstrap",
@@ -2614,7 +2722,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/validate-instruction-layer.sh",
-      "size_bytes": 8899
+      "size_bytes": 9681
     },
     {
       "category": "bootstrap",
@@ -2632,7 +2740,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/validate-system.sh",
-      "size_bytes": 24918
+      "size_bytes": 25769
     },
     {
       "category": "bootstrap",
@@ -2926,13 +3034,13 @@
       "category": "tools",
       "kind": "file",
       "path": "tools/export-va-data.ts",
-      "size_bytes": 586
+      "size_bytes": 505
     },
     {
       "category": "tools",
       "kind": "file",
       "path": "tools/generate-va-data.ts",
-      "size_bytes": 8598
+      "size_bytes": 8563
     },
     {
       "category": "tools",
@@ -2965,7 +3073,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 494,
+  "managed_file_count": 512,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.23.0"

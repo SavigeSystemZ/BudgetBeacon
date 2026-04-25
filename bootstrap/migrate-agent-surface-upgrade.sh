@@ -10,7 +10,11 @@ usage() {
 Usage: migrate-agent-surface-upgrade.sh <target-repo> [--dry-run|--write]
 
 Apply the dual-metasystem agent-surface upgrade to an existing downstream repo:
-- install missing managed files
+- install missing managed files (additive only; rsync --ignore-existing)
+- preserve-first: while installing, passes `--skip-onboarding-seeds` to
+  `install-missing-files.sh` so PRODUCT_BRIEF, working files, and _system/context
+  are not bulk-rewritten (equivalent to `AIAST_SKIP_ONBOARDING_SEEDS=1`)
+- patch shared contract references (append-only)
 - regenerate host adapters
 - validate adapter alignment and instruction layer
 - emit a concise migration report
@@ -47,14 +51,16 @@ run_step() {
 }
 
 if [[ "${MODE}" == "--write" ]]; then
-  run_step "install-missing-files" bash "${SCRIPT_DIR}/install-missing-files.sh" "${TARGET_REPO}"
+  # install-missing-files triggers onboarding refresh; for migrations we only want
+  # missing template files copied, not narrative re-seeding of product state.
+  run_step "install-missing-files" bash "${SCRIPT_DIR}/install-missing-files.sh" "${TARGET_REPO}" --skip-onboarding-seeds
   run_step "patch-agent-surface-contracts" bash "${SCRIPT_DIR}/patch-agent-surface-contracts.sh" "${TARGET_REPO}" --write
   run_step "generate-host-adapters" bash "${SCRIPT_DIR}/generate-host-adapters.sh" "${TARGET_REPO}" --write
   run_step "generate-system-registry" bash "${SCRIPT_DIR}/generate-system-registry.sh" "${TARGET_REPO}" --write
   run_step "generate-operating-profile" bash "${SCRIPT_DIR}/generate-operating-profile.sh" "${TARGET_REPO}" --write
   run_step "verify-integrity-generate" bash "${SCRIPT_DIR}/verify-integrity.sh" --generate --target "${TARGET_REPO}"
 else
-  run_step "install-missing-files-dry-run" bash "${SCRIPT_DIR}/install-missing-files.sh" "${TARGET_REPO}" --dry-run
+  run_step "install-missing-files-dry-run" bash "${SCRIPT_DIR}/install-missing-files.sh" "${TARGET_REPO}" --dry-run --skip-onboarding-seeds
   required_contracts=(
     "_system/AGENT_SURFACE_TAXONOMY.md"
     "_system/AGENT_INIT_CONVERGENCE.md"

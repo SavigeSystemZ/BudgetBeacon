@@ -8,7 +8,12 @@ source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
 
 usage() {
   cat <<'EOF'
-Usage: install-missing-files.sh <target-repo> [--source <template-root>] [--strict] [--dry-run]
+Usage: install-missing-files.sh <target-repo> [--source <template-root>] [--strict] [--dry-run] [--skip-onboarding-seeds]
+
+After copying missing template files, the onboarding refresh normally runs
+suggest/seed scripts. Pass --skip-onboarding-seeds when you must preserve
+repo-specific PRODUCT_BRIEF, working files, and _system/context (same effect as
+export AIAST_SKIP_ONBOARDING_SEEDS=1 for this invocation).
 EOF
 }
 
@@ -21,6 +26,7 @@ TARGET_REPO=""
 SOURCE=""
 STRICT=0
 DRY_RUN=0
+SKIP_ONBOARDING_SEEDS=0
 README_DEST="README.md"
 
 while [[ $# -gt 0 ]]; do
@@ -31,6 +37,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --strict)
       STRICT=1
+      shift
+      ;;
+    --skip-onboarding-seeds)
+      SKIP_ONBOARDING_SEEDS=1
       shift
       ;;
     --dry-run)
@@ -81,6 +91,9 @@ if [[ "${RESOLVED_TEMPLATE}" == "${RESOLVED_TARGET}" ]]; then
 fi
 
 README_DEST="$(aiaast_detect_system_readme_path "${RESOLVED_TARGET}")"
+bash "${RESOLVED_TARGET}/bootstrap/check-working-directory-alignment.sh" "${RESOLVED_TARGET}"
+bash "${RESOLVED_TARGET}/bootstrap/check-project-target-consistency.sh" "${RESOLVED_TARGET}"
+bash "${RESOLVED_TARGET}/bootstrap/emit-session-environment.sh" "${RESOLVED_TARGET}"
 
 mapfile -t SOURCE_FILES < <(aiaast_list_files "${TEMPLATE_ROOT}")
 MISSING_FILES=()
@@ -104,6 +117,9 @@ fi
 
 if [[ ${DRY_RUN} -eq 1 ]]; then
   echo "Dry run: would install missing files into ${TARGET_REPO}"
+  if [[ ${SKIP_ONBOARDING_SEEDS} -eq 1 ]]; then
+    echo "Dry run: would skip onboarding re-seeds (--skip-onboarding-seeds)"
+  fi
   printf '%s\n' "${MISSING_FILES[@]}"
   exit 0
 fi
@@ -118,7 +134,12 @@ else
   fi
 fi
 
-aiaast_refresh_onboarding_baseline "${RESOLVED_TARGET}/bootstrap" "${RESOLVED_TARGET}"
+(
+  if [[ ${SKIP_ONBOARDING_SEEDS} -eq 1 ]]; then
+    export AIAST_SKIP_ONBOARDING_SEEDS=1
+  fi
+  aiaast_refresh_onboarding_baseline "${RESOLVED_TARGET}/bootstrap" "${RESOLVED_TARGET}"
+)
 
 aiaast_write_install_metadata \
   "${RESOLVED_TARGET}" \

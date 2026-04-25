@@ -45,10 +45,7 @@ def port_available(port: int, bind_address: str) -> bool:
             ]
         )
 
-    for family, sock_type, host in checks:
-        if not can_bind(host, port, family, sock_type):
-            return False
-    return True
+    return all(can_bind(host, port, family, sock_type) for family, sock_type, host in checks)
 
 
 def choose_port(start: int, end: int, bind_address: str, occupied: set[int]) -> int:

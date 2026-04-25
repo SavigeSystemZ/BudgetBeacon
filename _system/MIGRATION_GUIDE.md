@@ -58,9 +58,20 @@ If your repo uses a different agent governance system:
 ## After migration
 
 - Run `bootstrap/system-doctor.sh .` to verify everything is healthy.
+- Run `bootstrap/check-working-directory-alignment.sh .` and `bootstrap/check-project-target-consistency.sh .` before large writes.
+- Use `bootstrap/emit-session-environment.sh .` to capture authority mode and scope context.
 - Fill `_system/PROJECT_PROFILE.md` — this is the most important step.
 - Set up your validation commands in the profile.
 - All agents will now share the same rules and handoff protocol.
+
+## Optional global compatibility redirects
+
+If your host workflow needs parent/global compatibility entrypoints, install thin redirect shims:
+
+- `bootstrap/install-root-redirect-shims.sh --target-repo .`
+- `bootstrap/install-tool-global-redirects.sh --target-repo .`
+
+Use `bootstrap/check-global-shim-alignment.sh` to ensure redirects stay non-authoritative.
 
 ## What AIAST does NOT touch
 

@@ -56,6 +56,7 @@ Every emitted prompt should contain a compact version of this instruction:
 - `host-level orchestration context` means external task framing emitted outside the repo.
 - `tool overlay` means a tool-specific adapter layered on top of the shared repo-local core.
 - `runtime system boundary` means runtime code must remain independent from `_system/`.
+- `workspace_authority` (workspace authority) means downstream repos trust the working-directory copy as authority while parent/global files stay redirect-only.
 
 ## Related files
 

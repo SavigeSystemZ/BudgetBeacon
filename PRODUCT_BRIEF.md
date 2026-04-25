@@ -24,8 +24,8 @@ Use this file to capture the product idea, intended user value, and chosen build
 ## Build shape
 
 - Recommended starter blueprint: REACT_VITE_TYPESCRIPT - React Vite TypeScript Blueprint
-- Recommendation confidence: high
-- Recommendation rationale: Best fit: REACT_VITE_TYPESCRIPT - React Vite TypeScript Blueprint. Signals: React dependency detected.; Vite config detected.; Product framing points to an interactive frontend surface.. Top alternatives: STATIC_FRONTEND (2).
+- Recommendation confidence: medium
+- Recommendation rationale: Best fit: REACT_VITE_TYPESCRIPT - React Vite TypeScript Blueprint. Signals: React dependency detected.; Vite config detected.; Product framing points to an interactive frontend surface.. Top alternatives: BACKGROUND_WORKER (8), STATIC_FRONTEND (2).
 - Selected starter blueprint: not yet selected
 - Why this blueprint fits: choose a starter blueprint after the product frame and delivery surfaces are clearer
 - Planned repo shape: decide after selecting a starter blueprint

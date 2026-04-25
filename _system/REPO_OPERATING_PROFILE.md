@@ -34,6 +34,7 @@
 - `repo-local-truth`: Facts stored in repo-local runtime/config/docs and the authoritative AIAST core docs.
 - `runtime-system-boundary`: Runtime code must remain independent from _system/.
 - `tool-overlay`: A tool-specific adapter or rules layer that sits on top of the repo-local core.
+- `workspace-authority`: For downstream repos, authority is the working-directory copy, not parent/global shims.
 
 ## Validation entrypoints
 - `bootstrap/validate-system.sh <repo>`
@@ -43,6 +44,10 @@
 - `bootstrap/check-host-ingestion.sh <repo>`
 - `bootstrap/check-host-bundle.sh <repo>`
 - `bootstrap/check-system-awareness.sh <repo>`
+- `bootstrap/check-working-directory-alignment.sh <repo>`
+- `bootstrap/check-project-target-consistency.sh <repo>`
+- `bootstrap/check-global-shim-alignment.sh <repo>`
+- `bootstrap/emit-session-environment.sh <repo>`
 - `bootstrap/detect-instruction-conflicts.sh <repo> --strict`
 - `bootstrap/system-doctor.sh <repo>`
 - `bootstrap/check-packaging-targets.sh <repo>`
@@ -65,6 +70,12 @@
 - Change impact policy: `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md`
 - Self-healing boundary: `_system/SELF_HEALING_BOUNDARY.md`
 - Version-sensitive research protocol: `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md`
+- Workspace authority protocol: `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md`
+- Project identity/scope protocol: `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md`
+- Global redirect shim policy: `_system/GLOBAL_REDIRECT_SHIM_POLICY.md`
+- Scavenge/discovery authorization: `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md`
+- Session environment report contract: `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
+- Orphan meta snapshot policy: `_system/ORPHAN_META_SNAPSHOT_POLICY.md`
 - Host adapter generator: `bootstrap/generate-host-adapters.sh`
 - Host adapter validator: `bootstrap/check-host-adapter-alignment.sh`
 - Host adapter manifest: `_system/host-adapter-manifest.json`

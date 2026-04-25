@@ -11,7 +11,9 @@ export function calculateBudgetSummary(
   bills: Bill[],
   debts: Debt[],
   savingsGoals: SavingsGoal[],
-  transactions: Transaction[] = []
+  transactions: Transaction[] = [],
+  subscriptions: { amount: number; frequency: string }[] = [],
+  insurance: { premium?: number }[] = []
 ): BudgetSummary {
   // 1. Incomes
   const totalMonthlyIncome = incomes
@@ -24,15 +26,25 @@ export function calculateBudgetSummary(
     0
   );
 
-  // 3. Debts (Debts are assumed to be tracked with monthly minimums by default per schema, 
-  // but if we used a frequency enum we'd normalize here. NFR says "minimumPayment" represents the required monthly).
+  // 3. Debts
   const totalDebtMinimums = debts.reduce((sum, debt) => sum + Math.max(0, debt.minimumPayment), 0);
 
-  // 4. Savings
+  // 4. Subscriptions
+  const totalMonthlySubscriptions = subscriptions.reduce((sum, sub) => {
+    const amt = sub.amount || 0;
+    if (sub.frequency === "annual") return sum + (amt / 12);
+    if (sub.frequency === "quarterly") return sum + (amt / 3);
+    return sum + amt;
+  }, 0);
+
+  // 5. Insurance
+  const totalMonthlyInsurance = insurance.reduce((sum, ins) => sum + (ins.premium || 0), 0);
+
+  // 6. Savings
   const totalStashMapScheduled = savingsGoals.reduce((sum, goal) => sum + Math.max(0, goal.monthlyContribution), 0);
 
-  // 5. Actuals (Current Month)
-  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+  // 7. Actuals (Current Month)
+  const currentMonth = new Date().toISOString().slice(0, 7); 
   const currentMonthTransactions = transactions.filter(t => t.date.startsWith(currentMonth));
   
   const actualIncome = currentMonthTransactions
@@ -43,20 +55,21 @@ export function calculateBudgetSummary(
     .filter(t => t.type === "expense")
     .reduce((sum, t) => sum + t.amount, 0);
 
-  // 6. Aggregations
-  const totalPayPathRequired = totalMonthlyBills + totalDebtMinimums;
+  // 8. Aggregations
+  const totalPayPathRequired = totalMonthlyBills + totalDebtMinimums + totalMonthlySubscriptions + totalMonthlyInsurance;
   const requiredOutflow = totalPayPathRequired;
   const leftoverAfterRequired = totalMonthlyIncome - requiredOutflow;
   const leftoverAfterSavings = leftoverAfterRequired - totalStashMapScheduled;
-  const remainingBudget = totalMonthlyIncome - actualSpend - totalStashMapScheduled; // dynamic remaining based on actuals
+  const remainingBudget = totalMonthlyIncome - actualSpend - totalStashMapScheduled; 
 
-  // 7. Ratios
+  // 9. Ratios
   const billPressureRatio = totalMonthlyIncome > 0 ? totalMonthlyBills / totalMonthlyIncome : 0;
   const debtMinimumRatio = totalMonthlyIncome > 0 ? totalDebtMinimums / totalMonthlyIncome : 0;
+  const subscriptionPressureRatio = totalMonthlyIncome > 0 ? totalMonthlySubscriptions / totalMonthlyIncome : 0;
   const payPathPressureRatio = totalMonthlyIncome > 0 ? requiredOutflow / totalMonthlyIncome : 0;
   const savingsRate = totalMonthlyIncome > 0 ? totalStashMapScheduled / totalMonthlyIncome : 0;
 
-  // 8. Status Logic
+  // 10. Status Logic
   let budgetStatus: "GREEN" | "YELLOW" | "RED" = "GREEN";
   if (remainingBudget < 0 || leftoverAfterRequired < 0) {
     budgetStatus = "RED";
@@ -64,11 +77,13 @@ export function calculateBudgetSummary(
     budgetStatus = "YELLOW";
   }
 
-  // 9. Recommendations
+  // 11. Recommendations
   const partialSummary = {
     totalMonthlyIncome,
     totalMonthlyBills,
     totalDebtMinimums,
+    totalMonthlySubscriptions,
+    totalMonthlyInsurance,
     totalPayPathRequired,
     totalStashMapScheduled,
     requiredOutflow,
@@ -80,6 +95,7 @@ export function calculateBudgetSummary(
     savingsRate,
     billPressureRatio,
     debtMinimumRatio,
+    subscriptionPressureRatio,
     payPathPressureRatio,
     budgetStatus,
   };

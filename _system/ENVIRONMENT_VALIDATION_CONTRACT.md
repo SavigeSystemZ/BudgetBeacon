@@ -21,6 +21,7 @@ Environment validation covers:
 ## Integration
 
 - `bootstrap/check-environment.sh` performs all environment checks.
+- `bootstrap/emit-session-environment.sh` emits the session authority/mode report defined in `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`.
 - `bootstrap/system-doctor.sh` includes environment checks at warn level by default.
 - `bootstrap/generate-diagnostic-report.sh` includes environment state in reports.
 - The observability-setup plugin uses the `environment.validate` hook for monitoring checks.

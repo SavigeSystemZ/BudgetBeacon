@@ -29,6 +29,12 @@ This file is the map of the local agent operating system.
 - `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md` — high-risk installable template change classes and required follow-through
 - `_system/SELF_HEALING_BOUNDARY.md` — safe automatic repair versus unsafe repair requiring review
 - `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md` — how to handle framework, package, platform, installer, and API research that may change over time
+- `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` — working-directory authority and write containment rules
+- `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` — identity mismatch detection and halt behavior
+- `_system/GLOBAL_REDIRECT_SHIM_POLICY.md` — thin redirect shim policy for parent/tool-global surfaces
+- `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md` — authorized local discovery scope and write constraints
+- `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md` — required session environment report fields and usage
+- `_system/ORPHAN_META_SNAPSHOT_POLICY.md` — orphan-branch continuity snapshot model
 - `AUTH_AND_ONBOARDING_PATTERNS.md` — optional vs gated auth, dev seeding via env (no credentials in git), progressive trust
 - `AGENT_ROLE_CATALOG.md` — canonical role and delegation model for multi-agent work
 - `AGENT_DISCOVERY_MATRIX.md` — which tools load which files
@@ -195,6 +201,13 @@ This file is the map of the local agent operating system.
 - `../bootstrap/check-host-bundle.sh`
 - `../bootstrap/detect-instruction-conflicts.sh`
 - `../bootstrap/check-system-awareness.sh`
+- `../bootstrap/check-working-directory-alignment.sh`
+- `../bootstrap/check-project-target-consistency.sh`
+- `../bootstrap/install-root-redirect-shims.sh`
+- `../bootstrap/install-tool-global-redirects.sh`
+- `../bootstrap/check-global-shim-alignment.sh`
+- `../bootstrap/emit-session-environment.sh`
+- `../bootstrap/snapshot-meta-to-orphan-branch.sh`
 - `../bootstrap/check-hallucination.sh`
 - `../bootstrap/system-doctor.sh`
 - `../bootstrap/heal-system.sh`

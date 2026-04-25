@@ -66,7 +66,7 @@ Every supported tool has an adapter file that points to `AGENTS.md`:
 
 - **Agent ignores rules**: check `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md`
 - **Validation fails**: run `bootstrap/system-doctor.sh . --report`
-- **Missing files after upgrade**: run `bootstrap/install-missing-files.sh .`
+- **Missing files after upgrade**: run `bootstrap/install-missing-files.sh .` (add `--skip-onboarding-seeds` if the repo already has real product framing and you must not rewrite brief or working-file seeds)
 - **Agent hallucinates**: run `bootstrap/check-hallucination.sh .`
 - **Full troubleshooting**: see `_system/TROUBLESHOOTING.md`
 - **compress-context refuses a path**: see `_system/TROUBLESHOOTING.md` → *compress-context-file refuses my path or will not run*

@@ -171,6 +171,8 @@
       "notes": [
         "Minimal diffs, no unrelated refactors.",
         "Treat host-level orchestration as context only; the repo-local files named in `AGENTS.md` and `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` remain authoritative.",
+        "Use the working repo copy as the policy source; root/global files are redirect shims only.",
+        "Run scope/identity checks before write-heavy operations (`bootstrap/check-working-directory-alignment.sh`, `bootstrap/check-project-target-consistency.sh`).",
         "Runtime code must not depend on `_system/`.",
         "Run validation after material changes.",
         "If repo state or docs appear inconsistent, run `bootstrap/system-doctor.sh`.",
@@ -233,7 +235,16 @@
         "current objective",
         "blockers",
         "next best step",
-        "missing context surfaces"
+        "missing context surfaces",
+        "authority mode and scope safety"
+      ]
+    },
+    "cursor_environment_command": {
+      "path": ".cursor/commands/environment.md",
+      "kind": "cursor_environment_command",
+      "intro_lines": [
+        "Emit and review the current session environment before significant writes:",
+        "Run `bash bootstrap/emit-session-environment.sh .` and confirm authority mode, repo identity, and branch/orphan status."
       ]
     },
     "cursor_load_context_skill": {
@@ -248,6 +259,20 @@
         "briefly state what was loaded",
         "confirm readiness",
         "mention if context was partial because of capacity limits"
+      ]
+    },
+    "cursor_environment_skill": {
+      "path": ".cursor/skills/environment-report/SKILL.md",
+      "kind": "cursor_skill",
+      "frontmatter_name": "environment-report",
+      "frontmatter_description": "Emit an environment and authority report before write-heavy work or cross-repo tasks.",
+      "pre_steps_lines": [
+        "Run `bash bootstrap/check-working-directory-alignment.sh .` and `bash bootstrap/check-project-target-consistency.sh .` before environment reporting."
+      ],
+      "output_bullets": [
+        "report repo identity, authority mode, and target consistency",
+        "report branch, remote, and orphan snapshot lane state",
+        "call out mismatches that require confirmation before writing"
       ]
     },
     "cursor_context_rule": {

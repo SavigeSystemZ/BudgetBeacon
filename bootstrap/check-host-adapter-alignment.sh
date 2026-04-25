@@ -61,8 +61,12 @@ required_files=(
   "_system/AGENT_SURFACE_TAXONOMY.md"
   "_system/AGENT_INIT_CONVERGENCE.md"
   "_system/host-adapter-manifest.json"
+  "_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md"
+  "_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md"
+  "_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md"
   "bootstrap/generate-host-adapters.sh"
   "bootstrap/check-host-adapter-alignment.sh"
+  "bootstrap/emit-session-environment.sh"
 )
 
 for rel in "${required_files[@]}"; do

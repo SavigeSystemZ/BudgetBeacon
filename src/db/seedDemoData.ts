@@ -32,6 +32,33 @@ export async function seedDemoData() {
   }
 }
 
+export async function ensureHousehold() {
+  const householdCount = await db.households.count();
+  if (householdCount === 0) {
+    const householdId = "default-household";
+    const personId = "default-person";
+    const now = new Date().toISOString();
+    
+    await db.households.add({
+      id: householdId,
+      name: "My Household",
+      currency: "USD",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await db.persons.add({
+      id: personId,
+      householdId,
+      name: "Primary Member",
+      role: "primary",
+      createdAt: now,
+      updatedAt: now,
+    });
+    console.log("Default household created.");
+  }
+}
+
 export async function clearDatabase() {
   console.log("Clearing database...");
   await db.transaction("rw", [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions], async () => {

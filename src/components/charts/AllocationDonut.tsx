@@ -21,7 +21,7 @@ export function AllocationDonut({ summary }: AllocationDonutProps) {
   ].filter((d) => d.value > 0);
 
   return (
-    <div className="h-64 w-full">
+    <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -29,22 +29,43 @@ export function AllocationDonut({ summary }: AllocationDonutProps) {
             cx="50%"
             cy="50%"
             innerRadius={60}
-            outerRadius={80}
+            outerRadius={90}
             paddingAngle={5}
             dataKey="value"
+            animationBegin={0}
+            animationDuration={1500}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell 
+                key={`cell-${index}`} 
+                fill={entry.color} 
+                stroke="rgba(255,255,255,0.1)" 
+                strokeWidth={2}
+                className="hover:opacity-80 transition-opacity cursor-pointer"
+              />
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value: unknown) => {
-              if (typeof value === 'number') return [`$${value.toFixed(2)}`, "Amount"];
-              return [String(value), "Amount"];
+            formatter={(value: any, name: any) => {
+              const numValue = Number(value);
+              const percentage = ((numValue / summary.totalMonthlyIncome) * 100).toFixed(1);
+              return [`$${numValue.toLocaleString(undefined, {minimumFractionDigits: 2})} (${percentage}%)`, String(name)];
             }}
-            contentStyle={{ borderRadius: "8px", border: "1px solid var(--color-border)" }}
+            contentStyle={{ 
+              borderRadius: "16px", 
+              border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(0,0,0,0.8)",
+              backdropFilter: "blur(12px)",
+              color: "#fff",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+            }}
+            itemStyle={{ color: "#fff" }}
           />
-          <Legend verticalAlign="bottom" height={36} />
+          <Legend 
+            verticalAlign="bottom" 
+            height={36} 
+            formatter={(value) => <span className="text-xs font-bold uppercase tracking-wider">{value}</span>}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>
