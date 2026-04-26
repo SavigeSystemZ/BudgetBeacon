@@ -12,13 +12,16 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [x] **CRITICAL: M2 — Core Data + Validation Hardening.** Added test/typecheck/audit-controls scripts, vitest config, ErrorBoundary, IncomeRoute frequency drift fix, backup completeness fix (v2 format covers all 17 JSON-serializable tables; documents/Blob deferred to M4), backup round-trip test. 22 tests passing, typecheck clean. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M3 (substantial) — Full GUI Completion Pass.** Two commits (`72c86c3` + `ae1bbb5`). All 10 highest-priority must-fix items done. Audit counts: `setTimeout` 10→2 (legit UX), `mathRandom` 2→0, `alert` 15→0. New shared primitives: `featureFlags` map, `DemoBadge` component, `preferences` localStorage layer, `stabilityIndex` module + 7 tests. 29 tests passing. Insurance Inspect now real manual CRUD; Settings now persists toggles + aiConfig. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M4 — Reports, Backup, Restore, Recovery.** Backup format v3 (documents via base64, chunked encode). Real CSV/JSON exports + 5 per-report tabs. Restore diff preview. Print stylesheet pass. 39 tests passing (10 new). Audit baseline locked at `setTimeout=4 mathRandom=0 alert=0`. *(Completed 2026-04-26.)*
+- [x] **CRITICAL: M5 (substantial) — Ledger + Bank/Data Import.** New `src/modules/import/` (parseCsv, dedupeKey, mapRows, autoDetect). New `LedgerImportFlow` component: file → mapping → review → commit, with auto-detect, per-row inclusion checkbox, and "possible duplicate" highlighting. `featureFlags.bankImportTierA` flipped to true. 59 tests passing (20 new). *(Completed 2026-04-26.)*
 
-## Immediate Queue (M5 — Ledger + Bank/Data Import Foundation)
+## Immediate Queue (M6 — Vault + OCR + Extraction Review)
 
-- [ ] **HIGH:** CSV import for transactions — file picker, column mapping, dedupe (date+amount+payee), review queue, bulk commit on confirm. Flip `featureFlags.bankImportTierA` once shipped.
-- [ ] **HIGH:** QFX / OFX scaffolded parser (or clean adapter interface for a future dep).
-- [ ] **HIGH:** Merchant / payee normalization rules — persist to a new `payeeRules` Dexie table.
-- [ ] **HIGH:** Replace the Ledger "Bank Import (M5)" DemoBadge card with the real review queue UI.
+- [ ] **HIGH:** Local OCR adapter — wrap Tesseract.js (or in-browser equivalent) behind `OcrProvider` interface returning `ExtractionDraft` with per-field confidence + bounding boxes.
+- [ ] **HIGH:** `VaultExtractionReview` component — side-by-side document preview + per-field editor + confidence indicator. No auto-commit path.
+- [ ] **HIGH:** Apply-on-approve flow — write to `incomeSources` / `bills` / `taxRecords` with `documentId` provenance pointer.
+- [ ] **HIGH:** Flip `featureFlags.ocrLocal` to true once happy path works end-to-end.
+- [ ] **MEDIUM (M5 carry-over):** QFX / OFX scaffolded parser (or clean adapter interface for a future dep).
+- [ ] **MEDIUM (M5 carry-over):** Merchant / payee normalization rules — persist to a new `payeeRules` Dexie table.
 - [ ] **MEDIUM:** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098, etc.) OR honest "manual notes" labeling. Currently 2 placeholder fields only.
 
 ### M3 polish carry-over (low-risk, do during M4 or M5)

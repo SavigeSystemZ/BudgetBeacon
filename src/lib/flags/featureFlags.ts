@@ -14,7 +14,7 @@
  */
 export const featureFlags = {
   // Bank import (M5 owns)
-  bankImportTierA: false, // CSV/QFX/OFX file import + dedupe + review queue
+  bankImportTierA: true, // CSV file import + dedupe + review queue (M5 — QFX/OFX scaffolded later)
   bankAggregatorTierB: false, // Plaid / MX / Finicity opt-in
   bankInstitutionTierC: false, // Institution-specific direct APIs
 

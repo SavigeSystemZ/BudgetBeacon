@@ -10,7 +10,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import {
-  Edit2, Trash2, Plus,
+  Edit2, Trash2, Plus, Upload,
   History, ArrowDownCircle, ArrowUpCircle, Database
 } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -20,6 +20,7 @@ import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
+import { LedgerImportFlow } from "../components/import/LedgerImportFlow";
 
 const formSchema = transactionSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
 
@@ -29,6 +30,7 @@ export default function LedgerRoute() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -63,6 +65,16 @@ export default function LedgerRoute() {
         subtitle="Tactical daily outflow and revenue tracking."
         actions={
           <div className="flex gap-2">
+            {featureFlags.bankImportTierA && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsImportOpen(true)}
+                className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5"
+              >
+                <Upload className="h-3 w-3" /> Import CSV
+              </Button>
+            )}
             <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
               <Plus className="h-5 w-5" />
             </Button>
@@ -112,19 +124,29 @@ export default function LedgerRoute() {
         </div>
 
         <div className="space-y-6">
-          {!featureFlags.bankImportTierA && (
+          {featureFlags.bankImportTierA ? (
+            <GlassCard className="border-primary/20 bg-primary/5">
+              <CardHeader className="pb-3 flex flex-row items-center gap-2">
+                <Upload className="h-4 w-4 text-primary" />
+                <CardTitle className="text-[10px] font-black uppercase tracking-widest">CSV Import</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  Export a CSV from your bank or credit card statement, then click <strong className="text-foreground">Import CSV</strong> above. You map columns once, dedupe is automatic, and you can deselect rows in the review step before they land in your ledger.
+                </p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  QFX / OFX support and an optional aggregator (Plaid / MX) are deferred to later milestones — see <code className="text-[10px]">docs/INTEGRATIONS_STRATEGY.md</code>.
+                </p>
+              </CardContent>
+            </GlassCard>
+          ) : (
             <GlassCard className="border-amber-400/20 bg-amber-400/5">
               <CardHeader className="pb-3 flex flex-row items-center gap-2">
                 <Database className="h-4 w-4 text-amber-400" />
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest">Bank Import</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <DemoBadge milestone="M5">
-                  CSV / QFX / OFX file import + dedupe + review queue lands in M5.
-                </DemoBadge>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  No bank API is connected. Until M5, log loops manually here, or export from Settings.
-                </p>
+                <DemoBadge milestone="M5">CSV file import + dedupe + review queue.</DemoBadge>
               </CardContent>
             </GlassCard>
           )}
@@ -140,6 +162,8 @@ export default function LedgerRoute() {
           </GlassCard>
         </div>
       </div>
+
+      <LedgerImportFlow isOpen={isImportOpen} onClose={() => setIsImportOpen(false)} householdId={householdId} />
 
       <BeaconModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingId(null); }} title={editingId ? "Edit Loop" : "Log Manual Loop"}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

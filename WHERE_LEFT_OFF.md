@@ -13,7 +13,17 @@
   - ~140 buttons + ~80 form fields enumerated; status distribution: ~95 REAL, ~20 MOCKED-SETTIMEOUT, ~10 ALERT-ONLY, ~15 NO-OP.
   - Component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix all in checklist.
   - Highest-priority M3 must-fix list ordered by user-visible harm (Vault Commit-to-App is #1 — it writes mock data to real db on one click).
-- Executed Milestone **M4 — Reports / Backup / Restore / Recovery** (commit pending after this update):
+- Executed Milestone **M5 (substantial pass) — Ledger + Bank/Data Import Foundation** (commit pending after this update):
+  - **CSV import pipeline** in `src/modules/import/`:
+    - `parseCsv.ts` — RFC-4180 parser (quoted fields, embedded commas/quotes/newlines, CRLF, BOM stripping). Pure function.
+    - `dedupeKey.ts` — canonical `dedupeKey({date, amount, payee})`; payee normalization (lowercase, alpha-num only); `parseAmount()` handles `$1,234.56`, `(123.45)` accounting parens, European `1.234,56`, `+`/`-` signs.
+    - `mapRows.ts` — column-mapping → typed `MappedTransactionDraft` with auto type inference from sign; `partitionByDedupe()` separates fresh from duplicates against a Set of existing keys.
+    - `autoDetect.ts` — best-effort guess at {date, payee, amount, category, type} from header names (Posted / Description / Amount / Category etc.).
+  - **`LedgerImportFlow` component** (`src/components/import/LedgerImportFlow.tsx`): 4-step modal — pick → map → review → done. Mapping step has live preview of first 3 rows. Review step lists drafts with inclusion checkboxes (duplicates default to excluded but visible) and a per-row "possible duplicate" badge. Skipped rows are surfaced with reason + source line number.
+  - **Ledger header** now has `Import CSV` action (gated on `featureFlags.bankImportTierA = true`). The right-sidebar M5 DemoBadge card has been replaced with an "How to import" panel.
+  - **20 new tests** across parseCsv (5), date/payee/amount normalization (8), dedupeKey (2), mapRowsToDrafts (3), partitionByDedupe (1), autoDetect (covered indirectly). Total 59 (was 39).
+  - **Audit-controls baseline unchanged** (`setTimeout=4 mathRandom=0 alert=0`). The import flow uses no setTimeout / alert / Math.random.
+- Executed Milestone **M4 — Reports / Backup / Restore / Recovery**:
   - **Backup format v3** — documents (Blob) now round-trip via base64. New `src/lib/encoding/base64.ts` with chunked encoder (handles >32 KB without RangeError) and a runtime fallback to `FileReader.readAsArrayBuffer` for older WebViews. v1 + v2 backups still validate on import.
   - **Real Reports Export** — `src/modules/reports/exportCsv.ts` produces RFC-4180 CSV per entity (transactions, bills, debts, savings goals, subscriptions, insurance, credit snapshots). Reports route now has an Export dropdown with all CSVs + a "Full backup (JSON v3)" shortcut. `featureFlags.reportsRealExport` flipped to `true`.
   - **Five report tabs** — Monthly (existing), Debts, Savings, Subscriptions, Documents. Each computes from real db data; debt report sorts Avalanche-order; savings report shows ETA per goal; subscriptions report sorts by monthly equivalent; document inventory groups by category.
@@ -75,18 +85,18 @@
 
 ## Where to pick up next
 
-**Next milestone: M5 — Ledger + Bank/Data Import Foundation.** M4 finished the trust layer (real CSV/JSON exports, real restore preview, v3 backup with documents). The Ledger now needs honest *inputs*: replace the M3 "import coming in M5" placeholder card with real CSV / QFX / OFX file import.
+**Next milestone: M6 — Vault + OCR + Extraction Review.** With M5 closing the inputs gap (Ledger has real CSV import) and M4 closing the trust layer (real backup/restore/exports), the Vault is the last simulated-write surface from `docs/GUI_COMPLETION_CHECKLIST.md`. The "Scavenge" button in The Vault is currently gated off behind `featureFlags.ocrLocal`; M6 ships the real implementation.
 
-**M5 concrete work (in suggested order):**
+**M6 concrete work (in suggested order):**
 
-1. **CSV import for transactions** — file picker → header mapping (let the user choose which CSV column is date / payee / amount / category) → preview as a review queue → dedupe by (date + amount + payee) → bulk commit on confirm. Flip `featureFlags.bankImportTierA` to `true` once the happy path lands.
-2. **QFX / OFX scaffolded parser** — minimal SGML/XML reader; plenty of bank exports use it. Either ship a small in-house parser or document a clean adapter interface that a future dependency can satisfy.
-3. **Merchant / payee normalization** — configurable regex rules (e.g., `^AMZN MKTP US.*$ → Amazon`). Persist rules to a new `payeeRules` Dexie table.
-4. **Review queue UI in Ledger** — replace the current "Bank Import (M5)" `DemoBadge` card with the actual queue: list of incoming transactions with edit-before-commit and per-row reject.
-5. **Tax forms cleanup (M3 carry-over)** — the Tax Taxi form is still 2 placeholder fields. M5 or M8 should either build proper per-form-type fields or label them "manual notes."
-6. **`audit:controls` baseline** locked at `setTimeout=4 mathRandom=0 alert=0`. New M5 work must not raise these without intentional baseline update.
+1. **Local OCR adapter** (`src/modules/ocr/`) — wrap Tesseract.js (or equivalent in-browser engine) behind an `OcrProvider` interface. `extract(blob, hint?) → ExtractionDraft` with per-field confidence + bounding boxes. See `docs/INTEGRATIONS_STRATEGY.md` Domain 2 Phase 1.
+2. **`VaultExtractionReview` component** — side-by-side document preview + per-field editor + confidence indicator. Required for any extracted data to land in db.
+3. **Apply-on-approve flow** — write to `incomeSources` / `bills` / `taxRecords` / etc., always with a `documentId` provenance pointer. No auto-commit.
+4. **Flip `featureFlags.ocrLocal` to true** once happy-path round-trip works.
+5. **M5 carry-overs (low priority)** — QFX/OFX scaffolded parser; merchant/payee normalization rules in a `payeeRules` Dexie table.
+6. **`audit:controls` baseline** still `setTimeout=4 mathRandom=0 alert=0`. M6 must not raise.
 
-**Reference for M5 design:** `docs/INTEGRATIONS_STRATEGY.md` Domain 1 (Bank connectivity) Phase 1 — Tier A only. Tier B (Plaid/MX aggregator) explicitly deferred until Tier A is proven insufficient.
+**Reference for M6 design:** `docs/INTEGRATIONS_STRATEGY.md` Domain 2 (Document OCR / extraction) Phase 1 — Tesseract.js local-only first.
 
 **Validation surface available now:**
 - `npm test` — 22 tests across budget engine, stash-map, backup round-trip
@@ -96,7 +106,7 @@
 - `npm run build` — production Vite build (Capacitor sync runs separately)
 
 ## Build / sync state
-- `npm test` — 39 passed (verified at M4 close, 2026-04-26)
+- `npm test` — 59 passed (verified at M5 close, 2026-04-26)
 - `npm run typecheck` — clean (verified at M4 close)
 - `npm run audit:controls` — baseline locked at `setTimeout=4 mathRandom=0 alert=0 emptyOnClick=0`; all 4 setTimeouts are legit UX status-message timers
 - `npm run build` — re-verify before next milestone
