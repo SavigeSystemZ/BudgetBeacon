@@ -16,13 +16,10 @@ Use this file for active delivery, quality, security, release, and operational r
 
 ## Active risks
 
-### R1 — Trust gap from mocked surfaces
-- **Severity:** High
-- **Area:** Product trust / data integrity
-- **Why it matters:** Mocked Bank Sync and Scavenge buttons (`LedgerRoute.tsx:53-78`, `DocumentStoreRoute.tsx:74-99`) write fabricated records to the real database. Mocked Credit fetch (`CreditRoute.tsx:57-74`) writes random scores. Mocked Beacon Bridge (`BeaconBridgeRoute.tsx:28-37`) writes fake sync logs. Maintainer or partner could plan finances against fake data.
-- **Mitigation:** M3 disables/hides these buttons or labels them "Demo." Real replacements land in M5 (import), M6 (OCR), M7 (AI), M8 (Credit honesty), M9 (Bridge real-or-removed).
-- **Trigger to revisit:** Before any release. Before partner uses the app.
-- **Owner:** current maintainer
+### ~~R1 — Trust gap from mocked surfaces~~ — substantially mitigated by M3 (2026-04-25)
+- M3.1 + M3.2 removed every mocked write-to-db path: Vault Scavenge + Commit-to-App, Ledger Bank Sync + Scavenge + Commit-All, Credit Bank Fetch + Credit Check, Beacon Bridge Scan + Merge. Insurance Inspect rewritten as real manual CRUD. Chatbot now labeled Demo. Audit-controls baseline `setTimeout=2 mathRandom=0 alert=0`.
+- **Residual risk:** the chatbot still produces text replies (clearly labeled placeholders). The M9 Bridge route does not yet do real device sync (clearly labeled). Document OCR is gone but not yet replaced (M6).
+- **Re-trigger:** if any new mocked-write surface ships, or if `audit:controls` baseline grows.
 
 ### ~~R2 — No automated test lane~~ — resolved M2
 - M0 audit was wrong about "no test files" (17 already existed). M2 added the missing `test`/`typecheck`/`audit:controls` scripts and a backup round-trip suite. Total 22 tests, 3 files. Re-trigger if test count drops or any module ships without tests.

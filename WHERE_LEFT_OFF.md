@@ -13,6 +13,11 @@
   - ~140 buttons + ~80 form fields enumerated; status distribution: ~95 REAL, ~20 MOCKED-SETTIMEOUT, ~10 ALERT-ONLY, ~15 NO-OP.
   - Component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix all in checklist.
   - Highest-priority M3 must-fix list ordered by user-visible harm (Vault Commit-to-App is #1 — it writes mock data to real db on one click).
+- Executed Milestone **M3 (substantial pass) — Full GUI Completion** in two commits:
+  - **M3.1 (commit `72c86c3`)** — removed highest-harm fake controls in Vault, Ledger, Credit, Beacon Bridge. Introduced shared `featureFlags` map (`src/lib/flags/featureFlags.ts`) and `DemoBadge` component (`src/components/ui/DemoBadge.tsx`).
+  - **M3.2 (commit `ae1bbb5`)** — every remaining `alert()` removed from `src/`. New `stabilityIndex` module + tests; Mission Control / Reports now use the real index. Mission Control's Largest Liability + Stash Velocity cards now compute from real db. Insurance Inspect rewritten as honest manual CRUD against `insuranceRecords`. Settings rewritten with real `localStorage`-backed preferences and Dexie-backed AI Config persistence. Chatbot now clearly labeled Demo until M7.
+  - **Audit-controls counts:** `setTimeout` 10 → 2 (both remaining are legit Settings UX timers), `mathRandom` 2 → 0, `alert` 15 → 0.
+  - **Validation:** `npm test` 29 passed; `npm run typecheck` clean.
 - Executed Milestone **M2 — Core Data + Validation Hardening** (first code-touching milestone):
   - **Test infrastructure**: added `npm test`, `npm run test:watch`, `npm run typecheck`, `npm run audit:controls` scripts. Created `vitest.config.ts` (jsdom env) and `vitest.setup.ts` (loads `fake-indexeddb/auto` + jest-dom matchers).
   - **Discovered M0/M1 audit inaccuracies (now corrected below)**: there were already 2 test files (`budget-engine.test.ts` 12 cases, `stash-map.calculations.test.ts` 5 cases) — total 17 pre-existing tests. The biweekly factor in the *budget engine itself* (`frequency.ts`) was already correct (`52/12 ≈ 2.1667`); the bug was in `IncomeRoute.tsx` lines 36–46 which had a *duplicate* incorrect display calculation.
@@ -62,20 +67,16 @@
 
 ## Where to pick up next
 
-**Next milestone: M3 — Full GUI Completion Pass.** Punch list is in `docs/GUI_COMPLETION_CHECKLIST.md` "Highest-priority controls (M3 must-fix list)" — 10 ordered items. Top priorities by user-visible harm:
+**Next milestone: M4 — Reports, Backup, Restore, Recovery.** All 10 highest-priority M3 must-fix items are done; remaining M3 work is polish (delete confirmations, EmptyState in 6 routes, accessibility audit, mobile safe-area pass). Those can roll into M4 as ambient cleanup.
 
-1. **Vault `6.7` "Commit to App"** — disable; it writes mock-extracted data to real db on a single click. (Highest harm in the app.)
-2. **Ledger `9.1`/`9.2`/`9.6`** — Bank Sync, Scavenge, Commit-All all write fabricated transactions. HIDE/LABEL.
-3. **Credit `3.1`/`3.2`** — Bank Fetch + Credit Check write `Math.random` scores. REMOVE.
-4. **Beacon Bridge `1.1`/`1.2`** — fake sync. HIDE/LABEL.
-5. **Insurance Inspect (whole route)** — entirely L0 hardcoded. LABEL as "Demo" or hide.
-6. **Settings toggles + AI Config** — 7 toggles + Model input have no `onChange`/`onClick`. WIRE all or REMOVE.
-7. **Mission Control 2.1/2.2/2.3** — alert + hardcoded stability/forecast. CALCULATE from real data.
-8. **Dashboard 4.2/4.5** — alert "Save Cockpit" + no-op "Execute Deep Audit". REMOVE.
-9. **Reports 11.1** — Export alert. LABEL "M4 — coming soon."
-10. **Chatbot C.4** — canned replies. LABEL "Demo".
+**M4 concrete work (in suggested order):**
 
-After each M3 commit, run `npm run audit:controls` — counts should monotonically decrease (current baseline: setTimeout=10, Math.random=2, alert=15). When intentionally removing mocks, run `npm run audit:controls -- --update` to record the new lower baseline.
+1. **Documents-table backup completion** (`docs/INTEGRATIONS_STRATEGY.md` Domain 6 Phase 1) — base64-encode Blob on export, decode on import. Bump backup format to v3 (v1 + v2 still accepted). Add a round-trip test for documents in `src/modules/reports/backup.test.ts`.
+2. **Real Reports Export** — wire the M4 DemoBadge to a real export. CSV per entity (transactions, bills, debts, goals, subscriptions, insurance). JSON full-backup shortcut. Print stylesheet pass.
+3. **Restore-confirmation diff preview** — before commit, show counts being added vs replaced (e.g. "this will replace 142 transactions and add 5 new subscriptions").
+4. **Backup integrity round-trip CI guard** — already covered by `backup.test.ts`; M4 should keep it green as new tables ship.
+5. **Per-report views** — monthly household, debt summary, savings progress, tax-year packet, document inventory.
+6. **`audit:controls` regression** — keep counts at or below current baseline (`setTimeout=2 mathRandom=0 alert=0`).
 
 **Validation surface available now:**
 - `npm test` — 22 tests across budget engine, stash-map, backup round-trip
@@ -85,12 +86,12 @@ After each M3 commit, run `npm run audit:controls` — counts should monotonical
 - `npm run build` — production Vite build (Capacitor sync runs separately)
 
 ## Build / sync state
-- `npm test` — 22 passed (verified at M2 close, 2026-04-25)
-- `npm run typecheck` — clean (verified at M2 close)
-- `npm run audit:controls` — baseline recorded; no regressions
-- `npm run build` — clean per prior handoff (re-verify before M3 sweep)
-- `npx cap sync` — clean per prior handoff
-- Database: Dexie v4 active
+- `npm test` — 29 passed (verified at M3.2 close, 2026-04-25, commit `ae1bbb5`)
+- `npm run typecheck` — clean (verified at M3.2 close)
+- `npm run audit:controls` — baseline locked at `setTimeout=2 mathRandom=0 alert=0 emptyOnClick=0`; both remaining setTimeouts are legitimate Settings UX timers (saved-flash + import-status reset)
+- `npm run build` — re-verify before next milestone
+- `npx cap sync` — re-verify before Android smoke
+- Database: Dexie v4 active; backup format v2 (covers all 17 JSON-serializable tables; documents/Blob deferred to M4)
 
 ## Hard rules for the next agent
 1. **Do not re-introduce "Mission Ready" / "fully delivered" language anywhere.** If you find it, fix it.

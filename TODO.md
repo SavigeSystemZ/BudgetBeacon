@@ -10,13 +10,20 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [x] **CRITICAL: M0 — Repo Truth Reset.** Rewrite `PLAN.md`, `ROADMAP.md`, `WHERE_LEFT_OFF.md`, `TODO.md`, `FIXME.md`, `RISK_REGISTER.md`. Create `docs/GUI_COMPLETION_MAP.md` and `docs/INTEGRATIONS_STRATEGY.md`. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M1 — GUI Surface Audit & Completion Matrix.** Created `docs/GUI_COMPLETION_CHECKLIST.md` with per-control inventory (~140 buttons + ~80 form fields), component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix, and ordered M3 must-fix list. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M2 — Core Data + Validation Hardening.** Added test/typecheck/audit-controls scripts, vitest config, ErrorBoundary, IncomeRoute frequency drift fix, backup completeness fix (v2 format covers all 17 JSON-serializable tables; documents/Blob deferred to M4), backup round-trip test. 22 tests passing, typecheck clean. *(Completed 2026-04-25.)*
+- [x] **CRITICAL: M3 (substantial) — Full GUI Completion Pass.** Two commits (`72c86c3` + `ae1bbb5`). All 10 highest-priority must-fix items done. Audit counts: `setTimeout` 10→2 (legit UX), `mathRandom` 2→0, `alert` 15→0. New shared primitives: `featureFlags` map, `DemoBadge` component, `preferences` localStorage layer, `stabilityIndex` module + 7 tests. 29 tests passing. Insurance Inspect now real manual CRUD; Settings now persists toggles + aiConfig. *(Completed 2026-04-25.)*
 
-## Immediate Queue (M3 — Full GUI Completion Pass)
+## Immediate Queue (M4 — Reports, Backup, Restore, Recovery)
 
-See `docs/GUI_COMPLETION_CHECKLIST.md` § "Highest-priority controls (M3 must-fix list)" for the ordered list. Per-control fix assignments below tagged `M3` are the work. Run `npm run audit:controls` after each batch of mock removals.
+- [ ] **HIGH:** Documents-table backup completion — base64-encode Blob on export, decode on import. Bump backup format to v3 (v1 + v2 still accepted). Add round-trip test for documents in `backup.test.ts`.
+- [ ] **HIGH:** Real Reports Export — flip `featureFlags.reportsRealExport` once a real implementation lands. CSV per entity + JSON full-backup shortcut + per-report views (monthly household, debt summary, savings progress, tax-year packet, document inventory).
+- [ ] **HIGH:** Restore-confirmation diff preview — before commit, show counts being added vs replaced.
+- [ ] **MEDIUM:** Print stylesheet pass — Reports `window.print()` works but layout isn't optimized for paper.
 
-### M2 items left over (none critical; complete in any order during M3)
-- [ ] **MEDIUM:** Document the M2 deferred Documents-table backup decision in `RISK_REGISTER.md` (note: blob round-trip = M4).
+### M3 polish carry-over (low-risk, do during M4 or M5)
+- [ ] **MEDIUM:** Add `EmptyState` component to remaining 6 routes (Mission Control, Dashboard, Pay Path, Credit snapshot list, Reports, plus the existing IncomeRoute partial).
+- [ ] **LOW:** Add delete-confirm modal helper and apply to all icon-button deletes (Income/Pay Path bills/Pay Path debts/Stash Map/Subscriptions/Tax Taxi/Credit/Documents).
+- [ ] **LOW:** Accessibility audit (color contrast, focus order, aria-labels on icon-only buttons).
+- [ ] **LOW:** Decide on canonical Card primitive (`GlassCard` vs `Card`); migrate Settings to match the rest of the app.
 
 ## Reference Queue (was M2; now done)
 
