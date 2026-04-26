@@ -13,6 +13,14 @@
   - ~140 buttons + ~80 form fields enumerated; status distribution: ~95 REAL, ~20 MOCKED-SETTIMEOUT, ~10 ALERT-ONLY, ~15 NO-OP.
   - Component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix all in checklist.
   - Highest-priority M3 must-fix list ordered by user-visible harm (Vault Commit-to-App is #1 — it writes mock data to real db on one click).
+- Executed Milestone **M4 — Reports / Backup / Restore / Recovery** (commit pending after this update):
+  - **Backup format v3** — documents (Blob) now round-trip via base64. New `src/lib/encoding/base64.ts` with chunked encoder (handles >32 KB without RangeError) and a runtime fallback to `FileReader.readAsArrayBuffer` for older WebViews. v1 + v2 backups still validate on import.
+  - **Real Reports Export** — `src/modules/reports/exportCsv.ts` produces RFC-4180 CSV per entity (transactions, bills, debts, savings goals, subscriptions, insurance, credit snapshots). Reports route now has an Export dropdown with all CSVs + a "Full backup (JSON v3)" shortcut. `featureFlags.reportsRealExport` flipped to `true`.
+  - **Five report tabs** — Monthly (existing), Debts, Savings, Subscriptions, Documents. Each computes from real db data; debt report sorts Avalanche-order; savings report shows ETA per goal; subscriptions report sorts by monthly equivalent; document inventory groups by category.
+  - **Restore-confirmation diff preview** — Settings now parses + validates the file first, then shows a `RestoreDiffPanel` with current-vs-backup row counts per table (additions in green, deletions in red). User confirms only after reviewing. New helpers `backupRowCounts()` and `currentDbRowCounts()` in `importJson.ts`.
+  - **Print stylesheet** — `@media print` block in `src/index.css` forces white bg / black text, disables animations, sets `break-inside: avoid` on cards, hides nav and chatbot FAB.
+  - **New tests** — base64 helpers (4 cases incl. >32 KB chunking boundary), CSV escape (4 cases), backup row-counts diff (1 case). Total 39 tests, all green.
+  - **Audit-controls baseline updated** to `setTimeout=4 mathRandom=0 alert=0`. The 4 setTimeouts are all legit UX status-message timers (Settings savedFlash + importStatus reset, Reports CSV + JSON export confirmations).
 - Executed Milestone **M3 (substantial pass) — Full GUI Completion** in two commits:
   - **M3.1 (commit `72c86c3`)** — removed highest-harm fake controls in Vault, Ledger, Credit, Beacon Bridge. Introduced shared `featureFlags` map (`src/lib/flags/featureFlags.ts`) and `DemoBadge` component (`src/components/ui/DemoBadge.tsx`).
   - **M3.2 (commit `ae1bbb5`)** — every remaining `alert()` removed from `src/`. New `stabilityIndex` module + tests; Mission Control / Reports now use the real index. Mission Control's Largest Liability + Stash Velocity cards now compute from real db. Insurance Inspect rewritten as honest manual CRUD against `insuranceRecords`. Settings rewritten with real `localStorage`-backed preferences and Dexie-backed AI Config persistence. Chatbot now clearly labeled Demo until M7.
@@ -67,16 +75,18 @@
 
 ## Where to pick up next
 
-**Next milestone: M4 — Reports, Backup, Restore, Recovery.** All 10 highest-priority M3 must-fix items are done; remaining M3 work is polish (delete confirmations, EmptyState in 6 routes, accessibility audit, mobile safe-area pass). Those can roll into M4 as ambient cleanup.
+**Next milestone: M5 — Ledger + Bank/Data Import Foundation.** M4 finished the trust layer (real CSV/JSON exports, real restore preview, v3 backup with documents). The Ledger now needs honest *inputs*: replace the M3 "import coming in M5" placeholder card with real CSV / QFX / OFX file import.
 
-**M4 concrete work (in suggested order):**
+**M5 concrete work (in suggested order):**
 
-1. **Documents-table backup completion** (`docs/INTEGRATIONS_STRATEGY.md` Domain 6 Phase 1) — base64-encode Blob on export, decode on import. Bump backup format to v3 (v1 + v2 still accepted). Add a round-trip test for documents in `src/modules/reports/backup.test.ts`.
-2. **Real Reports Export** — wire the M4 DemoBadge to a real export. CSV per entity (transactions, bills, debts, goals, subscriptions, insurance). JSON full-backup shortcut. Print stylesheet pass.
-3. **Restore-confirmation diff preview** — before commit, show counts being added vs replaced (e.g. "this will replace 142 transactions and add 5 new subscriptions").
-4. **Backup integrity round-trip CI guard** — already covered by `backup.test.ts`; M4 should keep it green as new tables ship.
-5. **Per-report views** — monthly household, debt summary, savings progress, tax-year packet, document inventory.
-6. **`audit:controls` regression** — keep counts at or below current baseline (`setTimeout=2 mathRandom=0 alert=0`).
+1. **CSV import for transactions** — file picker → header mapping (let the user choose which CSV column is date / payee / amount / category) → preview as a review queue → dedupe by (date + amount + payee) → bulk commit on confirm. Flip `featureFlags.bankImportTierA` to `true` once the happy path lands.
+2. **QFX / OFX scaffolded parser** — minimal SGML/XML reader; plenty of bank exports use it. Either ship a small in-house parser or document a clean adapter interface that a future dependency can satisfy.
+3. **Merchant / payee normalization** — configurable regex rules (e.g., `^AMZN MKTP US.*$ → Amazon`). Persist rules to a new `payeeRules` Dexie table.
+4. **Review queue UI in Ledger** — replace the current "Bank Import (M5)" `DemoBadge` card with the actual queue: list of incoming transactions with edit-before-commit and per-row reject.
+5. **Tax forms cleanup (M3 carry-over)** — the Tax Taxi form is still 2 placeholder fields. M5 or M8 should either build proper per-form-type fields or label them "manual notes."
+6. **`audit:controls` baseline** locked at `setTimeout=4 mathRandom=0 alert=0`. New M5 work must not raise these without intentional baseline update.
+
+**Reference for M5 design:** `docs/INTEGRATIONS_STRATEGY.md` Domain 1 (Bank connectivity) Phase 1 — Tier A only. Tier B (Plaid/MX aggregator) explicitly deferred until Tier A is proven insufficient.
 
 **Validation surface available now:**
 - `npm test` — 22 tests across budget engine, stash-map, backup round-trip
@@ -86,12 +96,12 @@
 - `npm run build` — production Vite build (Capacitor sync runs separately)
 
 ## Build / sync state
-- `npm test` — 29 passed (verified at M3.2 close, 2026-04-25, commit `ae1bbb5`)
-- `npm run typecheck` — clean (verified at M3.2 close)
-- `npm run audit:controls` — baseline locked at `setTimeout=2 mathRandom=0 alert=0 emptyOnClick=0`; both remaining setTimeouts are legitimate Settings UX timers (saved-flash + import-status reset)
+- `npm test` — 39 passed (verified at M4 close, 2026-04-26)
+- `npm run typecheck` — clean (verified at M4 close)
+- `npm run audit:controls` — baseline locked at `setTimeout=4 mathRandom=0 alert=0 emptyOnClick=0`; all 4 setTimeouts are legit UX status-message timers
 - `npm run build` — re-verify before next milestone
 - `npx cap sync` — re-verify before Android smoke
-- Database: Dexie v4 active; backup format v2 (covers all 17 JSON-serializable tables; documents/Blob deferred to M4)
+- Database: Dexie v4 active; **backup format v3** (covers all 18 tables including `documents` Blob via base64; v1/v2 still accepted on import)
 
 ## Hard rules for the next agent
 1. **Do not re-introduce "Mission Ready" / "fully delivered" language anywhere.** If you find it, fix it.

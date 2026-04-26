@@ -1,12 +1,15 @@
 {
-  "updatedAt": "2026-04-26T02:14:35.658Z",
+  "updatedAt": "2026-04-26T14:35:16.615Z",
   "counts": {
-    "setTimeout": 2,
+    "setTimeout": 4,
     "mathRandom": 0,
     "alert": 0,
     "emptyOnClick": 0
   },
   "perFile": {
+    "src/routes/ReportsRoute.tsx": {
+      "setTimeout": 2
+    },
     "src/routes/SettingsRoute.tsx": {
       "setTimeout": 2
     }

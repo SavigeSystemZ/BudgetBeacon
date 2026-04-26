@@ -238,3 +238,33 @@
   .minimal body { background: #ffffff; }
   .emerald body { background: linear-gradient(-45deg, #064e3b, #065f46, #059669, #10b981); background-size: 400% 400%; }
 }
+/* ===== Print stylesheet (M4) =====
+   Reports route uses Tailwind `print:hidden` on controls + `print:bg-transparent`
+   on its outer GlassCard. These global rules add what Tailwind utilities can't:
+   page-break behaviour, forced-color text for ink, and no-bg for the body. */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  /* Strip the animated theme gradients so they don't bleed onto paper. */
+  body, body * {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* Avoid breaking inside report sections / cards. */
+  .glass-card,
+  [data-print-section] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* Each major report stat / heading starts on a fresh page when long. */
+  h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  /* Hide app shell chrome that Tailwind print:hidden may have missed. */
+  nav, [role="banner"], .beacon-chatbot-fab {
+    display: none !important;
+  }
+}

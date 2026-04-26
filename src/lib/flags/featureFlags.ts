@@ -35,7 +35,7 @@ export const featureFlags = {
   syncWebRTC: false, // P2P over WebRTC
 
   // Reports (M4 owns)
-  reportsRealExport: false, // Real CSV/PDF export beyond window.print()
+  reportsRealExport: true, // CSV per entity + JSON backup shortcut (PDF still via window.print() in M4)
 
   // Insurance (M9 owns)
   insuranceMarketScrape: false, // No realistic provider; likely permanently false

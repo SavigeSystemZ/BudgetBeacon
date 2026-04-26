@@ -1,10 +1,35 @@
 import { db } from "../../db/db";
+import { blobToBase64 } from "../../lib/encoding/base64";
 
-export const BACKUP_FORMAT_VERSION = 2;
+export const BACKUP_FORMAT_VERSION = 3;
 
-// Tables intentionally excluded from JSON backup:
-//   - documents: Blob storage (not JSON-serializable without base64; deferred to M4)
+/**
+ * Backup format history:
+ *   v1 — original 8 tables. Lost 10 tables of data on restore.
+ *   v2 — adds 9 JSON-serializable tables (M2). Documents (Blob) still excluded.
+ *   v3 — adds documents with base64-encoded Blob data (M4).
+ *
+ * v1 and v2 backups still validate on import (importJson.ts).
+ */
 export async function buildBackupPayload() {
+  // Encode document Blobs to base64 so the payload survives JSON round-trip.
+  const documentRows = await db.documents.toArray();
+  const documents = await Promise.all(
+    documentRows.map(async (doc) => ({
+      id: doc.id,
+      householdId: doc.householdId,
+      personId: doc.personId,
+      label: doc.label,
+      category: doc.category,
+      fileName: doc.fileName,
+      fileType: doc.fileType,
+      fileSize: doc.fileSize,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      dataBase64: await blobToBase64(doc.data),
+    }))
+  );
+
   return {
     version: BACKUP_FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
@@ -25,6 +50,7 @@ export async function buildBackupPayload() {
     subscriptions: await db.subscriptions.toArray(),
     insuranceRecords: await db.insuranceRecords.toArray(),
     syncLogs: await db.syncLogs.toArray(),
+    documents,
   };
 }
 

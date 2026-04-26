@@ -6,6 +6,7 @@ import { billSchema, debtSchema } from "../pay-path/pay-path.schema";
 import { savingsGoalSchema } from "../stash-map/stash-map.schema";
 import { creditSnapshotSchema } from "../credit/credit.schema";
 import { transactionSchema } from "../ledger/ledger.schema";
+import { base64ToBlob } from "../../lib/encoding/base64";
 
 // Minimal schemas for tables that don't have dedicated schema files yet.
 // Strict enough to reject obvious garbage; loose enough to accept evolving shapes.
@@ -87,8 +88,23 @@ const syncLogSchema = z.object({
   payloadSize: z.number(),
 });
 
-// v1 backups had only 8 tables. v2 adds the remaining JSON-serializable tables.
-// `documents` (Blob) is excluded from both versions; deferred to M4.
+// v3 documents row: Blob is base64-encoded for JSON survival.
+const documentBackupSchema = z.object({
+  id: z.string(),
+  householdId: z.string(),
+  personId: z.string(),
+  label: z.string(),
+  category: z.string(),
+  fileName: z.string(),
+  fileType: z.string(),
+  fileSize: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  dataBase64: z.string(),
+});
+
+// v1: 8 tables. v2: +9 JSON-serializable tables. v3: +documents (base64).
+// All optional fields make older versions valid on import.
 const backupSchema = z.object({
   version: z.number().min(1),
   exportedAt: z.string(),
@@ -100,7 +116,7 @@ const backupSchema = z.object({
   savingsGoals: z.array(savingsGoalSchema),
   creditSnapshots: z.array(creditSnapshotSchema),
   transactions: z.array(transactionSchema).optional(),
-  // v2 tables (optional so v1 backups still validate)
+  // v2 tables
   debtTransactions: z.array(debtTransactionSchema).optional(),
   taxRecords: z.array(taxRecordSchema).optional(),
   taxTransactions: z.array(taxTransactionSchema).optional(),
@@ -110,11 +126,29 @@ const backupSchema = z.object({
   subscriptions: z.array(subscriptionSchema).optional(),
   insuranceRecords: z.array(insuranceRecordSchema).optional(),
   syncLogs: z.array(syncLogSchema).optional(),
+  // v3 tables
+  documents: z.array(documentBackupSchema).optional(),
 });
 
 export type BackupPayload = z.infer<typeof backupSchema>;
 
 export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
+  // Decode document Blobs outside the Dexie transaction (atob isn't async but
+  // keeping the encode/decode logic at the boundary keeps the txn pure-IDB).
+  const decodedDocuments = parsed.documents?.map((d) => ({
+    id: d.id,
+    householdId: d.householdId,
+    personId: d.personId,
+    label: d.label,
+    category: d.category,
+    fileName: d.fileName,
+    fileType: d.fileType,
+    fileSize: d.fileSize,
+    createdAt: d.createdAt,
+    updatedAt: d.updatedAt,
+    data: base64ToBlob(d.dataBase64, d.fileType),
+  }));
+
   await db.transaction(
     "rw",
     [
@@ -135,6 +169,7 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       db.subscriptions,
       db.insuranceRecords,
       db.syncLogs,
+      db.documents,
     ],
     async () => {
       // Clear existing
@@ -155,8 +190,9 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       await db.subscriptions.clear();
       await db.insuranceRecords.clear();
       await db.syncLogs.clear();
+      await db.documents.clear();
 
-      // Insert backup (each table optional for v1 backwards-compat)
+      // Insert backup (each non-baseline table optional for older-version compat)
       await db.households.bulkAdd(parsed.households);
       await db.persons.bulkAdd(parsed.persons);
       await db.incomeSources.bulkAdd(parsed.incomeSources);
@@ -174,8 +210,66 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       if (parsed.subscriptions) await db.subscriptions.bulkAdd(parsed.subscriptions);
       if (parsed.insuranceRecords) await db.insuranceRecords.bulkAdd(parsed.insuranceRecords);
       if (parsed.syncLogs) await db.syncLogs.bulkAdd(parsed.syncLogs);
+      if (decodedDocuments) await db.documents.bulkAdd(decodedDocuments);
     }
   );
+}
+
+/**
+ * Returns row counts per table from a parsed backup payload. Used by the
+ * restore-confirmation diff preview to tell the user what's about to land
+ * before they commit.
+ */
+export type BackupRowCounts = Record<string, number>;
+
+export function backupRowCounts(parsed: BackupPayload): BackupRowCounts {
+  return {
+    households: parsed.households.length,
+    persons: parsed.persons.length,
+    incomeSources: parsed.incomeSources.length,
+    bills: parsed.bills.length,
+    debts: parsed.debts.length,
+    savingsGoals: parsed.savingsGoals.length,
+    creditSnapshots: parsed.creditSnapshots.length,
+    transactions: parsed.transactions?.length ?? 0,
+    debtTransactions: parsed.debtTransactions?.length ?? 0,
+    taxRecords: parsed.taxRecords?.length ?? 0,
+    taxTransactions: parsed.taxTransactions?.length ?? 0,
+    taxForms: parsed.taxForms?.length ?? 0,
+    aiConfig: parsed.aiConfig?.length ?? 0,
+    chatMessages: parsed.chatMessages?.length ?? 0,
+    subscriptions: parsed.subscriptions?.length ?? 0,
+    insuranceRecords: parsed.insuranceRecords?.length ?? 0,
+    syncLogs: parsed.syncLogs?.length ?? 0,
+    documents: parsed.documents?.length ?? 0,
+  };
+}
+
+/**
+ * Returns current row counts from the live db. Used alongside `backupRowCounts`
+ * to compute "will replace X, will add Y" diffs in the restore preview.
+ */
+export async function currentDbRowCounts(): Promise<BackupRowCounts> {
+  return {
+    households: await db.households.count(),
+    persons: await db.persons.count(),
+    incomeSources: await db.incomeSources.count(),
+    bills: await db.bills.count(),
+    debts: await db.debts.count(),
+    savingsGoals: await db.savingsGoals.count(),
+    creditSnapshots: await db.creditSnapshots.count(),
+    transactions: await db.transactions.count(),
+    debtTransactions: await db.debtTransactions.count(),
+    taxRecords: await db.taxRecords.count(),
+    taxTransactions: await db.taxTransactions.count(),
+    taxForms: await db.taxForms.count(),
+    aiConfig: await db.aiConfig.count(),
+    chatMessages: await db.chatMessages.count(),
+    subscriptions: await db.subscriptions.count(),
+    insuranceRecords: await db.insuranceRecords.count(),
+    syncLogs: await db.syncLogs.count(),
+    documents: await db.documents.count(),
+  };
 }
 
 export function parseBackupJson(jsonText: string): BackupPayload {

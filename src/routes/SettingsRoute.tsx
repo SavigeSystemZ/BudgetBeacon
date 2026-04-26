@@ -6,7 +6,14 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { db } from "../db/db";
 import { exportDatabaseToJson } from "../modules/reports/exportJson";
-import { importDatabaseFromJson } from "../modules/reports/importJson";
+import {
+  parseBackupJson,
+  applyBackupPayload,
+  backupRowCounts,
+  currentDbRowCounts,
+  type BackupPayload,
+  type BackupRowCounts,
+} from "../modules/reports/importJson";
 import { clearDatabase, seedDemoData } from "../db/seedDemoData";
 import { useTheme, type Theme } from "../components/theme-provider";
 import { loadPreferences, savePreferences, defaultPreferences, type Preferences } from "../lib/preferences/preferences";
@@ -34,10 +41,18 @@ const AUTOMATION_TOGGLES: Toggle[] = [
 
 const AI_CONFIG_ID = "primary";
 
+interface PendingImport {
+  parsed: BackupPayload;
+  backupCounts: BackupRowCounts;
+  liveCounts: BackupRowCounts;
+  filename: string;
+}
+
 export default function SettingsRoute() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [pendingImport, setPendingImport] = useState<PendingImport | null>(null);
   const { theme, setTheme } = useTheme();
 
   const [prefs, setPrefs] = useState<Preferences>(defaultPreferences);
@@ -81,22 +96,40 @@ export default function SettingsRoute() {
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!window.confirm("Importing a backup will REPLACE all current data. Proceed?")) {
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
-    }
     setImportStatus("loading");
     setErrorMessage("");
     try {
-      await importDatabaseFromJson(file);
+      const text = await file.text();
+      const parsed = parseBackupJson(text);
+      const backupCounts = backupRowCounts(parsed);
+      const liveCounts = await currentDbRowCounts();
+      setPendingImport({ parsed, backupCounts, liveCounts, filename: file.name });
+      setImportStatus("idle");
+    } catch (err) {
+      setImportStatus("error");
+      setErrorMessage(err instanceof Error ? err.message : "Backup file is invalid or corrupted.");
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const confirmImport = async () => {
+    if (!pendingImport) return;
+    setImportStatus("loading");
+    try {
+      await applyBackupPayload(pendingImport.parsed);
+      setPendingImport(null);
       setImportStatus("success");
       window.setTimeout(() => setImportStatus("idle"), 3000);
     } catch (err) {
       setImportStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Unknown import error");
-    } finally {
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      setErrorMessage(err instanceof Error ? err.message : "Failed to apply backup.");
     }
+  };
+
+  const cancelImport = () => {
+    setPendingImport(null);
+    setImportStatus("idle");
   };
 
   const handleReset = async () => {
@@ -150,7 +183,7 @@ export default function SettingsRoute() {
   );
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto pb-20">
+    <div className="space-y-8 max-w-6xl mx-auto pb-20" data-testid="settings-route">
       <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
           <h1 className="text-4xl font-black tracking-tighter italic uppercase text-primary">System Settings</h1>
@@ -210,11 +243,20 @@ export default function SettingsRoute() {
                 </Button>
               </div>
             </div>
-            {importStatus === "loading" && <p role="status" className="text-xs text-muted-foreground font-bold">Importing…</p>}
+            {importStatus === "loading" && <p role="status" className="text-xs text-muted-foreground font-bold">Reading backup…</p>}
             {importStatus === "success" && <p role="status" className="text-xs text-green-500 font-bold">✓ Backup imported successfully.</p>}
             {importStatus === "error" && <p role="alert" className="text-xs text-destructive font-bold">✕ {errorMessage}</p>}
+
+            {pendingImport && (
+              <RestoreDiffPanel
+                pending={pendingImport}
+                onConfirm={confirmImport}
+                onCancel={cancelImport}
+              />
+            )}
+
             <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-primary/5">
-              Backup format v2 covers all household data except uploaded document files (Blob round-trip lands in M4).
+              Backup format v3 covers all household data including uploaded documents (base64-encoded). Older v1 / v2 backups still validate on import.
             </p>
           </CardContent>
         </Card>
@@ -368,6 +410,91 @@ export default function SettingsRoute() {
           </CardContent>
         </Card>
 
+      </div>
+    </div>
+  );
+}
+
+const COUNT_LABELS: Array<{ key: keyof BackupRowCounts; label: string }> = [
+  { key: "households", label: "Households" },
+  { key: "persons", label: "People" },
+  { key: "incomeSources", label: "Income sources" },
+  { key: "bills", label: "Bills" },
+  { key: "debts", label: "Debts" },
+  { key: "savingsGoals", label: "Savings goals" },
+  { key: "creditSnapshots", label: "Credit snapshots" },
+  { key: "transactions", label: "Transactions" },
+  { key: "subscriptions", label: "Subscriptions" },
+  { key: "insuranceRecords", label: "Insurance policies" },
+  { key: "documents", label: "Documents" },
+  { key: "taxRecords", label: "Tax records" },
+  { key: "taxForms", label: "Tax forms" },
+  { key: "chatMessages", label: "Chat messages" },
+];
+
+function RestoreDiffPanel({
+  pending,
+  onConfirm,
+  onCancel,
+}: {
+  pending: { parsed: BackupPayload; backupCounts: BackupRowCounts; liveCounts: BackupRowCounts; filename: string };
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  const { backupCounts, liveCounts, filename, parsed } = pending;
+  const totalIncoming = COUNT_LABELS.reduce((s, c) => s + (backupCounts[c.key] || 0), 0);
+  const totalLive = COUNT_LABELS.reduce((s, c) => s + (liveCounts[c.key] || 0), 0);
+
+  return (
+    <div role="dialog" aria-label="Confirm restore" className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-5 space-y-4">
+      <div>
+        <h3 className="text-sm font-black uppercase italic tracking-tighter text-amber-500">Confirm Restore</h3>
+        <p className="text-[11px] text-muted-foreground mt-1">
+          From <strong className="text-foreground">{filename}</strong> · backup format v{parsed.version} · exported{" "}
+          {parsed.exportedAt.split("T")[0]}.
+        </p>
+      </div>
+
+      <p className="text-xs text-muted-foreground leading-relaxed">
+        Importing will <strong className="text-amber-500">REPLACE all current data</strong> with the contents of this backup.
+        Compare row counts before confirming:
+      </p>
+
+      <div className="grid grid-cols-3 gap-x-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground border-b border-primary/10 pb-1">
+        <span>Table</span>
+        <span className="text-right">Current</span>
+        <span className="text-right">Backup</span>
+      </div>
+      <div className="max-h-56 overflow-y-auto space-y-1 text-xs">
+        {COUNT_LABELS.map((c) => {
+          const cur = liveCounts[c.key] ?? 0;
+          const bak = backupCounts[c.key] ?? 0;
+          const changed = cur !== bak;
+          return (
+            <div
+              key={c.key}
+              className={`grid grid-cols-3 gap-x-4 py-1 ${changed ? "text-foreground font-bold" : "opacity-60"}`}
+            >
+              <span>{c.label}</span>
+              <span className="text-right tabular-nums">{cur}</span>
+              <span className={`text-right tabular-nums ${changed ? (bak > cur ? "text-green-500" : bak < cur ? "text-destructive" : "") : ""}`}>{bak}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-3 gap-x-4 text-[10px] font-black uppercase tracking-widest border-t border-primary/10 pt-1">
+        <span>Total rows</span>
+        <span className="text-right tabular-nums">{totalLive}</span>
+        <span className="text-right tabular-nums">{totalIncoming}</span>
+      </div>
+
+      <div className="flex gap-2 pt-2">
+        <Button variant="outline" onClick={onCancel} className="flex-1">
+          Cancel
+        </Button>
+        <Button onClick={onConfirm} className="flex-[2] bg-amber-500 hover:bg-amber-600 text-white">
+          Replace data with backup
+        </Button>
       </div>
     </div>
   );

@@ -11,13 +11,15 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [x] **CRITICAL: M1 — GUI Surface Audit & Completion Matrix.** Created `docs/GUI_COMPLETION_CHECKLIST.md` with per-control inventory (~140 buttons + ~80 form fields), component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix, and ordered M3 must-fix list. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M2 — Core Data + Validation Hardening.** Added test/typecheck/audit-controls scripts, vitest config, ErrorBoundary, IncomeRoute frequency drift fix, backup completeness fix (v2 format covers all 17 JSON-serializable tables; documents/Blob deferred to M4), backup round-trip test. 22 tests passing, typecheck clean. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M3 (substantial) — Full GUI Completion Pass.** Two commits (`72c86c3` + `ae1bbb5`). All 10 highest-priority must-fix items done. Audit counts: `setTimeout` 10→2 (legit UX), `mathRandom` 2→0, `alert` 15→0. New shared primitives: `featureFlags` map, `DemoBadge` component, `preferences` localStorage layer, `stabilityIndex` module + 7 tests. 29 tests passing. Insurance Inspect now real manual CRUD; Settings now persists toggles + aiConfig. *(Completed 2026-04-25.)*
+- [x] **CRITICAL: M4 — Reports, Backup, Restore, Recovery.** Backup format v3 (documents via base64, chunked encode). Real CSV/JSON exports + 5 per-report tabs. Restore diff preview. Print stylesheet pass. 39 tests passing (10 new). Audit baseline locked at `setTimeout=4 mathRandom=0 alert=0`. *(Completed 2026-04-26.)*
 
-## Immediate Queue (M4 — Reports, Backup, Restore, Recovery)
+## Immediate Queue (M5 — Ledger + Bank/Data Import Foundation)
 
-- [ ] **HIGH:** Documents-table backup completion — base64-encode Blob on export, decode on import. Bump backup format to v3 (v1 + v2 still accepted). Add round-trip test for documents in `backup.test.ts`.
-- [ ] **HIGH:** Real Reports Export — flip `featureFlags.reportsRealExport` once a real implementation lands. CSV per entity + JSON full-backup shortcut + per-report views (monthly household, debt summary, savings progress, tax-year packet, document inventory).
-- [ ] **HIGH:** Restore-confirmation diff preview — before commit, show counts being added vs replaced.
-- [ ] **MEDIUM:** Print stylesheet pass — Reports `window.print()` works but layout isn't optimized for paper.
+- [ ] **HIGH:** CSV import for transactions — file picker, column mapping, dedupe (date+amount+payee), review queue, bulk commit on confirm. Flip `featureFlags.bankImportTierA` once shipped.
+- [ ] **HIGH:** QFX / OFX scaffolded parser (or clean adapter interface for a future dep).
+- [ ] **HIGH:** Merchant / payee normalization rules — persist to a new `payeeRules` Dexie table.
+- [ ] **HIGH:** Replace the Ledger "Bank Import (M5)" DemoBadge card with the real review queue UI.
+- [ ] **MEDIUM:** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098, etc.) OR honest "manual notes" labeling. Currently 2 placeholder fields only.
 
 ### M3 polish carry-over (low-risk, do during M4 or M5)
 - [ ] **MEDIUM:** Add `EmptyState` component to remaining 6 routes (Mission Control, Dashboard, Pay Path, Credit snapshot list, Reports, plus the existing IncomeRoute partial).
