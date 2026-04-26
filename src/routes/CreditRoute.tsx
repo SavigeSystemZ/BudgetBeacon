@@ -15,7 +15,7 @@ import {
   Tooltip as ChartTooltip, ResponsiveContainer, Legend 
 } from "recharts";
 import { useState } from "react";
-import { Sparkles, RefreshCw, Zap, Search, TrendingUp, Plus, Trash2 } from "lucide-react";
+import { Sparkles, TrendingUp, Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { BeaconModal } from "../components/ui/BeaconModal";
@@ -27,8 +27,6 @@ export default function CreditRoute() {
   const persons = useLiveQuery(() => db.persons.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
 
-  const [isFetching, setIsFetching] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPersonId, setSelectedPersonId] = useState<string>("");
 
@@ -52,28 +50,6 @@ export default function CreditRoute() {
     setIsModalOpen(false);
   };
 
-  const handleAgenticFetch = () => {
-    setIsFetching(true);
-    setTimeout(async () => {
-      const mockScore = Math.floor(Math.random() * (850 - 600) + 600);
-      form.setValue("score", mockScore);
-      form.setValue("bureauOrSource", "Agentic Fetch (Bank)");
-      setIsFetching(false);
-      setIsModalOpen(true);
-    }, 2500);
-  };
-
-  const handleFreeCreditCheck = () => {
-    setIsChecking(true);
-    setTimeout(() => {
-      const mockScore = Math.floor(Math.random() * (850 - 650) + 650);
-      form.setValue("score", mockScore);
-      form.setValue("bureauOrSource", "Free Credit Check");
-      setIsChecking(false);
-      setIsModalOpen(true);
-    }, 4000);
-  };
-
   if (!snapshots || !persons) return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic">Opening Credit Vault...</div>;
 
   const filteredSnapshots = selectedPersonId ? snapshots.filter(s => s.personId === selectedPersonId) : snapshots;
@@ -88,23 +64,13 @@ export default function CreditRoute() {
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <PageHeader 
-        title="Credit Snapshot" 
-        subtitle="Multi-person telemetry-driven credit health."
+      <PageHeader
+        title="Credit Snapshot"
+        subtitle="Multi-person manual credit-score tracking."
         actions={
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleAgenticFetch} disabled={isFetching} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
-              {isFetching ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Search className="h-3 w-3" />}
-              Bank Fetch
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleFreeCreditCheck} disabled={isChecking} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5 animate-pulse hover:animate-none">
-              {isChecking ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
-              Credit Check
-            </Button>
-            <Button size="icon" onClick={() => { form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
-              <Plus className="h-5 w-5" />
-            </Button>
-          </div>
+          <Button size="icon" onClick={() => { form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+            <Plus className="h-5 w-5" />
+          </Button>
         }
       />
 
@@ -159,11 +125,16 @@ export default function CreditRoute() {
           <GlassCard className="bg-primary/5 border-primary/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                <Sparkles className="h-4 w-4" /> Agentic Note
+                <Sparkles className="h-4 w-4" /> How to update
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-[10px] font-bold text-muted-foreground leading-relaxed italic">
-              Regular credit checks increase mission readiness. Use "Bank Fetch" to scavenge scores from your connected institution telemetry.
+            <CardContent className="text-[10px] font-bold text-muted-foreground leading-relaxed italic space-y-2">
+              <p>
+                Pull your free annual report at <span className="text-primary not-italic">annualcreditreport.com</span>, or check the score your bank already shows you, then log it here with the bureau and date.
+              </p>
+              <p className="opacity-70 not-italic">
+                Automated bureau fetch is not available — Budget Beacon will not pretend to "scavenge" a score from your bank. Manual entry is the honest baseline.
+              </p>
             </CardContent>
           </GlassCard>
         </div>

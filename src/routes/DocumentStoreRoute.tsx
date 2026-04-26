@@ -7,12 +7,13 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { NativeSelect } from "../components/ui/native-select";
-import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Sparkles, CheckCircle2, Plus } from "lucide-react";
-import { cn } from "../lib/utils";
+import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Plus } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { DemoBadge } from "../components/ui/DemoBadge";
+import { featureFlags } from "../lib/flags/featureFlags";
 
 export default function DocumentStoreRoute() {
   const documents = useLiveQuery(() => db.documents.toArray(), []);
@@ -25,21 +26,20 @@ export default function DocumentStoreRoute() {
   const [uploading, setUploading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("other");
   const [fileLabel, setFileLabel] = useState("");
-  
-  const [isScavenging, setIsScavenging] = useState(false);
-  const [scavengedData, setScavengedData] = useState<any[] | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !householdId) return;
 
     setUploading(true);
+    setUploadError(null);
     try {
       const reader = new FileReader();
       reader.onload = async (event) => {
         const blob = new Blob([event.target?.result as ArrayBuffer], { type: file.type });
         const now = new Date().toISOString();
-        
+
         await db.documents.add({
           id: createId(),
           householdId,
@@ -53,10 +53,8 @@ export default function DocumentStoreRoute() {
           createdAt: now,
           updatedAt: now,
         });
-        
-        if (selectedCategory === "award-letter" || selectedCategory === "tax-form") {
-          triggerScavenge(file.name);
-        }
+
+        // Auto-extraction (Scavenge) is gated on featureFlags.ocrLocal — disabled until M6.
 
         setFileLabel("");
         setIsAddModalOpen(false);
@@ -65,37 +63,10 @@ export default function DocumentStoreRoute() {
       reader.readAsArrayBuffer(file);
     } catch (err) {
       console.error(err);
-      alert("Failed to store document.");
+      setUploadError("Failed to store document. Try again.");
     } finally {
       setUploading(false);
     }
-  };
-
-  const triggerScavenge = (_fileName: string) => {
-    setIsScavenging(true);
-    setScavengedData(null);
-    setTimeout(() => {
-      const mockResults = [
-        { type: "income", label: "Monthly Benefit", amount: 1450.00 },
-        { type: "bill", label: "Premium Deduction", amount: 174.70 }
-      ];
-      setScavengedData(mockResults);
-      setIsScavenging(false);
-    }, 3000);
-  };
-
-  const applyScavengedData = async () => {
-    if (!scavengedData || !householdId) return;
-    const now = new Date().toISOString();
-    for (const item of scavengedData) {
-      if (item.type === "income") {
-        await db.incomeSources.add({ id: createId(), householdId, personId: defaultPersonId, label: item.label, amount: item.amount, frequency: "monthly", isActive: true, createdAt: now, updatedAt: now });
-      } else if (item.type === "bill") {
-        await db.bills.add({ id: createId(), householdId, ownerPersonId: defaultPersonId, label: item.label, amount: item.amount, frequency: "monthly", category: "medical", dueDay: 1, autopay: false, isEssential: true, createdAt: now, updatedAt: now });
-      }
-    }
-    alert("App populated with extracted telemetry.");
-    setScavengedData(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -116,44 +87,29 @@ export default function DocumentStoreRoute() {
         }
       />
 
+      {uploadError && (
+        <div role="alert" className="mx-4 p-3 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-sm">
+          {uploadError}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="space-y-6 lg:col-span-1">
-          {/* Agentic Scavenger Status */}
-          {(isScavenging || scavengedData) && (
-            <GlassCard className="border-primary/30 bg-primary/5 shadow-2xl animate-in slide-in-from-left-4">
-              <CardHeader className="bg-primary/10">
-                <CardTitle className="flex items-center gap-2 text-xs font-black uppercase italic tracking-tighter">
-                  <Zap className={cn("h-4 w-4 text-primary", isScavenging && "animate-pulse")} />
-                  Agentic Scavenger
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-4">
-                {isScavenging ? (
-                  <div className="flex flex-col items-center py-6 gap-3">
-                    <Sparkles className="h-8 w-8 text-primary animate-spin" />
-                    <p className="text-[9px] font-black uppercase tracking-widest text-primary italic text-center">Analyzing Document<br/>Telemetry...</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-2">
-                      {scavengedData?.map((item, i) => (
-                        <div key={i} className="flex justify-between items-center p-2 rounded-xl bg-background/40 border border-primary/10">
-                          <div>
-                            <div className="font-bold text-[10px]">{item.label}</div>
-                            <div className="text-[7px] uppercase font-black text-primary opacity-70">{item.type}</div>
-                          </div>
-                          <div className="font-black text-xs">${item.amount.toFixed(2)}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <Button size="sm" className="w-full gap-2 h-10 uppercase font-black italic text-[10px] tracking-widest" onClick={applyScavengedData}>
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Commit to App
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </GlassCard>
-          )}
+          {/* Scavenge / OCR is disabled until M6 ships real Tesseract-backed extraction with per-field review. */}
+          <GlassCard className="border-amber-400/20 bg-amber-400/5">
+            <CardHeader className="pb-3 flex flex-row items-center gap-2">
+              <Zap className="h-5 w-5 text-amber-400" />
+              <CardTitle className="text-[10px] font-black uppercase tracking-widest">Document Extraction</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <DemoBadge milestone="M6">
+                Real OCR + per-field review will land in M6.
+              </DemoBadge>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                For now, the Vault stores documents safely; extraction into income / bill records remains manual via Pay Path and Income Pool.
+              </p>
+            </CardContent>
+          </GlassCard>
 
           <GlassCard className="bg-primary/5 border-primary/20">
             <CardHeader className="pb-3 flex flex-row items-center gap-2">
@@ -197,9 +153,11 @@ export default function DocumentStoreRoute() {
                       <Button onClick={() => window.open(URL.createObjectURL(doc.data), "_blank")} size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20">
                         <Eye className="h-3.5 w-3.5" /> View
                       </Button>
-                      <Button onClick={() => triggerScavenge(doc.fileName)} size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all">
-                        <Zap className="h-3.5 w-3.5" /> Scavenge
-                      </Button>
+                      {featureFlags.ocrLocal && (
+                        <Button size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all">
+                          <Zap className="h-3.5 w-3.5" /> Scavenge
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </GlassCard>

@@ -1,36 +1,20 @@
 {
-  "updatedAt": "2026-04-25T21:01:49.808Z",
+  "updatedAt": "2026-04-26T02:07:47.084Z",
   "counts": {
-    "setTimeout": 10,
-    "mathRandom": 2,
-    "alert": 15,
+    "setTimeout": 3,
+    "mathRandom": 0,
+    "alert": 10,
     "emptyOnClick": 0
   },
   "perFile": {
-    "src/routes/BeaconBridgeRoute.tsx": {
-      "setTimeout": 2,
-      "alert": 1
-    },
     "src/routes/BudgetMissionControlRoute.tsx": {
       "alert": 1
-    },
-    "src/routes/CreditRoute.tsx": {
-      "setTimeout": 2,
-      "mathRandom": 2
     },
     "src/routes/DashboardRoute.tsx": {
       "alert": 2
     },
-    "src/routes/DocumentStoreRoute.tsx": {
-      "setTimeout": 1,
-      "alert": 2
-    },
     "src/routes/InsuranceInspectRoute.tsx": {
       "setTimeout": 1
-    },
-    "src/routes/LedgerRoute.tsx": {
-      "setTimeout": 2,
-      "alert": 2
     },
     "src/routes/ReportsRoute.tsx": {
       "alert": 1

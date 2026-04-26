@@ -5,32 +5,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { transactionSchema } from "../modules/ledger/ledger.schema";
-import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { 
-  Edit2, Trash2, RefreshCw, Link, FileSearch, CheckCircle2, Plus, 
-  History, ArrowDownCircle, ArrowUpCircle 
+import {
+  Edit2, Trash2, Plus,
+  History, ArrowDownCircle, ArrowUpCircle, Database
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { DemoBadge } from "../components/ui/DemoBadge";
+import { featureFlags } from "../lib/flags/featureFlags";
 
 const formSchema = transactionSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
 
 export default function LedgerRoute() {
   const transactions = useLiveQuery(() => db.transactions.orderBy("date").reverse().toArray(), []);
-  const documents = useLiveQuery(() => db.documents.filter(d => d.category === "bank-statement").toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isScavenging, setIsScavenging] = useState(false);
-  const [scavengedItems, setScavengedItems] = useState<any[] | null>(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,44 +48,6 @@ export default function LedgerRoute() {
     setIsModalOpen(false);
   };
 
-  const handleSyncBank = () => {
-    setIsSyncing(true);
-    setTimeout(() => {
-      const apiResults = [
-        { payee: "Starbucks Coffee", amount: 5.45, date: "2026-04-23", category: "food", type: "expense" },
-        { payee: "Amazon.com", amount: 42.99, date: "2026-04-22", category: "shopping", type: "expense" }
-      ];
-      setScavengedItems(apiResults);
-      setIsSyncing(false);
-    }, 2500);
-  };
-
-  const handleScavengeStatements = () => {
-    if (documents?.length === 0) {
-      alert("No bank statements found in The Vault.");
-      return;
-    }
-    setIsScavenging(true);
-    setTimeout(() => {
-      const docResults = [
-        { payee: "Rent Payment", amount: 1200.00, date: "2026-04-01", category: "housing", type: "expense" },
-        { payee: "Work Bonus", amount: 500.00, date: "2026-04-10", category: "income", type: "income" }
-      ];
-      setScavengedItems(docResults);
-      setIsScavenging(false);
-    }, 3000);
-  };
-
-  const applyItems = async () => {
-    if (!scavengedItems || !householdId) return;
-    const now = new Date().toISOString();
-    for (const item of scavengedItems) {
-      await db.transactions.add({ ...item, id: createId(), householdId, createdAt: now, updatedAt: now });
-    }
-    setScavengedItems(null);
-    alert("Ledger auto-populated.");
-  };
-
   const handleEdit = (t: any) => {
     setEditingId(t.id);
     form.reset({ payee: t.payee, amount: t.amount, date: t.date, category: t.category, type: t.type });
@@ -98,19 +58,11 @@ export default function LedgerRoute() {
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <PageHeader 
-        title="Ledger Loops" 
+      <PageHeader
+        title="Ledger Loops"
         subtitle="Tactical daily outflow and revenue tracking."
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleScavengeStatements} disabled={isScavenging} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
-              {isScavenging ? <RefreshCw className="h-3 w-3 animate-spin" /> : <FileSearch className="h-3 w-3" />}
-              Scavenge
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleSyncBank} disabled={isSyncing} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
-              {isSyncing ? <RefreshCw className="h-3 w-3 animate-spin" /> : <Link className="h-3 w-3" />}
-              Bank Sync
-            </Button>
             <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
               <Plus className="h-5 w-5" />
             </Button>
@@ -124,7 +76,7 @@ export default function LedgerRoute() {
             <EmptyState 
               icon={History}
               title="No Loops Recorded"
-              description="Start logging your daily spending or use Bank Sync to auto-populate your ledger telemetry."
+              description="Start logging your daily spending. Bank import (CSV / QFX / OFX) lands in M5; for now, log loops manually."
               action={<Button onClick={() => setIsModalOpen(true)} className="gap-2 px-8 uppercase font-black italic text-xs tracking-widest h-12"><Plus className="h-4 w-4" /> Log Manual Loop</Button>}
             />
           ) : (
@@ -160,43 +112,30 @@ export default function LedgerRoute() {
         </div>
 
         <div className="space-y-6">
-          {scavengedItems && (
-            <GlassCard className="border-primary/30 bg-primary/5 shadow-2xl animate-in zoom-in-95">
-              <CardHeader className="bg-primary/10 pb-3">
-                <CardTitle className="text-xs uppercase italic font-black text-primary">Ingestion Queue</CardTitle>
-                <CardDescription className="text-[8px] font-bold uppercase tracking-widest">Verify Telemetry</CardDescription>
+          {!featureFlags.bankImportTierA && (
+            <GlassCard className="border-amber-400/20 bg-amber-400/5">
+              <CardHeader className="pb-3 flex flex-row items-center gap-2">
+                <Database className="h-4 w-4 text-amber-400" />
+                <CardTitle className="text-[10px] font-black uppercase tracking-widest">Bank Import</CardTitle>
               </CardHeader>
-              <CardContent className="pt-4 space-y-4">
-                <div className="space-y-2">
-                  {scavengedItems.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center p-2 rounded-xl bg-background/40 border border-primary/10">
-                      <div>
-                        <div className="font-bold text-[10px] truncate max-w-[100px] uppercase italic">{item.payee}</div>
-                        <div className="text-[7px] uppercase font-black text-muted-foreground opacity-50">{item.date}</div>
-                      </div>
-                      <div className={cn("font-black text-[10px] italic", item.type === "income" ? "text-green-500" : "")}>
-                        {item.type === "expense" ? "-" : "+"}${item.amount.toFixed(2)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-col gap-2 pt-2 border-t border-primary/10">
-                  <Button size="sm" className="w-full h-10 uppercase font-black italic text-[10px] tracking-widest shadow-xl shadow-primary/20" onClick={applyItems}>
-                    <CheckCircle2 className="h-3.5 w-3.5 mr-2" /> Commit All
-                  </Button>
-                  <Button variant="ghost" size="sm" className="w-full text-[9px] font-black uppercase tracking-widest opacity-50" onClick={() => setScavengedItems(null)}>Discard Telemetry</Button>
-                </div>
+              <CardContent className="space-y-3">
+                <DemoBadge milestone="M5">
+                  CSV / QFX / OFX file import + dedupe + review queue lands in M5.
+                </DemoBadge>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  No bank API is connected. Until M5, log loops manually here, or export from Settings.
+                </p>
               </CardContent>
             </GlassCard>
           )}
 
           <GlassCard className="bg-primary/5 border-primary/20">
             <CardHeader className="pb-3 flex flex-row items-center gap-2">
-              <RefreshCw className="h-4 w-4 text-primary" />
-              <CardTitle className="text-[10px] font-black uppercase tracking-widest">Auto-Reconcile</CardTitle>
+              <History className="h-4 w-4 text-primary" />
+              <CardTitle className="text-[10px] font-black uppercase tracking-widest">Why log loops?</CardTitle>
             </CardHeader>
             <CardContent className="text-[10px] text-muted-foreground leading-relaxed">
-              Ledger Loops are the fuel for Dashboard Cockpit. Consistent logging unlocks deep agentic intel and strategic mission planning.
+              Ledger Loops feed Dashboard Cockpit and Mission Control. Consistent logging is what makes the Stability Index meaningful.
             </CardContent>
           </GlassCard>
         </div>
