@@ -8,6 +8,8 @@ import { Input } from "./ui/input";
 import { Bot, X, Send, Sparkles, ShieldAlert } from "lucide-react";
 import { cn } from "../lib/utils";
 import { GlassCard } from "./ui/GlassCard";
+import { DemoBadge } from "./ui/DemoBadge";
+import { featureFlags } from "../lib/flags/featureFlags";
 
 export function BeaconChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,26 +43,30 @@ export function BeaconChatbot() {
     setInput("");
     setIsThinking(true);
 
-    setTimeout(async () => {
-      let response = "I'm ready to help. You can ask me to analyze your loops or scavenge documents.";
-      
-      if (input.toLowerCase().includes("analyze")) {
-        const totalIncome = incomes?.reduce((acc, i) => acc + i.amount, 0) || 0;
-        const subCount = subscriptions?.length || 0;
-        response = `Agentic Sweep Complete: You have ${subCount} active subscriptions and a total monthly inflow of $${totalIncome.toLocaleString()}. I recommend auditing your Subscriptions Shelf to increase propulsion surplus.`;
-      } else if (input.toLowerCase().includes("scavenge")) {
-        response = "Scavenging Protocol Initiated. Please upload a PDF or Image in The Vault, and I will extract the financial telemetry for you automatically.";
-      }
+    // Demo-mode reply. Real LLM integration lands in M7 (provider abstraction,
+    // local Ollama default, cloud opt-in). The reply below is built from real
+    // database aggregates (no fabricated data) but it is NOT model-generated.
+    const totalIncome = incomes?.reduce((acc, i) => acc + i.amount, 0) || 0;
+    const subCount = subscriptions?.length || 0;
+    const lower = input.toLowerCase();
 
-      const botResponse = {
-        id: createId(),
-        role: "assistant" as const,
-        content: response,
-        timestamp: new Date().toISOString()
-      };
-      await db.chatMessages.add(botResponse);
-      setIsThinking(false);
-    }, 1500);
+    let response: string;
+    if (lower.includes("analyze") || lower.includes("dashboard") || lower.includes("stability")) {
+      response = `(Demo reply, no model running.) Live numbers from your db: ${subCount} active subscription${subCount === 1 ? "" : "s"}, monthly inflow $${totalIncome.toLocaleString()}. A real assistant will land in M7 (local Ollama by default, cloud opt-in).`;
+    } else if (lower.includes("scavenge") || lower.includes("ocr") || lower.includes("document")) {
+      response = "(Demo reply.) Document OCR / extraction is not active yet — that's M6. For now upload files to The Vault for safe local storage.";
+    } else {
+      response = `(Demo reply, no model running.) The chatbot is a placeholder until M7. Use Dashboard, Mission Control, and Reports for real numbers — those pull straight from your local data.`;
+    }
+
+    const botResponse = {
+      id: createId(),
+      role: "assistant" as const,
+      content: response,
+      timestamp: new Date().toISOString(),
+    };
+    await db.chatMessages.add(botResponse);
+    setIsThinking(false);
   };
 
   const clearChat = async () => {
@@ -83,14 +89,19 @@ export function BeaconChatbot() {
 
       {isOpen && (
         <GlassCard intensity="high" className="fixed bottom-40 md:bottom-24 right-6 z-[100] w-[350px] md:w-[400px] h-[550px] flex flex-col shadow-[0_30px_100px_rgba(0,0,0,0.5)] border-primary/20 bg-card/90 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-500">
-          <CardHeader className="bg-primary/10 border-b border-primary/10 p-5 flex flex-row items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <CardTitle className="text-sm font-black uppercase italic tracking-tighter text-primary">Beacon AI Agent</CardTitle>
+          <CardHeader className="bg-primary/10 border-b border-primary/10 p-5 space-y-2">
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <CardTitle className="text-sm font-black uppercase italic tracking-tighter text-primary">Beacon AI Agent</CardTitle>
+              </div>
+              <Button variant="ghost" size="sm" onClick={clearChat} className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive rounded-full">
+                <ShieldAlert className="h-4 w-4" />
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={clearChat} className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive rounded-full">
-              <ShieldAlert className="h-4 w-4" />
-            </Button>
+            {!featureFlags.aiAssistantLocal && !featureFlags.aiAssistantCloud && (
+              <DemoBadge milestone="M7">No model connected. Replies are placeholders.</DemoBadge>
+            )}
           </CardHeader>
           
           <CardContent className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-none" ref={scrollRef}>

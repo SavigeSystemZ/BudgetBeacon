@@ -1,12 +1,13 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
+import { calculateStabilityIndex, stabilityBand } from "../modules/budget-engine/stabilityIndex";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { Target, Rocket, Zap, Shield, TrendingUp, Compass, Flag } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
+import { EmptyState } from "../components/ui/EmptyState";
 
 export default function BudgetMissionControlRoute() {
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
@@ -22,17 +23,26 @@ export default function BudgetMissionControlRoute() {
   }
 
   const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions, subscriptions, insurance);
+  const stability = calculateStabilityIndex(summary);
+  const band = stabilityBand(stability);
+
+  // Top stash goal: closest to target by absolute remaining (skip completed and zero-target).
+  const activeGoals = goals.filter((g) => g.targetAmount > 0 && g.currentAmount < g.targetAmount);
+  const topGoal = activeGoals
+    .slice()
+    .sort((a, b) => (a.targetAmount - a.currentAmount) - (b.targetAmount - b.currentAmount))[0];
+  const topGoalEta = topGoal && topGoal.monthlyContribution > 0
+    ? Math.ceil((topGoal.targetAmount - topGoal.currentAmount) / topGoal.monthlyContribution)
+    : null;
+
+  // Top debt: largest balance (Avalanche-style focus).
+  const topDebt = debts.slice().sort((a, b) => b.balance - a.balance)[0];
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <PageHeader 
-        title="Mission Control" 
-        subtitle="Strategic planning and long-term goal telemetry."
-        actions={
-          <Button size="lg" onClick={() => alert("Strategic plan saved.")} className="uppercase font-black italic text-xs tracking-widest shadow-xl shadow-primary/20 h-12 px-8">
-            Persist Plan
-          </Button>
-        }
+      <PageHeader
+        title="Mission Control"
+        subtitle="Real-time household budget pressure and goal velocity."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -93,20 +103,21 @@ export default function BudgetMissionControlRoute() {
                   stroke="currentColor"
                   strokeWidth="16"
                   strokeDasharray={502}
-                  strokeDashoffset={502 - (502 * (summary.remainingBudget > 0 ? 85 : 45)) / 100}
+                  strokeDashoffset={502 - (502 * stability) / 100}
                   strokeLinecap="round"
                   className="text-primary transition-all duration-1000 ease-out"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-6xl font-black italic tracking-tighter">{summary.remainingBudget > 0 ? "85" : "45"}</span>
+                <span className="text-6xl font-black italic tracking-tighter">{stability}</span>
                 <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Stability</span>
               </div>
             </div>
             <p className="text-[11px] font-bold text-center mt-8 text-muted-foreground leading-relaxed uppercase tracking-tighter">
-              {summary.remainingBudget > 0 
-                ? "Propulsion positive. Unified telemetry indicates high strategic readiness." 
-                : "Deficit warning. Mission stability compromised. Audit Pay Path immediately."}
+              {band === "strong" && "Healthy margin and savings rate. Hold the line."}
+              {band === "stable" && "Stable position. Watch pay-path pressure as bills shift."}
+              {band === "stressed" && "Pressure building. Trim required outflow or boost income."}
+              {band === "critical" && "Critical deficit. Audit Pay Path; pause non-essential stash transfers."}
             </p>
           </CardContent>
         </GlassCard>
@@ -148,30 +159,50 @@ export default function BudgetMissionControlRoute() {
           </h2>
           <div className="space-y-4">
             <GlassCard className="border-primary/20 bg-primary/5 shadow-2xl relative group overflow-hidden">
-               <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-               <CardContent className="p-8 flex gap-6">
+              <CardContent className="p-8 flex gap-6">
                 <Compass className="h-10 w-10 text-primary shrink-0 group-hover:scale-110 transition-transform duration-500" />
-                <div>
-                  <h3 className="font-black italic text-sm uppercase mb-2 tracking-tighter">Debt Snowball Protocol</h3>
-                  <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                    Based on your Debt Center telemetry, allocating an additional $200/mo could reduce your total liability window by 14 months.
-                  </p>
+                <div className="flex-1">
+                  <h3 className="font-black italic text-sm uppercase mb-2 tracking-tighter">Largest Liability</h3>
+                  {topDebt ? (
+                    <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+                      <strong className="text-foreground">{topDebt.label}</strong> — balance ${topDebt.balance.toLocaleString()}, minimum ${topDebt.minimumPayment.toLocaleString()}/mo. At minimum payments alone, focus extra cash here first (Avalanche). M8 will add a real payoff timeline.
+                    </p>
+                  ) : (
+                    <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+                      No debts tracked. Add liabilities in Debt Center to see payoff strategy here.
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </GlassCard>
             <GlassCard className="border-primary/20 bg-primary/5 shadow-2xl relative group overflow-hidden">
-               <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-               <CardContent className="p-8 flex gap-6">
+              <CardContent className="p-8 flex gap-6">
                 <TrendingUp className="h-10 w-10 text-primary shrink-0 group-hover:scale-110 transition-transform duration-500" />
-                <div>
+                <div className="flex-1">
                   <h3 className="font-black italic text-sm uppercase mb-2 tracking-tighter">Stash Velocity</h3>
-                  <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                    Your "Emergency Fund" stash objective is 65% complete. Current velocity puts you at full mission readiness by August 2026.
-                  </p>
+                  {topGoal ? (
+                    <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+                      <strong className="text-foreground">{topGoal.label}</strong> — {((topGoal.currentAmount / topGoal.targetAmount) * 100).toFixed(0)}% of ${topGoal.targetAmount.toLocaleString()}.{" "}
+                      {topGoalEta !== null
+                        ? `At $${topGoal.monthlyContribution.toLocaleString()}/mo, full in ~${topGoalEta} month${topGoalEta === 1 ? "" : "s"}.`
+                        : "No monthly contribution set — add one in Stash Map to see ETA."}
+                    </p>
+                  ) : (
+                    <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+                      All goals complete or none set. Add a goal in Stash Map to see velocity here.
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </GlassCard>
           </div>
+          {goals.length === 0 && debts.length === 0 && (
+            <EmptyState
+              icon={Target}
+              title="Set a goal or log a debt"
+              description="Mission Control gets sharper as you populate Stash Map and Debt Center."
+            />
+          )}
         </div>
       </div>
     </div>

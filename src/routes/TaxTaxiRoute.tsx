@@ -70,15 +70,15 @@ export default function TaxTaxiRoute() {
     if (!householdId) return;
     const now = new Date().toISOString();
     await db.taxForms.put({
-      id: `${type}-${new Date().getFullYear()}`, 
+      id: `${type}-${new Date().getFullYear()}`,
       year: new Date().getFullYear(),
       type,
       data,
       updatedAt: now,
-      personId: defaultPersonId
+      personId: defaultPersonId,
     });
-    alert(`${type} saved to local storage.`);
     setSelectedFormType(null);
+    // No alert — form closes back to library; saved record is visible there.
   };
 
   const chartData = taxRecords?.map(r => ({

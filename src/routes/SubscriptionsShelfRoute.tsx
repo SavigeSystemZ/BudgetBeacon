@@ -232,7 +232,7 @@ export default function SubscriptionsShelfRoute() {
         title={`Beacon Protocol: ${activeTemplate?.type === "cancel" ? "Cancellation" : "Dispute"}`}
         footer={
           <>
-            <Button variant="outline" className="gap-2 h-12 px-6 uppercase font-black italic text-xs tracking-widest border-primary/20" onClick={() => { navigator.clipboard.writeText(activeTemplate?.content || ""); alert("Telemetry Copied."); }}>
+            <Button variant="outline" className="gap-2 h-12 px-6 uppercase font-black italic text-xs tracking-widest border-primary/20" onClick={() => { void navigator.clipboard.writeText(activeTemplate?.content || ""); }}>
               <MessageSquare className="h-4 w-4" /> Copy Protocol
             </Button>
             <Button className="gap-2 h-12 px-6 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-primary/20" onClick={() => window.location.href = `mailto:${activeTemplate?.sub.supportEmail || ''}?subject=Beacon Request&body=${encodeURIComponent(activeTemplate?.content || "")}`}>

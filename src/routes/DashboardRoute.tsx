@@ -48,8 +48,14 @@ export default function DashboardRoute() {
   }, [transactions]);
 
   const handleClearAll = async () => {
-    if (window.confirm("WARNING: This will wipe ALL data across the entire application. Proceed?")) {
-      await db.transaction("rw", [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions, db.subscriptions, db.insuranceRecords], async () => {
+    const ok = window.confirm(
+      "Wipe ALL household data across every module?\n\nThis cannot be undone. Export a backup first from Settings if you might want it back."
+    );
+    if (!ok) return;
+    await db.transaction(
+      "rw",
+      [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions, db.subscriptions, db.insuranceRecords],
+      async () => {
         await db.incomeSources.clear();
         await db.bills.clear();
         await db.debts.clear();
@@ -58,23 +64,21 @@ export default function DashboardRoute() {
         await db.transactions.clear();
         await db.subscriptions.clear();
         await db.insuranceRecords.clear();
-      });
-      alert("Application data wiped.");
-    }
+      }
+    );
   };
 
   if (!summary) return <div className="flex h-screen items-center justify-center text-primary font-black uppercase italic animate-pulse">Synchronizing Cockpit...</div>;
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <PageHeader 
-        title="Dashboard Cockpit" 
+      <PageHeader
+        title="Dashboard Cockpit"
         subtitle="Household telemetry and propulsion status."
         actions={
-          <>
-            <Button variant="outline" size="sm" onClick={handleClearAll} className="text-destructive hover:bg-destructive/10 border-destructive/20 uppercase font-black italic text-[10px] px-4">Wipe All</Button>
-            <Button size="sm" onClick={() => alert("Snapshot saved.")} className="uppercase font-black italic text-[10px] px-4 shadow-xl shadow-primary/20">Save Cockpit</Button>
-          </>
+          <Button variant="outline" size="sm" onClick={handleClearAll} className="text-destructive hover:bg-destructive/10 border-destructive/20 uppercase font-black italic text-[10px] px-4">
+            Wipe All
+          </Button>
         }
       />
       
@@ -208,7 +212,7 @@ export default function DashboardRoute() {
                   </div>
                 ))
               )}
-              <Button variant="outline" className="w-full mt-4 h-12 uppercase font-black italic text-xs tracking-widest hover:bg-primary hover:text-primary-foreground transition-all border-primary/20">Execute Deep Audit</Button>
+              {/* "Execute Deep Audit" button removed in M3 — was a no-op. Real audit lands in M4. */}
             </CardContent>
           </GlassCard>
         </div>

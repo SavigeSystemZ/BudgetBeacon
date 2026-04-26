@@ -1,10 +1,13 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
+import { calculateStabilityIndex } from "../modules/budget-engine/stabilityIndex";
 import { Button } from "../components/ui/button";
-import { Printer, Download, FileText, Sparkles } from "lucide-react";
+import { Printer, FileText, Sparkles } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
+import { DemoBadge } from "../components/ui/DemoBadge";
+import { featureFlags } from "../lib/flags/featureFlags";
 
 export default function ReportsRoute() {
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
@@ -20,6 +23,7 @@ export default function ReportsRoute() {
   }
 
   const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions, subscriptions, insurance);
+  const stability = calculateStabilityIndex(summary);
 
   const handlePrint = () => {
     window.print();
@@ -27,14 +31,14 @@ export default function ReportsRoute() {
 
   return (
     <div className="space-y-8 pb-20 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <PageHeader 
-        title="Reports Arena" 
+      <PageHeader
+        title="Reports Arena"
         subtitle="Printable budget summaries and strategic mission reports."
         actions={
-          <div className="flex gap-2 print:hidden">
-            <Button variant="outline" size="sm" onClick={() => alert("Report Exported.")} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
-              <Download className="h-4 w-4" /> Export
-            </Button>
+          <div className="flex items-center gap-3 print:hidden">
+            {!featureFlags.reportsRealExport && (
+              <DemoBadge milestone="M4">CSV / JSON / PDF export coming.</DemoBadge>
+            )}
             <Button size="lg" onClick={handlePrint} className="gap-3 shadow-xl shadow-primary/20 h-12 uppercase font-black italic text-xs tracking-widest px-8">
               <Printer className="h-4 w-4" /> Execute Print
             </Button>
@@ -100,7 +104,7 @@ export default function ReportsRoute() {
              <div className="space-y-4">
                 <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Stability Performance</div>
                 <div className="flex items-center gap-4">
-                  <div className="text-5xl font-black italic text-primary tracking-tighter">{summary.remainingBudget > 0 ? "85" : "45"}</div>
+                  <div className="text-5xl font-black italic text-primary tracking-tighter">{stability}</div>
                   <div className="text-[9px] font-bold text-muted-foreground uppercase leading-tight">Current stability index<br/>based on unified telemetry.</div>
                 </div>
              </div>
