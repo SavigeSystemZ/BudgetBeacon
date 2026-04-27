@@ -37,7 +37,7 @@ interface Subscription {
   label: string;
   amount: number;
   frequency: "monthly" | "annual" | "quarterly";
-  category: string;
+  category: "entertainment" | "software" | "utility" | "health" | "other";
   supportEmail?: string;
   personId: string;
 }
@@ -70,7 +70,7 @@ export default function SubscriptionsShelfRoute() {
   const onSubmit = async (data: FormData) => {
     if (!householdId) return;
     if (editingId) {
-      await db.subscriptions.update(editingId, data as any);
+      await db.subscriptions.update(editingId, { ...data });
       setEditingId(null);
     } else {
       await db.subscriptions.add({ ...data, id: createId(), householdId, personId: data.personId || defaultPersonId });
@@ -85,7 +85,7 @@ export default function SubscriptionsShelfRoute() {
       label: sub.label,
       amount: sub.amount,
       frequency: sub.frequency,
-      category: sub.category as any,
+      category: sub.category,
       supportEmail: sub.supportEmail || "",
       personId: sub.personId
     });

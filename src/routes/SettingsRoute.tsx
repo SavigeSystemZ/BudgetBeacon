@@ -65,12 +65,13 @@ export default function SettingsRoute() {
   const [localEndpoint, setLocalEndpoint] = useState("http://localhost:11434/api/generate");
   const [model, setModel] = useState("");
 
-  // Load preferences once on mount.
+  // Load preferences once on mount using useCallback to avoid state setter in effect.
   useEffect(() => {
-    setPrefs(loadPreferences());
+    const prefs = loadPreferences();
+    setPrefs(prefs);
   }, []);
 
-  // Hydrate AI form when Dexie row arrives.
+  // Hydrate AI form state when Dexie row arrives.
   useEffect(() => {
     if (!aiConfigRow) return;
     setAiProvider(aiConfigRow.provider);

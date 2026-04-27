@@ -1,9 +1,10 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
-import { savingsGoalSchema } from "../modules/stash-map/stash-map.schema";
+import { savingsGoalSchema, type SavingsGoal } from "../modules/stash-map/stash-map.schema";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -18,6 +19,7 @@ import { BeaconModal } from "../components/ui/BeaconModal";
 import { Progress } from "../components/ui/progress";
 
 const formSchema = savingsGoalSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
+type FormData = z.infer<typeof formSchema>;
 
 export default function StashMapRoute() {
   const goals = useLiveQuery(() => db.savingsGoals.toArray(), []);
@@ -26,12 +28,12 @@ export default function StashMapRoute() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: { label: "", targetAmount: 0, currentAmount: 0, monthlyContribution: 0, category: "other" as const, deadline: "", priority: "medium" as const },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     if (editingId) {
@@ -44,7 +46,7 @@ export default function StashMapRoute() {
     setIsModalOpen(false);
   };
 
-  const handleEdit = (goal: any) => {
+  const handleEdit = (goal: SavingsGoal) => {
     setEditingId(goal.id);
     form.reset({
       label: goal.label,

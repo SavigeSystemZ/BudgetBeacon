@@ -1,5 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
@@ -30,7 +31,18 @@ export default function TaxTaxiRoute() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const form = useForm({
+  const taxRecordSchema = z.object({
+    year: z.number().min(2000).max(2100),
+    estimatedTaxLiability: z.number().min(0),
+    totalWithheld: z.number().min(0),
+    status: z.string(),
+    notes: z.string().optional(),
+    personId: z.string(),
+  });
+
+  type TaxRecordFormData = z.infer<typeof taxRecordSchema>;
+
+  const form = useForm<TaxRecordFormData>({
     defaultValues: {
       year: new Date().getFullYear(),
       estimatedTaxLiability: 0,
@@ -41,7 +53,7 @@ export default function TaxTaxiRoute() {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: TaxRecordFormData) => {
     if (!householdId) return;
     if (editingId) {
       await db.taxRecords.update(editingId, data);
@@ -53,7 +65,16 @@ export default function TaxTaxiRoute() {
     setIsModalOpen(false);
   };
 
-  const handleEdit = (record: any) => {
+  const handleEdit = (record: {
+    id: string;
+    householdId: string;
+    year: number;
+    estimatedTaxLiability: number;
+    totalWithheld: number;
+    status: string;
+    notes?: string;
+    personId: string;
+  }) => {
     setEditingId(record.id);
     form.reset({
       year: record.year,
