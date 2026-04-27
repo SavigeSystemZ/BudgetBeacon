@@ -16,7 +16,9 @@ import InsuranceInspectRoute from "./routes/InsuranceInspectRoute";
 import BeaconBridgeRoute from "./routes/BeaconBridgeRoute";
 import ReportsRoute from "./routes/ReportsRoute";
 import SettingsRoute from "./routes/SettingsRoute";
-import { ensureHousehold } from "./db/seedDemoData";
+import { db } from "./db/db";
+import { useLiveQuery } from "dexie-react-hooks";
+import { OnboardingWizard } from "./components/setup/OnboardingWizard";
 import { ThemeProvider } from "./components/theme-provider";
 import { ModeToggle } from "./components/mode-toggle";
 import { BeaconChatbot } from "./components/BeaconChatbot";
@@ -163,13 +165,28 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const households = useLiveQuery(() => db.households.toArray(), []);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => {
-    ensureHousehold().catch(console.error);
-  }, []);
+    // Show onboarding if no households exist
+    if (households !== undefined && households.length === 0) {
+      setShowOnboarding(true);
+    }
+  }, [households]);
 
   const wrap = (scope: string, node: ReactNode) => (
     <ErrorBoundary scope={scope}>{node}</ErrorBoundary>
   );
+
+  // Show onboarding wizard if no household exists
+  if (showOnboarding) {
+    return (
+      <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
+        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ErrorBoundary scope="root">
