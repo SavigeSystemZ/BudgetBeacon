@@ -8,7 +8,9 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { NativeSelect } from "../components/ui/native-select";
-import { TrendingUp, Calculator, FileCheck, ClipboardList, Edit2, Trash2, Plus } from "lucide-react";
+import { TrendingUp, Calculator, ClipboardList, Edit2, Trash2, Plus } from "lucide-react";
+import { TAX_FORMS, findFormDef } from "../modules/tax/formDefs";
+import { TaxFormEditor } from "../components/tax/TaxFormEditor";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip as ChartTooltip, ResponsiveContainer
@@ -28,10 +30,13 @@ export default function TaxTaxiRoute() {
 
   const [activeTab, setActiveTarget] = useState<"tracker" | "forms">("tracker");
   const [selectedFormType, setSelectedFormType] = useState<string | null>(null);
+  const [editingFormId, setEditingFormId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formYear, setFormYear] = useState(() => new Date().getFullYear());
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const savedForms = useLiveQuery(() => db.taxForms.toArray(), []) || [];
+
   const taxRecordSchema = z.object({
     year: z.number().min(2000).max(2100),
     estimatedTaxLiability: z.number().min(0),
@@ -88,20 +93,8 @@ export default function TaxTaxiRoute() {
     setIsModalOpen(true);
   };
 
-  const handleSaveForm = async (type: string, data: Record<string, unknown>) => {
-    if (!householdId) return;
-    const now = new Date().toISOString();
-    await db.taxForms.put({
-      id: `${type}-${new Date().getFullYear()}`,
-      year: new Date().getFullYear(),
-      type,
-      data,
-      updatedAt: now,
-      personId: defaultPersonId,
-    });
-    setSelectedFormType(null);
-    // No alert — form closes back to library; saved record is visible there.
-  };
+  const editingForm = editingFormId ? savedForms.find((f) => f.id === editingFormId) : undefined;
+  const activeFormDef = selectedFormType ? findFormDef(selectedFormType) : editingForm ? findFormDef(editingForm.type) : null;
 
   const chartData = taxRecords?.map(r => ({
     year: r.year.toString(),
@@ -218,54 +211,62 @@ export default function TaxTaxiRoute() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-           <div className="md:col-span-1 space-y-4">
+          <div className="md:col-span-1 space-y-4">
             <h2 className="text-xl font-black uppercase italic text-primary flex items-center gap-2 px-2">
               <ClipboardList className="h-5 w-5" /> Library
             </h2>
             <div className="space-y-2">
-              {["IRS Form 1040", "W-2 Wage Statement", "1099-NEC"].map(f => (
+              <Label className="text-[10px] font-black uppercase tracking-widest opacity-60 px-1">Tax year</Label>
+              <Input type="number" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value || "0", 10) || new Date().getFullYear())} className="bg-primary/5 border-none font-black h-10" />
+            </div>
+            <div className="space-y-2">
+              {TAX_FORMS.map((f) => (
                 <button
-                  key={f}
-                  onClick={() => setSelectedFormType(f)}
+                  key={f.code}
+                  onClick={() => { setSelectedFormType(f.code); setEditingFormId(null); }}
                   className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 ${
-                    selectedFormType === f ? 'bg-primary text-primary-foreground border-primary shadow-2xl scale-105 italic' : 'bg-card/40 border-primary/5 hover:bg-primary/5 hover:border-primary/20'
+                    (selectedFormType === f.code || editingForm?.type === f.code) ? 'bg-primary text-primary-foreground border-primary shadow-2xl scale-105 italic' : 'bg-card/40 border-primary/5 hover:bg-primary/5 hover:border-primary/20'
                   }`}
                 >
-                  <div className="font-black text-sm uppercase tracking-tighter">{f}</div>
-                  <div className="text-[8px] opacity-70 uppercase font-bold tracking-widest mt-1">Digital Template</div>
+                  <div className="font-black text-sm uppercase tracking-tighter">{f.title}</div>
+                  <div className="text-[8px] opacity-70 uppercase font-bold tracking-widest mt-1">{f.code.toUpperCase()}</div>
                 </button>
               ))}
             </div>
+
+            {savedForms.length > 0 && (
+              <div className="pt-4 space-y-2">
+                <h3 className="text-[10px] font-black uppercase tracking-widest opacity-70 px-1">Saved forms ({savedForms.length})</h3>
+                {savedForms.map((f) => (
+                  <div key={f.id} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-card/40 border border-primary/5 text-[11px]">
+                    <button onClick={() => { setSelectedFormType(null); setEditingFormId(f.id); }} className="flex-1 text-left">
+                      <div className="font-black tracking-tight">{f.type.toUpperCase()} · TY{f.year}</div>
+                    </button>
+                    <Button variant="ghost" size="icon" onClick={() => db.taxForms.delete(f.id)} className="h-7 w-7 text-destructive">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="md:col-span-3">
-            {selectedFormType ? (
-              <GlassCard intensity="high" className="border-primary/20 shadow-2xl animate-in zoom-in-95">
-                <CardHeader className="border-b border-primary/10 bg-primary/5">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle className="text-2xl font-black uppercase italic tracking-tighter">{selectedFormType}</CardTitle>
-                      <CardDescription className="text-[10px] font-bold uppercase tracking-widest">Digital Drafting Engine • TY{new Date().getFullYear()}</CardDescription>
-                    </div>
-                    <FileCheck className="h-10 w-10 text-primary opacity-20" />
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-8 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-2"><Label className="text-[10px] font-black uppercase tracking-widest opacity-60 px-1">Entity / Payer</Label><Input placeholder="Payer Name" className="bg-primary/5 border-none font-black h-12" /></div>
-                    <div className="space-y-2"><Label className="text-[10px] font-black uppercase tracking-widest opacity-60 px-1">Gross Telemetry</Label><Input type="number" placeholder="0.00" className="bg-primary/5 border-none font-black h-12" /></div>
-                  </div>
-                  <div className="pt-6 border-t border-primary/5 flex justify-end gap-3">
-                    <Button variant="ghost" onClick={() => setSelectedFormType(null)} className="h-12 px-8 uppercase font-black italic text-xs tracking-widest">Discard</Button>
-                    <Button onClick={() => handleSaveForm(selectedFormType!, {})} className="h-12 px-10 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-primary/20">Commit Draft</Button>
-                  </div>
-                </CardContent>
-              </GlassCard>
+            {activeFormDef ? (
+              <TaxFormEditor
+                def={activeFormDef}
+                year={editingForm?.year ?? formYear}
+                personId={defaultPersonId}
+                existingId={editingFormId ?? undefined}
+                initialData={editingForm?.data}
+                onSaved={() => { setSelectedFormType(null); setEditingFormId(null); }}
+                onCancel={() => { setSelectedFormType(null); setEditingFormId(null); }}
+              />
             ) : (
-              <EmptyState 
+              <EmptyState
                 icon={Calculator}
-                title="Drafting Engine Offline"
-                description="Select a form from the library to initiate the agentic drafting protocol."
+                title="No form selected"
+                description="Pick a form from the library to start drafting, or open one of your saved forms."
               />
             )}
           </div>

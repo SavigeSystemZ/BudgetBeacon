@@ -20,6 +20,8 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { StrategyComparison } from "../components/debt/StrategyComparison";
+import type { SimDebt } from "../modules/debt-strategy/payoffSimulator";
 
 const debtCenterSchema = z.object({
   label: z.string().min(1, "Label is required"),
@@ -94,6 +96,14 @@ export default function DebtCenterRoute() {
 
   if (!debts) return <div className="p-4 text-muted-foreground animate-pulse font-black italic uppercase">Opening Debt Center...</div>;
 
+  const simDebts: SimDebt[] = debts.map((d) => ({
+    id: d.id,
+    label: d.label,
+    balance: d.balance ?? 0,
+    minimumPayment: d.minimumPayment ?? 0,
+    interestRate: (d as unknown as { apr?: number; interestRate?: number }).apr ?? (d as unknown as { interestRate?: number }).interestRate ?? 0,
+  }));
+
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <PageHeader 
@@ -165,6 +175,8 @@ export default function DebtCenterRoute() {
               ))}
             </div>
           )}
+
+          <StrategyComparison debts={simDebts} />
         </div>
 
         <div className="space-y-6">
