@@ -37,7 +37,16 @@
 7. Create `docs/GUI_COMPLETION_MAP.md` with route-by-route classification + file:line evidence.
 8. Create `docs/INTEGRATIONS_STRATEGY.md` with phased real-integration plan.
 
-## Forward milestone sequence (M1–M9 summary)
+## Active execution slice (post-M6, 2026-04-28)
+
+M0–M6 are closed. The next slice is one of:
+
+- **Path A (recommended):** M7 — AI Assistant real integration. `AiProvider` abstraction; local Ollama / OpenAI-compatible first; cloud opt-in second. All proposed db writes require explicit confirmation.
+- **Path B:** M10 — Auth + cross-device sync. Requires user sign-off on architecture (option A cloud-backed vs B E2EE-CRDT vs C peer-only). Default recommendation: B. See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
+
+If unspecified, default to Path A.
+
+## Forward milestone sequence (M1–M12 summary)
 
 Full detail in `docs/COMPLETION_MASTER_PLAN.md` §10. Brief:
 
@@ -49,7 +58,10 @@ Full detail in `docs/COMPLETION_MASTER_PLAN.md` §10. Brief:
 - **M6 — Vault + OCR + Extraction Review.** Replace mocked Scavenge with real OCR (Tesseract.js browser-side) + extraction-review queue + commit-on-approve.
 - **M7 — AI Assistant Real Integration.** Provider abstraction (local Ollama first, cloud second). No silent writes. Persist `aiConfig`.
 - **M8 — Tax/Credit/Debt/Household Planning Deepening.** Real tax form fields (or honest "manual draft" labeling). Avalanche vs snowball debt strategy. Honest credit-snapshot UX (no fake fetch).
-- **M9 — Android/Web Final Polish + Release Candidate.** Safe-area QA, install/recovery docs, route sweep, release checklist.
+- **M9 — Android/Web Final Polish (pre-sync).** Safe-area QA, real-device APK smoke, Capacitor version pin. Beacon Bridge route stubbed with "coming in M10."
+- **M10 — Auth + Cross-Device Sync.** End-to-end-encrypted CRDT (Yjs) over a thin relay. Account login syncs across phone ↔ web. Server only sees ciphertext. Architecture in `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
+- **M11 — Joint Household / Linked Accounts.** Two accounts → one household. CRDT auto-merge. Per-record ownership labels and activity log. Leave/unlink with key rotation.
+- **M12 — Release.** Install/recovery docs, threat-model doc, release checklist (incl. sync interruption + joint-leave tests).
 
 ## Validation plan (M0)
 

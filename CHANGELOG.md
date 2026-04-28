@@ -4,7 +4,9 @@ Use this file for meaningful repo-visible change history. Keep transient task ch
 
 ## Unreleased
 
-- None recorded yet.
+- **M6 closed (2026-04-28).** Real OCR for the Vault. New `OcrProvider` interface in `src/modules/ocr/`, Tesseract.js browser-side implementation (no network), per-field confidence indicators, edit-before-commit review modal (`VaultExtractionReview`), apply-on-approve flow that writes `incomeSources` / `bills` / `taxRecords` with a `documentId` provenance pointer in `notes`. `featureFlags.ocrLocal` flipped to `true`. 12 new tests; total 71. Audit-controls baseline updated to `setTimeout=5` (5th is the legit `OnboardingWizard` auto-dismiss timer).
+- **Roadmap inserted M10 (Auth + Cross-Device Sync) and M11 (Joint Household / Linked Accounts).** Architecture doc at `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Recommended transport: end-to-end-encrypted CRDT (Yjs) over a thin relay — server can never read household data. Old M9 release-candidate work renumbered to M12 to keep release as the last milestone. `INTEGRATIONS_STRATEGY.md` Domain 5 (Beacon Bridge) marked superseded for sync planning.
+- **Tooling.** Added `tsx` devDep so `npm run audit:controls` runs on hosts without a global install.
 
 ## 1.22.1 (2026-04-12)
 

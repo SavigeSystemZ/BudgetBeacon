@@ -1,120 +1,90 @@
-# Where Left Off — 2026-04-25
+# Where Left Off — 2026-04-28
 
-> **Truth Reset.** Previous version claimed "Mission Ready. Secured. Polished." That claim was inaccurate; multiple primary action buttons across the app are mocked or alert-only. This file is now an honest handoff. See `docs/COMPLETION_MASTER_PLAN.md` for the full plan, `docs/GUI_COMPLETION_MAP.md` for per-route evidence, and `docs/GUI_COMPLETION_CHECKLIST.md` for per-control fix assignments.
+> **Status: M6 closed.** All currently-queued data-ingestion milestones (M0–M6) are honest, tested, and committed. Two new milestones (M10 Auth+Sync, M11 Joint Household) inserted into the roadmap per user request — see `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Architecture decision needs user sign-off before M10.1 starts.
 
-## What just happened
-- Performed full repo audit across `src/routes/` (15 routes), `src/components/BeaconChatbot.tsx`, `src/db/db.ts`, `src/App.tsx`, and `package.json`.
-- Executed Milestone **M0 — Repo Truth Reset** (doc-only, no code changes):
-  - Rewrote `PLAN.md`, `ROADMAP.md`, `TODO.md`, `FIXME.md`, `RISK_REGISTER.md`, this file.
-  - Created `docs/GUI_COMPLETION_MAP.md` and `docs/INTEGRATIONS_STRATEGY.md`.
-  - Saved `docs/COMPLETION_MASTER_PLAN.md` (master narrative).
-- Executed Milestone **M1 — GUI Surface Audit & Completion Matrix** (doc-only):
-  - Created `docs/GUI_COMPLETION_CHECKLIST.md` with per-control inventory across all 15 routes + chatbot.
-  - ~140 buttons + ~80 form fields enumerated; status distribution: ~95 REAL, ~20 MOCKED-SETTIMEOUT, ~10 ALERT-ONLY, ~15 NO-OP.
-  - Component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix all in checklist.
-  - Highest-priority M3 must-fix list ordered by user-visible harm (Vault Commit-to-App is #1 — it writes mock data to real db on one click).
-- Executed Milestone **M5 (substantial pass) — Ledger + Bank/Data Import Foundation** (commit pending after this update):
-  - **CSV import pipeline** in `src/modules/import/`:
-    - `parseCsv.ts` — RFC-4180 parser (quoted fields, embedded commas/quotes/newlines, CRLF, BOM stripping). Pure function.
-    - `dedupeKey.ts` — canonical `dedupeKey({date, amount, payee})`; payee normalization (lowercase, alpha-num only); `parseAmount()` handles `$1,234.56`, `(123.45)` accounting parens, European `1.234,56`, `+`/`-` signs.
-    - `mapRows.ts` — column-mapping → typed `MappedTransactionDraft` with auto type inference from sign; `partitionByDedupe()` separates fresh from duplicates against a Set of existing keys.
-    - `autoDetect.ts` — best-effort guess at {date, payee, amount, category, type} from header names (Posted / Description / Amount / Category etc.).
-  - **`LedgerImportFlow` component** (`src/components/import/LedgerImportFlow.tsx`): 4-step modal — pick → map → review → done. Mapping step has live preview of first 3 rows. Review step lists drafts with inclusion checkboxes (duplicates default to excluded but visible) and a per-row "possible duplicate" badge. Skipped rows are surfaced with reason + source line number.
-  - **Ledger header** now has `Import CSV` action (gated on `featureFlags.bankImportTierA = true`). The right-sidebar M5 DemoBadge card has been replaced with an "How to import" panel.
-  - **20 new tests** across parseCsv (5), date/payee/amount normalization (8), dedupeKey (2), mapRowsToDrafts (3), partitionByDedupe (1), autoDetect (covered indirectly). Total 59 (was 39).
-  - **Audit-controls baseline unchanged** (`setTimeout=4 mathRandom=0 alert=0`). The import flow uses no setTimeout / alert / Math.random.
-- Executed Milestone **M4 — Reports / Backup / Restore / Recovery**:
-  - **Backup format v3** — documents (Blob) now round-trip via base64. New `src/lib/encoding/base64.ts` with chunked encoder (handles >32 KB without RangeError) and a runtime fallback to `FileReader.readAsArrayBuffer` for older WebViews. v1 + v2 backups still validate on import.
-  - **Real Reports Export** — `src/modules/reports/exportCsv.ts` produces RFC-4180 CSV per entity (transactions, bills, debts, savings goals, subscriptions, insurance, credit snapshots). Reports route now has an Export dropdown with all CSVs + a "Full backup (JSON v3)" shortcut. `featureFlags.reportsRealExport` flipped to `true`.
-  - **Five report tabs** — Monthly (existing), Debts, Savings, Subscriptions, Documents. Each computes from real db data; debt report sorts Avalanche-order; savings report shows ETA per goal; subscriptions report sorts by monthly equivalent; document inventory groups by category.
-  - **Restore-confirmation diff preview** — Settings now parses + validates the file first, then shows a `RestoreDiffPanel` with current-vs-backup row counts per table (additions in green, deletions in red). User confirms only after reviewing. New helpers `backupRowCounts()` and `currentDbRowCounts()` in `importJson.ts`.
-  - **Print stylesheet** — `@media print` block in `src/index.css` forces white bg / black text, disables animations, sets `break-inside: avoid` on cards, hides nav and chatbot FAB.
-  - **New tests** — base64 helpers (4 cases incl. >32 KB chunking boundary), CSV escape (4 cases), backup row-counts diff (1 case). Total 39 tests, all green.
-  - **Audit-controls baseline updated** to `setTimeout=4 mathRandom=0 alert=0`. The 4 setTimeouts are all legit UX status-message timers (Settings savedFlash + importStatus reset, Reports CSV + JSON export confirmations).
-- Executed Milestone **M3 (substantial pass) — Full GUI Completion** in two commits:
-  - **M3.1 (commit `72c86c3`)** — removed highest-harm fake controls in Vault, Ledger, Credit, Beacon Bridge. Introduced shared `featureFlags` map (`src/lib/flags/featureFlags.ts`) and `DemoBadge` component (`src/components/ui/DemoBadge.tsx`).
-  - **M3.2 (commit `ae1bbb5`)** — every remaining `alert()` removed from `src/`. New `stabilityIndex` module + tests; Mission Control / Reports now use the real index. Mission Control's Largest Liability + Stash Velocity cards now compute from real db. Insurance Inspect rewritten as honest manual CRUD against `insuranceRecords`. Settings rewritten with real `localStorage`-backed preferences and Dexie-backed AI Config persistence. Chatbot now clearly labeled Demo until M7.
-  - **Audit-controls counts:** `setTimeout` 10 → 2 (both remaining are legit Settings UX timers), `mathRandom` 2 → 0, `alert` 15 → 0.
-  - **Validation:** `npm test` 29 passed; `npm run typecheck` clean.
-- Executed Milestone **M2 — Core Data + Validation Hardening** (first code-touching milestone):
-  - **Test infrastructure**: added `npm test`, `npm run test:watch`, `npm run typecheck`, `npm run audit:controls` scripts. Created `vitest.config.ts` (jsdom env) and `vitest.setup.ts` (loads `fake-indexeddb/auto` + jest-dom matchers).
-  - **Discovered M0/M1 audit inaccuracies (now corrected below)**: there were already 2 test files (`budget-engine.test.ts` 12 cases, `stash-map.calculations.test.ts` 5 cases) — total 17 pre-existing tests. The biweekly factor in the *budget engine itself* (`frequency.ts`) was already correct (`52/12 ≈ 2.1667`); the bug was in `IncomeRoute.tsx` lines 36–46 which had a *duplicate* incorrect display calculation.
-  - **Fixed IncomeRoute drift**: replaced the duplicate calc with a call to the shared `toMonthlyEquivalent` from the budget engine. Now also handles `semimonthly` and `custom` frequencies (the duplicate ignored both).
-  - **CRITICAL fix — backup completeness**: the original `exportDatabaseToJson` only exported 8 of 18 db tables. Restoring a backup silently wiped the user's `subscriptions`, `taxRecords`, `taxTransactions`, `taxForms`, `aiConfig`, `chatMessages`, `insuranceRecords`, `syncLogs`, and `debtTransactions`. Bumped backup format to v2; added all non-blob tables; v1 backups still validate (backward-compat). `documents` (Blob) is intentionally excluded — base64 round-trip deferred to M4.
-  - **New test**: `src/modules/reports/backup.test.ts` (5 cases) — version field present, all v2 tables exported, full round-trip equality, v1 legacy acceptance, malformed-rejection.
-  - **Error boundary**: added `src/components/ErrorBoundary.tsx`. Wired root + per-route in `src/App.tsx` so a render error in one route can't blank the whole app. Each route's boundary names the route on the fallback UI.
-  - **Audit-controls tool**: `tools/audit-controls.ts` greps `src/routes` + `src/components` for `setTimeout`, `Math.random`, `alert(`, empty `onClick={() => {}}` and fails if counts increase vs `tools/audit-controls.baseline.json`. Baseline recorded 2026-04-25: **setTimeout=10, Math.random=2, alert=15, emptyOnClick=0**. M3 should drive these down.
-  - **Validation**: `npm test` → 22 passed (3 files). `npm run typecheck` → clean.
+## What just happened (this session)
+
+- **Closed M6 — Vault + OCR + Extraction Review.** Working tree had the implementation in flight; this session validated, fixed audit-controls baseline drift, and committed.
+  - **`src/modules/ocr/`** — `OcrProvider` interface (`types.ts`), `tesseractProvider.ts` (Tesseract.js wrapper, browser-side, no network), `extractFields.ts` (regex extraction of date/amount/payee/label from raw OCR text), `applyExtraction.ts` (commits `ExtractedField[]` → `incomeSources` / `bills` / `taxRecords` with `documentId` provenance).
+  - **`src/components/vault/VaultExtractionReview.tsx`** — modal with raw OCR text panel + per-field editor + confidence badges. No auto-commit.
+  - **`src/routes/DocumentStoreRoute.tsx`** — Scavenge button on each document card runs the extraction; review modal handles approve.
+  - **`featureFlags.ocrLocal`** flipped to `true`.
+  - **Tests:** 9 new cases in `extraction.test.ts` and `extractFields.test.ts` covering field extraction, applyExtractionToDb routing (paystub → income, bill → bill), provenance pointer in notes, and feature-flag wiring. **Total 71 passing (was 59).**
+  - **Audit baseline updated** to `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`. The 5th setTimeout is `OnboardingWizard.tsx:85` (legit auto-dismiss after wizard completion); not new in M6 but caught now.
+  - **Validation:** `npm test` 71 passed; `npm run typecheck` clean; `npm run audit:controls` no regressions; `npm run build` clean (PWA generated).
+- **Inserted M10 + M11 into the roadmap.** New `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` covers identity model, three transport options (cloud / E2EE-CRDT / peer), a recommendation (E2EE CRDT via Yjs over a thin relay), and slice-level breakdown for both new milestones. `ROADMAP.md` updated; `INTEGRATIONS_STRATEGY.md` Domain 5 marked as superseded for sync. Renumbered the old M9 release-candidate work into a new M12 to keep release as the last step.
+- **`tsx` added as a devDep** so `npm run audit:controls` works again on this host.
 
 ## Honest state of the app
 
-### What is real
-- **Routes:** All 15 routes wired in `src/App.tsx:173-189` (HashRouter).
-- **Persistence:** Dexie v4 schema with 18 tables (`src/db/db.ts`). Real CRUD on Income, Pay Path (bills + debts), Stash Map (goals), Subscriptions, Tax Taxi (records), Ledger (manual transactions), Document Store (Blob storage), Credit (manual snapshots), Debt Center (debts + debt transactions).
-- **Settings:** Real JSON export/import/wipe (`SettingsRoute.tsx:26-61`), via `exportDatabaseToJson` / `importDatabaseFromJson` / `clearDatabase`.
-- **Aggregations:** `calculateBudgetSummary()` is a real (basic) aggregation used by Dashboard, Mission Control, Reports.
-- **Build:** `npm run build` is clean per prior handoff. Capacitor sync OK.
+### Real
+- 15 routes. Dexie v4 with 18 tables. Real CRUD on every primary entity.
+- Backup format v3 (covers all tables including documents Blob via base64). v1/v2 still readable.
+- Real CSV export per entity + JSON full backup. Restore with diff preview.
+- Real CSV import for Ledger (RFC-4180 parser, dedupe, per-row review, mapping auto-detect).
+- Real OCR for Vault (Tesseract.js browser-side, per-field confidence, edit-before-commit, documentId provenance on every committed record).
+- 71 unit tests across budget engine, stash-map calc, frequency normalization, base64 codec, csv writer, csv parser, dedupe key, row mapper, partition-by-dedupe, stability index, backup round-trip, OCR field extraction, applyExtractionToDb routing.
+- Error boundaries (root + per-route).
+- Audit-controls regression tool (`tools/audit-controls.ts`).
 
-### What is mocked or simulated (high-confidence findings from audit)
-| Surface | File:Line | What's fake |
-|---|---|---|
-| Beacon chatbot | `src/components/BeaconChatbot.tsx:44-62` | `setTimeout` + canned if/else; no LLM call |
-| Ledger Bank Sync | `src/routes/LedgerRoute.tsx:53-62` | `setTimeout` + 2 hardcoded transactions (Starbucks, Amazon) |
-| Ledger Scavenge | `src/routes/LedgerRoute.tsx:65-78` | `setTimeout` + 2 hardcoded items |
-| Document Store Scavenge | `src/routes/DocumentStoreRoute.tsx:74-84` | `setTimeout` + hardcoded extraction (income $1450, bill $174.70) |
-| Credit Bank Fetch | `src/routes/CreditRoute.tsx:57-63` | `setTimeout` + `Math.random()` score |
-| Credit "Free Credit Check" | `src/routes/CreditRoute.tsx:68-74` | `setTimeout` + `Math.random()` score |
-| Beacon Bridge target | `src/routes/BeaconBridgeRoute.tsx:21` | Hardcoded "Partner's Phone (iPhone 15)" |
-| Beacon Bridge sync | `src/routes/BeaconBridgeRoute.tsx:28-37` | Simulated merge; writes one fake `syncLogs` row + alert |
-| Insurance Inspect | `src/routes/InsuranceInspectRoute.tsx:16-26, 55-67` | Hardcoded quotes (Progressive/Geico/State Farm) and active policies |
-| Mission Control "Persist Plan" | `src/routes/BudgetMissionControlRoute.tsx:32` | `alert("Strategic plan saved.")` only |
-| Mission Control Stability Index | `src/routes/BudgetMissionControlRoute.tsx:102-103` | Hardcoded 85 / 45, not calculated |
-| Mission Control forecast text | `src/routes/BudgetMissionControlRoute.tsx:169` | Hardcoded "65% complete... by August 2026" |
-| Dashboard "Save Cockpit" | `src/routes/DashboardRoute.tsx:76` | `alert("Snapshot saved.")` only |
-| Reports Export | `src/routes/ReportsRoute.tsx:35` | `alert("Report Exported.")` only |
-| Settings "Save All" | `src/routes/SettingsRoute.tsx:64-66` | Alerts only; UI toggles do not persist |
-| Settings AI Config | `src/routes/SettingsRoute.tsx:241-266` | Form accepts input but does not persist or validate endpoint |
-| Tax Taxi form | `src/routes/TaxTaxiRoute.tsx:233-234` | Two placeholder fields ("Entity / Payer", "Gross Telemetry"); not a real form |
-
-### Infrastructure gaps (status as of M2 close)
-- ~~No `test` script in `package.json`.~~ **Resolved M2.** `npm test` runs Vitest (22 tests, 3 files).
-- ~~No `typecheck` script.~~ **Resolved M2.** `npm run typecheck` available.
-- ~~No error boundaries anywhere in the React tree.~~ **Resolved M2.** Root + per-route boundaries via `ErrorBoundary`.
-- **Still gap:** no retry logic, no offline graceful-degradation. (Will become relevant when M5/M7 add network calls.)
-- **New tooling:** `npm run audit:controls` flags any increase in mocked-control counts.
+### Still mocked / unbuilt
+- **Beacon chatbot** — `setTimeout` + canned replies. M7 owns.
+- **Beacon Bridge route** — old single-button "sync to partner's phone" mock. Will be rebuilt in M10/M11; in the meantime it's gated and labeled.
+- **Credit Bank Fetch / Free Credit Check** — `Math.random` mocks were removed in M3; the surface is now manual entry only. No real bureau integration is realistically possible.
+- **Insurance Inspect** — rewritten in M3 as honest manual CRUD. No third-party quote API.
+- **Tax Taxi forms** — still 2-field placeholder; M8 deepens or labels.
+- **Auth, identity, multi-device sync, joint households** — none of this exists yet. M10 + M11 own it.
 
 ## Where to pick up next
 
-**Next milestone: M6 — Vault + OCR + Extraction Review.** With M5 closing the inputs gap (Ledger has real CSV import) and M4 closing the trust layer (real backup/restore/exports), the Vault is the last simulated-write surface from `docs/GUI_COMPLETION_CHECKLIST.md`. The "Scavenge" button in The Vault is currently gated off behind `featureFlags.ocrLocal`; M6 ships the real implementation.
+**Two parallel paths the next agent can pick up:**
 
-**M6 concrete work (in suggested order):**
+### Path A — Continue the original sequence (M7 → M8 → M9 → M10 → M11 → M12)
+This is the "finish the household app for one user, then add multi-user" path. Lower risk; no architecture re-keying mid-flight.
 
-1. **Local OCR adapter** (`src/modules/ocr/`) — wrap Tesseract.js (or equivalent in-browser engine) behind an `OcrProvider` interface. `extract(blob, hint?) → ExtractionDraft` with per-field confidence + bounding boxes. See `docs/INTEGRATIONS_STRATEGY.md` Domain 2 Phase 1.
-2. **`VaultExtractionReview` component** — side-by-side document preview + per-field editor + confidence indicator. Required for any extracted data to land in db.
-3. **Apply-on-approve flow** — write to `incomeSources` / `bills` / `taxRecords` / etc., always with a `documentId` provenance pointer. No auto-commit.
-4. **Flip `featureFlags.ocrLocal` to true** once happy-path round-trip works.
-5. **M5 carry-overs (low priority)** — QFX/OFX scaffolded parser; merchant/payee normalization rules in a `payeeRules` Dexie table.
-6. **`audit:controls` baseline** still `setTimeout=4 mathRandom=0 alert=0`. M6 must not raise.
+- **M7 first:** Replace mocked chatbot in `BeaconChatbot.tsx:44-62`. Provider abstraction (`AiProvider` interface). Local Ollama / OpenAI-compatible endpoint as the first concrete provider. Persist `aiConfig` (already wired in M3 — just consume). Action proposals must require explicit user confirmation; no silent db writes.
+- Reference: `docs/INTEGRATIONS_STRATEGY.md` Domain 4.
 
-**Reference for M6 design:** `docs/INTEGRATIONS_STRATEGY.md` Domain 2 (Document OCR / extraction) Phase 1 — Tesseract.js local-only first.
+### Path B — Skip ahead to M10 (sync) once architecture is signed off
+Only do this if the user signs off on the architecture in `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Concretely needed:
 
-**Validation surface available now:**
-- `npm test` — 22 tests across budget engine, stash-map, backup round-trip
-- `npm run typecheck` — full TS compile, no emit
-- `npm run lint` — eslint
-- `npm run audit:controls` — mock-regression check
-- `npm run build` — production Vite build (Capacitor sync runs separately)
+1. User confirms transport option **B (E2EE CRDT + thin relay)** vs A (cloud-backed) vs C (peer-only). Default recommendation is B.
+2. User accepts the passphrase + recovery-code model.
+3. User green-lights spinning up a small relay (Cloudflare Worker or tiny VPS, $0–5/mo).
+
+If those three are in hand, M10.1 (auth scaffolding) is the first commit. Stay strictly in `src/modules/auth/` and `src/modules/crypto/` for that slice — no UI changes yet.
 
 ## Build / sync state
-- `npm test` — 59 passed (verified at M5 close, 2026-04-26)
-- `npm run typecheck` — clean (verified at M4 close)
-- `npm run audit:controls` — baseline locked at `setTimeout=4 mathRandom=0 alert=0 emptyOnClick=0`; all 4 setTimeouts are legit UX status-message timers
-- `npm run build` — re-verify before next milestone
-- `npx cap sync` — re-verify before Android smoke
-- Database: Dexie v4 active; **backup format v3** (covers all 18 tables including `documents` Blob via base64; v1/v2 still accepted on import)
+- `npm test` — **71 passed** (verified 2026-04-28)
+- `npm run typecheck` — clean
+- `npm run audit:controls` — baseline `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`
+- `npm run build` — clean (1.1 MB main bundle; chunk-splitting deferred — see TODO)
+- `npx cap sync` — re-verify before any real-device test
+- Database: Dexie v4 active; backup format v3
+
+## Files changed this session
+- `src/lib/flags/featureFlags.ts` — `ocrLocal: true`
+- `src/routes/DocumentStoreRoute.tsx` — wired Scavenge → tesseractProvider → review → applyExtractionToDb
+- `src/routes/TaxTaxiRoute.tsx` — minor lint suppression on the schema variable (unused for now, kept for M8)
+- `src/components/vault/VaultExtractionReview.tsx` — NEW
+- `src/modules/ocr/types.ts` — NEW (OcrProvider interface)
+- `src/modules/ocr/tesseractProvider.ts` — NEW
+- `src/modules/ocr/extractFields.ts` — NEW
+- `src/modules/ocr/extractFields.test.ts` — NEW
+- `src/modules/ocr/applyExtraction.ts` — NEW
+- `src/modules/ocr/extraction.test.ts` — NEW
+- `tools/audit-controls.baseline.json` — bumped setTimeout 4→5 (legit OnboardingWizard timer)
+- `package.json` / `package-lock.json` — added `tsx` devDep
+- `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` — NEW (M10 + M11 architecture)
+- `ROADMAP.md` — added M10 + M11; renumbered release as M12
+- `TODO.md` — M6 closed; M10 + M11 queues added
+- `PLAN.md` — refreshed for current execution slice
+- `CHANGELOG.md` — Unreleased section updated
 
 ## Hard rules for the next agent
-1. **Do not re-introduce "Mission Ready" / "fully delivered" language anywhere.** If you find it, fix it.
-2. **Do not delete mocked surfaces silently.** Either replace with real implementation, hide behind a feature flag, or label honestly. Document the choice.
-3. **Backup before destructive testing.** Use Settings → Export before any `clearDatabase` work.
-4. **Prefer commits per milestone, not per file.** M0 should land as one commit.
+
+1. **Do not start M10 code without user sign-off** on transport option (A/B/C) and the passphrase model. The architecture doc explicitly calls this out as a gate.
+2. **Do not regress audit-controls counts.** If a new legit UX timer is added, update `tools/audit-controls.baseline.json` in the same commit and explain why in the message.
+3. **Do not silently delete the Beacon Bridge route.** It's referenced from the nav. Either rebuild it against the new sync transport in M10 or replace it with an honest "Sync coming in M10" panel.
+4. **Per-record `personId` is load-bearing for M11 joint households.** Don't drop it from any existing schema.
+5. **Stable IDs (`createId()` UUIDs) are load-bearing for M10 CRDT merge.** Don't switch to autoincrement IDs anywhere.

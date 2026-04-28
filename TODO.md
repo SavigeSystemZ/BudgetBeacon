@@ -13,16 +13,23 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [x] **CRITICAL: M3 (substantial) — Full GUI Completion Pass.** Two commits (`72c86c3` + `ae1bbb5`). All 10 highest-priority must-fix items done. Audit counts: `setTimeout` 10→2 (legit UX), `mathRandom` 2→0, `alert` 15→0. New shared primitives: `featureFlags` map, `DemoBadge` component, `preferences` localStorage layer, `stabilityIndex` module + 7 tests. 29 tests passing. Insurance Inspect now real manual CRUD; Settings now persists toggles + aiConfig. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M4 — Reports, Backup, Restore, Recovery.** Backup format v3 (documents via base64, chunked encode). Real CSV/JSON exports + 5 per-report tabs. Restore diff preview. Print stylesheet pass. 39 tests passing (10 new). Audit baseline locked at `setTimeout=4 mathRandom=0 alert=0`. *(Completed 2026-04-26.)*
 - [x] **CRITICAL: M5 (substantial) — Ledger + Bank/Data Import.** New `src/modules/import/` (parseCsv, dedupeKey, mapRows, autoDetect). New `LedgerImportFlow` component: file → mapping → review → commit, with auto-detect, per-row inclusion checkbox, and "possible duplicate" highlighting. `featureFlags.bankImportTierA` flipped to true. 59 tests passing (20 new). *(Completed 2026-04-26.)*
+- [x] **CRITICAL: M6 — Vault + OCR + Extraction Review.** `OcrProvider` interface in `src/modules/ocr/types.ts`; `tesseractProvider.ts` wraps Tesseract.js (browser-side, no network). `extractFields.ts` extracts date/amount/payee/label from raw OCR text via regex. `applyExtraction.ts` commits approved `ExtractedField[]` to `incomeSources` / `bills` / `taxRecords` with `documentId` provenance. `VaultExtractionReview` modal: raw text panel + per-field editor + confidence badges, no auto-commit. `featureFlags.ocrLocal = true`. 71 tests passing (12 new). Audit baseline now `setTimeout=5 mathRandom=0 alert=0`. *(Completed 2026-04-28.)*
 
-## Immediate Queue (M6 — Vault + OCR + Extraction Review)
+## Immediate Queue — pick a path
 
-- [ ] **HIGH:** Local OCR adapter — wrap Tesseract.js (or in-browser equivalent) behind `OcrProvider` interface returning `ExtractionDraft` with per-field confidence + bounding boxes.
-- [ ] **HIGH:** `VaultExtractionReview` component — side-by-side document preview + per-field editor + confidence indicator. No auto-commit path.
-- [ ] **HIGH:** Apply-on-approve flow — write to `incomeSources` / `bills` / `taxRecords` with `documentId` provenance pointer.
-- [ ] **HIGH:** Flip `featureFlags.ocrLocal` to true once happy path works end-to-end.
-- [ ] **MEDIUM (M5 carry-over):** QFX / OFX scaffolded parser (or clean adapter interface for a future dep).
-- [ ] **MEDIUM (M5 carry-over):** Merchant / payee normalization rules — persist to a new `payeeRules` Dexie table.
-- [ ] **MEDIUM:** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098, etc.) OR honest "manual notes" labeling. Currently 2 placeholder fields only.
+**Path A (recommended): continue the sequence → M7 (AI Assistant).**
+**Path B: skip ahead to M10 (Auth + Sync) — requires architecture sign-off first.** See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` "What needs the user's sign-off before code starts."
+
+### M7 — AI Assistant Real Integration (Path A first slice)
+
+- [ ] **HIGH:** Replace mocked chatbot in `BeaconChatbot.tsx:44-62` with provider abstraction (`AiProvider` interface).
+- [ ] **HIGH:** Local provider first — Ollama / OpenAI-compatible endpoint reading config from the existing `aiConfig` Dexie table.
+- [ ] **HIGH:** All assistant action proposals require explicit user confirmation before db writes.
+- [ ] **MEDIUM:** Cloud provider opt-in (Anthropic / OpenAI), clearly labeled non-local.
+- [ ] **MEDIUM:** Streamed token rendering for responsiveness.
+- [ ] **MEDIUM (M5 carry-over):** QFX / OFX scaffolded parser.
+- [ ] **MEDIUM (M5 carry-over):** Merchant / payee normalization rules in a `payeeRules` Dexie table.
+- [ ] **MEDIUM (M6 carry-over):** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098, etc.) OR honest "manual notes" labeling.
 
 ### M3 polish carry-over (low-risk, do during M4 or M5)
 - [ ] **MEDIUM:** Add `EmptyState` component to remaining 6 routes (Mission Control, Dashboard, Pay Path, Credit snapshot list, Reports, plus the existing IncomeRoute partial).
@@ -66,11 +73,11 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [ ] **MEDIUM:** QFX/OFX parser (libofx-style) scaffolded.
 - [ ] **MEDIUM:** Merchant/payee normalization rules (configurable map).
 
-## M6 — Vault + OCR + Extraction Review (queued)
+## M6 — Vault + OCR + Extraction Review ✅ DONE (2026-04-28)
 
-- [ ] **HIGH:** Remove mocked Scavenge (`DocumentStoreRoute.tsx:74-84`, `LedgerRoute.tsx:65-78`).
-- [ ] **HIGH:** Tesseract.js (or equivalent) browser-side OCR for uploaded PDFs/images.
-- [ ] **HIGH:** Extraction-review UI: confidence per field, edit before commit, link extracted records back to source document via provenance pointer.
+- [x] **HIGH:** Removed mocked Scavenge in `DocumentStoreRoute.tsx`; replaced with real Tesseract.js extraction.
+- [x] **HIGH:** Tesseract.js browser-side OCR shipped via `OcrProvider` interface.
+- [x] **HIGH:** Extraction-review UI: confidence per field, edit before commit, `documentId` provenance pointer in record `notes`.
 
 ## M7 — AI Assistant Real Integration (queued)
 
@@ -85,13 +92,43 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [ ] **HIGH:** Avalanche vs snowball debt strategy comparison in Debt Center.
 - [ ] **MEDIUM:** Cross-module household planning summary (Mission Control rebuild on real data).
 
-## M9 — Android / Web Final Polish + RC (queued)
+## M9 — Android / Web Final Polish (pre-sync) (queued)
 
-- [ ] **HIGH:** Remove or replace mocked Beacon Bridge (`BeaconBridgeRoute.tsx:28-37`); start from real export/import bundle path before any peer/WebRTC work.
-- [ ] **HIGH:** Remove mocked Insurance Inspect (`InsuranceInspectRoute.tsx:16-26, 55-67`); replace with manual policy CRUD or hide behind disabled feature flag.
-- [ ] **HIGH:** Android safe-area + APK smoke test on real device.
-- [ ] **HIGH:** Install/recovery docs.
-- [ ] **HIGH:** Release checklist passes.
+- [ ] **HIGH:** Replace `BeaconBridgeRoute.tsx` with an honest "Sync coming in M10" panel (the route is referenced from nav; do not silently delete).
+- [ ] **HIGH:** Android safe-area + APK smoke test on real device. Pin Capacitor / Android versions before M10 starts.
+- [ ] **HIGH:** PWA install flow validated.
+- [ ] **MEDIUM:** Bundle code-split (current main chunk is 1.1 MB). React.lazy each route.
+- [ ] **MEDIUM:** Accessibility audit (color contrast, focus order, aria-labels on icon-only buttons).
+
+## M10 — Auth + Cross-Device Sync (queued — needs architecture sign-off)
+
+> Architecture: `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Recommended option B (E2EE CRDT + thin relay via Yjs). Requires user sign-off on transport choice + passphrase model + relay deployment before M10.1.
+
+- [ ] **CRITICAL gate:** User signs off on transport option (A cloud-backed / B E2EE-CRDT / C peer-only). Default recommendation: B.
+- [ ] **CRITICAL gate:** User accepts passphrase + one-time recovery-code model.
+- [ ] **CRITICAL gate:** User green-lights a tiny relay (Cloudflare Worker or small VPS, $0–5/mo).
+- [ ] **M10.1:** Auth scaffold — `src/modules/auth/` with signup/login/logout. Argon2id passphrase → key derivation. Account record + keypair generated client-side. Local-only at first.
+- [ ] **M10.2:** Encryption envelope — `src/modules/crypto/` wrapping `crypto.subtle` AES-GCM. Round-trip test.
+- [ ] **M10.3:** CRDT mirror — Yjs document mirroring all 18 Dexie tables. Two-way sync test (no network).
+- [ ] **M10.4:** Relay + transport — thin Node+ws or Cloudflare Worker relay (~150 LOC). Client connects via `y-websocket` with the household-key envelope. "Sync status" indicator in bottom nav.
+- [ ] **M10.5:** Onboarding integration — existing `OnboardingWizard` learns to either continue local-only or sign up for sync. Migrate local Dexie data to the user's Household on first sync.
+- [ ] **M10.6:** Mobile parity smoke — real-device APK install, log in, verify data appears.
+
+## M11 — Joint Household / Linked Accounts (queued — depends on M10)
+
+- [ ] **M11.1:** Invite flow — Settings → "Invite partner" generates a one-time code (24 h, single-use) wrapping an ephemeral key.
+- [ ] **M11.2:** Accept flow — second account enters code, gets the household key, joins.
+- [ ] **M11.3:** Per-record ownership UX — surface "owned by Person A / Person B / Joint" labels using existing `personId`. Add per-record visibility toggle (private vs shared).
+- [ ] **M11.4:** Activity log — new `householdActivity` Dexie table, populated from CRDT merge events.
+- [ ] **M11.5:** Leave / unlink — leaving account exports a v3 backup of their last state. Remaining account keeps the household; key rotates on leave.
+- [ ] **M11.6 (stretch):** View-only mode for a second account.
+
+## M12 — Public Release / Install & Recovery Docs (queued — final)
+
+- [ ] **HIGH:** Install/update/recovery docs in repo.
+- [ ] **HIGH:** Threat-model + privacy doc shipped alongside the build (especially for sync).
+- [ ] **HIGH:** Release checklist incl. sync-interruption test and joint-household-leave test.
+- [ ] **HIGH:** Replace mocked Insurance Inspect remnants if any survive (M3 already rewrote it; re-verify).
 
 ## Maintenance / Low-priority
 

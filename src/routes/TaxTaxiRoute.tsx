@@ -31,6 +31,7 @@ export default function TaxTaxiRoute() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const taxRecordSchema = z.object({
     year: z.number().min(2000).max(2100),
     estimatedTaxLiability: z.number().min(0),

@@ -7,13 +7,17 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { NativeSelect } from "../components/ui/native-select";
-import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Plus } from "lucide-react";
+import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Plus, Loader2 } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
+import { VaultExtractionReview } from "../components/vault/VaultExtractionReview";
+import { tesseractProvider } from "../modules/ocr/tesseractProvider";
+import { applyExtractionToDb } from "../modules/ocr/applyExtraction";
+import type { ExtractionDraft, ExtractedField } from "../modules/ocr/types";
 
 export default function DocumentStoreRoute() {
   const documents = useLiveQuery(() => db.documents.toArray(), []);
@@ -27,6 +31,14 @@ export default function DocumentStoreRoute() {
   const [selectedCategory, setSelectedCategory] = useState("other");
   const [fileLabel, setFileLabel] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // OCR extraction state
+  const [extracting, setExtracting] = useState(false);
+  const [extraction, setExtraction] = useState<ExtractionDraft | null>(null);
+  const [extractionDocId, setExtractionDocId] = useState<string | null>(null);
+  const [isExtractionReviewOpen, setIsExtractionReviewOpen] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [extractionError, setExtractionError] = useState<string | null>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,6 +85,63 @@ export default function DocumentStoreRoute() {
     if (window.confirm("Permanently delete this document from local vault?")) await db.documents.delete(id);
   };
 
+  const handleScavenge = async (docId: string) => {
+    setExtracting(true);
+    setExtractionError(null);
+    try {
+      const doc = await db.documents.get(docId);
+      if (!doc) throw new Error("Document not found");
+
+      const draft = await tesseractProvider.extract(doc.data, { hint: categoryToHint(doc.category) });
+      setExtraction(draft);
+      setExtractionDocId(docId);
+      setIsExtractionReviewOpen(true);
+    } catch (err) {
+      console.error(err);
+      setExtractionError(`Extraction failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setExtracting(false);
+    }
+  };
+
+  const categoryToHint = (cat: string): "paystub" | "bill" | "bank-statement" | "tax-form" => {
+    switch (cat) {
+      case "award-letter":
+        return "paystub";
+      case "tax-form":
+        return "tax-form";
+      case "bank-statement":
+        return "bank-statement";
+      default:
+        return "paystub";
+    }
+  };
+
+  const handleApproveExtraction = async (fields: ExtractedField[], documentId: string) => {
+    setIsApproving(true);
+    setExtractionError(null);
+    try {
+      if (!householdId || !defaultPersonId) throw new Error("No active household");
+
+      await applyExtractionToDb(fields, {
+        householdId,
+        personId: defaultPersonId,
+        documentId,
+        hint: extractionDocId ? categoryToHint((documents?.find((d) => d.id === extractionDocId)?.category) || "other") : undefined,
+      });
+
+      setExtraction(null);
+      setExtractionDocId(null);
+      setIsExtractionReviewOpen(false);
+    } catch (err) {
+      console.error(err);
+      setExtractionError(`Failed to apply extraction: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+
   if (!documents) return <div className="p-4 text-muted-foreground animate-pulse">Accessing The Vault...</div>;
 
   return (
@@ -95,19 +164,30 @@ export default function DocumentStoreRoute() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="space-y-6 lg:col-span-1">
-          {/* Scavenge / OCR is disabled until M6 ships real Tesseract-backed extraction with per-field review. */}
-          <GlassCard className="border-amber-400/20 bg-amber-400/5">
+          {/* Scavenge / OCR panel */}
+          <GlassCard className={featureFlags.ocrLocal ? "border-green-400/20 bg-green-400/5" : "border-amber-400/20 bg-amber-400/5"}>
             <CardHeader className="pb-3 flex flex-row items-center gap-2">
-              <Zap className="h-5 w-5 text-amber-400" />
+              <Zap className={`h-5 w-5 ${featureFlags.ocrLocal ? "text-green-400" : "text-amber-400"}`} />
               <CardTitle className="text-[10px] font-black uppercase tracking-widest">Document Extraction</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <DemoBadge milestone="M6">
-                Real OCR + per-field review will land in M6.
-              </DemoBadge>
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                For now, the Vault stores documents safely; extraction into income / bill records remains manual via Pay Path and Income Pool.
-              </p>
+              {featureFlags.ocrLocal ? (
+                <>
+                  <div className="text-[10px] font-black text-green-600">✓ LIVE: Tesseract.js OCR</div>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    Click "Scavenge" on any document to extract income, bill, or tax data with per-field confidence indicators. Edit and approve before committing to records.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <DemoBadge milestone="M6">
+                    Real OCR + per-field review will land in M6.
+                  </DemoBadge>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    For now, the Vault stores documents safely; extraction into income / bill records remains manual via Pay Path and Income Pool.
+                  </p>
+                </>
+              )}
             </CardContent>
           </GlassCard>
 
@@ -154,8 +234,16 @@ export default function DocumentStoreRoute() {
                         <Eye className="h-3.5 w-3.5" /> View
                       </Button>
                       {featureFlags.ocrLocal && (
-                        <Button size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all">
-                          <Zap className="h-3.5 w-3.5" /> Scavenge
+                        <Button onClick={() => handleScavenge(doc.id)} disabled={extracting} size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all">
+                          {extracting && extractionDocId === doc.id ? (
+                            <>
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Extracting
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="h-3.5 w-3.5" /> Scavenge
+                            </>
+                          )}
                         </Button>
                       )}
                     </div>
@@ -191,6 +279,21 @@ export default function DocumentStoreRoute() {
           <Button variant="ghost" onClick={() => setIsAddModalOpen(false)} className="w-full h-12 uppercase font-black italic tracking-widest">Cancel</Button>
         </div>
       </BeaconModal>
+
+      {extractionError && (
+        <div role="alert" className="fixed bottom-20 left-4 right-4 p-3 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-sm z-50 animate-in slide-in-from-bottom-2">
+          {extractionError}
+        </div>
+      )}
+
+      <VaultExtractionReview
+        isOpen={isExtractionReviewOpen}
+        onClose={() => setIsExtractionReviewOpen(false)}
+        extraction={extraction}
+        documentId={extractionDocId || ""}
+        onApprove={handleApproveExtraction}
+        isApproving={isApproving}
+      />
     </div>
   );
 }

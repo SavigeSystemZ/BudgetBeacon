@@ -19,7 +19,7 @@ export const featureFlags = {
   bankInstitutionTierC: false, // Institution-specific direct APIs
 
   // Document OCR (M6 owns)
-  ocrLocal: false, // Tesseract.js browser-side OCR + per-field confidence
+  ocrLocal: true, // Tesseract.js browser-side OCR + per-field confidence (M6 implemented)
   ocrVisionCloud: false, // Optional cloud vision-LLM extraction
 
   // AI assistant (M7 owns)
