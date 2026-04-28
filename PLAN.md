@@ -37,14 +37,19 @@
 7. Create `docs/GUI_COMPLETION_MAP.md` with route-by-route classification + file:line evidence.
 8. Create `docs/INTEGRATIONS_STRATEGY.md` with phased real-integration plan.
 
-## Active execution slice (post-M6, 2026-04-28)
+## Active execution slice (post-M7, 2026-04-28)
 
-M0–M6 are closed. The next slice is one of:
+M0–M7 are closed (read-only assistant; tool-use deferred to M7.2). Next slices in sequence:
 
-- **Path A (recommended):** M7 — AI Assistant real integration. `AiProvider` abstraction; local Ollama / OpenAI-compatible first; cloud opt-in second. All proposed db writes require explicit confirmation.
-- **Path B:** M10 — Auth + cross-device sync. Requires user sign-off on architecture (option A cloud-backed vs B E2EE-CRDT vs C peer-only). Default recommendation: B. See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
+- **M8 — Tax / Credit / Debt deepening.** Real Tax Taxi form fields (or honest "manual draft" labeling). Avalanche vs snowball comparison. Mission Control rebuild on cross-module data.
+- **M9 — Android / Web polish.** Real-device APK smoke, safe-area pass, Capacitor version pin, code-split the 1.1 MB main bundle, Beacon Bridge stub for "Sync coming in M10."
+- **M10 — Auth + Cross-Device Sync.** **Gated on user sign-off** (transport choice + passphrase model + relay green-light). See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
+- **M11 — Joint household.** Depends on M10.
+- **M12 — Public release.**
 
-If unspecified, default to Path A.
+Parallel small slices any session can take:
+- **M7.2** — streamed token rendering, tool-use / action proposals, provider health-check button.
+- **M5 carry-over** — QFX/OFX parser, merchant/payee normalization rules table.
 
 ## Forward milestone sequence (M1–M12 summary)
 

@@ -13,23 +13,29 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 - [x] **CRITICAL: M3 (substantial) — Full GUI Completion Pass.** Two commits (`72c86c3` + `ae1bbb5`). All 10 highest-priority must-fix items done. Audit counts: `setTimeout` 10→2 (legit UX), `mathRandom` 2→0, `alert` 15→0. New shared primitives: `featureFlags` map, `DemoBadge` component, `preferences` localStorage layer, `stabilityIndex` module + 7 tests. 29 tests passing. Insurance Inspect now real manual CRUD; Settings now persists toggles + aiConfig. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M4 — Reports, Backup, Restore, Recovery.** Backup format v3 (documents via base64, chunked encode). Real CSV/JSON exports + 5 per-report tabs. Restore diff preview. Print stylesheet pass. 39 tests passing (10 new). Audit baseline locked at `setTimeout=4 mathRandom=0 alert=0`. *(Completed 2026-04-26.)*
 - [x] **CRITICAL: M5 (substantial) — Ledger + Bank/Data Import.** New `src/modules/import/` (parseCsv, dedupeKey, mapRows, autoDetect). New `LedgerImportFlow` component: file → mapping → review → commit, with auto-detect, per-row inclusion checkbox, and "possible duplicate" highlighting. `featureFlags.bankImportTierA` flipped to true. 59 tests passing (20 new). *(Completed 2026-04-26.)*
+- [x] **CRITICAL: M7 (substantial) — AI Assistant Real Integration.** New `src/modules/ai/` with `AiProvider` interface, `OllamaProvider` (local-first, default `http://localhost:11434/api/chat`), `OpenAiCompatibleProvider` (cloud opt-in, works with OpenAI/Groq/Together/OpenRouter/LM Studio/llama.cpp), `providerFactory.resolveActiveProvider()` reading `aiConfig`, `contextBuilder.buildAssistantContext()` building a real-data system prompt from budget summary + stability index. `BeaconChatbot.tsx` rewritten — no canned replies, status indicator (Local/Cloud/Not configured), abort button, error surfacing, honest no-provider fallback citing real db numbers. `featureFlags.aiAssistantLocal` + `aiAssistantCloud` flipped to true. 16 new tests covering URL normalization, response parsing, error wrapping, factory resolution. 87 tests total. *(Completed 2026-04-28.)*
+
 - [x] **CRITICAL: M6 — Vault + OCR + Extraction Review.** `OcrProvider` interface in `src/modules/ocr/types.ts`; `tesseractProvider.ts` wraps Tesseract.js (browser-side, no network). `extractFields.ts` extracts date/amount/payee/label from raw OCR text via regex. `applyExtraction.ts` commits approved `ExtractedField[]` to `incomeSources` / `bills` / `taxRecords` with `documentId` provenance. `VaultExtractionReview` modal: raw text panel + per-field editor + confidence badges, no auto-commit. `featureFlags.ocrLocal = true`. 71 tests passing (12 new). Audit baseline now `setTimeout=5 mathRandom=0 alert=0`. *(Completed 2026-04-28.)*
 
 ## Immediate Queue — pick a path
 
-**Path A (recommended): continue the sequence → M7 (AI Assistant).**
-**Path B: skip ahead to M10 (Auth + Sync) — requires architecture sign-off first.** See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` "What needs the user's sign-off before code starts."
+**Path A (default): continue → M8 (Tax/Credit/Debt deepening) → M9 (Android polish) → M10/M11 (sync, joint household).**
+**Path B: skip to M10 (Auth + Sync) — requires architecture sign-off.** See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
 
-### M7 — AI Assistant Real Integration (Path A first slice)
+### M7.2 — AI assistant follow-ups (queued, not blocking M8)
 
-- [ ] **HIGH:** Replace mocked chatbot in `BeaconChatbot.tsx:44-62` with provider abstraction (`AiProvider` interface).
-- [ ] **HIGH:** Local provider first — Ollama / OpenAI-compatible endpoint reading config from the existing `aiConfig` Dexie table.
-- [ ] **HIGH:** All assistant action proposals require explicit user confirmation before db writes.
-- [ ] **MEDIUM:** Cloud provider opt-in (Anthropic / OpenAI), clearly labeled non-local.
-- [ ] **MEDIUM:** Streamed token rendering for responsiveness.
+- [ ] **MEDIUM:** Streamed token rendering. Both Ollama (`stream: true` JSONL) and OpenAI-compatible (`text/event-stream`) support it; the abstraction is ready.
+- [ ] **MEDIUM:** Tool-use / structured action proposals — assistant proposes "Add $1450 SSDI income" with explicit confirmation modal before any db write. Until this lands, the assistant is read-only.
+- [ ] **LOW:** Per-conversation context windowing — currently sends last 8 turns; consider summarizing older history when token budget is tight.
+- [ ] **LOW:** Provider health check button in Settings → AI Configuration ("Test connection").
+
+### M8 — Tax / Credit / Debt / Household Planning Deepening
+
+- [ ] **HIGH:** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098) OR honest "manual notes" labeling.
+- [ ] **HIGH:** Avalanche vs snowball debt strategy comparison in Debt Center.
+- [ ] **MEDIUM:** Cross-module household planning summary (Mission Control rebuild on real data).
 - [ ] **MEDIUM (M5 carry-over):** QFX / OFX scaffolded parser.
 - [ ] **MEDIUM (M5 carry-over):** Merchant / payee normalization rules in a `payeeRules` Dexie table.
-- [ ] **MEDIUM (M6 carry-over):** Tax Taxi forms — proper per-form-type fields (W-2, 1099-NEC, 1099-INT, 1098, etc.) OR honest "manual notes" labeling.
 
 ### M3 polish carry-over (low-risk, do during M4 or M5)
 - [ ] **MEDIUM:** Add `EmptyState` component to remaining 6 routes (Mission Control, Dashboard, Pay Path, Credit snapshot list, Reports, plus the existing IncomeRoute partial).

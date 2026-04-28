@@ -23,8 +23,8 @@ export const featureFlags = {
   ocrVisionCloud: false, // Optional cloud vision-LLM extraction
 
   // AI assistant (M7 owns)
-  aiAssistantLocal: false, // Local Ollama / OpenAI-compatible endpoint
-  aiAssistantCloud: false, // Cloud provider (Anthropic, OpenAI) — opt-in only
+  aiAssistantLocal: true, // Local Ollama / OpenAI-compatible endpoint (M7 implemented)
+  aiAssistantCloud: true, // Cloud provider (OpenAI-compatible, opt-in only) (M7 implemented)
 
   // Credit (M8 — manual entry is the long-term honest baseline; no real fetch planned)
   creditBureauFetch: false, // No realistic provider; likely permanently false
