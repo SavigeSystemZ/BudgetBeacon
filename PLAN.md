@@ -37,19 +37,18 @@
 7. Create `docs/GUI_COMPLETION_MAP.md` with route-by-route classification + file:line evidence.
 8. Create `docs/INTEGRATIONS_STRATEGY.md` with phased real-integration plan.
 
-## Active execution slice (post-M7, 2026-04-28)
+## Active execution slice (post-M9-partial, 2026-04-28)
 
-M0–M7 are closed (read-only assistant; tool-use deferred to M7.2). Next slices in sequence:
+M0–M8 closed. M9 partially closed (code-split + Bridge stub done; real-device QA needs hardware).
 
-- **M8 — Tax / Credit / Debt deepening.** Real Tax Taxi form fields (or honest "manual draft" labeling). Avalanche vs snowball comparison. Mission Control rebuild on cross-module data.
-- **M9 — Android / Web polish.** Real-device APK smoke, safe-area pass, Capacitor version pin, code-split the 1.1 MB main bundle, Beacon Bridge stub for "Sync coming in M10."
-- **M10 — Auth + Cross-Device Sync.** **Gated on user sign-off** (transport choice + passphrase model + relay green-light). See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
+- **M10 — Auth + Cross-Device Sync.** **Gated on user sign-off** (transport A/B/C + passphrase model + relay green-light). See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Halt point until user confirms.
 - **M11 — Joint household.** Depends on M10.
 - **M12 — Public release.**
 
-Parallel small slices any session can take:
-- **M7.2** — streamed token rendering, tool-use / action proposals, provider health-check button.
-- **M5 carry-over** — QFX/OFX parser, merchant/payee normalization rules table.
+Parallel small slices any session can take while M10 is gated:
+- **M9 device QA** — real-device APK smoke + safe-area visual pass (needs physical Android).
+- **M7.2 polish** — streaming health-check, smarter context windowing.
+- **M5 / M8 carry-overs** — QFX/OFX parser, `payeeRules` table, more 1099 variants.
 
 ## Forward milestone sequence (M1–M12 summary)
 

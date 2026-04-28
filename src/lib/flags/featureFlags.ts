@@ -29,10 +29,14 @@ export const featureFlags = {
   // Credit (M8 — manual entry is the long-term honest baseline; no real fetch planned)
   creditBureauFetch: false, // No realistic provider; likely permanently false
 
-  // Sync (M9 owns)
-  syncBundleExport: false, // Signed JSON bundle pairing
-  syncLocalNetwork: false, // mDNS / Bonjour pairing
-  syncWebRTC: false, // P2P over WebRTC
+  // Cross-device sync (M10 owns) — see docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md
+  syncBundleExport: false, // Manual signed-bundle export/import (legacy path; export already exists)
+  syncE2eeCrdt: false, // E2EE CRDT (Yjs) over thin relay — recommended path; gated on user sign-off
+  syncLocalNetwork: false, // mDNS / Bonjour pairing — alternative C, deferred
+  syncWebRTC: false, // P2P over WebRTC — alternative C, deferred
+
+  // Joint households (M11 owns)
+  jointHouseholds: false,
 
   // Reports (M4 owns)
   reportsRealExport: true, // CSV per entity + JSON backup shortcut (PDF still via window.print() in M4)

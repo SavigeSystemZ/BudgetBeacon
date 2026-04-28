@@ -41,10 +41,8 @@ Tesseract.js browser-side OCR via `OcrProvider` interface. `VaultExtractionRevie
 - **Dependencies:** M7.
 - **Risks:** Tax compliance accuracy — if not real, must be unambiguously labeled draft.
 
-### M9 — Android / Web Final Polish (pre-sync)
-- **Outcome:** Safe-area pass on Android. PWA install flow validated. Real-device APK smoke. Capacitor version pin. Beacon Bridge route either rebuilt against the new sync transport (after M10) or removed; in M9 it gets a "Coming in M10" panel.
-- **Dependencies:** M8.
-- **Risks:** Capacitor / Android version drift — pin versions before M10 starts so device tests don't shift underneath sync work.
+### M9 — Android / Web Final Polish (pre-sync) ✅ (2026-04-28, partial)
+Code-split each route via React.lazy + Suspense — main bundle dropped 1.1 MB → 346 KB (gzip 107 KB). Beacon Bridge route copy updated to point users at M10/M11 sync (with a link to `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`) and at v3 backup format. Sync feature flags reorganized for the new milestone owners. **Still open in M9:** real-device APK smoke + safe-area visual QA + PWA install validation — those need a physical Android and aren't doable without one. The route-load latency is now bounded since each route averages 10–30 KB gzipped, so sync work in M10 won't be sandbagged by an oversized initial bundle.
 
 ### M10 — Auth + Cross-Device Sync ⭐ NEW
 - **Outcome:** Account signup/login with passphrase-derived key. Same login syncs data across phone ↔ web within seconds. Server (thin relay) only sees ciphertext. Existing local-only path remains supported for users who don't sign up.

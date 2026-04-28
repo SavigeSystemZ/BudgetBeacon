@@ -1,21 +1,25 @@
-import React, { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useState, type ReactNode, lazy, Suspense } from "react";
 import { HashRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import "./index.css";
-import DashboardRoute from "./routes/DashboardRoute";
-import BudgetMissionControlRoute from "./routes/BudgetMissionControlRoute";
-import IncomeRoute from "./routes/IncomeRoute";
-import PayPathRoute from "./routes/PayPathRoute";
-import LedgerRoute from "./routes/LedgerRoute";
-import StashMapRoute from "./routes/StashMapRoute";
-import CreditRoute from "./routes/CreditRoute";
-import DebtCenterRoute from "./routes/DebtCenterRoute";
-import TaxTaxiRoute from "./routes/TaxTaxiRoute";
-import DocumentStoreRoute from "./routes/DocumentStoreRoute";
-import SubscriptionsShelfRoute from "./routes/SubscriptionsShelfRoute";
-import InsuranceInspectRoute from "./routes/InsuranceInspectRoute";
-import BeaconBridgeRoute from "./routes/BeaconBridgeRoute";
-import ReportsRoute from "./routes/ReportsRoute";
-import SettingsRoute from "./routes/SettingsRoute";
+
+// Each route is code-split via React.lazy so the initial bundle stays small.
+// Recharts, Tesseract.js wrappers, etc. only load when the user navigates
+// to a route that needs them.
+const DashboardRoute = lazy(() => import("./routes/DashboardRoute"));
+const BudgetMissionControlRoute = lazy(() => import("./routes/BudgetMissionControlRoute"));
+const IncomeRoute = lazy(() => import("./routes/IncomeRoute"));
+const PayPathRoute = lazy(() => import("./routes/PayPathRoute"));
+const LedgerRoute = lazy(() => import("./routes/LedgerRoute"));
+const StashMapRoute = lazy(() => import("./routes/StashMapRoute"));
+const CreditRoute = lazy(() => import("./routes/CreditRoute"));
+const DebtCenterRoute = lazy(() => import("./routes/DebtCenterRoute"));
+const TaxTaxiRoute = lazy(() => import("./routes/TaxTaxiRoute"));
+const DocumentStoreRoute = lazy(() => import("./routes/DocumentStoreRoute"));
+const SubscriptionsShelfRoute = lazy(() => import("./routes/SubscriptionsShelfRoute"));
+const InsuranceInspectRoute = lazy(() => import("./routes/InsuranceInspectRoute"));
+const BeaconBridgeRoute = lazy(() => import("./routes/BeaconBridgeRoute"));
+const ReportsRoute = lazy(() => import("./routes/ReportsRoute"));
+const SettingsRoute = lazy(() => import("./routes/SettingsRoute"));
 import { db } from "./db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { OnboardingWizard } from "./components/setup/OnboardingWizard";
@@ -176,7 +180,11 @@ function App() {
   }, [households]);
 
   const wrap = (scope: string, node: ReactNode) => (
-    <ErrorBoundary scope={scope}>{node}</ErrorBoundary>
+    <ErrorBoundary scope={scope}>
+      <Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse text-xs uppercase font-black tracking-widest">Loading {scope}…</div>}>
+        {node}
+      </Suspense>
+    </ErrorBoundary>
   );
 
   // Show onboarding wizard if no household exists

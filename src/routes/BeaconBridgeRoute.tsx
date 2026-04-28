@@ -12,12 +12,12 @@ import { featureFlags } from "../lib/flags/featureFlags";
 /**
  * Beacon Bridge — household sync.
  *
- * Until M9 ships real sync (signed JSON bundle → local-network pairing → WebRTC),
- * this route is honest about the current path: export from Settings, transfer the
- * file to the other device, import on that device. No fake P2P handshake, no
- * fabricated `syncLogs` rows.
+ * Today's path is manual: export from Settings, transfer the file to the other
+ * device, import on that device. Real cross-device sync (login from anywhere,
+ * automatic merge) lands in M10; joint households with two linked accounts
+ * lands in M11. See docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md.
  *
- * The sci-fi terminal UI from earlier was simulating behavior that did not exist.
+ * No fake P2P handshake, no fabricated `syncLogs` rows.
  */
 export default function BeaconBridgeRoute() {
   const persons = useLiveQuery(() => db.persons.toArray(), []);
@@ -70,7 +70,7 @@ export default function BeaconBridgeRoute() {
               </RouterLink>
             </div>
             <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-blue-500/10">
-              Backup format v2 covers all household data except uploaded document files (Blob round-trip lands in M4). On import, the receiving device <strong>replaces</strong> its data with the bundle.
+              Backup format v3 covers all household data including uploaded documents (base64-encoded). On import, the receiving device <strong>replaces</strong> its data with the bundle.
             </p>
           </CardContent>
         </GlassCard>
@@ -80,14 +80,14 @@ export default function BeaconBridgeRoute() {
             <GlassCard className="border-amber-400/20 bg-amber-400/5">
               <CardHeader className="pb-3 flex flex-row items-center gap-2">
                 <Radio className="h-5 w-5 text-amber-400" />
-                <CardTitle className="text-[10px] font-black uppercase tracking-widest">Real device pairing</CardTitle>
+                <CardTitle className="text-[10px] font-black uppercase tracking-widest">Cross-device sync — coming in M10</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <DemoBadge milestone="M9">
-                  Signed bundles → local-network pairing → optional WebRTC.
+                <DemoBadge milestone="M10">
+                  Account login + automatic sync across phone ↔ web.
                 </DemoBadge>
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  No P2P handshake exists yet. Earlier "Scan / Merge" buttons simulated sync without doing anything; they've been removed in favor of the honest export/import path.
+                  M10 ships an end-to-end-encrypted CRDT (Yjs) over a thin relay so the same login can sync data across all your devices — the server only ever sees ciphertext. M11 adds joint households so two accounts can share one budget with auto-merge. See <code>docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md</code> in the repo. No P2P handshake exists yet; no fake "Scan / Merge" buttons.
                 </p>
               </CardContent>
             </GlassCard>
