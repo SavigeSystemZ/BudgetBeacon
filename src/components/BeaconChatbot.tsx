@@ -11,7 +11,10 @@ import { GlassCard } from "./ui/GlassCard";
 import { DemoBadge } from "./ui/DemoBadge";
 import { resolveActiveProvider } from "../modules/ai/providerFactory";
 import { buildAssistantContext } from "../modules/ai/contextBuilder";
-import { AiProviderError, type ChatMessage as AiChatMessage } from "../modules/ai/types";
+import { AiProviderError, type ChatMessage as AiChatMessage, type ProposedAction } from "../modules/ai/types";
+import { parseAssistantReply, ACTION_GRAMMAR_PROMPT } from "../modules/ai/proposedActions";
+import { applyProposedAction, describeAction } from "../modules/ai/applyProposedAction";
+import { Check } from "lucide-react";
 
 const HISTORY_TURNS = 8;
 
@@ -25,14 +28,21 @@ export function BeaconChatbot() {
     isLocal: boolean;
   }>({ kind: "missing", label: "Not configured", isLocal: true });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [streamingText, setStreamingText] = useState<string>("");
+  const [pendingActions, setPendingActions] = useState<ProposedAction[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  const households = useLiveQuery(() => db.households.toArray(), []);
+  const persons = useLiveQuery(() => db.persons.toArray(), []);
+  const householdId = households?.[0]?.id;
+  const defaultPersonId = persons?.[0]?.id || "";
 
   const messagesRaw = useLiveQuery(() => db.chatMessages.orderBy("timestamp").toArray(), []) || [];
   const messages = useMemo(() => messagesRaw, [messagesRaw]);
 
   // Live-refresh provider status as the user edits Settings.
-  const aiConfigRow = useLiveQuery(() => db.aiConfig.get("default"), []);
+  const aiConfigRow = useLiveQuery(() => db.aiConfig.get("primary"), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,43 +81,50 @@ export function BeaconChatbot() {
   const handleSend = async () => {
     if (!input.trim() || isThinking) return;
     setErrorMessage(null);
+    setPendingActions([]);
+    setStreamingText("");
 
     const userText = input.trim();
-    const userMessage = {
+    await db.chatMessages.add({
       id: createId(),
-      role: "user" as const,
+      role: "user",
       content: userText,
       timestamp: new Date().toISOString(),
-    };
-    await db.chatMessages.add(userMessage);
+    });
     setInput("");
     setIsThinking(true);
 
     try {
       const { provider } = await resolveActiveProvider();
 
-      let replyText: string;
+      let rawReply: string;
       if (!provider) {
-        replyText = await placeholderReply(userText);
+        rawReply = await placeholderReply(userText);
       } else {
         const context = await buildAssistantContext();
         const recent = (await db.chatMessages.orderBy("timestamp").toArray()).slice(-HISTORY_TURNS * 2);
         const ai: AiChatMessage[] = [
-          { role: "system", content: context.systemPrompt },
+          { role: "system", content: `${context.systemPrompt}\n\n${ACTION_GRAMMAR_PROMPT}` },
           ...recent.map((m) => ({ role: m.role, content: m.content })),
         ];
 
         abortRef.current?.abort();
         abortRef.current = new AbortController();
-        replyText = await provider.chat(ai, { signal: abortRef.current.signal });
+        rawReply = "";
+        for await (const chunk of provider.chatStream(ai, { signal: abortRef.current.signal })) {
+          rawReply += chunk;
+          setStreamingText(rawReply);
+        }
       }
 
+      const { visibleText, actions } = parseAssistantReply(rawReply);
       await db.chatMessages.add({
         id: createId(),
         role: "assistant",
-        content: replyText,
+        content: visibleText || "(No reply.)",
         timestamp: new Date().toISOString(),
       });
+      if (actions.length) setPendingActions(actions);
     } catch (err) {
       const msg = err instanceof AiProviderError
         ? err.message
@@ -123,7 +140,30 @@ export function BeaconChatbot() {
       });
     } finally {
       setIsThinking(false);
+      setStreamingText("");
     }
+  };
+
+  const handleApproveAction = async (action: ProposedAction) => {
+    try {
+      const receipt = await applyProposedAction(action, {
+        householdId: householdId || "",
+        personId: defaultPersonId,
+      });
+      await db.chatMessages.add({
+        id: createId(),
+        role: "assistant",
+        content: `✓ ${receipt}`,
+        timestamp: new Date().toISOString(),
+      });
+      setPendingActions((prev) => prev.filter((a) => a !== action));
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Could not apply action.");
+    }
+  };
+
+  const handleDismissAction = (action: ProposedAction) => {
+    setPendingActions((prev) => prev.filter((a) => a !== action));
   };
 
   const handleStop = () => {
@@ -204,11 +244,41 @@ export function BeaconChatbot() {
               </div>
             ))}
 
-            {isThinking && (
+            {isThinking && streamingText && (
+              <div className="mr-auto items-start max-w-[85%]">
+                <div className="p-4 rounded-2xl text-[13px] font-medium leading-relaxed bg-background/80 border border-primary/10 rounded-tl-none backdrop-blur-xl italic whitespace-pre-wrap">
+                  {parseAssistantReply(streamingText).visibleText}
+                  <span className="inline-block w-1 h-3 ml-1 bg-primary animate-pulse" />
+                </div>
+              </div>
+            )}
+
+            {isThinking && !streamingText && (
               <div className="flex items-center gap-2 text-primary p-2 animate-pulse bg-primary/5 rounded-xl w-fit">
                 <div className="h-1.5 w-1.5 bg-current rounded-full animate-bounce" />
                 <div className="h-1.5 w-1.5 bg-current rounded-full animate-bounce [animation-delay:0.2s]" />
                 <div className="h-1.5 w-1.5 bg-current rounded-full animate-bounce [animation-delay:0.4s]" />
+              </div>
+            )}
+
+            {pendingActions.length > 0 && (
+              <div className="space-y-2 border border-primary/30 bg-primary/5 rounded-2xl p-3">
+                <div className="text-[9px] font-black uppercase tracking-widest text-primary">
+                  Beacon proposes — approve to apply
+                </div>
+                {pendingActions.map((a, idx) => (
+                  <div key={idx} className="flex items-center justify-between gap-2 bg-background/60 rounded-xl p-3">
+                    <span className="text-[11px] font-bold flex-1">{describeAction(a)}</span>
+                    <div className="flex gap-1 shrink-0">
+                      <Button size="sm" onClick={() => handleApproveAction(a)} className="h-7 px-2 gap-1 text-[9px]">
+                        <Check className="h-3 w-3" /> Apply
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => handleDismissAction(a)} className="h-7 px-2 text-[9px]">
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 

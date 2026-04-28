@@ -3,7 +3,8 @@ import type { AiProvider, AiConfigRow } from "./types";
 import { OllamaProvider } from "./ollamaProvider";
 import { OpenAiCompatibleProvider } from "./openAiCompatibleProvider";
 
-export const AI_CONFIG_ID = "default";
+/** Must match the id used in SettingsRoute.tsx when persisting aiConfig. */
+export const AI_CONFIG_ID = "primary";
 
 export interface ResolvedProvider {
   provider: AiProvider | null;

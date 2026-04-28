@@ -1,5 +1,6 @@
 import type { AiProvider, ChatMessage, ChatOptions } from "./types";
 import { AiProviderError } from "./types";
+import { readLines } from "./streamUtils";
 
 /**
  * Ollama-native chat. Endpoint defaults to http://localhost:11434/api/chat.
@@ -57,6 +58,50 @@ export class OllamaProvider implements AiProvider {
       throw new AiProviderError(`Ollama returned an unexpected payload shape (no message.content).`);
     }
     return content.trim();
+  }
+
+  async *chatStream(messages: ChatMessage[], opts: ChatOptions = {}): AsyncIterable<string> {
+    const url = normalizeChatUrl(this.endpoint);
+    let res: Response;
+    try {
+      res = await this.fetchImpl(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: opts.signal,
+        body: JSON.stringify({
+          model: opts.model || this.defaultModel,
+          messages,
+          stream: true,
+          options: { temperature: opts.temperature ?? 0.2 },
+        }),
+      });
+    } catch (err) {
+      throw new AiProviderError(`Ollama request failed (network or CORS) at ${url}.`, err);
+    }
+
+    if (!res.ok || !res.body) {
+      const body = await safeText(res);
+      throw new AiProviderError(
+        `Ollama responded ${res.status}: ${body || res.statusText}`,
+        undefined,
+        res.status,
+      );
+    }
+
+    for await (const line of readLines(res.body)) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      let obj: { message?: { content?: string }; done?: boolean; error?: string };
+      try {
+        obj = JSON.parse(trimmed);
+      } catch {
+        continue; // tolerate keep-alive blank-ish lines
+      }
+      if (obj.error) throw new AiProviderError(`Ollama stream error: ${obj.error}`);
+      const chunk = obj.message?.content;
+      if (typeof chunk === "string" && chunk.length) yield chunk;
+      if (obj.done) break;
+    }
   }
 }
 

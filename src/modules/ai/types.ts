@@ -32,7 +32,28 @@ export interface AiProvider {
   isLocal: boolean;
   /** Single-shot, non-streaming completion. */
   chat(messages: ChatMessage[], opts?: ChatOptions): Promise<string>;
+  /**
+   * Streaming completion — yields text deltas as they arrive. Each yielded
+   * string is a partial chunk; the caller concatenates to build the full
+   * response. AbortSignal cancels mid-stream.
+   */
+  chatStream(messages: ChatMessage[], opts?: ChatOptions): AsyncIterable<string>;
 }
+
+/**
+ * Structured action the assistant can propose. Surfaced to the user as a
+ * confirm-or-deny chip in the chatbot; nothing is committed without explicit
+ * approval. The grammar is intentionally narrow — extending it requires
+ * adding an applyProposedAction handler.
+ */
+export type BillCategory = "housing" | "utilities" | "food" | "transportation" | "insurance" | "subscriptions" | "medical" | "other";
+export type StashCategory = "emergency" | "vehicle" | "home" | "vacation" | "debt-payoff" | "holiday" | "other";
+export type StashPriority = "low" | "medium" | "high";
+
+export type ProposedAction =
+  | { type: "addIncome"; label: string; amount: number; frequency: "weekly" | "biweekly" | "semimonthly" | "monthly" | "annual" }
+  | { type: "addBill"; label: string; amount: number; frequency: "weekly" | "biweekly" | "monthly" | "annual"; category?: BillCategory; dueDay?: number }
+  | { type: "addSavingsGoal"; label: string; targetAmount: number; monthlyContribution: number; category?: StashCategory; priority?: StashPriority };
 
 /**
  * Persisted shape of `aiConfig`. Mirrors the Dexie row in `db.ts`.

@@ -18,9 +18,10 @@ import { clearDatabase, seedDemoData } from "../db/seedDemoData";
 import { useTheme, type Theme } from "../components/theme-provider";
 import { loadPreferences, savePreferences, defaultPreferences, type Preferences } from "../lib/preferences/preferences";
 import { DemoBadge } from "../components/ui/DemoBadge";
+import { resolveProviderFromConfig } from "../modules/ai/providerFactory";
 import {
   Palette, Database, Bell, Shield,
-  History, Zap, Sparkles, Bot, Key, Cpu,
+  History, Zap, Sparkles, Bot, Key, Cpu, Wifi, WifiOff, Loader2,
 } from "lucide-react";
 
 type Toggle = { key: keyof Preferences; label: string };
@@ -62,8 +63,9 @@ export default function SettingsRoute() {
   const aiConfigRow = useLiveQuery(() => db.aiConfig.get(AI_CONFIG_ID), []);
   const [aiProvider, setAiProvider] = useState<"local" | "api">("local");
   const [apiKey, setApiKey] = useState("");
-  const [localEndpoint, setLocalEndpoint] = useState("http://localhost:11434/api/generate");
+  const [localEndpoint, setLocalEndpoint] = useState("http://localhost:11434");
   const [model, setModel] = useState("");
+  const [healthState, setHealthState] = useState<{ status: "idle" | "testing" | "ok" | "error"; message?: string }>({ status: "idle" });
 
   // Load preferences once on mount using useCallback to avoid state setter in effect.
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function SettingsRoute() {
     if (!aiConfigRow) return;
     setAiProvider(aiConfigRow.provider);
     setApiKey(aiConfigRow.apiKey ?? "");
-    setLocalEndpoint(aiConfigRow.localEndpoint ?? "http://localhost:11434/api/generate");
+    setLocalEndpoint(aiConfigRow.localEndpoint ?? "http://localhost:11434");
     setModel(aiConfigRow.model ?? "");
   }, [aiConfigRow]);
 
@@ -148,11 +150,45 @@ export default function SettingsRoute() {
       id: AI_CONFIG_ID,
       provider: aiProvider,
       apiKey: aiProvider === "api" ? apiKey : undefined,
-      localEndpoint: aiProvider === "local" ? localEndpoint : undefined,
+      localEndpoint: aiProvider === "local" ? localEndpoint : (aiProvider === "api" ? localEndpoint || undefined : undefined),
       model: model || undefined,
     });
     setSavedFlash(true);
     window.setTimeout(() => setSavedFlash(false), 2000);
+  };
+
+  const handleTestConnection = async () => {
+    setHealthState({ status: "testing" });
+    const { provider, reason } = resolveProviderFromConfig({
+      id: AI_CONFIG_ID,
+      provider: aiProvider,
+      apiKey: aiProvider === "api" ? apiKey : undefined,
+      localEndpoint: localEndpoint || undefined,
+      model: model || undefined,
+    });
+    if (!provider) {
+      setHealthState({
+        status: "error",
+        message: reason === "missing-endpoint"
+          ? "Local endpoint is empty."
+          : reason === "missing-api-key"
+            ? "API key is empty."
+            : "Provider not configured.",
+      });
+      return;
+    }
+    try {
+      const reply = await provider.chat(
+        [
+          { role: "system", content: "Reply with just the word OK." },
+          { role: "user", content: "ping" },
+        ],
+        { temperature: 0 },
+      );
+      setHealthState({ status: "ok", message: `Reachable. Reply: "${reply.slice(0, 40)}${reply.length > 40 ? "…" : ""}"` });
+    } catch (err) {
+      setHealthState({ status: "error", message: err instanceof Error ? err.message : "Unknown error." });
+    }
   };
 
   const themes: { id: Theme; label: string; color: string }[] = [
@@ -319,7 +355,6 @@ export default function SettingsRoute() {
                 <CardTitle className="flex items-center gap-2"><Bot className="h-6 w-6 text-primary" /> Beacon AI Agent Engine</CardTitle>
                 <CardDescription>Configure the brain behind the assistant. Persists to the local aiConfig table.</CardDescription>
               </div>
-              <DemoBadge milestone="M7">Provider call wiring lands in M7. Form persists today.</DemoBadge>
             </div>
           </CardHeader>
           <CardContent className="pt-8 space-y-6">
@@ -350,21 +385,32 @@ export default function SettingsRoute() {
                     id="ai-local-endpoint"
                     value={localEndpoint}
                     onChange={(e) => setLocalEndpoint(e.target.value)}
-                    placeholder="e.g. http://localhost:11434/api/generate"
+                    placeholder="http://localhost:11434"
                   />
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Recommended: Ollama on localhost (100% private).</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Recommended: Ollama on localhost. Run <code>ollama serve</code> first.</p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <Label htmlFor="ai-api-key">Cloud API Key</Label>
-                  <Input
-                    id="ai-api-key"
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="sk-..."
-                  />
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter text-yellow-600">External connectivity required (Anthropic / OpenAI).</p>
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-api-key">Cloud API Key</Label>
+                    <Input
+                      id="ai-api-key"
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder="sk-..."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-base-url">Base URL (optional)</Label>
+                    <Input
+                      id="ai-base-url"
+                      value={localEndpoint}
+                      onChange={(e) => setLocalEndpoint(e.target.value)}
+                      placeholder="https://api.openai.com (default)"
+                    />
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter text-yellow-600">Any OpenAI-compatible endpoint (Groq, Together, OpenRouter, LM Studio, llama.cpp).</p>
+                  </div>
                 </div>
               )}
               <div className="space-y-2">
@@ -373,13 +419,26 @@ export default function SettingsRoute() {
                   id="ai-model"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  placeholder={aiProvider === "local" ? "llama3" : "claude-opus-4-7"}
+                  placeholder={aiProvider === "local" ? "llama3.2" : "gpt-4o-mini"}
                 />
               </div>
             </div>
 
+            <div className="flex flex-wrap items-center gap-3">
+              <Button onClick={handleTestConnection} variant="outline" size="sm" className="gap-2" disabled={healthState.status === "testing"}>
+                {healthState.status === "testing" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : healthState.status === "ok" ? <Wifi className="h-3.5 w-3.5 text-green-500" /> : healthState.status === "error" ? <WifiOff className="h-3.5 w-3.5 text-destructive" /> : <Wifi className="h-3.5 w-3.5" />}
+                Test Connection
+              </Button>
+              {healthState.status === "ok" && (
+                <span role="status" className="text-[11px] font-bold text-green-600">✓ {healthState.message}</span>
+              )}
+              {healthState.status === "error" && (
+                <span role="alert" className="text-[11px] font-bold text-destructive">✕ {healthState.message}</span>
+              )}
+            </div>
+
             <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 text-xs text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">Privacy rule:</strong> when the M7 provider lands, full transactions are not sent to the cloud provider unless an explicit "Share full data" toggle is enabled.
+              <strong className="text-foreground">Privacy rule:</strong> Beacon Agent only ever sees an aggregated household snapshot (totals, counts, ratios) — never raw transactions, document blobs, or person-identifying detail. Cloud provider is opt-in via the toggle above; default is local-only.
             </div>
           </CardContent>
         </Card>
