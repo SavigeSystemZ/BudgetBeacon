@@ -2,9 +2,11 @@ import { useMemo, useState } from "react";
 import { db } from "../../db/db";
 import { createId } from "../../lib/ids/createId";
 import { parseCsv } from "../../modules/import/parseCsv";
+import { parseOfx } from "../../modules/import/parseOfx";
 import { mapRowsToDrafts, partitionByDedupe, type ColumnMapping, type MappedTransactionDraft } from "../../modules/import/mapRows";
 import { dedupeKey } from "../../modules/import/dedupeKey";
 import { autoDetectMapping } from "../../modules/import/autoDetect";
+import { applyPayeeRules } from "../../modules/import/applyPayeeRules";
 import { Button } from "../ui/button";
 import { NativeSelect } from "../ui/native-select";
 import { Label } from "../ui/label";
@@ -41,6 +43,7 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
   const [skipped, setSkipped] = useState<{ row: number; reason: string }[]>([]);
   const [duplicateKeys, setDuplicateKeys] = useState<Set<string>>(new Set());
   const [excluded, setExcluded] = useState<Set<string>>(new Set()); // dedupeKeys to skip
+  const [matchedRuleCount, setMatchedRuleCount] = useState<number>(0);
 
   const [committed, setCommitted] = useState<number>(0);
 
@@ -56,6 +59,7 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
     setDuplicateKeys(new Set());
     setExcluded(new Set());
     setCommitted(0);
+    setMatchedRuleCount(0);
   };
 
   const handleClose = () => {
@@ -68,6 +72,42 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
     setFilename(file.name);
     try {
       const text = await file.text();
+      const lower = file.name.toLowerCase();
+      const isOfx = lower.endsWith(".ofx") || lower.endsWith(".qfx") || /^OFXHEADER/m.test(text) || /<OFX[ >]/i.test(text);
+
+      if (isOfx) {
+        // OFX/QFX bypasses the column-mapping step entirely — its schema is
+        // already structured. We jump straight to review with payee rules
+        // applied + dedupe partition.
+        const parsedOfx = parseOfx(text);
+        if (parsedOfx.drafts.length === 0) {
+          setParseError("No transactions detected in this OFX/QFX file.");
+          return;
+        }
+
+        const rules = householdId
+          ? await db.payeeRules.where("householdId").equals(householdId).toArray()
+          : [];
+        let matched = 0;
+        const { applyPayeeRules } = await import("../../modules/import/applyPayeeRules");
+        const normalized = parsedOfx.drafts.map((d) => {
+          const out = applyPayeeRules(d, rules);
+          if (out.matchedRuleId) matched += 1;
+          return { ...out.draft, dedupeKey: dedupeKey({ date: out.draft.date, amount: out.draft.amount, payee: out.draft.payee }) };
+        });
+        setMatchedRuleCount(matched);
+        setDrafts(normalized);
+        setSkipped(parsedOfx.skipped.map((s) => ({ row: s.blockIndex, reason: s.reason })));
+
+        const existing = await db.transactions.toArray();
+        const keys = new Set(existing.map((t) => dedupeKey({ date: t.date, amount: t.amount, payee: t.payee })));
+        const partition = partitionByDedupe(normalized, keys);
+        setDuplicateKeys(new Set(partition.duplicates.map((d) => d.dedupeKey)));
+        setExcluded(new Set(partition.duplicates.map((d) => d.dedupeKey)));
+        setStep("review");
+        return;
+      }
+
       const parsed = parseCsv(text);
       if (parsed.headers.length === 0 || parsed.rows.length === 0) {
         setParseError("No rows detected. Is this a CSV file?");
@@ -90,13 +130,27 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
     }
     setParseError(null);
     const result = mapRowsToDrafts(rows, mapping as ColumnMapping);
-    setDrafts(result.drafts);
+
+    // Apply payee normalization rules so the user reviews already-categorized
+    // drafts. Rules are user-managed in Settings; ordering is creation order.
+    const rules = householdId
+      ? await db.payeeRules.where("householdId").equals(householdId).toArray()
+      : [];
+    let matched = 0;
+    const normalizedDrafts = result.drafts.map((d) => {
+      const out = applyPayeeRules(d, rules);
+      if (out.matchedRuleId) matched += 1;
+      // Recompute dedupeKey on the normalized payee so dedupe matches future imports.
+      return { ...out.draft, dedupeKey: dedupeKey({ date: out.draft.date, amount: out.draft.amount, payee: out.draft.payee }) };
+    });
+    setMatchedRuleCount(matched);
+    setDrafts(normalizedDrafts);
     setSkipped(result.skipped);
 
     // Compute existing dedupe keys from the live db.
     const existing = await db.transactions.toArray();
     const keys = new Set(existing.map((t) => dedupeKey({ date: t.date, amount: t.amount, payee: t.payee })));
-    const partition = partitionByDedupe(result.drafts, keys);
+    const partition = partitionByDedupe(normalizedDrafts, keys);
     setDuplicateKeys(new Set(partition.duplicates.map((d) => d.dedupeKey)));
     // Default duplicates to excluded; fresh stays included.
     setExcluded(new Set(partition.duplicates.map((d) => d.dedupeKey)));
@@ -160,14 +214,14 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
         {step === "pick" && (
           <div className="space-y-4">
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Select a CSV file exported from your bank or credit card. Most banks have a "Download transactions" or "Export" option in their statement view.
+              Select a <strong>CSV</strong>, <strong>OFX</strong>, or <strong>QFX</strong> file exported from your bank or credit card. OFX/QFX skips column mapping — its schema is already structured.
             </p>
             <div className="p-8 rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 flex flex-col items-center justify-center gap-3 relative group hover:border-primary transition-all">
               <FileSpreadsheet className="h-10 w-10 text-primary opacity-30 group-hover:opacity-100 transition-opacity" />
-              <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">Choose CSV file</p>
+              <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">Choose CSV / OFX / QFX file</p>
               <input
                 type="file"
-                accept=".csv,text/csv"
+                accept=".csv,.ofx,.qfx,text/csv"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) handleFile(f);
@@ -177,7 +231,7 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
               />
             </div>
             <p className="text-[10px] text-muted-foreground leading-relaxed">
-              Supported: standard RFC-4180 CSV with a header row. The next step lets you tell Budget Beacon which columns are date / payee / amount.
+              CSV: standard RFC-4180 with a header row — the next step lets you map columns. OFX/QFX: bank-issued files (Quicken-compatible) — drafts go straight to review.
             </p>
           </div>
         )}
@@ -223,6 +277,11 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
               <Stat label="Duplicates" value={dupeCount} accent="amber" />
               <Stat label="To commit" value={includedCount} accent="green" />
             </div>
+            {matchedRuleCount > 0 && (
+              <div className="text-[11px] p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold">
+                ✓ Auto-categorized {matchedRuleCount} of {drafts.length} drafts using your payee rules.
+              </div>
+            )}
             {skipped.length > 0 && (
               <details className="text-[11px] p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
                 <summary className="font-black uppercase tracking-widest text-amber-500 cursor-pointer">{skipped.length} rows skipped (click to view)</summary>

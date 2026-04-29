@@ -48,7 +48,7 @@ M0–M8 closed. M9 partially closed (code-split + Bridge stub done; real-device 
 Parallel small slices any session can take while M10 is gated:
 - **M9 device QA** — real-device APK smoke + safe-area visual pass (needs physical Android).
 - **M7.2 polish** — streaming health-check, smarter context windowing.
-- **M5 / M8 carry-overs** — QFX/OFX parser, `payeeRules` table, more 1099 variants.
+- **M5 / M8 carry-overs** — ✅ done (OFX/QFX parser, payeeRules table, 4 more 1099 variants — see CHANGELOG).
 
 ## Forward milestone sequence (M1–M12 summary)
 

@@ -128,6 +128,17 @@ const backupSchema = z.object({
   syncLogs: z.array(syncLogSchema).optional(),
   // v3 tables
   documents: z.array(documentBackupSchema).optional(),
+  // v4 tables
+  payeeRules: z.array(z.object({
+    id: z.string(),
+    householdId: z.string(),
+    pattern: z.string(),
+    matchType: z.enum(["contains", "exact"]),
+    payeeOverride: z.string().optional(),
+    category: z.string().optional(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+  })).optional(),
 });
 
 export type BackupPayload = z.infer<typeof backupSchema>;
@@ -170,6 +181,7 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       db.insuranceRecords,
       db.syncLogs,
       db.documents,
+      db.payeeRules,
     ],
     async () => {
       // Clear existing
@@ -191,6 +203,7 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       await db.insuranceRecords.clear();
       await db.syncLogs.clear();
       await db.documents.clear();
+      await db.payeeRules.clear();
 
       // Insert backup (each non-baseline table optional for older-version compat)
       await db.households.bulkAdd(parsed.households);
@@ -211,6 +224,7 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
       if (parsed.insuranceRecords) await db.insuranceRecords.bulkAdd(parsed.insuranceRecords);
       if (parsed.syncLogs) await db.syncLogs.bulkAdd(parsed.syncLogs);
       if (decodedDocuments) await db.documents.bulkAdd(decodedDocuments);
+      if (parsed.payeeRules) await db.payeeRules.bulkAdd(parsed.payeeRules);
     }
   );
 }
@@ -242,6 +256,7 @@ export function backupRowCounts(parsed: BackupPayload): BackupRowCounts {
     insuranceRecords: parsed.insuranceRecords?.length ?? 0,
     syncLogs: parsed.syncLogs?.length ?? 0,
     documents: parsed.documents?.length ?? 0,
+    payeeRules: parsed.payeeRules?.length ?? 0,
   };
 }
 
@@ -269,6 +284,7 @@ export async function currentDbRowCounts(): Promise<BackupRowCounts> {
     insuranceRecords: await db.insuranceRecords.count(),
     syncLogs: await db.syncLogs.count(),
     documents: await db.documents.count(),
+    payeeRules: await db.payeeRules.count(),
   };
 }
 

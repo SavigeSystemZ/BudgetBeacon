@@ -1,15 +1,16 @@
 import { db } from "../../db/db";
 import { blobToBase64 } from "../../lib/encoding/base64";
 
-export const BACKUP_FORMAT_VERSION = 3;
+export const BACKUP_FORMAT_VERSION = 4;
 
 /**
  * Backup format history:
  *   v1 — original 8 tables. Lost 10 tables of data on restore.
  *   v2 — adds 9 JSON-serializable tables (M2). Documents (Blob) still excluded.
  *   v3 — adds documents with base64-encoded Blob data (M4).
+ *   v4 — adds payeeRules (M5/M8 carry-over).
  *
- * v1 and v2 backups still validate on import (importJson.ts).
+ * v1, v2, and v3 backups still validate on import (importJson.ts).
  */
 export async function buildBackupPayload() {
   // Encode document Blobs to base64 so the payload survives JSON round-trip.
@@ -50,6 +51,7 @@ export async function buildBackupPayload() {
     subscriptions: await db.subscriptions.toArray(),
     insuranceRecords: await db.insuranceRecords.toArray(),
     syncLogs: await db.syncLogs.toArray(),
+    payeeRules: await db.payeeRules.toArray(),
     documents,
   };
 }

@@ -19,6 +19,7 @@ import { useTheme, type Theme } from "../components/theme-provider";
 import { loadPreferences, savePreferences, defaultPreferences, type Preferences } from "../lib/preferences/preferences";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { resolveProviderFromConfig } from "../modules/ai/providerFactory";
+import { PayeeRulesPanel } from "../components/import/PayeeRulesPanel";
 import {
   Palette, Database, Bell, Shield,
   History, Zap, Sparkles, Bot, Key, Cpu, Wifi, WifiOff, Loader2,
@@ -61,6 +62,7 @@ export default function SettingsRoute() {
 
   // AI Config state, hydrated from Dexie aiConfig table.
   const aiConfigRow = useLiveQuery(() => db.aiConfig.get(AI_CONFIG_ID), []);
+  const householdId = useLiveQuery(() => db.households.toCollection().first().then((h) => h?.id), []);
   const [aiProvider, setAiProvider] = useState<"local" | "api">("local");
   const [apiKey, setApiKey] = useState("");
   const [localEndpoint, setLocalEndpoint] = useState("http://localhost:11434");
@@ -297,6 +299,11 @@ export default function SettingsRoute() {
             </p>
           </CardContent>
         </Card>
+
+        {/* Payee rules */}
+        <div className="md:col-span-2">
+          <PayeeRulesPanel householdId={householdId} />
+        </div>
 
         {/* Notifications */}
         <Card className="border-primary/10 bg-card/50 backdrop-blur-xl">

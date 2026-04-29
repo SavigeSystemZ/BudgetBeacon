@@ -6,6 +6,22 @@ import type { SavingsGoal } from "../modules/stash-map/stash-map.schema";
 import type { Transaction } from "../modules/ledger/ledger.schema";
 import type { CreditSnapshot } from "../modules/credit/credit.schema";
 
+/** User-managed merchant/payee normalization rule. Applied during CSV import. */
+export interface PayeeRule {
+  id: string;
+  householdId: string;
+  /** Lower-cased substring or exact-match key. */
+  pattern: string;
+  /** "contains" matches if the normalized payee contains the pattern; "exact" requires equality. */
+  matchType: "contains" | "exact";
+  /** Replace the payee field on match. Optional — when omitted, only category is set. */
+  payeeOverride?: string;
+  /** One of the bill/transaction categories. */
+  category?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export class BudgetBeaconDatabase extends Dexie {
   households!: Table<Household, string>;
   persons!: Table<Person, string>;
@@ -25,6 +41,7 @@ export class BudgetBeaconDatabase extends Dexie {
   subscriptions!: Table<{ id: string; householdId: string; label: string; amount: number; frequency: string; category: string; nextRenewal?: string; supportEmail?: string; personId: string }, string>;
   insuranceRecords!: Table<{ id: string; householdId: string; type: string; expirationDate: string; premium?: number }, string>;
   syncLogs!: Table<{ id: string; timestamp: string; deviceId: string; payloadSize: number }, string>;
+  payeeRules!: Table<PayeeRule, string>;
 
   constructor() {
     super("BudgetBeaconDB");
@@ -69,6 +86,28 @@ export class BudgetBeaconDatabase extends Dexie {
       aiConfig: "&id",
       chatMessages: "&id, timestamp",
       taxForms: "&id, year, type"
+    });
+
+    this.version(5).stores({
+      households: "&id",
+      persons: "&id, householdId",
+      incomeSources: "&id, householdId, personId",
+      bills: "&id, householdId, ownerPersonId, category, dueDay",
+      debts: "&id, householdId, ownerPersonId, category, dueDay",
+      savingsGoals: "&id, householdId, category",
+      creditSnapshots: "&id, householdId, personId, snapshotDate",
+      transactions: "&id, householdId, date, category, type, personId",
+      debtTransactions: "&id, debtId, date",
+      taxRecords: "&id, householdId, year, personId",
+      taxTransactions: "&id, recordId, date",
+      documents: "&id, householdId, category, personId",
+      aiConfig: "&id",
+      chatMessages: "&id, timestamp",
+      taxForms: "&id, year, type, personId",
+      subscriptions: "&id, householdId, category, personId",
+      insuranceRecords: "&id, householdId, type, expirationDate",
+      syncLogs: "&id, timestamp, deviceId",
+      payeeRules: "&id, householdId, pattern",
     });
 
     this.version(4).stores({
