@@ -37,7 +37,7 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 ### Ungated backlog (outside M10/M11 gates)
 
-- **Paused 2026-05-03:** Local work consolidated on **`main`** (commit at session end — see **`git log -1`**). Resume from **`WHERE_LEFT_OFF.md`**; **`npm run validate`** green at **164** tests before pause.
+- **Paused 2026-05-03:** Local **`main`** through **`ee5ded6`** plus handoff doc commit(s) on top — push when ready (**`git log -2 --oneline`**). Resume from **`WHERE_LEFT_OFF.md`**; **`npm run validate`** green at **164** tests before pause.
 
 See **`docs/UNGATED_PRODUCT_BACKLOG.md`** for Tier A–D enhancement themes (Android QA, regression tests, Electron, accessibility). **GitHub Actions:** `.github/workflows/ci.yml` runs **`npm run validate`** on push/PR to **`main`** / **`master`** (needs **`npm ci`** green on the fork).
 

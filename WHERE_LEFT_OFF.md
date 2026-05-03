@@ -1,8 +1,10 @@
 # Where Left Off — **paused 2026-05-03**
 
-> **Session stop:** Resume from **`git log -1`** on **`main`** (this pause batch is committed locally). **`npm run validate`** was green with **164** Vitest tests; **`npm run audit:controls`** OK (**`setTimeout=5`**, **`alert=0`**). Next session: **`git pull`** / **`git push`** using the operator account **per `GIT_REMOTE_AND_SYNC_PROTOCOL.md`** when sharing; otherwise continue **`docs/UNGATED_PRODUCT_BACKLOG.md`** Tier A (e.g. **`docs/M9_ANDROID_QA_CHECKLIST.md`** on hardware). **M10/M11** (sync / joint households) stay **gated** until explicit architecture sign-off.
+> **Session stop:** **`main`** is clean for the **2026-05-03** pause. Primary batch: **`ee5ded6`** (*feat: Beacon modals, assistant grounding, CI, debt trajectory polish*). Tip may include an additional **handoff doc** commit after that; use **`git log -2 --oneline`**. Not pushed from this environment. **`npm run validate`** was green with **164** Vitest tests; **`npm run audit:controls`** OK (**`setTimeout=5`**, **`alert=0`**). Next session: **`git pull`** / **`git push`** using the operator account **per `GIT_REMOTE_AND_SYNC_PROTOCOL.md`** when sharing; otherwise continue **`docs/UNGATED_PRODUCT_BACKLOG.md`** Tier A (e.g. **`docs/M9_ANDROID_QA_CHECKLIST.md`** on hardware). **M10/M11** (sync / joint households) stay **gated** until explicit architecture sign-off.
 >
 > **Status:** M0–M8 closed; M9 partial (code-split). Earlier 2026-05-02 CouplesWealth scavenger + rollups noted in sections below.
+>
+> **`_system/checkpoints/`** was left **untracked** (agent mid-session snapshots); delete or `.gitignore` locally if undesired—or commit only when you intentionally version a checkpoint export.
 
 ## 2026-05-03 continuation (debt trajectory downsample module)
 
