@@ -43,7 +43,10 @@ export function BudgetHealthScoreCard({
 
   const ScoreIcon = overallScore >= 70 ? CheckCircle : overallScore >= 50 ? AlertCircle : XCircle;
 
-  const progressTowardTarget = Math.min(Math.round((savingsRateFraction / targetSavingsFraction) * 100), 100);
+  const progressTowardTarget = Math.min(
+    Math.round(targetSavingsFraction > 0 ? (savingsRateFraction / targetSavingsFraction) * 100 : 0),
+    100
+  );
 
   return (
     <GlassCard intensity="high" className={className}>

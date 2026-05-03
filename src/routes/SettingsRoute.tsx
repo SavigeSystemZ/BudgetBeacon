@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { db } from "../db/db";
-import { exportDatabaseToJson } from "../modules/reports/exportJson";
+import { exportDatabaseToJson, BACKUP_FORMAT_HELP_TEXT } from "../modules/reports/exportJson";
 import {
   parseBackupJson,
   applyBackupPayload,
@@ -14,9 +14,9 @@ import {
   type BackupPayload,
   type BackupRowCounts,
 } from "../modules/reports/importJson";
-import { clearDatabase, seedDemoData } from "../db/seedDemoData";
+import { clearDatabase, resetToBundledDemo } from "../db/seedDemoData";
 import { useTheme, type Theme } from "../components/theme-provider";
-import { loadPreferences, savePreferences, defaultPreferences, type Preferences } from "../lib/preferences/preferences";
+import { loadPreferences, savePreferences, type Preferences } from "../lib/preferences/preferences";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { resolveProviderFromConfig } from "../modules/ai/providerFactory";
 import { PayeeRulesPanel } from "../components/import/PayeeRulesPanel";
@@ -24,6 +24,15 @@ import {
   Palette, Database, Bell, Shield,
   History, Zap, Sparkles, Bot, Key, Cpu, Wifi, WifiOff, Loader2,
 } from "lucide-react";
+import { BeaconModal } from "../components/ui/BeaconModal";
+import {
+  CANNOT_UNDONE_SHORT,
+  DEMO_RESET_DESCRIPTION,
+  DEMO_RESET_MODAL_TITLE,
+  FULL_WIPE_EXPORT_HINT,
+  FULL_WIPE_MODAL_TITLE,
+  FULL_WIPE_SCOPE_DESCRIPTION,
+} from "../lib/fullDatabaseWipeCopy";
 
 type Toggle = { key: keyof Preferences; label: string };
 
@@ -57,8 +66,9 @@ export default function SettingsRoute() {
   const [pendingImport, setPendingImport] = useState<PendingImport | null>(null);
   const { theme, setTheme } = useTheme();
 
-  const [prefs, setPrefs] = useState<Preferences>(defaultPreferences);
+  const [prefs, setPrefs] = useState<Preferences>(() => loadPreferences());
   const [savedFlash, setSavedFlash] = useState(false);
+  const [destructiveModal, setDestructiveModal] = useState<"wipe" | "demo" | null>(null);
 
   // AI Config state, hydrated from Dexie aiConfig table.
   const aiConfigRow = useLiveQuery(() => db.aiConfig.get(AI_CONFIG_ID), []);
@@ -69,19 +79,15 @@ export default function SettingsRoute() {
   const [model, setModel] = useState("");
   const [healthState, setHealthState] = useState<{ status: "idle" | "testing" | "ok" | "error"; message?: string }>({ status: "idle" });
 
-  // Load preferences once on mount using useCallback to avoid state setter in effect.
-  useEffect(() => {
-    const prefs = loadPreferences();
-    setPrefs(prefs);
-  }, []);
-
-  // Hydrate AI form state when Dexie row arrives.
+  // Hydrate AI form state when Dexie row arrives (async snapshot from IndexedDB).
   useEffect(() => {
     if (!aiConfigRow) return;
+    /* eslint-disable react-hooks/set-state-in-effect -- sync local AI form draft when Dexie row loads or updates */
     setAiProvider(aiConfigRow.provider);
     setApiKey(aiConfigRow.apiKey ?? "");
     setLocalEndpoint(aiConfigRow.localEndpoint ?? "http://localhost:11434");
     setModel(aiConfigRow.model ?? "");
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [aiConfigRow]);
 
   const togglePref = (key: keyof Preferences) => {
@@ -137,12 +143,15 @@ export default function SettingsRoute() {
     setImportStatus("idle");
   };
 
-  const handleReset = async () => {
-    const ok = window.confirm(
-      "Wipe the entire local database?\n\nExport a backup first if you might want it back. This cannot be undone."
-    );
-    if (!ok) return;
+  const runFullWipe = async () => {
+    setDestructiveModal(null);
     await clearDatabase();
+    window.location.reload();
+  };
+
+  const runDemoReset = async () => {
+    setDestructiveModal(null);
+    await resetToBundledDemo();
     window.location.reload();
   };
 
@@ -180,13 +189,20 @@ export default function SettingsRoute() {
       return;
     }
     try {
-      const reply = await provider.chat(
+      let reply = "";
+      for await (const chunk of provider.chatStream(
         [
           { role: "system", content: "Reply with just the word OK." },
           { role: "user", content: "ping" },
         ],
         { temperature: 0 },
-      );
+      )) {
+        reply += chunk;
+        if (reply.length >= 80) break;
+      }
+      if (!reply.trim()) {
+        throw new Error("Provider returned an empty streaming response.");
+      }
       setHealthState({ status: "ok", message: `Reachable. Reply: "${reply.slice(0, 40)}${reply.length > 40 ? "…" : ""}"` });
     } catch (err) {
       setHealthState({ status: "error", message: err instanceof Error ? err.message : "Unknown error." });
@@ -295,7 +311,7 @@ export default function SettingsRoute() {
             )}
 
             <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-primary/5">
-              Backup format v3 covers all household data including uploaded documents (base64-encoded). Older v1 / v2 backups still validate on import.
+              {BACKUP_FORMAT_HELP_TEXT}
             </p>
           </CardContent>
         </Card>
@@ -458,17 +474,20 @@ export default function SettingsRoute() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button variant="destructive" onClick={handleReset} className="w-full sm:w-auto shadow-lg shadow-destructive/20">
+              <Button
+                type="button"
+                variant="destructive"
+                aria-label="Open confirmation to wipe local database"
+                onClick={() => setDestructiveModal("wipe")}
+                className="w-full sm:w-auto shadow-lg shadow-destructive/20"
+              >
                 Wipe Local Database
               </Button>
               <Button
+                type="button"
                 variant="outline"
-                onClick={async () => {
-                  if (window.confirm("Reset local data to the demo seed? This wipes current data first.")) {
-                    await seedDemoData();
-                    window.location.reload();
-                  }
-                }}
+                aria-label="Open confirmation to reset to demo seed data"
+                onClick={() => setDestructiveModal("demo")}
                 className="w-full sm:w-auto border-destructive/20 text-destructive"
               >
                 Reset to Demo State
@@ -478,6 +497,50 @@ export default function SettingsRoute() {
         </Card>
 
       </div>
+
+      <BeaconModal
+        isOpen={destructiveModal === "wipe"}
+        onClose={() => setDestructiveModal(null)}
+        title={FULL_WIPE_MODAL_TITLE}
+        maxWidth="max-w-lg"
+        footer={
+          <>
+            <Button type="button" variant="ghost" className="uppercase font-black italic text-xs tracking-widest" onClick={() => setDestructiveModal(null)}>
+              Cancel
+            </Button>
+            <Button type="button" variant="destructive" className="uppercase font-black italic text-xs tracking-widest" onClick={() => void runFullWipe()}>
+              Wipe everything
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          {FULL_WIPE_SCOPE_DESCRIPTION} {FULL_WIPE_EXPORT_HINT}{" "}
+          <span className="text-destructive font-bold">{CANNOT_UNDONE_SHORT}</span>
+        </p>
+      </BeaconModal>
+
+      <BeaconModal
+        isOpen={destructiveModal === "demo"}
+        onClose={() => setDestructiveModal(null)}
+        title={DEMO_RESET_MODAL_TITLE}
+        maxWidth="max-w-lg"
+        footer={
+          <>
+            <Button type="button" variant="ghost" className="uppercase font-black italic text-xs tracking-widest" onClick={() => setDestructiveModal(null)}>
+              Cancel
+            </Button>
+            <Button type="button" variant="destructive" className="uppercase font-black italic text-xs tracking-widest" onClick={() => void runDemoReset()}>
+              Reset to demo
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          {DEMO_RESET_DESCRIPTION} {FULL_WIPE_EXPORT_HINT}{" "}
+          <span className="text-destructive font-bold">{CANNOT_UNDONE_SHORT}</span>
+        </p>
+      </BeaconModal>
     </div>
   );
 }

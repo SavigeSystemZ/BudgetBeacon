@@ -15,14 +15,19 @@ import {
   Tooltip as ChartTooltip, ResponsiveContainer, Legend 
 } from "recharts";
 import { useState } from "react";
-import { Sparkles, TrendingUp, Plus, Trash2 } from "lucide-react";
+import { Sparkles, TrendingUp, Plus, Trash2, FileText } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { EmptyState } from "../components/ui/EmptyState";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
+import type { z } from "zod";
 
 const formSchema = creditSnapshotSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
+type CreditFormValues = z.infer<typeof formSchema>;
 
 export default function CreditRoute() {
+  const confirmDelete = useDeleteConfirm();
   const snapshots = useLiveQuery(() => db.creditSnapshots.orderBy("snapshotDate").reverse().toArray(), []);
   const persons = useLiveQuery(() => db.persons.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
@@ -35,7 +40,7 @@ export default function CreditRoute() {
     defaultValues: { score: 700, bureauOrSource: "Experian", model: "FICO 8", snapshotDate: new Date().toISOString().split("T")[0], notes: "", personId: "" },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: CreditFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     await db.creditSnapshots.add({
@@ -62,13 +67,20 @@ export default function CreditRoute() {
     };
   });
 
+  const snapshotsEmpty = filteredSnapshots.length === 0;
+
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <PageHeader
         title="Credit Snapshot"
         subtitle="Multi-person manual credit-score tracking."
         actions={
-          <Button size="icon" onClick={() => { form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+          <Button
+            size="icon"
+            aria-label="Log new credit score snapshot"
+            onClick={() => { form.reset(); setIsModalOpen(true); }}
+            className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+          >
             <Plus className="h-5 w-5" />
           </Button>
         }
@@ -89,27 +101,69 @@ export default function CreditRoute() {
               </div>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} tickLine={false} />
-                  <YAxis domain={['dataMin - 50', 'dataMax + 50']} stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} tickLine={false} />
-                  <ChartTooltip contentStyle={{ background: "rgba(0,0,0,0.85)", border: "none", borderRadius: "12px", color: "#fff", fontSize: "10px" }} />
-                  <Legend />
-                  <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={4} dot={{ r: 4, fill: "hsl(var(--primary))" }} activeDot={{ r: 6 }} />
-                </LineChart>
-              </ResponsiveContainer>
+              {snapshotsEmpty ? (
+                <div className="h-full flex items-center justify-center text-center px-6">
+                  <p className="text-sm font-bold text-muted-foreground max-w-md">
+                    {snapshots.length === 0
+                      ? "Add a snapshot below to unlock the trajectory chart."
+                      : "No data for this person — switch to All Household or log a score for them."}
+                  </p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} tickLine={false} />
+                    <YAxis domain={['dataMin - 50', 'dataMax + 50']} stroke="hsl(var(--muted-foreground))" fontSize={10} axisLine={false} tickLine={false} />
+                    <ChartTooltip contentStyle={{ background: "rgba(0,0,0,0.85)", border: "none", borderRadius: "12px", color: "#fff", fontSize: "10px" }} />
+                    <Legend />
+                    <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={4} dot={{ r: 4, fill: "hsl(var(--primary))" }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </CardContent>
           </GlassCard>
 
-          <div className="space-y-4">
-             <h2 className="text-xl font-black uppercase italic text-primary px-2">Score History</h2>
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {snapshotsEmpty ? (
+            <EmptyState
+              icon={FileText}
+              title={snapshots.length === 0 ? "No credit snapshots yet" : "Nothing for this filter"}
+              description={
+                snapshots.length === 0
+                  ? "Pull your bureau or bank score and log it here — automated bureau fetch stays out of scope on purpose."
+                  : "Pick “All Household” in the dropdown or add a snapshot for this member."
+              }
+              action={
+                <Button
+                  onClick={() => { form.reset(); setIsModalOpen(true); }}
+                  className="gap-2 uppercase font-black italic text-xs"
+                >
+                  <Plus className="h-4 w-4" /> Log snapshot
+                </Button>
+              }
+              className="min-h-[280px]"
+            />
+          ) : (
+            <div className="space-y-4">
+              <h2 className="text-xl font-black uppercase italic text-primary px-2">Score History</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {filteredSnapshots.map((snap) => (
                   <GlassCard hoverable key={snap.id} className="group overflow-hidden">
                     <CardHeader className="pb-2 flex flex-row items-center justify-between border-b border-primary/5 bg-primary/5">
                       <CardTitle className="text-3xl font-black italic tracking-tighter text-primary">{snap.score}</CardTitle>
-                      <Button variant="ghost" size="icon" onClick={() => db.creditSnapshots.delete(snap.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete credit snapshot ${snap.score} ${snap.bureauOrSource}`}
+                        onClick={() => {
+                          void (async () => {
+                            const name = `${snap.score} · ${snap.bureauOrSource} · ${format(parseISO(snap.snapshotDate), "MMM d yyyy")}`;
+                            if (!(await confirmDelete("credit snapshot", name))) return;
+                            await db.creditSnapshots.delete(snap.id);
+                          })();
+                        }}
+                        className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      ><Trash2 className="h-4 w-4" /></Button>
                     </CardHeader>
                     <CardContent className="pt-4">
                       <div className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">{persons.find(p => p.id === snap.personId)?.name}</div>
@@ -117,8 +171,9 @@ export default function CreditRoute() {
                     </CardContent>
                   </GlassCard>
                 ))}
-             </div>
-          </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">

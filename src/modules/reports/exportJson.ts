@@ -3,6 +3,15 @@ import { blobToBase64 } from "../../lib/encoding/base64";
 
 export const BACKUP_FORMAT_VERSION = 4;
 
+/** Display string for menus and copy (e.g. `v4`). */
+export const BACKUP_FORMAT_VERSION_LABEL = `v${BACKUP_FORMAT_VERSION}`;
+
+/**
+ * One-line operator copy: current format + import replaces local data + older bundles.
+ * Update when `BACKUP_FORMAT_VERSION` bumps.
+ */
+export const BACKUP_FORMAT_HELP_TEXT = `Backup format ${BACKUP_FORMAT_VERSION_LABEL} includes documents (base64), payee rules, and all household tables. On import, the local database is replaced. Older v1–v3 exports still import.`;
+
 /**
  * Backup format history:
  *   v1 — original 8 tables. Lost 10 tables of data on restore.

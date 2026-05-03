@@ -15,6 +15,7 @@ import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 interface PolicyForm {
   type: string;
@@ -30,6 +31,7 @@ interface PolicyForm {
  * Budget Beacon will not pretend to scrape the market. Manual entry is the honest baseline.
  */
 export default function InsuranceInspectRoute() {
+  const confirmDelete = useDeleteConfirm();
   const policies = useLiveQuery(() => db.insuranceRecords.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then((h) => h?.id), []);
 
@@ -63,8 +65,9 @@ export default function InsuranceInspectRoute() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Delete this policy record?")) await db.insuranceRecords.delete(id);
+  const handleDelete = async (p: { id: string; type: string }) => {
+    if (!(await confirmDelete("insurance policy", p.type))) return;
+    await db.insuranceRecords.delete(p.id);
   };
 
   if (!policies) {
@@ -81,6 +84,7 @@ export default function InsuranceInspectRoute() {
         actions={
           <Button
             size="icon"
+            aria-label="Add insurance policy"
             onClick={() => { setEditingId(null); form.reset({ type: "auto", premium: 0, expirationDate: "" }); setIsModalOpen(true); }}
             className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
           >
@@ -158,8 +162,14 @@ export default function InsuranceInspectRoute() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-3 flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => startEdit(p)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Edit policy ${p.type}`} onClick={() => startEdit(p)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete insurance policy ${p.type}`}
+                      onClick={() => void handleDelete(p)}
+                      className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                    ><Trash2 className="h-3.5 w-3.5" /></Button>
                   </CardContent>
                 </GlassCard>
               ))}

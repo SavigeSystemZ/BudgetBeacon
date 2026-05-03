@@ -8,7 +8,7 @@
  *
  * Trade-off: assumes UTF-8 input (the file picker returns text via `file.text()`).
  * Does NOT support custom delimiters, comments, or BOM stripping yet — bank CSVs
- * occasionally include a BOM, so we strip a leading `﻿` defensively.
+ * occasionally include a BOM (U+FEFF), so we strip it defensively.
  */
 
 export interface ParsedCsv {

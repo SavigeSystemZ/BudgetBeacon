@@ -6,10 +6,13 @@ import { db } from "../../db/db";
 
 describe("M6 — OCR Extraction & Application", () => {
   beforeEach(async () => {
-    const tables = ["households", "persons", "incomeSources", "bills", "taxRecords"] as const;
-    for (const table of tables) {
-      await (db[table] as any).clear();
-    }
+    await Promise.all([
+      db.households.clear(),
+      db.persons.clear(),
+      db.incomeSources.clear(),
+      db.bills.clear(),
+      db.taxRecords.clear(),
+    ]);
   });
 
   describe("extractFields", () => {

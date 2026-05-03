@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode, lazy, Suspense } from "react";
+import React, { useState, type ReactNode, lazy, Suspense } from "react";
 import { HashRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import "./index.css";
 
@@ -26,6 +26,7 @@ import { OnboardingWizard } from "./components/setup/OnboardingWizard";
 import { ThemeProvider } from "./components/theme-provider";
 import { ModeToggle } from "./components/mode-toggle";
 import { BeaconChatbot } from "./components/BeaconChatbot";
+import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
@@ -105,8 +106,13 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl py-4 -mx-6 px-6 border-b border-white/5">
           <span className="font-black text-2xl tracking-tighter italic uppercase text-primary">Beacon</span>
-          <button onClick={() => setIsMobileMenuOpen(true)} className="p-3 bg-primary/10 rounded-2xl border border-primary/10 text-primary shadow-xl">
-            <Menu className="h-6 w-6" />
+          <button
+            type="button"
+            aria-label="Open navigation menu"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="p-3 bg-primary/10 rounded-2xl border border-primary/10 text-primary shadow-xl"
+          >
+            <Menu className="h-6 w-6" aria-hidden />
           </button>
         </div>
         {children}
@@ -117,8 +123,8 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         <div className="md:hidden fixed inset-0 z-[100] bg-background/95 backdrop-blur-3xl p-6 flex flex-col animate-in fade-in duration-500 overflow-y-auto">
           <div className="flex justify-between items-center mb-10">
             <span className="font-black text-3xl tracking-tighter italic uppercase text-primary">Mission Menu</span>
-            <button onClick={closeMenu} className="p-3 bg-destructive/10 rounded-2xl text-destructive border border-destructive/10">
-              <X className="h-6 w-6" />
+            <button type="button" aria-label="Close navigation menu" onClick={closeMenu} className="p-3 bg-destructive/10 rounded-2xl text-destructive border border-destructive/10">
+              <X className="h-6 w-6" aria-hidden />
             </button>
           </div>
           <div className="flex flex-col space-y-3 pb-20">
@@ -157,8 +163,13 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
             <Compass className="h-6 w-6" />
             <span className="text-[9px] mt-1 font-black uppercase tracking-tighter italic">Mission</span>
           </NavLink>
-          <button onClick={() => setIsMobileMenuOpen(true)} className="flex flex-col items-center p-3 text-muted-foreground">
-            <Menu className="h-6 w-6" />
+          <button
+            type="button"
+            aria-label="Open full navigation menu"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="flex flex-col items-center p-3 text-muted-foreground"
+          >
+            <Menu className="h-6 w-6" aria-hidden />
             <span className="text-[9px] mt-1 font-black uppercase tracking-tighter italic">Terminal</span>
           </button>
         </div>
@@ -170,14 +181,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   const households = useLiveQuery(() => db.households.toArray(), []);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  useEffect(() => {
-    // Show onboarding if no households exist
-    if (households !== undefined && households.length === 0) {
-      setShowOnboarding(true);
-    }
-  }, [households]);
+  const showOnboarding = households !== undefined && households.length === 0;
 
   const wrap = (scope: string, node: ReactNode) => (
     <ErrorBoundary scope={scope}>
@@ -191,7 +195,7 @@ function App() {
   if (showOnboarding) {
     return (
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
-        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+        <OnboardingWizard onComplete={() => {}} />
       </ThemeProvider>
     );
   }
@@ -200,6 +204,7 @@ function App() {
     <ErrorBoundary scope="root">
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
         <HashRouter>
+          <DeleteConfirmProvider>
           <AppShell>
             <Routes>
               <Route path="/" element={wrap("Dashboard", <DashboardRoute />)} />
@@ -219,6 +224,7 @@ function App() {
               <Route path="/settings" element={wrap("Settings", <SettingsRoute />)} />
             </Routes>
           </AppShell>
+          </DeleteConfirmProvider>
         </HashRouter>
       </ThemeProvider>
     </ErrorBoundary>

@@ -15,6 +15,7 @@ async function clearAssistantTables() {
       db.subscriptions,
       db.insuranceRecords,
       db.creditSnapshots,
+      db.taxRecords,
     ],
     async () => {
       await Promise.all([
@@ -26,6 +27,7 @@ async function clearAssistantTables() {
         db.subscriptions.clear(),
         db.insuranceRecords.clear(),
         db.creditSnapshots.clear(),
+        db.taxRecords.clear(),
       ]);
     },
   );
@@ -72,6 +74,15 @@ describe("buildAssistantContext", () => {
       expirationDate: "2027-01-01",
       premium: 120,
     });
+    await db.taxRecords.add({
+      id: "88888888-8888-4888-8888-888888888888",
+      householdId: hid,
+      year: 2025,
+      estimatedTaxLiability: 4000,
+      totalWithheld: 4200,
+      status: "ok",
+      personId: pid,
+    });
     await db.transactions.bulkAdd([
       {
         id: "66666666-6666-4666-8666-666666666666",
@@ -107,5 +118,7 @@ describe("buildAssistantContext", () => {
     expect(ctx.systemPrompt).toContain("food");
     expect(ctx.systemPrompt).toContain("transport");
     expect(ctx.systemPrompt).toContain("Top expense categories MTD");
+    expect(ctx.systemPrompt).toContain("Tax year records logged: 1");
+    expect(ctx.facts.taxRecordCount).toBe(1);
   });
 });

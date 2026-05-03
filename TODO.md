@@ -35,18 +35,25 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 **Path A (default): continue → M8 (Tax/Credit/Debt deepening) → M9 (Android polish) → M10/M11 (sync, joint household).**
 **Path B: skip to M10 (Auth + Sync) — requires architecture sign-off.** See `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
 
+### Ungated backlog (outside M10/M11 gates)
+
+- **Paused 2026-05-03:** Local work consolidated on **`main`** (commit at session end — see **`git log -1`**). Resume from **`WHERE_LEFT_OFF.md`**; **`npm run validate`** green at **164** tests before pause.
+
+See **`docs/UNGATED_PRODUCT_BACKLOG.md`** for Tier A–D enhancement themes (Android QA, regression tests, Electron, accessibility). **GitHub Actions:** `.github/workflows/ci.yml` runs **`npm run validate`** on push/PR to **`main`** / **`master`** (needs **`npm ci`** green on the fork).
+
 ### Open M7.2 polish (not blocking)
 
 - [x] Streamed token rendering (M7.2 commit `114f8ef`).
 - [x] Tool-use / structured action proposals with explicit confirmation (M7.2 commit `114f8ef`).
 - [x] Provider health-check button in Settings (M7.2 commit `114f8ef`).
-- [ ] **LOW:** Per-conversation context windowing — currently sends last 8 turns; consider summarizing older history when token budget is tight.
-- [ ] **LOW:** Streaming health-check (Test Connection currently uses `chat`, not `chatStream`).
+- [x] **LOW (2026-05-03):** Add unit coverage for `BeaconChatbot` no-provider `placeholderReply` branches (insurance + MTD categories + no-expense fallback + cut/save guidance).
+- [x] **LOW (2026-05-03):** Per-conversation context windowing via `buildConversationWindow` to summarize older turns when token budget is tight.
+- [x] **LOW (2026-05-03):** Streaming health-check (Settings "Test Connection" now exercises `chatStream`).
 
 ### M3 polish carry-over (low-risk, do during M4 or M5)
-- [ ] **MEDIUM:** Add `EmptyState` component to remaining 6 routes (Mission Control, Dashboard, Pay Path, Credit snapshot list, Reports, plus the existing IncomeRoute partial).
-- [ ] **LOW:** Add delete-confirm modal helper and apply to all icon-button deletes (Income/Pay Path bills/Pay Path debts/Stash Map/Subscriptions/Tax Taxi/Credit/Documents).
-- [ ] **LOW:** Accessibility audit (color contrast, focus order, aria-labels on icon-only buttons).
+- [ ] **MEDIUM:** Add `EmptyState` to remaining thin routes (Mission Control aggregates already full; Dashboard header — optional zero-ledger callout; Income partial done; **Pay Path + Credit + Reports tabs** landed 2026-05-03).
+- [x] **LOW (2026-05-03):** Delete confirm helper `confirmEntityDelete` + applied to icon deletes (Income/Pay Path/Debt Center/Stash/Credit/Ledger/Tax Taxi/Subs/Insurance/Vault). **[x] (2026-05-03):** **`useDeleteConfirm()`** + **`BeaconModal`** for row deletes (`DeleteConfirmProvider` in `App.tsx`). **[x] (2026-05-03):** Dashboard wipe + Settings wipe/demo → **`BeaconModal`**; **`window.confirm`** only in legacy **`confirmEntityDelete`** fallback for non-React callers.
+- [ ] **LOW:** Accessibility audit (color contrast, focus order; icon-only **`aria-label`** pass expanded 2026-05-03 — mobile shell, chat FAB, modal clear, theme toggle).
 - [ ] **LOW:** Decide on canonical Card primitive (`GlassCard` vs `Card`); migrate Settings to match the rest of the app.
 
 ## Reference Queue (was M2; now done)

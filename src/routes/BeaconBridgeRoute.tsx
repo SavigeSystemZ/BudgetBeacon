@@ -8,6 +8,7 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
+import { BACKUP_FORMAT_HELP_TEXT } from "../modules/reports/exportJson";
 
 /**
  * Beacon Bridge — household sync.
@@ -29,8 +30,12 @@ export default function BeaconBridgeRoute() {
         title="Beacon Bridge"
         subtitle="Move household data between devices."
         actions={
-          <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shadow-xl shadow-blue-500/10">
-            <Radio className="h-6 w-6 text-blue-500" />
+          <div
+            className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shadow-xl shadow-blue-500/10"
+            role="img"
+            aria-label="Manual relay: export and import today; automatic sync is M10"
+          >
+            <Radio className="h-6 w-6 text-blue-500" aria-hidden />
           </div>
         }
       />
@@ -70,7 +75,7 @@ export default function BeaconBridgeRoute() {
               </RouterLink>
             </div>
             <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-blue-500/10">
-              Backup format v3 covers all household data including uploaded documents (base64-encoded). On import, the receiving device <strong>replaces</strong> its data with the bundle.
+              {BACKUP_FORMAT_HELP_TEXT}
             </p>
           </CardContent>
         </GlassCard>

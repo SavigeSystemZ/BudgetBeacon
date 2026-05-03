@@ -83,11 +83,9 @@ export function simulatePayoff(
     }
 
     // 2. Pay each debt's minimum, capped at remaining balance.
-    let totalMinimumNeeded = 0;
     let minimumApplied = 0;
     for (const d of debts) {
       if (d.balance <= 0) continue;
-      totalMinimumNeeded += d.minimum;
       const pay = Math.min(d.minimum, d.balance);
       d.balance -= pay;
       d.paid += pay;

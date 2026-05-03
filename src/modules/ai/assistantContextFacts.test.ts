@@ -71,6 +71,28 @@ describe("buildAssistantPromptFacts", () => {
     expect(facts.mtdExpenseTopCategories[0]?.total).toBe(80);
   });
 
+  it("merges extendedCounts into formatted prompt", () => {
+    const facts = buildAssistantPromptFacts({
+      incomeSources: [baseIncome],
+      bills: [baseBill],
+      debts: [],
+      savingsGoals: [],
+      transactions: [],
+      subscriptions: [],
+      insuranceRecords: [],
+      creditSnapshots: [],
+      now: NOW,
+      extendedCounts: { taxRecords: 2, taxForms: 1, vaultDocuments: 3, payeeRules: 5 },
+    });
+    expect(facts.counts.taxRecords).toBe(2);
+    expect(facts.counts.taxForms).toBe(1);
+    const prompt = formatAssistantSystemPrompt(facts);
+    expect(prompt).toContain("Tax year records logged: 2");
+    expect(prompt).toContain("Saved tax forms: 1");
+    expect(prompt).toContain("Vault documents (local): 3");
+    expect(prompt).toContain("Payee rules (import normalization): 5");
+  });
+
   it("picks latest credit snapshot by snapshotDate", () => {
     const older: CreditSnapshot = {
       id: "40404040-4040-4040-8040-404040404040",

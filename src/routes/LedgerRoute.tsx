@@ -23,11 +23,13 @@ import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
 import { LedgerImportFlow } from "../components/import/LedgerImportFlow";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const formSchema = transactionSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
 type LedgerFormValues = z.infer<typeof formSchema>;
 
 export default function LedgerRoute() {
+  const confirmDelete = useDeleteConfirm();
   const transactions = useLiveQuery(() => db.transactions.orderBy("date").reverse().toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
 
@@ -88,7 +90,12 @@ export default function LedgerRoute() {
                 <Upload className="h-3 w-3" /> Import CSV
               </Button>
             )}
-            <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+            <Button
+              size="icon"
+              aria-label="Add ledger transaction"
+              onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
+              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+            >
               <Plus className="h-5 w-5" />
             </Button>
           </div>
@@ -128,8 +135,19 @@ export default function LedgerRoute() {
                         {shown.currencyBody}
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(t)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
-                        <Button variant="ghost" size="icon" onClick={() => db.transactions.delete(t.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+                        <Button variant="ghost" size="icon" aria-label={`Edit transaction ${t.payee}`} onClick={() => handleEdit(t)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Delete transaction ${t.payee}`}
+                          onClick={() => {
+                            void (async () => {
+                              if (!(await confirmDelete("transaction", `${t.payee} (${t.date})`))) return;
+                              await db.transactions.delete(t.id);
+                            })();
+                          }}
+                          className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                        ><Trash2 className="h-3.5 w-3.5" /></Button>
                       </div>
                     </div>
                   </CardContent>

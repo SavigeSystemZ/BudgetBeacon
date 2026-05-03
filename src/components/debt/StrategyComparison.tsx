@@ -3,7 +3,9 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { GlassCard } from "../ui/GlassCard";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 import { compareStrategies, type SimDebt, type PayoffResult } from "../../modules/debt-strategy/payoffSimulator";
+import { downsamplePayoffTrajectory } from "../../modules/debt-strategy/trajectoryDownsample";
 import { Crown, Award } from "lucide-react";
 
 interface Props {
@@ -21,6 +23,56 @@ const monthsLabel = (m: number) => {
   return rem === 0 ? `${years} yr` : `${years} yr ${rem} mo`;
 };
 
+const EXTRA_PRESETS = [0, 50, 100, 250, 500, 1000] as const;
+const EXTRA_RANGE_MAX = 3000;
+const TRAJECTORY_CHART_MAX_POINTS = 72;
+const TRAJECTORY_W = 200;
+const TRAJECTORY_H = 44;
+const TRAJECTORY_PAD = 4;
+
+function PayoffTrajectorySparkline({
+  trajectory,
+  months,
+}: {
+  trajectory: { month: number; totalBalance: number }[];
+  months: number;
+}) {
+  if (trajectory.length === 0) return null;
+  if (trajectory.length < 2) {
+    return (
+      <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter mt-2 pt-2 border-t border-primary/10">
+        Single-step payoff — no curve
+      </p>
+    );
+  }
+
+  const pts = downsamplePayoffTrajectory(trajectory, TRAJECTORY_CHART_MAX_POINTS);
+  const balances = pts.map((p) => p.totalBalance);
+  const minB = Math.min(...balances);
+  const maxB = Math.max(...balances);
+  const spread = Math.max(maxB - minB, 1);
+  const xSpan = Math.max(pts.length - 1, 1);
+
+  const coords = pts.map((p, i) => {
+    const x = TRAJECTORY_PAD + (i / xSpan) * (TRAJECTORY_W - 2 * TRAJECTORY_PAD);
+    const y = TRAJECTORY_PAD + (1 - (p.totalBalance - minB) / spread) * (TRAJECTORY_H - 2 * TRAJECTORY_PAD);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  return (
+    <svg
+      width="100%"
+      height={TRAJECTORY_H}
+      viewBox={`0 0 ${TRAJECTORY_W} ${TRAJECTORY_H}`}
+      className="mt-2 text-primary"
+      role="img"
+      aria-label={`Combined remaining balance trend over about ${months} months (downsampled for display)`}
+    >
+      <polyline fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke" className="opacity-85" points={coords.join(" ")} />
+    </svg>
+  );
+}
+
 export function StrategyComparison({ debts }: Props) {
   const [extra, setExtra] = useState(100);
 
@@ -28,6 +80,8 @@ export function StrategyComparison({ debts }: Props) {
     if (!debts.length) return null;
     return compareStrategies(debts, extra);
   }, [debts, extra]);
+
+  const sliderValue = Math.min(extra, EXTRA_RANGE_MAX);
 
   if (!debts.length) {
     return (
@@ -58,20 +112,67 @@ export function StrategyComparison({ debts }: Props) {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="extra-monthly" className="text-[10px] font-black uppercase tracking-widest opacity-70">
-            Extra monthly payment beyond minimums
-          </Label>
-          <Input
-            id="extra-monthly"
-            type="number"
-            inputMode="decimal"
-            min={0}
-            step={25}
-            value={extra}
-            onChange={(e) => setExtra(Math.max(0, parseFloat(e.target.value) || 0))}
-            className="bg-primary/5 border-none font-black h-12"
-          />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="extra-monthly" className="text-[10px] font-black uppercase tracking-widest opacity-70">
+              Extra monthly payment beyond minimums
+            </Label>
+            <Input
+              id="extra-monthly"
+              type="number"
+              inputMode="decimal"
+              min={0}
+              step={25}
+              value={extra}
+              onChange={(e) => setExtra(Math.max(0, parseFloat(e.target.value) || 0))}
+              className="bg-primary/5 border-none font-black h-12"
+              aria-describedby="extra-presets-hint"
+            />
+            <p id="extra-presets-hint" className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
+              Type any amount or use presets / slider (slider caps at {fmt(EXTRA_RANGE_MAX)} for drag UX; higher values in the field).
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Extra payment presets">
+            {EXTRA_PRESETS.map((amt) => (
+              <Button
+                key={amt}
+                type="button"
+                size="sm"
+                variant={extra === amt ? "default" : "outline"}
+                className="h-9 px-3 text-[10px] font-black uppercase tracking-tighter"
+                aria-pressed={extra === amt}
+                aria-label={`Set extra payment to ${fmt(amt)} per month`}
+                onClick={() => setExtra(amt)}
+              >
+                {amt === 0 ? "Min only" : fmt(amt)}
+              </Button>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="extra-monthly-slider" className="text-[10px] font-black uppercase tracking-widest opacity-70">
+              Quick scrub (0–{fmt(EXTRA_RANGE_MAX)})
+            </Label>
+            <input
+              id="extra-monthly-slider"
+              type="range"
+              min={0}
+              max={EXTRA_RANGE_MAX}
+              step={25}
+              value={sliderValue}
+              onChange={(e) => setExtra(Number(e.target.value))}
+              className="w-full h-2 accent-primary cursor-pointer"
+              aria-valuemin={0}
+              aria-valuemax={EXTRA_RANGE_MAX}
+              aria-valuenow={sliderValue}
+              aria-valuetext={
+                extra > EXTRA_RANGE_MAX
+                  ? `${fmt(extra)} extra per month; slider preview up to ${fmt(EXTRA_RANGE_MAX)}`
+                  : `${fmt(extra)} extra per month`
+              }
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -143,6 +244,7 @@ function StrategyCard({
           ⚠ Cannot fully pay off within projected horizon.
         </div>
       )}
+      <PayoffTrajectorySparkline trajectory={result.trajectory} months={result.months} />
     </div>
   );
 }

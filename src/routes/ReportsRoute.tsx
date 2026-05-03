@@ -4,7 +4,7 @@ import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
 import { calculateStabilityIndex } from "../modules/budget-engine/stabilityIndex";
 import type { Transaction } from "../modules/ledger/ledger.schema";
-import { exportDatabaseToJson } from "../modules/reports/exportJson";
+import { exportDatabaseToJson, BACKUP_FORMAT_VERSION_LABEL } from "../modules/reports/exportJson";
 import { downloadCsvForEntity, type CsvEntity } from "../modules/reports/exportCsv";
 import { Button } from "../components/ui/button";
 import { Printer, FileText, Sparkles, Download, Database, ShieldAlert, PiggyBank, FolderLock, Library, ChevronDown } from "lucide-react";
@@ -12,6 +12,7 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { cn } from "../lib/utils";
 import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
+import { EmptyState } from "../components/ui/EmptyState";
 
 type ReportTab = "monthly" | "debt" | "savings" | "subscriptions" | "documents";
 
@@ -108,7 +109,7 @@ export default function ReportsRoute() {
                     role="menuitem"
                     className="w-full text-left px-4 py-3 flex items-center gap-2 hover:bg-primary/10 text-sm font-bold border-b border-primary/10"
                   >
-                    <Database className="h-4 w-4 text-primary" /> Full backup (JSON, v3)
+                    <Database className="h-4 w-4 text-primary" /> Full backup (JSON, {BACKUP_FORMAT_VERSION_LABEL})
                   </button>
                   <div className="px-4 py-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground">CSV per entity</div>
                   {CSV_OPTIONS.map((o) => (
@@ -250,7 +251,14 @@ function DebtReport({ debts }: { debts: { id: string; label: string; balance: nu
   const sorted = debts.slice().sort((a, b) => b.balance - a.balance);
 
   if (debts.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8">No debts tracked. Add liabilities in Debt Center to see them here.</p>;
+    return (
+      <EmptyState
+        icon={ShieldAlert}
+        title="No liability report yet"
+        description="Add liabilities in Debt Center — this tab mirrors your payoff intel and minimums."
+        className="min-h-[240px]"
+      />
+    );
   }
 
   return (
@@ -293,7 +301,14 @@ function SavingsReport({ goals }: { goals: { id: string; label: string; targetAm
   const totalMonthly = goals.reduce((s, g) => s + g.monthlyContribution, 0);
 
   if (goals.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8">No goals set. Add a savings goal in Stash Map to see progress here.</p>;
+    return (
+      <EmptyState
+        icon={PiggyBank}
+        title="No savings report yet"
+        description="Define goals and contributions in Stash Map — summaries and ETAs render here automatically."
+        className="min-h-[240px]"
+      />
+    );
   }
 
   return (
@@ -341,7 +356,14 @@ function SubscriptionsReport({ subscriptions }: { subscriptions: { id: string; l
   const totalMonthly = subscriptions.reduce((sum, s) => sum + monthlyEquiv(s), 0);
 
   if (subscriptions.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8">No subscriptions tracked.</p>;
+    return (
+      <EmptyState
+        icon={Library}
+        title="No subscription roll-up yet"
+        description="Add recurring services on the Subscriptions Shelf — monthly equivalents appear here."
+        className="min-h-[240px]"
+      />
+    );
   }
 
   return (
@@ -378,7 +400,14 @@ function DocumentsReport({ documents }: { documents: { id: string; label: string
   }, {});
 
   if (documents.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8">No documents in The Vault.</p>;
+    return (
+      <EmptyState
+        icon={FolderLock}
+        title="Vault inventory is empty"
+        description="Upload statements or IDs in The Vault — this tab lists everything stored offline."
+        className="min-h-[240px]"
+      />
+    );
   }
 
   return (

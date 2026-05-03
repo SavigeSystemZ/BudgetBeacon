@@ -29,7 +29,7 @@ export function normalizeDate(raw: string): string {
   // Already in ISO YYYY-MM-DD form?
   if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
   // Try common US format MM/DD/YYYY (or M/D/YY).
-  const m = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  const m = raw.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})/);
   if (m) {
     let yyyy = m[3];
     if (yyyy.length === 2) yyyy = (Number(yyyy) >= 70 ? "19" : "20") + yyyy;

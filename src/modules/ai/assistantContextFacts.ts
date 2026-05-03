@@ -16,6 +16,14 @@ import { buildExpenseCategoryRollup } from "../ledger/transactionDisplay";
 export type SubscriptionLike = { amount: number; frequency: string };
 export type InsuranceLike = { premium?: number };
 
+/** Count-only aggregates (no document content); matches tables not in income/budget engine path. */
+export type AssistantPromptExtendedCounts = {
+  taxRecords: number;
+  taxForms: number;
+  vaultDocuments: number;
+  payeeRules: number;
+};
+
 export interface AssistantPromptFactInputs {
   incomeSources: IncomeSource[];
   bills: Bill[];
@@ -27,6 +35,7 @@ export interface AssistantPromptFactInputs {
   creditSnapshots: CreditSnapshot[];
   /** Used for `YYYY-MM` MTD rollup; pass a fixed date in tests. */
   now?: Date;
+  extendedCounts?: AssistantPromptExtendedCounts;
 }
 
 export interface AssistantPromptFacts {
@@ -47,6 +56,10 @@ export interface AssistantPromptFacts {
     subscriptions: number;
     insuranceRecords: number;
     creditSnapshots: number;
+    taxRecords: number;
+    taxForms: number;
+    vaultDocuments: number;
+    payeeRules: number;
   };
 }
 
@@ -83,6 +96,13 @@ export function buildAssistantPromptFacts(input: AssistantPromptFactInputs): Ass
     (b.snapshotDate || "").localeCompare(a.snapshotDate || ""),
   )[0];
 
+  const ex = input.extendedCounts ?? {
+    taxRecords: 0,
+    taxForms: 0,
+    vaultDocuments: 0,
+    payeeRules: 0,
+  };
+
   return {
     monthPrefix,
     summary,
@@ -101,6 +121,10 @@ export function buildAssistantPromptFacts(input: AssistantPromptFactInputs): Ass
       subscriptions: input.subscriptions.length,
       insuranceRecords: input.insuranceRecords.length,
       creditSnapshots: input.creditSnapshots.length,
+      taxRecords: ex.taxRecords,
+      taxForms: ex.taxForms,
+      vaultDocuments: ex.vaultDocuments,
+      payeeRules: ex.payeeRules,
     },
   };
 }
@@ -130,6 +154,10 @@ export function formatAssistantSystemPrompt(facts: AssistantPromptFacts): string
     `- Active savings goals: ${counts.savingsGoals} (scheduled ${fmtUsd(summary.totalStashMapScheduled)}/mo)`,
     `- Budget status: ${summary.budgetStatus}`,
     `- Stability index (0-100): ${stabilityIndex} (${stabilityLabel})`,
+    `- Tax year records logged: ${counts.taxRecords}`,
+    `- Saved tax forms: ${counts.taxForms}`,
+    `- Vault documents (local): ${counts.vaultDocuments}`,
+    `- Payee rules (import normalization): ${counts.payeeRules}`,
   ];
 
   if (mtdExpenseTotal > 0) {

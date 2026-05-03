@@ -13,11 +13,13 @@ interface OnboardingWizardProps {
 
 type Step = "welcome" | "household" | "persons" | "balances" | "complete";
 
+type PersonDraft = { name: string; role: "primary" | "partner" | "other" };
+
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const [step, setStep] = useState<Step>("welcome");
   const [householdName, setHouseholdName] = useState("My Household");
   const [currency, setCurrency] = useState("USD");
-  const [persons, setPersons] = useState([{ name: "Primary Member", role: "primary" }]);
+  const [persons, setPersons] = useState<PersonDraft[]>([{ name: "Primary Member", role: "primary" }]);
   const [startBalance, setStartBalance] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -28,9 +30,15 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     ]);
   };
 
-  const handleUpdatePerson = (index: number, field: string, value: string) => {
+  const handleUpdatePerson = (index: number, field: keyof PersonDraft, value: string) => {
     const updated = [...persons];
-    (updated[index] as any)[field] = value;
+    const cur = updated[index];
+    if (!cur) return;
+    if (field === "role" && (value === "primary" || value === "partner" || value === "other")) {
+      updated[index] = { ...cur, role: value };
+    } else if (field === "name") {
+      updated[index] = { ...cur, name: value };
+    }
     setPersons(updated);
   };
 
@@ -59,7 +67,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           id: createId(),
           householdId,
           name: person.name,
-          role: person.role as "primary" | "partner" | "other",
+          role: person.role,
           createdAt: now,
           updatedAt: now,
         });

@@ -46,7 +46,8 @@ M0–M8 closed. M9 partially closed (code-split + Bridge stub done; real-device 
 - **M12 — Public release.**
 
 Parallel small slices any session can take while M10 is gated:
-- **M9 device QA** — real-device APK smoke + safe-area visual pass (needs physical Android).
+- **Ungated expansion queue** — prioritized trust/polish/platform slices in **`docs/UNGATED_PRODUCT_BACKLOG.md`** (not a substitute for gated M10/M11 sequencing).
+- **M9 device QA** — run **`docs/M9_ANDROID_QA_CHECKLIST.md`** on a physical Android (APK smoke, safe-area, imports, OCR, assistant, PWA).
 - **M7.2 polish** — streaming health-check, smarter context windowing.
 - **M5 / M8 carry-overs** — ✅ done (OFX/QFX parser, payeeRules table, 4 more 1099 variants — see CHANGELOG).
 

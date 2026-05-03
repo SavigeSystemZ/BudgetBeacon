@@ -13,11 +13,18 @@ import { Edit2, Trash2, Receipt, CreditCard as CardIcon, Plus } from "lucide-rea
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { EmptyState } from "../components/ui/EmptyState";
+import type { Bill, Debt } from "../modules/pay-path/pay-path.schema";
+import type { z } from "zod";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const billFormSchema = billSchema.omit({ id: true, householdId: true, ownerPersonId: true, createdAt: true, updatedAt: true });
 const debtFormSchema = debtSchema.omit({ id: true, householdId: true, ownerPersonId: true, createdAt: true, updatedAt: true });
+type BillFormValues = z.infer<typeof billFormSchema>;
+type DebtFormValues = z.infer<typeof debtFormSchema>;
 
 export default function PayPathRoute() {
+  const confirmDelete = useDeleteConfirm();
   const bills = useLiveQuery(() => db.bills.toArray(), []);
   const debts = useLiveQuery(() => db.debts.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
@@ -37,7 +44,7 @@ export default function PayPathRoute() {
     defaultValues: { label: "", balance: 0, minimumPayment: 0, apr: 0, category: "credit-card" as const, dueDay: 1, priority: "high" as const },
   });
 
-  const onBillSubmit = async (data: any) => {
+  const onBillSubmit = async (data: BillFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     if (editingBillId) {
@@ -50,7 +57,7 @@ export default function PayPathRoute() {
     setIsBillModalOpen(false);
   };
 
-  const onDebtSubmit = async (data: any) => {
+  const onDebtSubmit = async (data: DebtFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     if (editingDebtId) {
@@ -63,13 +70,13 @@ export default function PayPathRoute() {
     setIsDebtModalOpen(false);
   };
 
-  const handleEditBill = (bill: any) => {
+  const handleEditBill = (bill: Bill) => {
     setEditingBillId(bill.id);
     billForm.reset({ label: bill.label, amount: bill.amount, frequency: bill.frequency, category: bill.category, dueDay: bill.dueDay, autopay: bill.autopay, isEssential: bill.isEssential });
     setIsBillModalOpen(true);
   };
 
-  const handleEditDebt = (debt: any) => {
+  const handleEditDebt = (debt: Debt) => {
     setEditingDebtId(debt.id);
     debtForm.reset({ label: debt.label, balance: debt.balance, minimumPayment: debt.minimumPayment, apr: debt.apr, category: debt.category, dueDay: debt.dueDay, priority: debt.priority });
     setIsDebtModalOpen(true);
@@ -84,10 +91,10 @@ export default function PayPathRoute() {
         subtitle="Mission-critical bills and liability telemetry."
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => { setEditingBillId(null); billForm.reset(); setIsBillModalOpen(true); }} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
+            <Button variant="outline" size="sm" aria-label="Add bill" onClick={() => { setEditingBillId(null); billForm.reset(); setIsBillModalOpen(true); }} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
               <Plus className="h-4 w-4" /> Add Bill
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setEditingDebtId(null); debtForm.reset(); setIsDebtModalOpen(true); }} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
+            <Button variant="outline" size="sm" aria-label="Add debt" onClick={() => { setEditingDebtId(null); debtForm.reset(); setIsDebtModalOpen(true); }} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
               <Plus className="h-4 w-4" /> Add Debt
             </Button>
           </div>
@@ -98,7 +105,14 @@ export default function PayPathRoute() {
         <div className="space-y-6">
           <h2 className="text-xl font-black uppercase italic text-primary flex items-center gap-2 px-2"><Receipt className="h-5 w-5" /> Active Bills</h2>
           <div className="grid grid-cols-1 gap-3">
-            {bills.map((bill) => (
+            {bills.length === 0 ? (
+              <EmptyState
+                icon={Receipt}
+                title="No bills on the path yet"
+                description="Add recurring charges so Mission Control and the dashboard burn rate reflect reality."
+                className="min-h-[220px]"
+              />
+            ) : bills.map((bill) => (
               <GlassCard hoverable key={bill.id} className="group border-primary/5 bg-primary/5">
                 <CardContent className="p-4 flex justify-between items-center">
                   <div className="flex items-center gap-4">
@@ -111,8 +125,19 @@ export default function PayPathRoute() {
                   <div className="flex items-center gap-6">
                     <div className="text-xl font-black italic tracking-tighter text-foreground">${bill.amount.toLocaleString()}</div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Button variant="ghost" size="icon" onClick={() => handleEditBill(bill)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => db.bills.delete(bill.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" aria-label={`Edit bill ${bill.label}`} onClick={() => handleEditBill(bill)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete bill ${bill.label}`}
+                        onClick={() => {
+                          void (async () => {
+                            if (!(await confirmDelete("bill", bill.label))) return;
+                            await db.bills.delete(bill.id);
+                          })();
+                        }}
+                        className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                      ><Trash2 className="h-3.5 w-3.5" /></Button>
                     </div>
                   </div>
                 </CardContent>
@@ -124,7 +149,14 @@ export default function PayPathRoute() {
         <div className="space-y-6">
           <h2 className="text-xl font-black uppercase italic text-primary flex items-center gap-2 px-2"><CardIcon className="h-5 w-5" /> Liabilities</h2>
           <div className="grid grid-cols-1 gap-3">
-            {debts.map((debt) => (
+            {debts.length === 0 ? (
+              <EmptyState
+                icon={CardIcon}
+                title="No debts tracked here yet"
+                description="For avalanche-style payoff intel, prefer Debt Center. You can still log minimums here for budget pressure."
+                className="min-h-[220px]"
+              />
+            ) : debts.map((debt) => (
               <GlassCard hoverable key={debt.id} className="group border-primary/5 bg-primary/5">
                 <CardContent className="p-4 flex justify-between items-center">
                   <div className="flex items-center gap-4">
@@ -140,8 +172,19 @@ export default function PayPathRoute() {
                       <div className="text-[8px] uppercase font-black text-muted-foreground opacity-50">Min Payment</div>
                     </div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Button variant="ghost" size="icon" onClick={() => handleEditDebt(debt)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => db.debts.delete(debt.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" aria-label={`Edit debt ${debt.label}`} onClick={() => handleEditDebt(debt)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete debt ${debt.label}`}
+                        onClick={() => {
+                          void (async () => {
+                            if (!(await confirmDelete("debt entry", debt.label))) return;
+                            await db.debts.delete(debt.id);
+                          })();
+                        }}
+                        className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                      ><Trash2 className="h-3.5 w-3.5" /></Button>
                     </div>
                   </div>
                 </CardContent>

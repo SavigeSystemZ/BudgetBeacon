@@ -17,10 +17,15 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import type { IncomeSource } from "../modules/income/income.schema";
+import type { z } from "zod";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const formSchema = incomeSourceSchema.omit({ id: true, householdId: true, personId: true, createdAt: true, updatedAt: true });
+type IncomeFormValues = z.infer<typeof formSchema>;
 
 export default function IncomeRoute() {
+  const confirmDelete = useDeleteConfirm();
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
   const persons = useLiveQuery(() => db.persons.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
@@ -42,7 +47,7 @@ export default function IncomeRoute() {
     }, 0);
   }, [incomes]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: IncomeFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     if (editingId) {
@@ -55,7 +60,7 @@ export default function IncomeRoute() {
     setIsModalOpen(false);
   };
 
-  const handleEdit = (inc: any) => {
+  const handleEdit = (inc: IncomeSource) => {
     setEditingId(inc.id);
     form.reset({ label: inc.label, amount: inc.amount, frequency: inc.frequency, isActive: inc.isActive });
     setIsModalOpen(true);
@@ -74,7 +79,12 @@ export default function IncomeRoute() {
               <div className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Aggregate Inflow</div>
               <div className="text-xl font-black text-primary italic tracking-tighter">${totalMonthlyIncome.toLocaleString(undefined, { maximumFractionDigits: 0 })}/mo</div>
             </div>
-            <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+            <Button
+              size="icon"
+              aria-label="Add income source"
+              onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
+              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+            >
               <Plus className="h-5 w-5" />
             </Button>
           </div>
@@ -99,8 +109,19 @@ export default function IncomeRoute() {
                     <CardDescription className="uppercase text-[10px] font-black tracking-widest text-primary opacity-70">{inc.frequency}</CardDescription>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(inc)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => db.incomeSources.delete(inc.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Edit income source ${inc.label}`} onClick={() => handleEdit(inc)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete income source ${inc.label}`}
+                      onClick={() => {
+                        void (async () => {
+                          if (!(await confirmDelete("income source", inc.label))) return;
+                          await db.incomeSources.delete(inc.id);
+                        })();
+                      }}
+                      className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                    ><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </div>
               </CardHeader>

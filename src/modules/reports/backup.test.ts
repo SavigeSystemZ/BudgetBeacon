@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { db } from "../../db/db";
+import type { Household, Person } from "../household/household.schema";
+import type { IncomeSource } from "../income/income.schema";
+import type { Bill } from "../pay-path/pay-path.schema";
 import { buildBackupPayload, BACKUP_FORMAT_VERSION } from "./exportJson";
 import { applyBackupPayload, parseBackupJson, backupRowCounts, currentDbRowCounts } from "./importJson";
 
@@ -58,22 +61,26 @@ const PERSON_ID = "22222222-2222-4222-8222-222222222222";
 
 async function seedFixture() {
   const now = new Date().toISOString();
-  await db.households.add({
+  const household: Household = {
     id: HOUSEHOLD_ID,
     name: "Test Household",
     currency: "USD",
     createdAt: now,
     updatedAt: now,
-  } as any);
-  await db.persons.add({
+  };
+  await db.households.add(household);
+
+  const person: Person = {
     id: PERSON_ID,
     householdId: HOUSEHOLD_ID,
     name: "Tester",
     role: "primary",
     createdAt: now,
     updatedAt: now,
-  } as any);
-  await db.incomeSources.add({
+  };
+  await db.persons.add(person);
+
+  const income: IncomeSource = {
     id: "33333333-3333-4333-8333-333333333333",
     householdId: HOUSEHOLD_ID,
     personId: PERSON_ID,
@@ -83,8 +90,10 @@ async function seedFixture() {
     isActive: true,
     createdAt: now,
     updatedAt: now,
-  } as any);
-  await db.bills.add({
+  };
+  await db.incomeSources.add(income);
+
+  const bill: Bill = {
     id: "44444444-4444-4444-8444-444444444444",
     householdId: HOUSEHOLD_ID,
     label: "Rent",
@@ -95,7 +104,8 @@ async function seedFixture() {
     isEssential: true,
     createdAt: now,
     updatedAt: now,
-  } as any);
+  };
+  await db.bills.add(bill);
   // v2-only tables — these are the ones the original backup silently dropped
   await db.subscriptions.add({
     id: "sub-1",

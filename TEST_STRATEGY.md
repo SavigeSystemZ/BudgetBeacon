@@ -32,7 +32,7 @@ Use this file to define the repo's confidence model, validation lanes, and known
 ### Budget Beacon — environment hazards (Vitest + Dexie)
 
 - **`fake-indexeddb`** (see `vitest.setup.ts`) backs real Dexie `db.*` calls in unit tests. **`vi.useFakeTimers()` in the same test path** (especially in `beforeEach` / `afterEach` around `db.transaction` or `bulkAdd`) can stall or time out hooks because IndexedDB and timers are intertwined. Prefer **real timers** for any test that touches `db`, or isolate fake clocks to **pure** modules that never open IndexedDB (see `assistantContextFacts.test.ts` vs `contextBuilder.test.ts`).
-- Assistant prompt assembly: **`buildAssistantPromptFacts` / `formatAssistantSystemPrompt`** in `src/modules/ai/assistantContextFacts.ts` are pure and clock-injectable; **`collectAssistantPromptFacts` / `buildAssistantContext`** perform Dexie reads only.
+- Assistant prompt assembly: **`buildAssistantPromptFacts` / `formatAssistantSystemPrompt`** in `src/modules/ai/assistantContextFacts.ts` are pure and clock-injectable; **`collectAssistantPromptFacts` / `buildAssistantContext`** perform Dexie reads only (including aggregate **counts** for tax / vault / payee-rules — see **`docs/ASSISTANT_CONTEXT_COVERAGE.md`**).
 
 ## Usage rules
 

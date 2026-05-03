@@ -9,11 +9,11 @@ import { normalizeDate, parseAmount } from "../import/dedupeKey";
  * before commit (per docs/INTEGRATIONS_STRATEGY.md Domain 2 §UI handling).
  */
 
-const DATE_RE = /\b(\d{4}-\d{2}-\d{2}|\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2},?\s+\d{2,4})\b/gi;
+const DATE_RE = /\b(\d{4}-\d{2}-\d{2}|\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2},?\s+\d{2,4})\b/gi;
 // Money: optional currency, optional thousands sep, mandatory cents.
 const MONEY_RE = /(?:\$|USD\s*)?\d{1,3}(?:,\d{3})*\.\d{2}\b|\b\d+\.\d{2}\b/g;
 const AMOUNT_LINE_RE = /\b(?:amount|total|payment|balance due|due|monthly|gross|net pay|pay)\b\s*[:=]?\s*\$?(\d{1,3}(?:,\d{3})*\.\d{2}|\d+\.\d{2})/gi;
-const PAYER_LINE_RE = /\b(?:from|payer|issued by|issuer|provider|merchant)\b\s*[:\-]\s*([^\n]{3,80})/gi;
+const PAYER_LINE_RE = /\b(?:from|payer|issued by|issuer|provider|merchant)\b\s*[-:]\s*([^\n]{3,80})/gi;
 
 export function extractFields(rawText: string): ExtractedField[] {
   const fields: ExtractedField[] = [];

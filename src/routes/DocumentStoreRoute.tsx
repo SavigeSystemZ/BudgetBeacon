@@ -18,8 +18,10 @@ import { VaultExtractionReview } from "../components/vault/VaultExtractionReview
 import { tesseractProvider } from "../modules/ocr/tesseractProvider";
 import { applyExtractionToDb } from "../modules/ocr/applyExtraction";
 import type { ExtractionDraft, ExtractedField } from "../modules/ocr/types";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 export default function DocumentStoreRoute() {
+  const confirmDelete = useDeleteConfirm();
   const documents = useLiveQuery(() => db.documents.toArray(), []);
   const households = useLiveQuery(() => db.households.toArray(), []);
   const persons = useLiveQuery(() => db.persons.toArray(), []);
@@ -81,8 +83,9 @@ export default function DocumentStoreRoute() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Permanently delete this document from local vault?")) await db.documents.delete(id);
+  const handleDelete = async (doc: { id: string; label: string }) => {
+    if (!(await confirmDelete("vault document", doc.label))) return;
+    await db.documents.delete(doc.id);
   };
 
   const handleScavenge = async (docId: string) => {
@@ -150,7 +153,7 @@ export default function DocumentStoreRoute() {
         title="The Vault" 
         subtitle="Secure local document store and scavenging engine."
         actions={
-          <Button size="icon" onClick={() => setIsAddModalOpen(true)} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+          <Button size="icon" aria-label="Upload vault document" onClick={() => setIsAddModalOpen(true)} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
             <Plus className="h-5 w-5" />
           </Button>
         }
@@ -222,7 +225,13 @@ export default function DocumentStoreRoute() {
                         <CardDescription className="text-[9px] uppercase font-black text-primary tracking-widest">{doc.category}</CardDescription>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(doc.id)} className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete document ${doc.label}`}
+                      onClick={() => void handleDelete(doc)}
+                      className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                    ><Trash2 className="h-4 w-4" /></Button>
                   </CardHeader>
                   <CardContent className="pt-4 space-y-4">
                     <div className="flex items-center justify-between text-[9px] font-bold text-muted-foreground uppercase opacity-50">
@@ -230,11 +239,24 @@ export default function DocumentStoreRoute() {
                       <span>{(doc.fileSize / 1024).toFixed(1)} KB</span>
                     </div>
                     <div className="flex gap-2">
-                      <Button onClick={() => window.open(URL.createObjectURL(doc.data), "_blank")} size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20">
+                      <Button
+                        aria-label={`View document ${doc.label}`}
+                        onClick={() => window.open(URL.createObjectURL(doc.data), "_blank")}
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20"
+                      >
                         <Eye className="h-3.5 w-3.5" /> View
                       </Button>
                       {featureFlags.ocrLocal && (
-                        <Button onClick={() => handleScavenge(doc.id)} disabled={extracting} size="sm" variant="outline" className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all">
+                        <Button
+                          aria-label={`Extract data from ${doc.label}`}
+                          onClick={() => handleScavenge(doc.id)}
+                          disabled={extracting}
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 gap-2 h-10 uppercase font-black italic text-[9px] tracking-widest border-primary/20 text-primary hover:bg-primary/10 transition-all"
+                        >
                           {extracting && extractionDocId === doc.id ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 animate-spin" /> Extracting

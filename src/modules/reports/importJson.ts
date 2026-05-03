@@ -1,4 +1,5 @@
 import { db } from "../../db/db";
+import { fullDatabaseRwScope } from "../../db/fullDatabaseScope";
 import { z } from "zod";
 import { householdSchema, personSchema } from "../household/household.schema";
 import { incomeSourceSchema } from "../income/income.schema";
@@ -160,73 +161,32 @@ export async function applyBackupPayload(parsed: BackupPayload): Promise<void> {
     data: base64ToBlob(d.dataBase64, d.fileType),
   }));
 
-  await db.transaction(
-    "rw",
-    [
-      db.households,
-      db.persons,
-      db.incomeSources,
-      db.bills,
-      db.debts,
-      db.savingsGoals,
-      db.creditSnapshots,
-      db.transactions,
-      db.debtTransactions,
-      db.taxRecords,
-      db.taxTransactions,
-      db.taxForms,
-      db.aiConfig,
-      db.chatMessages,
-      db.subscriptions,
-      db.insuranceRecords,
-      db.syncLogs,
-      db.documents,
-      db.payeeRules,
-    ],
-    async () => {
-      // Clear existing
-      await db.households.clear();
-      await db.persons.clear();
-      await db.incomeSources.clear();
-      await db.bills.clear();
-      await db.debts.clear();
-      await db.savingsGoals.clear();
-      await db.creditSnapshots.clear();
-      await db.transactions.clear();
-      await db.debtTransactions.clear();
-      await db.taxRecords.clear();
-      await db.taxTransactions.clear();
-      await db.taxForms.clear();
-      await db.aiConfig.clear();
-      await db.chatMessages.clear();
-      await db.subscriptions.clear();
-      await db.insuranceRecords.clear();
-      await db.syncLogs.clear();
-      await db.documents.clear();
-      await db.payeeRules.clear();
+  const scope = fullDatabaseRwScope();
 
-      // Insert backup (each non-baseline table optional for older-version compat)
-      await db.households.bulkAdd(parsed.households);
-      await db.persons.bulkAdd(parsed.persons);
-      await db.incomeSources.bulkAdd(parsed.incomeSources);
-      await db.bills.bulkAdd(parsed.bills);
-      await db.debts.bulkAdd(parsed.debts);
-      await db.savingsGoals.bulkAdd(parsed.savingsGoals);
-      await db.creditSnapshots.bulkAdd(parsed.creditSnapshots);
-      if (parsed.transactions) await db.transactions.bulkAdd(parsed.transactions);
-      if (parsed.debtTransactions) await db.debtTransactions.bulkAdd(parsed.debtTransactions);
-      if (parsed.taxRecords) await db.taxRecords.bulkAdd(parsed.taxRecords);
-      if (parsed.taxTransactions) await db.taxTransactions.bulkAdd(parsed.taxTransactions);
-      if (parsed.taxForms) await db.taxForms.bulkAdd(parsed.taxForms);
-      if (parsed.aiConfig) await db.aiConfig.bulkAdd(parsed.aiConfig);
-      if (parsed.chatMessages) await db.chatMessages.bulkAdd(parsed.chatMessages);
-      if (parsed.subscriptions) await db.subscriptions.bulkAdd(parsed.subscriptions);
-      if (parsed.insuranceRecords) await db.insuranceRecords.bulkAdd(parsed.insuranceRecords);
-      if (parsed.syncLogs) await db.syncLogs.bulkAdd(parsed.syncLogs);
-      if (decodedDocuments) await db.documents.bulkAdd(decodedDocuments);
-      if (parsed.payeeRules) await db.payeeRules.bulkAdd(parsed.payeeRules);
-    }
-  );
+  await db.transaction("rw", [...scope], async () => {
+    await Promise.all(scope.map((t) => t.clear()));
+
+    // Insert backup (each non-baseline table optional for older-version compat)
+    await db.households.bulkAdd(parsed.households);
+    await db.persons.bulkAdd(parsed.persons);
+    await db.incomeSources.bulkAdd(parsed.incomeSources);
+    await db.bills.bulkAdd(parsed.bills);
+    await db.debts.bulkAdd(parsed.debts);
+    await db.savingsGoals.bulkAdd(parsed.savingsGoals);
+    await db.creditSnapshots.bulkAdd(parsed.creditSnapshots);
+    if (parsed.transactions) await db.transactions.bulkAdd(parsed.transactions);
+    if (parsed.debtTransactions) await db.debtTransactions.bulkAdd(parsed.debtTransactions);
+    if (parsed.taxRecords) await db.taxRecords.bulkAdd(parsed.taxRecords);
+    if (parsed.taxTransactions) await db.taxTransactions.bulkAdd(parsed.taxTransactions);
+    if (parsed.taxForms) await db.taxForms.bulkAdd(parsed.taxForms);
+    if (parsed.aiConfig) await db.aiConfig.bulkAdd(parsed.aiConfig);
+    if (parsed.chatMessages) await db.chatMessages.bulkAdd(parsed.chatMessages);
+    if (parsed.subscriptions) await db.subscriptions.bulkAdd(parsed.subscriptions);
+    if (parsed.insuranceRecords) await db.insuranceRecords.bulkAdd(parsed.insuranceRecords);
+    if (parsed.syncLogs) await db.syncLogs.bulkAdd(parsed.syncLogs);
+    if (decodedDocuments) await db.documents.bulkAdd(decodedDocuments);
+    if (parsed.payeeRules) await db.payeeRules.bulkAdd(parsed.payeeRules);
+  });
 }
 
 /**

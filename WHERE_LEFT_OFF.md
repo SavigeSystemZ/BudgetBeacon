@@ -1,6 +1,92 @@
-# Where Left Off — night handoff **2026-05-02**
+# Where Left Off — **paused 2026-05-03**
 
-> **Status: M0–M8 closed; M9 partial (code-split). CouplesWealth read-only scavenger + MTD category rollups + assistant context refactor landed this evening (see sections below). Next session: pull `origin/main` after push; run `npm test` + `npm run typecheck` if rebasing.**
+> **Session stop:** Resume from **`git log -1`** on **`main`** (this pause batch is committed locally). **`npm run validate`** was green with **164** Vitest tests; **`npm run audit:controls`** OK (**`setTimeout=5`**, **`alert=0`**). Next session: **`git pull`** / **`git push`** using the operator account **per `GIT_REMOTE_AND_SYNC_PROTOCOL.md`** when sharing; otherwise continue **`docs/UNGATED_PRODUCT_BACKLOG.md`** Tier A (e.g. **`docs/M9_ANDROID_QA_CHECKLIST.md`** on hardware). **M10/M11** (sync / joint households) stay **gated** until explicit architecture sign-off.
+>
+> **Status:** M0–M8 closed; M9 partial (code-split). Earlier 2026-05-02 CouplesWealth scavenger + rollups noted in sections below.
+
+## 2026-05-03 continuation (debt trajectory downsample module)
+
+- **`trajectoryDownsample.ts`** — pure **`downsamplePayoffTrajectory`** extracted from **`StrategyComparison`**; **`trajectoryDownsample.test.ts`** (short-series copy, long-series last point, no duplicate when stride hits last month). Terminal merge compares **`month` / `totalBalance`**, not object identity.
+- **`npm run validate`** green; **164** tests; **`npm run audit:controls`** OK.
+
+## 2026-05-03 continuation (debt what-if + Android QA checklist)
+
+- **`StrategyComparison`:** extra-payment **presets** + **range slider** + a11y hints. **`docs/M9_ANDROID_QA_CHECKLIST.md`** for physical-device M9 remainder; backlog Tier A points here.
+- **`npm run validate`** green; **161** tests.
+
+## 2026-05-03 continuation (assistant counts + CI)
+
+- **`collectAssistantPromptFacts`** + **`AssistantContextFacts`:** tax forms / records, vault docs, payee rules as **counts** in prompt + no-model placeholder path. **`docs/ASSISTANT_CONTEXT_COVERAGE.md`**. **`.github/workflows/ci.yml`** → **`npm run validate`**.
+- **`npm run validate`** green; **161** tests.
+
+## 2026-05-03 continuation (backlog doc + reset API)
+
+- **`resetToBundledDemo()`** consolidates Settings demo path; **`resetToBundledDemo.test.ts`**. **`docs/UNGATED_PRODUCT_BACKLOG.md`** + links from **`PLAN.md`** / **`TODO.md`**. **`ROADMAP`** M9 wording; Bridge header a11y tweak.
+- **`npm run validate`** green; **159** tests; **`audit:controls`** OK.
+
+## 2026-05-03 continuation (wipe copy DRY)
+
+- **`src/lib/fullDatabaseWipeCopy.ts`** feeds Dashboard + Settings wipe modal strings; wiping closes modal immediately then runs **`clearDatabase()`**. **`158`** tests; **`npm run audit:controls`** OK.
+
+## 2026-05-03 continuation (wipe / demo Beacon modals)
+
+- **`DashboardRoute`:** Wipe All → **`BeaconModal`** → **`clearDatabase`** + reload. **`SettingsRoute`:** same for wipe + separate modal for demo reset (**`clearDatabase`** then **`seedDemoData`** + reload — fixes prior no-op when households already existed).
+- **`npm run validate`** green; **157** tests.
+
+## 2026-05-03 continuation (modal delete confirmations)
+
+- **`DeleteConfirmProvider`** wraps **`AppShell`** (`App.tsx`). Routes use **`useDeleteConfirm()`** instead of **`confirmEntityDelete` / `window.confirm`** for entity row deletes (**11** surfaces). **`BeaconModal`:** **`data-beacon-modal-backdrop`**, Escape → **`onClose`**. Chat FAB Escape skips when a modal backdrop exists.
+- **`npm run validate`** green; **157** tests.
+
+## 2026-05-03 continuation (chat clear + shell a11y)
+
+- **`BeaconChatbot`:** Clear history → **`BeaconModal`** (destructive footer); floating toggle **`aria-expanded`** + **`aria-controls`**; open panel **`role="region"`** + **`aria-label`**; **`streamingText`** in scroll **`useEffect`** deps; suggestion row **`type="button"`**.
+- **`App.tsx`:** Mobile menu open/close/full-menu **`aria-label`**; decorative icons **`aria-hidden`**.
+- **`mode-toggle`:** Dynamic **`aria-label`** (switch to light/dark); icons **`aria-hidden`** (drops duplicate **`sr-only`**).
+- **`npm run validate`** green; **157** tests.
+
+## 2026-05-03 continuation (a11y: icon buttons)
+
+- **Routes:** **`TaxTaxiRoute`** — Add tax year / Edit labels; **`SubscriptionsShelfRoute`** — Add subscription / Edit; **`InsuranceInspectRoute`** — Add policy / Edit; **`DocumentStoreRoute`** — header upload, View, Scavenge per doc.
+- **Shared:** **`BeaconChatbot`** Stop / Send; **`BeaconModal`** close; **`PayeeRulesPanel`** delete rule.
+- **`npm run validate`** green; **157** tests.
+
+## 2026-05-03 continuation (backup copy + Pay Path / Credit polish)
+
+- **`BACKUP_FORMAT_HELP_TEXT` / `BACKUP_FORMAT_VERSION_LABEL`** in `exportJson.ts` — Settings, Reports, Bridge show **v4** truthfully. Pay Path + Credit empty states; `exportJson.constants.test.ts`. **`npm run validate`** green, **157** tests.
+
+## 2026-05-03 continuation (DRY Dexie scope + delete UX)
+
+- **`src/db/fullDatabaseScope.ts`:** `fullDatabaseRwScope()` is the single list for backup `applyBackupPayload` clears and `clearDatabase()` — no parallel copy in `importJson`. `confirmEntityDelete()` + **aria-label** on trash buttons (Income, Pay Path, Debt Center, Stash, Credit, Ledger, Tax Taxi, Subscriptions, Insurance, Vault). Reports empty tabs → **`EmptyState`**.
+- **`npm run validate`** green; **155** tests.
+
+## 2026-05-03 continuation (validate + wipe)
+
+- **`clearDatabase()`** clears all IndexedDB stores (aligned with backup import wipe); Dashboard **Wipe All** delegates to it + **`window.location.reload()`** like Settings reset.
+- **`npm run validate`** runs lint, typecheck, Vitest, and production **`vite build`**.
+- **Evidence:** **`npm run validate`** green; **154** tests (`src/db/clearDatabase.test.ts`).
+- **M10/M11** still gated.
+
+## 2026-05-03 continuation (ESLint hygiene)
+
+- **Lint green:** `npm run lint` passes repo-wide after moving no-model fallback to `src/modules/ai/beaconPlaceholderReply.ts` (tests import that module); fixing `react-hooks/set-state-in-effect` / deps issues (derived onboarding in `App.tsx`, Vault review inner mount, Settings prefs initializer + scoped ESLint wrapper for AI Dexie hydrate, Tax form editor key + lazy seed); replacing `any` on several routes with `z.infer` / schema types; regex/BOM nits in import + OCR helpers; Debt Center persists `apr` + `DebtCategory` mapping consistently.
+- **Validation:** `npm run lint`, `npm run typecheck`, `npm run test` → **153** passed; `bootstrap/check-working-directory-alignment.sh` + `bootstrap/check-project-target-consistency.sh` OK (existing PROJECT_PROFILE app-name warn).
+- **Next:** Ungated UX polish; remote push still operator-side (SSH). M10/M11 unchanged — gates first.
+
+## 2026-05-03 continuation (Codex)
+
+- Added unit coverage for no-provider chatbot fallback branches (`BeaconChatbot.test.ts` now targets `beaconPlaceholderReply` in `src/modules/ai/`).
+- Added M7.2 polish:
+  - `src/modules/ai/conversationWindow.ts` (+ tests) to summarize older chat turns and keep recent turns verbatim when building model context in `BeaconChatbot`.
+  - `src/routes/SettingsRoute.tsx` Test Connection now uses `provider.chatStream(...)` so health checks validate the same streaming path used in chat.
+- Mission Control polish in `BudgetMissionControlRoute.tsx`: safe % bars, insurance line under burn rate, avalanche-aligned highest-APR debt spotlight, stale M8 payoff copy removed.
+- Dashboard polish in `DashboardRoute.tsx`: Global Pressure bar segments clamped when burn > 100% income; zero-income explanatory state instead of fake surplus. `BudgetHealthScoreCard.tsx`: safe progress toward target when target fraction is zero.
+- Validation run in this session:
+  - `npm run test` → **153 passed**
+  - `npm run typecheck` → **clean**
+  - `npm run lint` → **clean** (follow-up ESLint batch)
+- Git remote fetch/push remains blocked in this environment (`Permission denied (publickey)`), so changes are local-only until run from the operator shell.
+- Next best step: hold M10 until explicit sign-off gates are approved; continue ungated polish (dashboard/mission UX, Vault/OCR QA) — ESLint backlog for the listed hotspots is cleared.
 
 ## Session arc (2026-04-28)
 
@@ -27,7 +113,7 @@ Six commits landed today, all on `origin/main`:
 - Real tax form library — W-2, 1099-NEC, 1099-INT, 1099-MISC, 1099-DIV, 1099-R, 1099-G, 1098, 1040 summary.
 - Real debt payoff strategy comparison — avalanche vs snowball vs minimums with infeasibility detection.
 - Real payee rules — user-managed merchant normalization auto-applied during all imports.
-- 134 unit tests passing; typecheck clean; audit `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`.
+- 161 unit tests passing (see latest `npm run test`); typecheck clean; audit `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`.
 - Code-split bundle: main 346 KB / gzip 107 KB; each route 5–35 KB on demand.
 
 ### Still mocked / unbuilt

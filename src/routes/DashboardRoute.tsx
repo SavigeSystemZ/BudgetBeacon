@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
@@ -19,8 +19,17 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { IncomeExpenseBarChart } from "../components/charts/IncomeExpenseBarChart";
 import { MtdCategoryDonut } from "../components/charts/MtdCategoryDonut";
 import { BudgetHealthScoreCard } from "../components/dashboard/BudgetHealthScoreCard";
+import { BeaconModal } from "../components/ui/BeaconModal";
+import {
+  FULL_WIPE_EXPORT_HINT,
+  FULL_WIPE_MODAL_TITLE,
+  FULL_WIPE_SCOPE_DESCRIPTION,
+  CANNOT_UNDONE_SHORT,
+} from "../lib/fullDatabaseWipeCopy";
+import { clearDatabase } from "../db/seedDemoData";
 
 export default function DashboardRoute() {
+  const [wipeOpen, setWipeOpen] = useState(false);
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
   const bills = useLiveQuery(() => db.bills.toArray(), []);
   const debts = useLiveQuery(() => db.debts.toArray(), []);
@@ -50,28 +59,17 @@ export default function DashboardRoute() {
     });
   }, [transactions]);
 
-  const handleClearAll = async () => {
-    const ok = window.confirm(
-      "Wipe ALL household data across every module?\n\nThis cannot be undone. Export a backup first from Settings if you might want it back."
-    );
-    if (!ok) return;
-    await db.transaction(
-      "rw",
-      [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions, db.subscriptions, db.insuranceRecords],
-      async () => {
-        await db.incomeSources.clear();
-        await db.bills.clear();
-        await db.debts.clear();
-        await db.savingsGoals.clear();
-        await db.creditSnapshots.clear();
-        await db.transactions.clear();
-        await db.subscriptions.clear();
-        await db.insuranceRecords.clear();
-      }
-    );
+  const runWipeReload = async () => {
+    setWipeOpen(false);
+    await clearDatabase();
+    window.location.reload();
   };
 
   if (!summary) return <div className="flex h-screen items-center justify-center text-primary font-black uppercase italic animate-pulse">Synchronizing Cockpit...</div>;
+
+  const burnBarPct = Math.min(100, summary.payPathPressureRatio * 100);
+  const stashBarPct = Math.min(Math.max(0, 100 - burnBarPct), summary.savingsRate * 100);
+  const surplusPct = Math.max(0, 100 - summary.payPathPressureRatio * 100 - summary.savingsRate * 100);
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -79,11 +77,45 @@ export default function DashboardRoute() {
         title="Dashboard Cockpit"
         subtitle="Household telemetry and propulsion status."
         actions={
-          <Button variant="outline" size="sm" onClick={handleClearAll} className="text-destructive hover:bg-destructive/10 border-destructive/20 uppercase font-black italic text-[10px] px-4">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            aria-label="Open confirmation to wipe entire local database"
+            onClick={() => setWipeOpen(true)}
+            className="text-destructive hover:bg-destructive/10 border-destructive/20 uppercase font-black italic text-[10px] px-4"
+          >
             Wipe All
           </Button>
         }
       />
+
+      <BeaconModal
+        isOpen={wipeOpen}
+        onClose={() => setWipeOpen(false)}
+        title={FULL_WIPE_MODAL_TITLE}
+        maxWidth="max-w-lg"
+        footer={
+          <>
+            <Button type="button" variant="ghost" className="uppercase font-black italic text-xs tracking-widest" onClick={() => setWipeOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              className="uppercase font-black italic text-xs tracking-widest"
+              onClick={() => void runWipeReload()}
+            >
+              Wipe everything
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          {FULL_WIPE_SCOPE_DESCRIPTION} {FULL_WIPE_EXPORT_HINT}{" "}
+          <span className="text-destructive font-bold">{CANNOT_UNDONE_SHORT}</span>
+        </p>
+      </BeaconModal>
       
       <div className="flex flex-wrap gap-4 items-center">
         <AgenticTooltip content={`Your budget status is ${summary.budgetStatus}. Strategic margin of 20% is recommended.`}>
@@ -199,25 +231,37 @@ export default function DashboardRoute() {
               <div className="w-full h-8 bg-secondary/20 dark:bg-secondary/10 backdrop-blur-3xl rounded-2xl overflow-hidden flex relative border border-white/10 dark:border-white/5 shadow-inner">
                 {summary.totalMonthlyIncome > 0 && (
                   <>
-                    <div className="h-full bg-destructive transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(239,68,68,0.5)]" style={{ width: `${Math.min(100, summary.payPathPressureRatio * 100)}%` }} />
-                    <div className="h-full bg-blue-500 transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(59,130,246,0.5)]" style={{ width: `${Math.min(100 - (summary.payPathPressureRatio * 100), summary.savingsRate * 100)}%` }} />
+                    <div
+                      className="h-full bg-destructive transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(239,68,68,0.5)]"
+                      style={{ width: `${burnBarPct}%` }}
+                    />
+                    <div
+                      className="h-full bg-blue-500 transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(59,130,246,0.5)]"
+                      style={{ width: `${stashBarPct}%` }}
+                    />
                   </>
                 )}
               </div>
-              <div className="flex flex-wrap justify-between mt-6 gap-6">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-destructive" /> Burn Index</div>
-                  <div className="text-xl font-black italic tracking-tighter">{(summary.payPathPressureRatio * 100).toFixed(1)}%</div>
+              {summary.totalMonthlyIncome <= 0 ? (
+                <p className="mt-4 text-[11px] font-bold text-muted-foreground uppercase tracking-tight leading-relaxed">
+                  No planned monthly inflow — add active income sources to calibrate burn vs stash. Ratios stay at 0 until then.
+                </p>
+              ) : (
+                <div className="flex flex-wrap justify-between mt-6 gap-6">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-destructive" /> Burn Index</div>
+                    <div className="text-xl font-black italic tracking-tighter">{(summary.payPathPressureRatio * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Stash Rate</div>
+                    <div className="text-xl font-black italic tracking-tighter">{(summary.savingsRate * 100).toFixed(1)}%</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-secondary" /> Propulsion Surplus</div>
+                    <div className="text-xl font-black italic tracking-tighter">{surplusPct.toFixed(1)}%</div>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Stash Rate</div>
-                  <div className="text-xl font-black italic tracking-tighter">{(summary.savingsRate * 100).toFixed(1)}%</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-secondary" /> Propulsion Surplus</div>
-                  <div className="text-xl font-black italic tracking-tighter">{(Math.max(0, 100 - (summary.payPathPressureRatio * 100) - (summary.savingsRate * 100))).toFixed(1)}%</div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </GlassCard>
         </div>

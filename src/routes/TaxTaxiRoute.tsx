@@ -1,5 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
@@ -21,8 +22,10 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 export default function TaxTaxiRoute() {
+  const confirmDelete = useDeleteConfirm();
   const taxRecords = useLiveQuery(() => db.taxRecords.toArray(), []);
   const persons = useLiveQuery(() => db.persons.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
@@ -49,6 +52,7 @@ export default function TaxTaxiRoute() {
   type TaxRecordFormData = z.infer<typeof taxRecordSchema>;
 
   const form = useForm<TaxRecordFormData>({
+    resolver: zodResolver(taxRecordSchema),
     defaultValues: {
       year: new Date().getFullYear(),
       estimatedTaxLiability: 0,
@@ -139,7 +143,12 @@ export default function TaxTaxiRoute() {
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" /> Tax Trajectory
                 </CardTitle>
-                <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+                <Button
+                  size="icon"
+                  aria-label="Add tax year record"
+                  onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
+                  className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+                >
                   <Plus className="h-5 w-5" />
                 </Button>
               </CardHeader>
@@ -178,8 +187,20 @@ export default function TaxTaxiRoute() {
                             <CardDescription className="text-[10px] font-black uppercase text-primary opacity-70">{person?.name || "Household"}</CardDescription>
                           </div>
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(record)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
-                            <Button variant="ghost" size="icon" onClick={() => db.taxRecords.delete(record.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" aria-label={`Edit tax year ${record.year}`} onClick={() => handleEdit(record)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={`Delete tax record ${record.year}`}
+                              onClick={() => {
+                                void (async () => {
+                                  const name = `TY ${record.year}${person?.name ? ` · ${person.name}` : ""}`;
+                                  if (!(await confirmDelete("tax year record", name))) return;
+                                  await db.taxRecords.delete(record.id);
+                                })();
+                              }}
+                              className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                            ><Trash2 className="h-4 w-4" /></Button>
                           </div>
                         </div>
                       </CardHeader>
@@ -242,7 +263,19 @@ export default function TaxTaxiRoute() {
                     <button onClick={() => { setSelectedFormType(null); setEditingFormId(f.id); }} className="flex-1 text-left">
                       <div className="font-black tracking-tight">{f.type.toUpperCase()} · TY{f.year}</div>
                     </button>
-                    <Button variant="ghost" size="icon" onClick={() => db.taxForms.delete(f.id)} className="h-7 w-7 text-destructive">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete saved form ${f.type} ${f.year}`}
+                      onClick={() => {
+                        void (async () => {
+                          const name = `${f.type.toUpperCase()} TY${f.year}`;
+                          if (!(await confirmDelete("saved tax form", name))) return;
+                          await db.taxForms.delete(f.id);
+                        })();
+                      }}
+                      className="h-7 w-7 text-destructive"
+                    >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -254,6 +287,7 @@ export default function TaxTaxiRoute() {
           <div className="md:col-span-3">
             {activeFormDef ? (
               <TaxFormEditor
+                key={`${activeFormDef.code}-${editingFormId ?? "new"}-${editingForm?.year ?? formYear}`}
                 def={activeFormDef}
                 year={editingForm?.year ?? formYear}
                 personId={defaultPersonId}

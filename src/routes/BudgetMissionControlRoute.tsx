@@ -9,6 +9,20 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
+import type { Debt } from "../modules/pay-path/pay-path.schema";
+
+/** Safe 0–100 bar fill when monthly income may be unknown or zero */
+function pctOfIncome(part: number, income: number): number {
+  if (!(income > 0) || !(part >= 0)) return 0;
+  return Math.min(100, (part / income) * 100);
+}
+
+/** Matches Debt Center / payoff simulator: schema `apr` or legacy `interestRate`. */
+function effectiveAprPct(d: Debt): number {
+  const legacy = d as Debt & { interestRate?: number };
+  if (typeof d.apr === "number") return d.apr;
+  return legacy.interestRate ?? 0;
+}
 
 export default function BudgetMissionControlRoute() {
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
@@ -36,8 +50,11 @@ export default function BudgetMissionControlRoute() {
     ? Math.ceil((topGoal.targetAmount - topGoal.currentAmount) / topGoal.monthlyContribution)
     : null;
 
-  // Top debt: largest balance (Avalanche-style focus).
-  const topDebt = debts.slice().sort((a, b) => b.balance - a.balance)[0];
+  // Highest-APR debt with balance (avalanche focal); tie-break largest balance.
+  const topDebt = debts
+    .filter((d) => d.balance > 0)
+    .slice()
+    .sort((a, b) => effectiveAprPct(b) - effectiveAprPct(a) || b.balance - a.balance)[0];
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -67,9 +84,14 @@ export default function BudgetMissionControlRoute() {
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Operational Outflow (Burn Rate)</span>
                 <span className="text-xl font-black italic text-destructive">${summary.requiredOutflow.toLocaleString()}</span>
               </div>
-              <Progress 
-                value={(summary.requiredOutflow / summary.totalMonthlyIncome) * 100} 
-                className="h-4 bg-primary/5 shadow-inner rounded-full" 
+              {summary.totalMonthlyInsurance > 0 && (
+                <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Includes insurance premiums ~ ${summary.totalMonthlyInsurance.toLocaleString()}/mo in Pay Path totals.
+                </p>
+              )}
+              <Progress
+                value={pctOfIncome(summary.requiredOutflow, summary.totalMonthlyIncome)}
+                className="h-4 bg-primary/5 shadow-inner rounded-full"
               />
             </div>
             <div className="space-y-3">
@@ -77,9 +99,9 @@ export default function BudgetMissionControlRoute() {
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Strategic Allocation (Stash Rate)</span>
                 <span className="text-xl font-black italic text-blue-500">${summary.totalStashMapScheduled.toLocaleString()}</span>
               </div>
-              <Progress 
-                value={(summary.totalStashMapScheduled / summary.totalMonthlyIncome) * 100} 
-                className="h-4 bg-primary/5 shadow-inner rounded-full" 
+              <Progress
+                value={pctOfIncome(summary.totalStashMapScheduled, summary.totalMonthlyIncome)}
+                className="h-4 bg-primary/5 shadow-inner rounded-full"
               />
             </div>
           </CardContent>
@@ -135,7 +157,8 @@ export default function BudgetMissionControlRoute() {
           </h2>
           <div className="grid grid-cols-1 gap-4">
             {goals.map((goal) => {
-              const progress = (goal.currentAmount / goal.targetAmount) * 100;
+              const denom = Math.max(goal.targetAmount, Number.EPSILON);
+              const progress = goal.targetAmount > 0 ? Math.min(100, (goal.currentAmount / denom) * 100) : 0;
               return (
                 <GlassCard key={goal.id} className="border-primary/10 overflow-hidden group">
                   <div className="p-6">
@@ -144,9 +167,11 @@ export default function BudgetMissionControlRoute() {
                         <div className="font-black italic uppercase tracking-tight text-lg">{goal.label}</div>
                         <div className="text-[9px] font-black uppercase tracking-widest text-primary opacity-60">Target: ${goal.targetAmount.toLocaleString()}</div>
                       </div>
-                      <div className="text-2xl font-black italic tracking-tighter text-primary">{progress.toFixed(0)}%</div>
+                      <div className="text-2xl font-black italic tracking-tighter text-primary">
+                        {goal.targetAmount > 0 ? `${progress.toFixed(0)}%` : "—"}
+                      </div>
                     </div>
-                    <Progress value={progress} className="h-2.5 bg-primary/5 rounded-full" />
+                    <Progress value={progress} className="h-2.5 bg-primary/5 rounded-full" aria-valuenow={goal.targetAmount > 0 ? Math.round(progress) : 0} />
                     <div className="flex justify-between text-[8px] font-black uppercase text-muted-foreground tracking-widest mt-3">
                       <span>${goal.currentAmount.toLocaleString()} Stashed</span>
                       <span className="flex items-center gap-1"><Flag className="h-2 w-2" /> Mission: {goal.category}</span>
@@ -167,10 +192,11 @@ export default function BudgetMissionControlRoute() {
               <CardContent className="p-8 flex gap-6">
                 <Compass className="h-10 w-10 text-primary shrink-0 group-hover:scale-110 transition-transform duration-500" />
                 <div className="flex-1">
-                  <h3 className="font-black italic text-sm uppercase mb-2 tracking-tighter">Largest Liability</h3>
+                  <h3 className="font-black italic text-sm uppercase mb-2 tracking-tighter">Highest-APR Liability</h3>
                   {topDebt ? (
                     <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                      <strong className="text-foreground">{topDebt.label}</strong> — balance ${topDebt.balance.toLocaleString()}, minimum ${topDebt.minimumPayment.toLocaleString()}/mo. At minimum payments alone, focus extra cash here first (Avalanche). M8 will add a real payoff timeline.
+                      <strong className="text-foreground">{topDebt.label}</strong> — balance ${topDebt.balance.toLocaleString()}, minimum ${topDebt.minimumPayment.toLocaleString()}
+                      /mo{effectiveAprPct(topDebt) > 0 ? `, APR ${effectiveAprPct(topDebt).toFixed(2)}%` : ""}. Avalanche routing sends extra cash to the highest APR after minimums — open Debt Center for payoff timelines (avalanche vs snowball vs minimums).
                     </p>
                   ) : (
                     <p className="text-xs font-medium text-muted-foreground leading-relaxed">

@@ -143,7 +143,13 @@ export function PayeeRulesPanel({ householdId }: Props) {
                       {!r.payeeOverride && !r.category && <em>no overrides</em>}
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => db.payeeRules.delete(r.id)} className="h-8 w-8 text-destructive shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Delete payee rule ${r.pattern}`}
+                    onClick={() => db.payeeRules.delete(r.id)}
+                    className="h-8 w-8 text-destructive shrink-0"
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </li>

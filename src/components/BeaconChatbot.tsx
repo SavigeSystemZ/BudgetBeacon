@@ -8,15 +8,21 @@ import { Input } from "./ui/input";
 import { Bot, X, Send, Sparkles, ShieldAlert, Cloud, HardDrive, AlertCircle } from "lucide-react";
 import { cn } from "../lib/utils";
 import { GlassCard } from "./ui/GlassCard";
+import { BeaconModal } from "./ui/BeaconModal";
 import { DemoBadge } from "./ui/DemoBadge";
 import { resolveActiveProvider } from "../modules/ai/providerFactory";
 import { buildAssistantContext } from "../modules/ai/contextBuilder";
 import { AiProviderError, type ChatMessage as AiChatMessage, type ProposedAction } from "../modules/ai/types";
 import { parseAssistantReply, ACTION_GRAMMAR_PROMPT } from "../modules/ai/proposedActions";
 import { applyProposedAction, describeAction } from "../modules/ai/applyProposedAction";
+import { buildConversationWindow } from "../modules/ai/conversationWindow";
+import { beaconPlaceholderReply } from "../modules/ai/beaconPlaceholderReply";
 import { Check } from "lucide-react";
 
 const HISTORY_TURNS = 8;
+
+type ChatLogRow = { id: string; role: "user" | "assistant"; content: string; timestamp: string };
+const EMPTY_CHAT_LOG: ChatLogRow[] = [];
 
 export function BeaconChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +36,7 @@ export function BeaconChatbot() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState<string>("");
   const [pendingActions, setPendingActions] = useState<ProposedAction[]>([]);
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -38,8 +45,8 @@ export function BeaconChatbot() {
   const householdId = households?.[0]?.id;
   const defaultPersonId = persons?.[0]?.id || "";
 
-  const messagesRaw = useLiveQuery(() => db.chatMessages.orderBy("timestamp").toArray(), []) || [];
-  const messages = useMemo(() => messagesRaw, [messagesRaw]);
+  const messagesLive = useLiveQuery(() => db.chatMessages.orderBy("timestamp").toArray(), []);
+  const messages = useMemo(() => messagesLive ?? EMPTY_CHAT_LOG, [messagesLive]);
 
   // Live-refresh provider status as the user edits Settings.
   const aiConfigRow = useLiveQuery(() => db.aiConfig.get("primary"), []);
@@ -76,7 +83,21 @@ export function BeaconChatbot() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isOpen, isThinking]);
+  }, [messages, isOpen, isThinking, streamingText]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (document.querySelector("[data-beacon-modal-backdrop]")) return;
+      if (confirmClearOpen) {
+        setConfirmClearOpen(false);
+        return;
+      }
+      if (isOpen) setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, confirmClearOpen]);
 
   const handleSend = async () => {
     if (!input.trim() || isThinking) return;
@@ -99,13 +120,17 @@ export function BeaconChatbot() {
 
       let rawReply: string;
       if (!provider) {
-        rawReply = await placeholderReply(userText);
+        rawReply = await beaconPlaceholderReply(userText);
       } else {
         const context = await buildAssistantContext();
-        const recent = (await db.chatMessages.orderBy("timestamp").toArray()).slice(-HISTORY_TURNS * 2);
+        const allMessages = await db.chatMessages.orderBy("timestamp").toArray();
+        const recent = buildConversationWindow(
+          allMessages.map((m) => ({ role: m.role, content: m.content })),
+          { maxRecentMessages: HISTORY_TURNS * 2, maxSummaryChars: 900 },
+        );
         const ai: AiChatMessage[] = [
           { role: "system", content: `${context.systemPrompt}\n\n${ACTION_GRAMMAR_PROMPT}` },
-          ...recent.map((m) => ({ role: m.role, content: m.content })),
+          ...recent,
         ];
 
         abortRef.current?.abort();
@@ -171,10 +196,9 @@ export function BeaconChatbot() {
     setIsThinking(false);
   };
 
-  const clearChat = async () => {
-    if (window.confirm("Wipe conversation history?")) {
-      await db.chatMessages.clear();
-    }
+  const confirmClearChat = async () => {
+    await db.chatMessages.clear();
+    setConfirmClearOpen(false);
   };
 
   const showDemoBadge = providerStatus.kind === "missing";
@@ -182,25 +206,41 @@ export function BeaconChatbot() {
   return (
     <>
       <button
+        type="button"
+        aria-label={isOpen ? "Close Beacon assistant" : "Open Beacon assistant"}
+        aria-expanded={isOpen}
+        aria-controls="beacon-chat-panel"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "fixed bottom-24 md:bottom-8 right-6 z-[100] h-14 w-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95",
           isOpen ? "bg-destructive text-destructive-foreground rotate-90 shadow-destructive/40" : "bg-primary text-primary-foreground shadow-primary/40 border border-white/20"
         )}
       >
-        {isOpen ? <X className="h-6 w-6" /> : <Bot className="h-6 w-6" />}
+        {isOpen ? <X className="h-6 w-6" aria-hidden /> : <Bot className="h-6 w-6" aria-hidden />}
       </button>
 
       {isOpen && (
-        <GlassCard intensity="high" className="fixed bottom-40 md:bottom-24 right-6 z-[100] w-[350px] md:w-[400px] h-[550px] flex flex-col shadow-[0_30px_100px_rgba(0,0,0,0.5)] border-primary/20 bg-card/90 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-500">
+        <GlassCard
+          id="beacon-chat-panel"
+          role="region"
+          aria-label="Beacon assistant"
+          intensity="high"
+          className="fixed bottom-40 md:bottom-24 right-6 z-[100] w-[350px] md:w-[400px] h-[550px] flex flex-col shadow-[0_30px_100px_rgba(0,0,0,0.5)] border-primary/20 bg-card/90 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-500"
+        >
           <CardHeader className="bg-primary/10 border-b border-primary/10 p-5 space-y-2">
             <div className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <CardTitle className="text-sm font-black uppercase italic tracking-tighter text-primary">Beacon AI Agent</CardTitle>
               </div>
-              <Button variant="ghost" size="sm" onClick={clearChat} className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive rounded-full">
-                <ShieldAlert className="h-4 w-4" />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Clear conversation history"
+                onClick={() => setConfirmClearOpen(true)}
+                className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive rounded-full"
+              >
+                <ShieldAlert className="h-4 w-4" aria-hidden />
               </Button>
             </div>
             {showDemoBadge ? (
@@ -301,19 +341,20 @@ export function BeaconChatbot() {
                 className="bg-background/50 border-none shadow-inner h-12 rounded-2xl px-4 font-bold"
               />
               {isThinking ? (
-                <Button size="icon" onClick={handleStop} variant="destructive" className="shrink-0 h-12 w-12 rounded-2xl">
+                <Button size="icon" aria-label="Stop generating" onClick={handleStop} variant="destructive" className="shrink-0 h-12 w-12 rounded-2xl">
                   <X className="h-4 w-4" />
                 </Button>
               ) : (
-                <Button size="icon" onClick={handleSend} className="shrink-0 h-12 w-12 rounded-2xl shadow-xl shadow-primary/20">
+                <Button size="icon" aria-label="Send message" onClick={handleSend} className="shrink-0 h-12 w-12 rounded-2xl shadow-xl shadow-primary/20">
                   <Send className="h-4 w-4" />
                 </Button>
               )}
             </div>
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-              {["Analyze my budget", "Where can I cut spending?", "Stability check"].map(q => (
+              {["Analyze my budget", "Where can I cut spending?", "Stability check"].map((q) => (
                 <button
                   key={q}
+                  type="button"
                   onClick={() => setInput(q)}
                   className="whitespace-nowrap px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-black uppercase italic tracking-widest text-primary hover:bg-primary/20 transition-all"
                 >
@@ -324,62 +365,27 @@ export function BeaconChatbot() {
           </div>
         </GlassCard>
       )}
+
+      <BeaconModal
+        isOpen={confirmClearOpen}
+        onClose={() => setConfirmClearOpen(false)}
+        title="Clear chat history?"
+        maxWidth="max-w-md"
+        footer={
+          <>
+            <Button variant="ghost" className="uppercase font-black italic text-xs tracking-widest" onClick={() => setConfirmClearOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" className="uppercase font-black italic text-xs tracking-widest" onClick={() => void confirmClearChat()}>
+              Clear history
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+          This removes all assistant messages stored locally on this device. This cannot be undone.
+        </p>
+      </BeaconModal>
     </>
   );
-}
-
-/**
- * No-provider fallback. Honest about being a placeholder; pulls real numbers
- * so the user is not misled by fabricated values.
- */
-async function placeholderReply(userText: string): Promise<string> {
-  const ctx = await buildAssistantContext();
-  const f = ctx.facts;
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
-  const lower = userText.toLowerCase();
-  const lines: string[] = [
-    "(No model connected — replying from real db aggregates only.)",
-    `Monthly income ${fmt(f.monthlyIncome)} · bills ${fmt(f.monthlyBills)} · debt min ${fmt(f.monthlyDebtMin)} · subs ${fmt(f.monthlySubs)}.`,
-    `Leftover after required + savings: ${fmt(f.netMonthly)}. Stability index ${f.stabilityIndex}/100 (${f.stabilityLabel}).`,
-  ];
-
-  if (f.monthlyInsurance > 0) {
-    lines.push(`Insurance (rolled to monthly): ${fmt(f.monthlyInsurance)}.`);
-  }
-
-  if (f.mtdExpenseTotal > 0 && f.topExpenseCategories.length > 0) {
-    const head = f.topExpenseCategories
-      .slice(0, 3)
-      .map((c) => `${c.category} ${fmt(c.total)}`)
-      .join(" · ");
-    lines.push(
-      `MTD ledger spend (${f.monthPrefix}): ${fmt(f.mtdExpenseTotal)} — ${head}. Same rollups: Dashboard (donut) · Reports → Monthly · Mission Control.`,
-    );
-  } else {
-    lines.push(`MTD ledger (${f.monthPrefix}): no expense rows yet — log loops in Ledger to unlock category charts.`);
-  }
-
-  if (lower.includes("cut") || lower.includes("save") || lower.includes("reduce")) {
-    lines.push(
-      `For real recommendations, configure a model in Settings → AI Configuration. ` +
-        `In the meantime, the Mission Control and Reports screens already surface the highest-leverage cuts based on these numbers.`,
-    );
-  } else if (lower.includes("stability") || lower.includes("health")) {
-    lines.push(`See Mission Control's Stability Index card for the full breakdown.`);
-  } else if (
-    lower.includes("categor") ||
-    lower.includes("spend") ||
-    lower.includes("ledger") ||
-    lower.includes("expense")
-  ) {
-    lines.push(
-      `Open Dashboard for the MTD expense donut, Reports → Monthly for the printable rollup, or Mission Control for the compact list — all read the same ledger data.`,
-    );
-  } else {
-    lines.push(`Configure a model in Settings to get a real conversational answer to "${userText}".`);
-  }
-
-  return lines.join("\n");
 }

@@ -22,6 +22,8 @@ import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { StrategyComparison } from "../components/debt/StrategyComparison";
 import type { SimDebt } from "../modules/debt-strategy/payoffSimulator";
+import type { Debt, DebtCategory } from "../modules/pay-path/pay-path.schema";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const debtCenterSchema = z.object({
   label: z.string().min(1, "Label is required"),
@@ -35,7 +37,26 @@ const debtCenterSchema = z.object({
 
 type FormData = z.infer<typeof debtCenterSchema>;
 
+function formCategoryToDebtCategory(c: FormData["category"]): DebtCategory {
+  if (c === "credit-card") return "credit-card";
+  if (c === "medical") return "medical";
+  return "other";
+}
+
+function debtCategoryToFormCategory(c: DebtCategory): FormData["category"] {
+  if (c === "credit-card") return "credit-card";
+  if (c === "medical") return "medical";
+  if (c === "other") return "collection";
+  return "other";
+}
+
+function debtApr(d: Debt): number {
+  const row = d as Debt & { interestRate?: number };
+  return d.apr ?? row.interestRate ?? 0;
+}
+
 export default function DebtCenterRoute() {
+  const confirmDelete = useDeleteConfirm();
   const debts = useLiveQuery(() => db.debts.toArray(), []);
   const transactions = useLiveQuery(() => db.debtTransactions.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
@@ -51,31 +72,47 @@ export default function DebtCenterRoute() {
   const onSubmit = async (data: FormData) => {
     if (!householdId) return;
     const now = new Date().toISOString();
-    const mappedData = { ...data, category: (data.category === "collection" ? "other" : data.category) as any };
+    const payload = {
+      label: data.label,
+      balance: data.balance,
+      minimumPayment: data.minimumPayment,
+      apr: data.interestRate,
+      category: formCategoryToDebtCategory(data.category),
+      notes: data.notes,
+      updatedAt: now,
+    };
 
     if (editingId) {
-      await db.debts.update(editingId, { ...mappedData, updatedAt: now });
+      await db.debts.update(editingId, payload);
       await db.debtTransactions.add({ id: createId(), debtId: editingId, amount: data.balance, date: now, type: "update" });
       setEditingId(null);
     } else {
       const id = createId();
-      await db.debts.add({ ...mappedData, id, householdId, ownerPersonId: "default-person", priority: "high", dueDay: 1, createdAt: now, updatedAt: now });
+      await db.debts.add({
+        ...payload,
+        id,
+        householdId,
+        ownerPersonId: "default-person",
+        priority: "high",
+        dueDay: 1,
+        createdAt: now,
+      });
       await db.debtTransactions.add({ id: createId(), debtId: id, amount: data.balance, date: now, type: "snapshot" });
     }
     form.reset();
     setIsModalOpen(false);
   };
 
-  const handleEdit = (debt: any) => {
+  const handleEdit = (debt: Debt) => {
     setEditingId(debt.id);
     form.reset({
       label: debt.label,
       balance: debt.balance,
-      minimumPayment: debt.minimumPayment,
-      interestRate: debt.interestRate || 0,
-      category: (debt.category === "other" ? "collection" : debt.category) as any,
-      status: debt.status || "active",
-      notes: debt.notes || "",
+      minimumPayment: debt.minimumPayment ?? 0,
+      interestRate: debtApr(debt),
+      category: debtCategoryToFormCategory(debt.category),
+      status: "active",
+      notes: debt.notes ?? "",
     });
     setIsModalOpen(true);
   };
@@ -101,7 +138,7 @@ export default function DebtCenterRoute() {
     label: d.label,
     balance: d.balance ?? 0,
     minimumPayment: d.minimumPayment ?? 0,
-    interestRate: (d as unknown as { apr?: number; interestRate?: number }).apr ?? (d as unknown as { interestRate?: number }).interestRate ?? 0,
+    interestRate: debtApr(d),
   }));
 
   return (
@@ -110,7 +147,7 @@ export default function DebtCenterRoute() {
         title="Debt Center" 
         subtitle="Collections and high-pressure liability management."
         actions={
-          <Button onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="gap-2 px-6 bg-destructive text-destructive-foreground hover:bg-destructive/90 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-destructive/20 h-12">
+          <Button aria-label="Add liability" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="gap-2 px-6 bg-destructive text-destructive-foreground hover:bg-destructive/90 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-destructive/20 h-12">
             <Plus className="h-4 w-4" /> Add Liability
           </Button>
         }
@@ -155,8 +192,19 @@ export default function DebtCenterRoute() {
                       </CardDescription>
                     </div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(debt)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Edit2 className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => db.debts.delete(debt.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" aria-label={`Edit liability ${debt.label}`} onClick={() => handleEdit(debt)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Edit2 className="h-4 w-4" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete liability ${debt.label}`}
+                        onClick={() => {
+                          void (async () => {
+                            if (!(await confirmDelete("liability", debt.label))) return;
+                            await db.debts.delete(debt.id);
+                          })();
+                        }}
+                        className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                      ><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </CardHeader>
                   <CardContent className="pt-6">

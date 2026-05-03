@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { db } from "../../db/db";
 import { createId } from "../../lib/ids/createId";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
@@ -20,19 +20,18 @@ interface Props {
   onCancel: () => void;
 }
 
-export function TaxFormEditor({ def, year, personId, existingId, initialData, onSaved, onCancel }: Props) {
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [missing, setMissing] = useState<string[]>([]);
+function buildSeed(def: TaxFormDef, initialData?: Record<string, unknown>): Record<string, string> {
+  const seed: Record<string, string> = {};
+  for (const f of def.fields) {
+    const raw = initialData?.[f.key];
+    seed[f.key] = raw == null ? "" : String(raw);
+  }
+  return seed;
+}
 
-  useEffect(() => {
-    const seed: Record<string, string> = {};
-    for (const f of def.fields) {
-      const raw = initialData?.[f.key];
-      seed[f.key] = raw == null ? "" : String(raw);
-    }
-    setValues(seed);
-    setMissing([]);
-  }, [def, initialData]);
+export function TaxFormEditor({ def, year, personId, existingId, initialData, onSaved, onCancel }: Props) {
+  const [values, setValues] = useState(() => buildSeed(def, initialData));
+  const [missing, setMissing] = useState<string[]>([]);
 
   const setField = (key: string, val: string) => {
     setValues((prev) => ({ ...prev, [key]: val }));
@@ -99,8 +98,8 @@ export function TaxFormEditor({ def, year, personId, existingId, initialData, on
           ))}
         </div>
         <div className="pt-6 border-t border-primary/5 flex justify-end gap-3">
-          <Button variant="ghost" onClick={onCancel} className="h-12 px-8 uppercase font-black italic text-xs tracking-widest">Cancel</Button>
-          <Button onClick={handleSave} className="h-12 px-10 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-primary/20">
+          <Button type="button" variant="ghost" onClick={onCancel} className="h-12 px-8 uppercase font-black italic text-xs tracking-widest">Cancel</Button>
+          <Button type="button" onClick={handleSave} className="h-12 px-10 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-primary/20">
             {existingId ? "Update form" : "Save form"}
           </Button>
         </div>

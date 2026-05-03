@@ -1,20 +1,27 @@
 import * as React from "react"
 import { cn } from "../../lib/utils"
 
+type MergeableProps = {
+  className?: string;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
+  "data-state"?: string;
+};
+
 const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>
 
 const Tooltip = ({ children }: { children: React.ReactNode; delayDuration?: number }) => {
   const [open, setOpen] = React.useState(false)
   return React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, {
-        onMouseEnter: () => setOpen(true),
-        onMouseLeave: () => setOpen(false),
-        className: cn((child.props as any).className, "relative"),
-        "data-state": open ? "open" : "closed"
-      })
+    if (!React.isValidElement<MergeableProps>(child)) {
+      return child
     }
-    return child
+    return React.cloneElement(child, {
+      onMouseEnter: () => setOpen(true),
+      onMouseLeave: () => setOpen(false),
+      className: cn(child.props.className, "relative"),
+      "data-state": open ? "open" : "closed"
+    })
   })
 }
 

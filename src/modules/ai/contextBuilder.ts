@@ -32,6 +32,11 @@ export type AssistantContextFacts = {
   mtdExpenseRowCount: number;
   topExpenseCategories: { category: string; total: number }[];
   budgetStatus: "GREEN" | "YELLOW" | "RED";
+  /** Count aggregates for modules outside the budget summary engine — same Dexie-backed truth as Tax Taxi / Vault / import rules */
+  taxRecordCount: number;
+  taxFormCount: number;
+  vaultDocumentCount: number;
+  payeeRuleCount: number;
 };
 
 export interface AssistantContextSnapshot {
@@ -55,6 +60,10 @@ function toContextFacts(f: AssistantPromptFacts): AssistantContextFacts {
     mtdExpenseRowCount: f.mtdExpenseRowCount,
     topExpenseCategories: f.mtdExpenseTopCategories,
     budgetStatus: f.summary.budgetStatus,
+    taxRecordCount: f.counts.taxRecords,
+    taxFormCount: f.counts.taxForms,
+    vaultDocumentCount: f.counts.vaultDocuments,
+    payeeRuleCount: f.counts.payeeRules,
   };
 }
 
@@ -74,6 +83,10 @@ export async function collectAssistantPromptFacts(options?: {
     subscriptions,
     insuranceRecords,
     creditSnapshots,
+    taxRecordsCount,
+    taxFormsCount,
+    vaultDocumentsCount,
+    payeeRulesCount,
   ] = await Promise.all([
     db.incomeSources.toArray(),
     db.bills.toArray(),
@@ -83,6 +96,10 @@ export async function collectAssistantPromptFacts(options?: {
     db.subscriptions.toArray(),
     db.insuranceRecords.toArray(),
     db.creditSnapshots.toArray(),
+    db.taxRecords.count(),
+    db.taxForms.count(),
+    db.documents.count(),
+    db.payeeRules.count(),
   ]);
 
   return buildAssistantPromptFacts({
@@ -95,6 +112,12 @@ export async function collectAssistantPromptFacts(options?: {
     insuranceRecords,
     creditSnapshots,
     now: options?.now,
+    extendedCounts: {
+      taxRecords: taxRecordsCount,
+      taxForms: taxFormsCount,
+      vaultDocuments: vaultDocumentsCount,
+      payeeRules: payeeRulesCount,
+    },
   });
 }
 

@@ -17,11 +17,13 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { Progress } from "../components/ui/progress";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const formSchema = savingsGoalSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
 type FormData = z.infer<typeof formSchema>;
 
 export default function StashMapRoute() {
+  const confirmDelete = useDeleteConfirm();
   const goals = useLiveQuery(() => db.savingsGoals.toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
 
@@ -68,7 +70,12 @@ export default function StashMapRoute() {
         title="Stash Map" 
         subtitle="Plan and track strategic savings objectives."
         actions={
-          <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+          <Button
+            size="icon"
+            aria-label="Add savings goal"
+            onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
+            className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+          >
             <Plus className="h-5 w-5" />
           </Button>
         }
@@ -94,8 +101,19 @@ export default function StashMapRoute() {
                       <CardDescription className="text-[10px] uppercase font-black tracking-widest text-primary opacity-70">Target: ${goal.targetAmount.toLocaleString()}</CardDescription>
                     </div>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(goal)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => db.savingsGoals.delete(goal.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" aria-label={`Edit goal ${goal.label}`} onClick={() => handleEdit(goal)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete goal ${goal.label}`}
+                        onClick={() => {
+                          void (async () => {
+                            if (!(await confirmDelete("savings goal", goal.label))) return;
+                            await db.savingsGoals.delete(goal.id);
+                          })();
+                        }}
+                        className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                      ><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </div>
                 </CardHeader>

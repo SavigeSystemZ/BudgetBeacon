@@ -80,7 +80,8 @@ Fill this file in immediately after copying the operating system into a real rep
 
 - Format: npm run format (if added)
 - Lint: npm run lint
-- Typecheck: tsc --noEmit
+- Typecheck: npm run typecheck
+- Full gate (lint + types + tests + prod build): npm run validate
 - Unit tests: npm run test (vitest)
 - Integration tests: N/A
 - End-to-end or smoke: N/A

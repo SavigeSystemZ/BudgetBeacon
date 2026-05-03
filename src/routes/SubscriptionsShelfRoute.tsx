@@ -19,6 +19,7 @@ import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
+import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const subscriptionSchema = z.object({
   label: z.string().min(1, "Name is required"),
@@ -43,6 +44,7 @@ interface Subscription {
 }
 
 export default function SubscriptionsShelfRoute() {
+  const confirmDelete = useDeleteConfirm();
   const subscriptions = useLiveQuery(() => db.subscriptions.toArray(), []) as Subscription[] | undefined;
   const households = useLiveQuery(() => db.households.toArray(), []);
   const persons = useLiveQuery(() => db.persons.toArray(), []);
@@ -92,8 +94,9 @@ export default function SubscriptionsShelfRoute() {
     setIsAddModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Remove this subscription from your shelf?")) await db.subscriptions.delete(id);
+  const handleDelete = async (sub: Subscription) => {
+    if (!(await confirmDelete("subscription", sub.label))) return;
+    await db.subscriptions.delete(sub.id);
   };
 
   const generateTemplate = (type: "cancel" | "dispute", sub: Subscription) => {
@@ -117,7 +120,12 @@ export default function SubscriptionsShelfRoute() {
               <div className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Monthly Burn</div>
               <div className="text-xl font-black text-primary italic tracking-tighter">${totalMonthly.toFixed(2)}</div>
             </div>
-            <Button size="icon" onClick={() => { setEditingId(null); form.reset(); setIsAddModalOpen(true); }} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+            <Button
+              size="icon"
+              aria-label="Add subscription"
+              onClick={() => { setEditingId(null); form.reset(); setIsAddModalOpen(true); }}
+              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+            >
               <Plus className="h-5 w-5" />
             </Button>
           </div>
@@ -142,8 +150,14 @@ export default function SubscriptionsShelfRoute() {
                     <CardDescription className="uppercase text-[10px] font-black tracking-widest text-primary opacity-70">{sub.category}</CardDescription>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <Button variant="ghost" size="icon" onClick={() => handleEdit(sub)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(sub.id)} className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Edit subscription ${sub.label}`} onClick={() => handleEdit(sub)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-4 w-4" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete subscription ${sub.label}`}
+                      onClick={() => void handleDelete(sub)}
+                      className="h-8 w-8 rounded-full hover:bg-destructive/10 text-destructive"
+                    ><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </div>
               </CardHeader>

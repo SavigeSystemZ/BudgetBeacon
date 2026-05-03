@@ -26,7 +26,7 @@ describe("parseCsv", () => {
   });
 
   it("strips a UTF-8 BOM if present", () => {
-    const text = `﻿a,b\n1,2\n`;
+    const text = "\uFEFFa,b\n1,2\n";
     const out = parseCsv(text);
     expect(out.headers).toEqual(["a", "b"]);
     expect(out.rows[0]).toEqual({ a: "1", b: "2" });

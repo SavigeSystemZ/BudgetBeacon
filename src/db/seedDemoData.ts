@@ -1,5 +1,11 @@
 import { db } from "./db";
+import { clearFullDatabase } from "./fullDatabaseScope";
 
+/**
+ * Loads bundled demo fixtures when **no households** exist (e.g. fresh install).
+ * To replace existing data with demo, callers must **`clearDatabase()`** first —
+ * Settings “Reset to demo” does exactly that before calling this function.
+ */
 export async function seedDemoData() {
   const householdCount = await db.households.count();
   if (householdCount > 0) {
@@ -59,17 +65,18 @@ export async function ensureHousehold() {
   }
 }
 
+/**
+ * Wipes every local table (same coverage as backup restore reset). Callers should reload
+ * the app if they need onboarding or empty-shell UX to re-run.
+ */
 export async function clearDatabase() {
   console.log("Clearing database...");
-  await db.transaction("rw", [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions], async () => {
-    await db.households.clear();
-    await db.persons.clear();
-    await db.incomeSources.clear();
-    await db.bills.clear();
-    await db.debts.clear();
-    await db.savingsGoals.clear();
-    await db.creditSnapshots.clear();
-    await db.transactions.clear();
-  });
+  await clearFullDatabase();
   console.log("Database cleared.");
+}
+
+/** Full IndexedDB wipe + bundled VA demo JSON (Settings “Reset to demo”). Reload the app afterward if UI must re-mount. */
+export async function resetToBundledDemo(): Promise<void> {
+  await clearDatabase();
+  await seedDemoData();
 }
