@@ -1,5 +1,16 @@
 import { db } from "../../db/db";
 import { rowsToCsv, downloadTextFile, type CsvCell } from "../../lib/csv/csv";
+import type { Transaction } from "../ledger/ledger.schema";
+import type { Bill, Debt } from "../pay-path/pay-path.schema";
+import type { SavingsGoal } from "../stash-map/stash-map.schema";
+import type { CreditSnapshot } from "../credit/credit.schema";
+import { buildExpenseCategoryRollup } from "../ledger/transactionDisplay";
+
+/** Dexie rows may carry optional `personId` not present on the Zod schema. */
+function transactionCsvPersonId(row: Transaction): string {
+  const r = row as Transaction & { personId?: string };
+  return typeof r.personId === "string" ? r.personId : "";
+}
 
 const dateStamp = () => new Date().toISOString().split("T")[0];
 
@@ -10,7 +21,8 @@ export type CsvEntity =
   | "savingsGoals"
   | "subscriptions"
   | "insurance"
-  | "creditSnapshots";
+  | "creditSnapshots"
+  | "expenseCategoriesMtd";
 
 const NAME_TO_FILENAME: Record<CsvEntity, string> = {
   transactions: "transactions",
@@ -20,6 +32,7 @@ const NAME_TO_FILENAME: Record<CsvEntity, string> = {
   subscriptions: "subscriptions",
   insurance: "insurance",
   creditSnapshots: "credit-snapshots",
+  expenseCategoriesMtd: "expense-categories-mtd",
 };
 
 export async function buildCsvForEntity(entity: CsvEntity): Promise<{ filename: string; csv: string; rowCount: number }> {
@@ -28,25 +41,59 @@ export async function buildCsvForEntity(entity: CsvEntity): Promise<{ filename: 
     case "transactions": {
       const rows = await db.transactions.orderBy("date").toArray();
       const headers = ["date", "type", "payee", "amount", "category", "personId", "id"];
-      const data: CsvCell[][] = rows.map((t) => [t.date, t.type, t.payee, t.amount, t.category, (t as any).personId ?? "", t.id]);
+      const data: CsvCell[][] = rows.map((t) => [
+        t.date,
+        t.type,
+        t.payee,
+        t.amount,
+        t.category,
+        transactionCsvPersonId(t),
+        t.id,
+      ]);
       return { filename, csv: rowsToCsv(headers, data), rowCount: rows.length };
     }
     case "bills": {
       const rows = await db.bills.toArray();
       const headers = ["label", "amount", "frequency", "category", "dueDay", "autopay", "isEssential", "ownerPersonId", "id"];
-      const data: CsvCell[][] = rows.map((b) => [b.label, b.amount, b.frequency, b.category, (b as any).dueDay ?? "", (b as any).autopay ?? "", (b as any).isEssential ?? "", (b as any).ownerPersonId ?? "", b.id]);
+      const data: CsvCell[][] = rows.map((b: Bill) => [
+        b.label,
+        b.amount,
+        b.frequency,
+        b.category,
+        b.dueDay ?? "",
+        b.autopay,
+        b.isEssential,
+        b.ownerPersonId ?? "",
+        b.id,
+      ]);
       return { filename, csv: rowsToCsv(headers, data), rowCount: rows.length };
     }
     case "debts": {
       const rows = await db.debts.toArray();
       const headers = ["label", "balance", "minimumPayment", "category", "priority", "ownerPersonId", "id"];
-      const data: CsvCell[][] = rows.map((d) => [d.label, d.balance, d.minimumPayment, d.category, (d as any).priority ?? "", (d as any).ownerPersonId ?? "", d.id]);
+      const data: CsvCell[][] = rows.map((d: Debt) => [
+        d.label,
+        d.balance,
+        d.minimumPayment,
+        d.category,
+        d.priority,
+        d.ownerPersonId ?? "",
+        d.id,
+      ]);
       return { filename, csv: rowsToCsv(headers, data), rowCount: rows.length };
     }
     case "savingsGoals": {
       const rows = await db.savingsGoals.toArray();
       const headers = ["label", "targetAmount", "currentAmount", "monthlyContribution", "category", "priority", "id"];
-      const data: CsvCell[][] = rows.map((g) => [g.label, g.targetAmount, g.currentAmount, g.monthlyContribution, g.category, (g as any).priority ?? "", g.id]);
+      const data: CsvCell[][] = rows.map((g: SavingsGoal) => [
+        g.label,
+        g.targetAmount,
+        g.currentAmount,
+        g.monthlyContribution,
+        g.category,
+        g.priority,
+        g.id,
+      ]);
       return { filename, csv: rowsToCsv(headers, data), rowCount: rows.length };
     }
     case "subscriptions": {
@@ -64,8 +111,22 @@ export async function buildCsvForEntity(entity: CsvEntity): Promise<{ filename: 
     case "creditSnapshots": {
       const rows = await db.creditSnapshots.toArray();
       const headers = ["snapshotDate", "score", "bureauOrSource", "personId", "id"];
-      const data: CsvCell[][] = rows.map((s) => [s.snapshotDate, s.score, (s as any).bureauOrSource ?? "", s.personId, s.id]);
+      const data: CsvCell[][] = rows.map((s: CreditSnapshot) => [
+        s.snapshotDate,
+        s.score,
+        s.bureauOrSource,
+        s.personId ?? "",
+        s.id,
+      ]);
       return { filename, csv: rowsToCsv(headers, data), rowCount: rows.length };
+    }
+    case "expenseCategoriesMtd": {
+      const rows = await db.transactions.toArray();
+      const month = new Date().toISOString().slice(0, 7);
+      const { rows: catRows, monthTotal } = buildExpenseCategoryRollup(rows, month, 50);
+      const headers = ["month", "category", "total_spend", "transaction_count", "month_expense_total"];
+      const data: CsvCell[][] = catRows.map((r) => [month, r.category, r.total, r.count, monthTotal]);
+      return { filename, csv: rowsToCsv(headers, data), rowCount: catRows.length };
     }
   }
 }

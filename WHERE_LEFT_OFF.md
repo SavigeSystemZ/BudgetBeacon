@@ -1,6 +1,6 @@
-# Where Left Off — 2026-04-28 (end-of-day handoff)
+# Where Left Off — night handoff **2026-05-02**
 
-> **Status: M0–M8 closed. M9 partially closed (code-split + Bridge stub; device QA needs hardware). M5/M8 carry-overs all done. M10/M11 blocked on three architecture sign-off gates. Working tree clean; `origin/main` at `dca6e70`.**
+> **Status: M0–M8 closed; M9 partial (code-split). CouplesWealth read-only scavenger + MTD category rollups + assistant context refactor landed this evening (see sections below). Next session: pull `origin/main` after push; run `npm test` + `npm run typecheck` if rebasing.**
 
 ## Session arc (2026-04-28)
 
@@ -52,13 +52,14 @@ Start M10.1 — auth scaffolding only, no UI changes yet:
 - **Accessibility audit** — color contrast, focus order, aria-labels on icon-only buttons, keyboard nav.
 - **Insurance / subscriptions polish** — both routes are real CRUD but could surface upcoming-renewal alerts (uses existing `subscriptions.nextRenewal` and `insuranceRecords.expirationDate`).
 
-## Build / sync state
-- `npm test` — **134 passed** (verified 2026-04-28 end of day)
+## Build / sync state (2026-05-02 night)
+- `npm test` — **148 passed** (last run this session)
 - `npm run typecheck` — clean
-- `npm run audit:controls` — baseline `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`
-- `npm run build` — main 346 KB / gzip 107 KB; route chunks 5–35 KB
+- `npm run build` — clean (PWA may refresh `dev-dist/sw.js` / `dist/sw.js`)
+- `npm run lint` — **not** repo-wide clean; legacy issues remain outside touched paths (see prior notes)
+- `npm run audit:controls` — not re-run this session; do not regress baseline without updating `tools/audit-controls.baseline.json`
 - `npx cap sync` — re-verify before any real-device test
-- `git status` — clean; `origin/main = HEAD = dca6e70`
+- **Git:** one local commit on `main` — subject **`feat: MTD expense rollups, assistant facts split, scavenger handoff`** (verify with `git log -1 --oneline`). **`git push origin main` failed** in this environment (`Permission denied (publickey)`). Operator: from your normal shell (with GitHub SSH), run `git pull` (if needed) then **`git push origin main`**.
 
 ## Hard rules for the next agent
 1. **Do not start M10 code without user sign-off** on transport (A/B/C — recommended B), passphrase + recovery-code model, and relay deployment green-light.
@@ -67,6 +68,21 @@ Start M10.1 — auth scaffolding only, no UI changes yet:
 4. **Read-only assistant remains default for non-action chat.** When the model emits a `beacon-action` block, never auto-apply — always surface as a confirm chip.
 5. **Don't undo the code-split** without checking the bundle-size impact.
 6. **Backup format v4** — adding new tables means bumping the version, adding to `exportJson.ts`, schema in `importJson.ts`, clear+bulkAdd in the transaction, and counts in `backupRowCounts` + `currentDbRowCounts`. Test the round-trip.
+
+## 2026-05-02 — CouplesWealth scavenger (read-only donor)
+
+- **Donor:** `~/.MyAppZ/CouplesWealth` (no writes). **Policy:** `_system/context/scavenge-donor-couples-wealth.md`.
+- **Runtime:** `transactionDisplay.ts` (`formatLedgerAmountDisplay`, `rollupCategoryTotals`, `buildMonthlyIncomeExpenseSeries`, `buildExpenseCategoryRollup`), `IncomeExpenseBarChart`, `BudgetHealthScoreCard`, `ExpenseCategoryRollup`; wired **Dashboard**, **Ledger**, **Reports → Monthly**, **Mission Control**.
+- **Validation (this session):** `npm run test` — **142 passed**; `npm run typecheck` — clean; `eslint` on touched paths — clean. Full-repo `npm run lint` still has pre-existing errors outside these files.
+- **Continuation (b):** Ledger **Top spend** sidebar (3 categories, same `YYYY-MM` as rollups); Reports CSV **`expenseCategoriesMtd`**; `buildAssistantContext` loads **`insuranceRecords`** into `calculateBudgetSummary`, adds **MTD expense total** + **top 5 categories** to the system prompt.
+- **Continuation (c):** Dashboard **`MtdCategoryDonut`**; tests `exportCsv.test.ts` + `contextBuilder.test.ts`; **`exportCsv`** typed rows; **`LedgerRoute`** typed form + edit handler; **`AllocationDonut`** tooltip typed. **144** tests; typecheck + build clean.
+- **Continuation (d):** **`assistantContextFacts.ts`** (pure facts + prompt string); **`collectAssistantPromptFacts`** export; extended **`AssistantContextFacts`** for UI/placeholder reuse; **`TEST_STRATEGY.md`** Vitest+IDB note. **148** tests.
+- **Continuation (e):** **`BeaconChatbot`** no-provider **`placeholderReply`** — insurance + MTD top categories + screen routing hints. **148** tests.
+
+## Next session (quick picks)
+- Optional: **`BeaconChatbot`** RTL or pure **`placeholderReply`** line-builder test (currently untested string path).
+- Optional: **`npm run lint`** cleanup on legacy files when a dedicated hygiene slice is scheduled.
+- Unchanged blockers: **M10/M11** sign-off gates; **physical Android** M9 QA.
 
 ## Reference
 - `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` — M10/M11 architecture + the three sign-off gates

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
-import { transactionSchema } from "../modules/ledger/ledger.schema";
+import { transactionSchema, type Transaction } from "../modules/ledger/ledger.schema";
+import type { z } from "zod";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -14,6 +15,7 @@ import {
   History, ArrowDownCircle, ArrowUpCircle, Database
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { formatLedgerAmountDisplay, rollupCategoryTotals } from "../modules/ledger/transactionDisplay";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -23,6 +25,7 @@ import { featureFlags } from "../lib/flags/featureFlags";
 import { LedgerImportFlow } from "../components/import/LedgerImportFlow";
 
 const formSchema = transactionSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
+type LedgerFormValues = z.infer<typeof formSchema>;
 
 export default function LedgerRoute() {
   const transactions = useLiveQuery(() => db.transactions.orderBy("date").reverse().toArray(), []);
@@ -37,7 +40,7 @@ export default function LedgerRoute() {
     defaultValues: { payee: "", amount: 0, date: new Date().toISOString().split("T")[0], category: "food", type: "expense" as const },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LedgerFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
     if (editingId) {
@@ -50,11 +53,21 @@ export default function LedgerRoute() {
     setIsModalOpen(false);
   };
 
-  const handleEdit = (t: any) => {
+  const handleEdit = (t: Transaction) => {
     setEditingId(t.id);
     form.reset({ payee: t.payee, amount: t.amount, date: t.date, category: t.category, type: t.type });
     setIsModalOpen(true);
   };
+
+  const monthPrefix = new Date().toISOString().slice(0, 7);
+  const topSpendCategories = useMemo(() => {
+    if (!transactions) return [];
+    const rollup = rollupCategoryTotals(transactions, { type: "expense", monthPrefix });
+    return Object.entries(rollup)
+      .map(([category, v]) => ({ category, total: v.total, count: v.count }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 3);
+  }, [transactions, monthPrefix]);
 
   if (!transactions) return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic">Opening Ledger...</div>;
 
@@ -93,7 +106,9 @@ export default function LedgerRoute() {
             />
           ) : (
             <div className="space-y-2">
-               {transactions.map((t) => (
+               {transactions.map((t) => {
+                const shown = formatLedgerAmountDisplay(t.amount, t.type);
+                return (
                 <GlassCard hoverable key={t.id} className="group border-primary/5 bg-primary/5">
                   <CardContent className="p-4 flex justify-between items-center">
                     <div className="flex items-center gap-4">
@@ -109,7 +124,8 @@ export default function LedgerRoute() {
                     </div>
                     <div className="flex items-center gap-6">
                       <div className={cn("text-xl font-black italic tracking-tighter", t.type === "expense" ? "text-foreground" : "text-green-500")}>
-                        {t.type === "expense" ? "-" : "+"}${t.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        {shown.sign}
+                        {shown.currencyBody}
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(t)} className="h-8 w-8 rounded-full hover:bg-primary/10 text-primary"><Edit2 className="h-3.5 w-3.5" /></Button>
@@ -118,7 +134,8 @@ export default function LedgerRoute() {
                     </div>
                   </CardContent>
                 </GlassCard>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -150,6 +167,31 @@ export default function LedgerRoute() {
               </CardContent>
             </GlassCard>
           )}
+
+          <GlassCard className="border-primary/15 bg-card/40">
+            <CardHeader className="pb-2 flex flex-row items-center gap-2">
+              <ArrowDownCircle className="h-4 w-4 text-destructive" />
+              <CardTitle className="text-[10px] font-black uppercase tracking-widest">Top spend ({monthPrefix})</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-[10px]">
+              {topSpendCategories.length === 0 ? (
+                <p className="text-muted-foreground leading-relaxed">
+                  No expense loops this calendar month yet. Categories here match Reports and Mission Control rollups.
+                </p>
+              ) : (
+                <ul className="space-y-2.5">
+                  {topSpendCategories.map((row, i) => (
+                    <li key={row.category} className="flex justify-between gap-2 border-b border-primary/5 pb-2 last:border-0 last:pb-0">
+                      <span className="min-w-0 truncate font-bold uppercase tracking-tight text-foreground">
+                        {i + 1}. {row.category}
+                      </span>
+                      <span className="shrink-0 font-black text-destructive">${row.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </GlassCard>
 
           <GlassCard className="bg-primary/5 border-primary/20">
             <CardHeader className="pb-3 flex flex-row items-center gap-2">

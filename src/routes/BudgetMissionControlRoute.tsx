@@ -8,6 +8,7 @@ import { Target, Rocket, Zap, Shield, TrendingUp, Compass, Flag } from "lucide-r
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { EmptyState } from "../components/ui/EmptyState";
+import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
 
 export default function BudgetMissionControlRoute() {
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
@@ -122,6 +123,10 @@ export default function BudgetMissionControlRoute() {
           </CardContent>
         </GlassCard>
       </div>
+
+      <GlassCard intensity="high" className="border-primary/20 p-6 md:p-8">
+        <ExpenseCategoryRollup transactions={transactions} density="compact" maxCategories={10} />
+      </GlassCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="space-y-6">

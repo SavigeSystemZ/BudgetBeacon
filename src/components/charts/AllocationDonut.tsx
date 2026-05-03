@@ -45,11 +45,15 @@ export function AllocationDonut({ summary }: AllocationDonutProps) {
               />
             ))}
           </Pie>
-          <Tooltip 
-            formatter={(value: any, name: any) => {
-              const numValue = Number(value);
+          <Tooltip
+            formatter={(value, name) => {
+              const numValue = typeof value === "number" ? value : Number(value);
               const percentage = ((numValue / summary.totalMonthlyIncome) * 100).toFixed(1);
-              return [`$${numValue.toLocaleString(undefined, {minimumFractionDigits: 2})} (${percentage}%)`, String(name)];
+              const label = typeof name === "string" ? name : "";
+              return [
+                `$${numValue.toLocaleString(undefined, { minimumFractionDigits: 2 })} (${percentage}%)`,
+                label,
+              ];
             }}
             contentStyle={{ 
               borderRadius: "16px", 

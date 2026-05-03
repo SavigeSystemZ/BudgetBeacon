@@ -129,6 +129,7 @@ This file is the map of the local agent operating system.
 - `context/INTEGRATION_SURFACES.md`
 - `context/OPEN_QUESTIONS.md`
 - `context/QUALITY_DEBT.md`
+- `context/scavenge-donor-couples-wealth.md` — read-only scavenging trace from sibling `CouplesWealth` (no donor writes)
 
 ## Optional longform trees
 

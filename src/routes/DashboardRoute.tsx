@@ -13,9 +13,12 @@ import {
 } from "recharts";
 import { format, subDays, eachDayOfInterval, isSameDay, parseISO } from "date-fns";
 import { AgenticTooltip } from "../components/AgenticTooltip";
-import { Sparkles, TrendingUp, Lightbulb, Zap, Rocket, Shield } from "lucide-react";
+import { Sparkles, TrendingUp, Lightbulb, Zap, Rocket, Shield, Wallet, Flame, MapPinned, PieChart } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
+import { IncomeExpenseBarChart } from "../components/charts/IncomeExpenseBarChart";
+import { MtdCategoryDonut } from "../components/charts/MtdCategoryDonut";
+import { BudgetHealthScoreCard } from "../components/dashboard/BudgetHealthScoreCard";
 
 export default function DashboardRoute() {
   const incomes = useLiveQuery(() => db.incomeSources.toArray(), []);
@@ -109,9 +112,27 @@ export default function DashboardRoute() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard title="Monthly Inflow" value={summary.totalMonthlyIncome} description="Unified capital stream" className="hoverable" />
-        <MetricCard title="Burn Rate" value={summary.requiredOutflow} description="Bills, Debts, & Subscriptions" className="hoverable" />
-        <MetricCard title="Strategic Plan" value={summary.totalStashMapScheduled} description="Committed to Stash Map" className="hoverable" />
+        <MetricCard
+          title="Monthly Inflow"
+          value={summary.totalMonthlyIncome}
+          description="Unified capital stream"
+          className="hoverable"
+          icon={<Wallet className="h-4 w-4" />}
+        />
+        <MetricCard
+          title="Burn Rate"
+          value={summary.requiredOutflow}
+          description="Bills, Debts, & Subscriptions"
+          className="hoverable"
+          icon={<Flame className="h-4 w-4" />}
+        />
+        <MetricCard
+          title="Strategic Plan"
+          value={summary.totalStashMapScheduled}
+          description="Committed to Stash Map"
+          className="hoverable"
+          icon={<MapPinned className="h-4 w-4" />}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -152,6 +173,19 @@ export default function DashboardRoute() {
                 </ResponsiveContainer>
               </CardContent>
             </GlassCard>
+
+            <IncomeExpenseBarChart transactions={transactions ?? []} months={6} className="md:col-span-2" />
+
+            <GlassCard intensity="high" className="md:col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                  <PieChart className="h-4 w-4" /> MTD expense mix (ledger)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MtdCategoryDonut transactions={transactions ?? []} />
+              </CardContent>
+            </GlassCard>
           </div>
 
           <GlassCard className="bg-primary/5 border-primary/20">
@@ -189,6 +223,7 @@ export default function DashboardRoute() {
         </div>
 
         <div className="space-y-6">
+          <BudgetHealthScoreCard savingsRateFraction={summary.savingsRate} />
           <GlassCard intensity="high" className="border-primary/20 bg-primary/5 shadow-2xl relative overflow-hidden h-full">
             <div className="absolute -top-10 -right-10 opacity-10 rotate-12"><Lightbulb className="h-40 w-40 text-primary" /></div>
             <CardHeader>

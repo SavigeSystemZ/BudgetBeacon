@@ -1,6 +1,12 @@
 import { db } from "../../db/db";
-import { calculateBudgetSummary } from "../budget-engine/calculateBudgetSummary";
-import { calculateStabilityIndex, stabilityBand } from "../budget-engine/stabilityIndex";
+import {
+  buildAssistantPromptFacts,
+  formatAssistantSystemPrompt,
+  type AssistantPromptFacts,
+} from "./assistantContextFacts";
+
+export type { AssistantPromptFacts } from "./assistantContextFacts";
+export { buildAssistantPromptFacts, formatAssistantSystemPrompt } from "./assistantContextFacts";
 
 /**
  * Build a compact, factual system prompt grounding the assistant in real db
@@ -11,21 +17,54 @@ import { calculateStabilityIndex, stabilityBand } from "../budget-engine/stabili
  * or perform db writes; that lands in M7.2 with an explicit confirmation UI.
  */
 
+export type AssistantContextFacts = {
+  monthlyIncome: number;
+  monthlyBills: number;
+  monthlyDebtMin: number;
+  monthlySubs: number;
+  monthlyInsurance: number;
+  netMonthly: number;
+  activeGoals: number;
+  stabilityIndex: number;
+  stabilityLabel: string;
+  monthPrefix: string;
+  mtdExpenseTotal: number;
+  mtdExpenseRowCount: number;
+  topExpenseCategories: { category: string; total: number }[];
+  budgetStatus: "GREEN" | "YELLOW" | "RED";
+};
+
 export interface AssistantContextSnapshot {
   systemPrompt: string;
-  facts: {
-    monthlyIncome: number;
-    monthlyBills: number;
-    monthlyDebtMin: number;
-    monthlySubs: number;
-    netMonthly: number;
-    activeGoals: number;
-    stabilityIndex: number;
-    stabilityLabel: string;
+  facts: AssistantContextFacts;
+}
+
+function toContextFacts(f: AssistantPromptFacts): AssistantContextFacts {
+  return {
+    monthlyIncome: f.summary.totalMonthlyIncome,
+    monthlyBills: f.summary.totalMonthlyBills,
+    monthlyDebtMin: f.summary.totalDebtMinimums,
+    monthlySubs: f.summary.totalMonthlySubscriptions,
+    monthlyInsurance: f.summary.totalMonthlyInsurance,
+    netMonthly: f.summary.leftoverAfterSavings,
+    activeGoals: f.counts.savingsGoals,
+    stabilityIndex: f.stabilityIndex,
+    stabilityLabel: f.stabilityLabel,
+    monthPrefix: f.monthPrefix,
+    mtdExpenseTotal: f.mtdExpenseTotal,
+    mtdExpenseRowCount: f.mtdExpenseRowCount,
+    topExpenseCategories: f.mtdExpenseTopCategories,
+    budgetStatus: f.summary.budgetStatus,
   };
 }
 
-export async function buildAssistantContext(): Promise<AssistantContextSnapshot> {
+/**
+ * Loads Dexie tables and returns structured facts (no string formatting).
+ * Useful for tests and any UI that wants the same numbers as the assistant.
+ */
+export async function collectAssistantPromptFacts(options?: {
+  now?: Date;
+}): Promise<AssistantPromptFacts> {
   const [
     incomeSources,
     bills,
@@ -33,6 +72,7 @@ export async function buildAssistantContext(): Promise<AssistantContextSnapshot>
     savingsGoals,
     transactions,
     subscriptions,
+    insuranceRecords,
     creditSnapshots,
   ] = await Promise.all([
     db.incomeSources.toArray(),
@@ -41,61 +81,27 @@ export async function buildAssistantContext(): Promise<AssistantContextSnapshot>
     db.savingsGoals.toArray(),
     db.transactions.toArray(),
     db.subscriptions.toArray(),
+    db.insuranceRecords.toArray(),
     db.creditSnapshots.toArray(),
   ]);
 
-  const summary = calculateBudgetSummary(
+  return buildAssistantPromptFacts({
     incomeSources,
     bills,
     debts,
     savingsGoals,
     transactions,
     subscriptions,
-    [],
-  );
+    insuranceRecords,
+    creditSnapshots,
+    now: options?.now,
+  });
+}
 
-  const stability = calculateStabilityIndex(summary);
-  const label = stabilityBand(stability);
-
-  const latestCredit = [...creditSnapshots].sort((a, b) =>
-    (b.snapshotDate || "").localeCompare(a.snapshotDate || ""),
-  )[0];
-
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
-  const lines: string[] = [
-    "You are Beacon Agent, a household budgeting assistant.",
-    "Be concise. Cite numbers from the snapshot below; do not invent values.",
-    "If the user asks for an action that would change their data, tell them which screen to use — never claim you wrote anything yourself.",
-    "",
-    "Household snapshot (real, current):",
-    `- Monthly income: ${fmt(summary.totalMonthlyIncome)} across ${incomeSources.length} source(s)`,
-    `- Monthly bills:  ${fmt(summary.totalMonthlyBills)} across ${bills.length} bill(s)`,
-    `- Monthly debt minimums: ${fmt(summary.totalDebtMinimums)} across ${debts.length} debt(s)`,
-    `- Monthly subscriptions: ${fmt(summary.totalMonthlySubscriptions)} across ${subscriptions.length} sub(s)`,
-    `- Required outflow / income: ${(summary.payPathPressureRatio * 100).toFixed(0)}%`,
-    `- Leftover after required + savings: ${fmt(summary.leftoverAfterSavings)}`,
-    `- Active savings goals: ${savingsGoals.length} (scheduled ${fmt(summary.totalStashMapScheduled)}/mo)`,
-    `- Budget status: ${summary.budgetStatus}`,
-    `- Stability index (0-100): ${stability} (${label})`,
-  ];
-
-  if (latestCredit) {
-    lines.push(`- Latest credit snapshot: score ${latestCredit.score ?? "?"} on ${latestCredit.snapshotDate}`);
-  }
-
+export async function buildAssistantContext(options?: { now?: Date }): Promise<AssistantContextSnapshot> {
+  const promptFacts = await collectAssistantPromptFacts(options);
   return {
-    systemPrompt: lines.join("\n"),
-    facts: {
-      monthlyIncome: summary.totalMonthlyIncome,
-      monthlyBills: summary.totalMonthlyBills,
-      monthlyDebtMin: summary.totalDebtMinimums,
-      monthlySubs: summary.totalMonthlySubscriptions,
-      netMonthly: summary.leftoverAfterSavings,
-      activeGoals: savingsGoals.length,
-      stabilityIndex: stability,
-      stabilityLabel: label,
-    },
+    systemPrompt: formatAssistantSystemPrompt(promptFacts),
+    facts: toContextFacts(promptFacts),
   };
 }

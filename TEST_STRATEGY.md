@@ -29,6 +29,11 @@ Use this file to define the repo's confidence model, validation lanes, and known
 - Master template does not run product tests; downstream repos must fill this section with product-specific coverage gaps.
 - Confirm the seeded validation lanes against the first real repo-local run and record any missing coverage explicitly.
 
+### Budget Beacon — environment hazards (Vitest + Dexie)
+
+- **`fake-indexeddb`** (see `vitest.setup.ts`) backs real Dexie `db.*` calls in unit tests. **`vi.useFakeTimers()` in the same test path** (especially in `beforeEach` / `afterEach` around `db.transaction` or `bulkAdd`) can stall or time out hooks because IndexedDB and timers are intertwined. Prefer **real timers** for any test that touches `db`, or isolate fake clocks to **pure** modules that never open IndexedDB (see `assistantContextFacts.test.ts` vs `contextBuilder.test.ts`).
+- Assistant prompt assembly: **`buildAssistantPromptFacts` / `formatAssistantSystemPrompt`** in `src/modules/ai/assistantContextFacts.ts` are pure and clock-injectable; **`collectAssistantPromptFacts` / `buildAssistantContext`** perform Dexie reads only.
+
 ## Usage rules
 
 - Keep this aligned with `RISK_REGISTER.md` and `RELEASE_NOTES.md`.

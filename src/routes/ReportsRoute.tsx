@@ -3,6 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
 import { calculateStabilityIndex } from "../modules/budget-engine/stabilityIndex";
+import type { Transaction } from "../modules/ledger/ledger.schema";
 import { exportDatabaseToJson } from "../modules/reports/exportJson";
 import { downloadCsvForEntity, type CsvEntity } from "../modules/reports/exportCsv";
 import { Button } from "../components/ui/button";
@@ -10,6 +11,7 @@ import { Printer, FileText, Sparkles, Download, Database, ShieldAlert, PiggyBank
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
 import { cn } from "../lib/utils";
+import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
 
 type ReportTab = "monthly" | "debt" | "savings" | "subscriptions" | "documents";
 
@@ -23,6 +25,7 @@ const TABS: { id: ReportTab; label: string; icon: typeof Printer }[] = [
 
 const CSV_OPTIONS: { entity: CsvEntity; label: string }[] = [
   { entity: "transactions", label: "Transactions" },
+  { entity: "expenseCategoriesMtd", label: "Expense categories (MTD)" },
   { entity: "bills", label: "Bills" },
   { entity: "debts", label: "Debts" },
   { entity: "savingsGoals", label: "Savings Goals" },
@@ -166,7 +169,7 @@ export default function ReportsRoute() {
           </div>
         </div>
 
-        {activeTab === "monthly" && <MonthlyReport summary={summary} stability={stability} />}
+        {activeTab === "monthly" && <MonthlyReport summary={summary} stability={stability} transactions={transactions} />}
         {activeTab === "debt" && <DebtReport debts={debts} />}
         {activeTab === "savings" && <SavingsReport goals={goals} />}
         {activeTab === "subscriptions" && <SubscriptionsReport subscriptions={subscriptions} />}
@@ -180,7 +183,15 @@ export default function ReportsRoute() {
   );
 }
 
-function MonthlyReport({ summary, stability }: { summary: ReturnType<typeof calculateBudgetSummary>; stability: number }) {
+function MonthlyReport({
+  summary,
+  stability,
+  transactions,
+}: {
+  summary: ReturnType<typeof calculateBudgetSummary>;
+  stability: number;
+  transactions: Transaction[];
+}) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -197,6 +208,11 @@ function MonthlyReport({ summary, stability }: { summary: ReturnType<typeof calc
           <Row label="Actual Spend (MTD)" value={summary.actualSpend} />
         </div>
       </div>
+
+      <div className="rounded-3xl border border-primary/10 bg-card/40 p-8 print:border print:bg-transparent">
+        <ExpenseCategoryRollup transactions={transactions} density="comfortable" />
+      </div>
+
       <div className="p-8 rounded-3xl bg-primary/5 border border-primary/10 space-y-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-5"><Sparkles className="h-20 w-24 text-primary" /></div>
         <h3 className="text-sm font-black uppercase italic text-primary flex items-center gap-2">

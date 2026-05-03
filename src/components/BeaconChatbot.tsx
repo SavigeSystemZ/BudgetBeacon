@@ -345,6 +345,22 @@ async function placeholderReply(userText: string): Promise<string> {
     `Leftover after required + savings: ${fmt(f.netMonthly)}. Stability index ${f.stabilityIndex}/100 (${f.stabilityLabel}).`,
   ];
 
+  if (f.monthlyInsurance > 0) {
+    lines.push(`Insurance (rolled to monthly): ${fmt(f.monthlyInsurance)}.`);
+  }
+
+  if (f.mtdExpenseTotal > 0 && f.topExpenseCategories.length > 0) {
+    const head = f.topExpenseCategories
+      .slice(0, 3)
+      .map((c) => `${c.category} ${fmt(c.total)}`)
+      .join(" · ");
+    lines.push(
+      `MTD ledger spend (${f.monthPrefix}): ${fmt(f.mtdExpenseTotal)} — ${head}. Same rollups: Dashboard (donut) · Reports → Monthly · Mission Control.`,
+    );
+  } else {
+    lines.push(`MTD ledger (${f.monthPrefix}): no expense rows yet — log loops in Ledger to unlock category charts.`);
+  }
+
   if (lower.includes("cut") || lower.includes("save") || lower.includes("reduce")) {
     lines.push(
       `For real recommendations, configure a model in Settings → AI Configuration. ` +
@@ -352,6 +368,15 @@ async function placeholderReply(userText: string): Promise<string> {
     );
   } else if (lower.includes("stability") || lower.includes("health")) {
     lines.push(`See Mission Control's Stability Index card for the full breakdown.`);
+  } else if (
+    lower.includes("categor") ||
+    lower.includes("spend") ||
+    lower.includes("ledger") ||
+    lower.includes("expense")
+  ) {
+    lines.push(
+      `Open Dashboard for the MTD expense donut, Reports → Monthly for the printable rollup, or Mission Control for the compact list — all read the same ledger data.`,
+    );
   } else {
     lines.push(`Configure a model in Settings to get a real conversational answer to "${userText}".`);
   }

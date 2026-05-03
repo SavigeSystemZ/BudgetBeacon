@@ -25,6 +25,11 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 - [x] **CRITICAL: M6 — Vault + OCR + Extraction Review.** `OcrProvider` interface in `src/modules/ocr/types.ts`; `tesseractProvider.ts` wraps Tesseract.js (browser-side, no network). `extractFields.ts` extracts date/amount/payee/label from raw OCR text via regex. `applyExtraction.ts` commits approved `ExtractedField[]` to `incomeSources` / `bills` / `taxRecords` with `documentId` provenance. `VaultExtractionReview` modal: raw text panel + per-field editor + confidence badges, no auto-commit. `featureFlags.ocrLocal = true`. 71 tests passing (12 new). Audit baseline now `setTimeout=5 mathRandom=0 alert=0`. *(Completed 2026-04-28.)*
 
+## Scavenger / donor integration
+
+- [x] **2026-05-02:** CouplesWealth read-only scavenger — dashboard charts + health card + ledger formatter; **MTD expense-by-category** on Reports (Monthly) and Mission Control via `ExpenseCategoryRollup` (`_system/context/scavenge-donor-couples-wealth.md`).
+- [x] **2026-05-02 (night batch):** Ledger **Top spend** + CSV **`expenseCategoriesMtd`**; **`MtdCategoryDonut`**; **`assistantContextFacts`** + **`collectAssistantPromptFacts`**; **`BeaconChatbot`** no-model MTD/insurance lines; **`TEST_STRATEGY`** Vitest+IDB note. **148** tests — see **`WHERE_LEFT_OFF.md`** for file list and validation.
+
 ## Immediate Queue — pick a path
 
 **Path A (default): continue → M8 (Tax/Credit/Debt deepening) → M9 (Android polish) → M10/M11 (sync, joint household).**
