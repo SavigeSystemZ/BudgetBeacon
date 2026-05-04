@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
+import { GlassCard } from "../components/ui/GlassCard";
+import { CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -259,7 +260,7 @@ export default function SettingsRoute() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Theme & Aesthetics */}
-        <Card className="overflow-hidden border-primary/10 bg-card/50 backdrop-blur-xl">
+        <GlassCard className="overflow-hidden border-primary/10 bg-card/50 backdrop-blur-xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="flex items-center gap-2"><Palette className="h-5 w-5" /> UI Aesthetics</CardTitle>
             <CardDescription>Switch between 10 unique visual experiences.</CardDescription>
@@ -278,10 +279,10 @@ export default function SettingsRoute() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* Backup & Restore */}
-        <Card className="border-primary/10 bg-card/50 backdrop-blur-xl">
+        <GlassCard className="border-primary/10 bg-card/50 backdrop-blur-xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="flex items-center gap-2"><Database className="h-5 w-5" /> Data Engine</CardTitle>
             <CardDescription>Offline-first local database management.</CardDescription>
@@ -314,7 +315,7 @@ export default function SettingsRoute() {
               {BACKUP_FORMAT_HELP_TEXT}
             </p>
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* Payee rules */}
         <div className="md:col-span-2">
@@ -322,7 +323,7 @@ export default function SettingsRoute() {
         </div>
 
         {/* Notifications */}
-        <Card className="border-primary/10 bg-card/50 backdrop-blur-xl">
+        <GlassCard className="border-primary/10 bg-card/50 backdrop-blur-xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="flex items-center gap-2"><Bell className="h-5 w-5" /> Pay Path Alerts</CardTitle>
             <CardDescription>Bill reminders and budget threshold warnings.</CardDescription>
@@ -335,10 +336,10 @@ export default function SettingsRoute() {
               Preferences saved locally. OS notification delivery lands in M9 (Capacitor on Android, native on Electron).
             </p>
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* Privacy */}
-        <Card className="border-primary/10 bg-card/50 backdrop-blur-xl">
+        <GlassCard className="border-primary/10 bg-card/50 backdrop-blur-xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5" /> Privacy Shield</CardTitle>
             <CardDescription>Secure your local financial telemetry.</CardDescription>
@@ -352,10 +353,10 @@ export default function SettingsRoute() {
               <ToggleRow key={t.key} label={t.label} value={prefs[t.key]} onClick={() => togglePref(t.key)} />
             ))}
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* Automation toggles (gated on real implementation) */}
-        <Card className="border-primary/10 bg-card/50 backdrop-blur-xl">
+        <GlassCard className="border-primary/10 bg-card/50 backdrop-blur-xl">
           <CardHeader className="bg-primary/5">
             <CardTitle className="flex items-center gap-2"><Zap className="h-5 w-5" /> Automation</CardTitle>
             <CardDescription>Smart categorization and predictive flows.</CardDescription>
@@ -368,10 +369,10 @@ export default function SettingsRoute() {
               Toggles are persisted now; the underlying engines (M5 categorization, M8 predictive savings) will read these flags when they land.
             </p>
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* AI Agent Engine */}
-        <Card className="border-primary/20 bg-primary/5 backdrop-blur-xl md:col-span-2 shadow-2xl">
+        <GlassCard className="border-primary/20 bg-primary/5 backdrop-blur-xl md:col-span-2 shadow-2xl">
           <CardHeader className="bg-primary/10">
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div>
@@ -464,10 +465,10 @@ export default function SettingsRoute() {
               <strong className="text-foreground">Privacy rule:</strong> Beacon Agent only ever sees an aggregated household snapshot (totals, counts, ratios) — never raw transactions, document blobs, or person-identifying detail. Cloud provider is opt-in via the toggle above; default is local-only.
             </div>
           </CardContent>
-        </Card>
+        </GlassCard>
 
         {/* Danger Zone */}
-        <Card className="border-destructive/30 bg-destructive/5 backdrop-blur-xl md:col-span-2">
+        <GlassCard className="border-destructive/30 bg-destructive/5 backdrop-blur-xl md:col-span-2">
           <CardHeader className="bg-destructive/10">
             <CardTitle className="text-destructive">System Reset & Destruction</CardTitle>
             <CardDescription>Destructive actions that wipe local data permanently. Export a backup first.</CardDescription>
@@ -494,7 +495,7 @@ export default function SettingsRoute() {
               </Button>
             </div>
           </CardContent>
-        </Card>
+        </GlassCard>
 
       </div>
 

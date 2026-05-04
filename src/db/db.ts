@@ -22,6 +22,16 @@ export interface PayeeRule {
   updatedAt: string;
 }
 
+
+export interface Account {
+  id: string;
+  email: string;
+  publicKey: string;
+  privateKeyWrapped: string;
+  householdKeyWrapped: string;
+  createdAt: string;
+}
+
 export class BudgetBeaconDatabase extends Dexie {
   households!: Table<Household, string>;
   persons!: Table<Person, string>;
@@ -42,6 +52,7 @@ export class BudgetBeaconDatabase extends Dexie {
   insuranceRecords!: Table<{ id: string; householdId: string; type: string; expirationDate: string; premium?: number }, string>;
   syncLogs!: Table<{ id: string; timestamp: string; deviceId: string; payloadSize: number }, string>;
   payeeRules!: Table<PayeeRule, string>;
+  accounts!: Table<Account, string>;
 
   constructor() {
     super("BudgetBeaconDB");
@@ -86,6 +97,30 @@ export class BudgetBeaconDatabase extends Dexie {
       aiConfig: "&id",
       chatMessages: "&id, timestamp",
       taxForms: "&id, year, type"
+    });
+
+    
+    this.version(6).stores({
+      households: "&id",
+      persons: "&id, householdId",
+      incomeSources: "&id, householdId, personId",
+      bills: "&id, householdId, ownerPersonId, category, dueDay",
+      debts: "&id, householdId, ownerPersonId, category, dueDay",
+      savingsGoals: "&id, householdId, category",
+      creditSnapshots: "&id, householdId, personId, snapshotDate",
+      transactions: "&id, householdId, date, category, type, personId",
+      debtTransactions: "&id, debtId, date",
+      taxRecords: "&id, householdId, year, personId",
+      taxTransactions: "&id, recordId, date",
+      documents: "&id, householdId, category, personId",
+      aiConfig: "&id",
+      chatMessages: "&id, timestamp",
+      taxForms: "&id, year, type, personId",
+      subscriptions: "&id, householdId, category, personId",
+      insuranceRecords: "&id, householdId, type, expirationDate",
+      syncLogs: "&id, timestamp, deviceId",
+      payeeRules: "&id, householdId, pattern",
+      accounts: "&id, email"
     });
 
     this.version(5).stores({

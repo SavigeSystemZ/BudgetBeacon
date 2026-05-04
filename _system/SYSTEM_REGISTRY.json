@@ -403,6 +403,12 @@
       "size_bytes": 824
     },
     {
+      "category": "copilot-overlay",
+      "kind": "file",
+      "path": ".github/workflows/ci.yml",
+      "size_bytes": 567
+    },
+    {
       "category": "entrypoint",
       "kind": "file",
       "path": ".windsurfrules",
@@ -436,7 +442,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "CHANGELOG.md",
-      "size_bytes": 2628
+      "size_bytes": 16942
     },
     {
       "category": "entrypoint",
@@ -466,7 +472,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "FIXME.md",
-      "size_bytes": 800
+      "size_bytes": 9608
     },
     {
       "category": "entrypoint",
@@ -502,7 +508,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "PLAN.md",
-      "size_bytes": 1651
+      "size_bytes": 7614
     },
     {
       "category": "working-state",
@@ -532,31 +538,31 @@
       "category": "working-state",
       "kind": "file",
       "path": "RISK_REGISTER.md",
-      "size_bytes": 3039
+      "size_bytes": 7105
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "ROADMAP.md",
-      "size_bytes": 1093
+      "size_bytes": 7167
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "TEST_STRATEGY.md",
-      "size_bytes": 1802
+      "size_bytes": 2714
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "TODO.md",
-      "size_bytes": 2464
+      "size_bytes": 20126
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "WHERE_LEFT_OFF.md",
-      "size_bytes": 3401
+      "size_bytes": 16462
     },
     {
       "category": "entrypoint",
@@ -688,7 +694,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/CONTEXT_INDEX.md",
-      "size_bytes": 15854
+      "size_bytes": 15977
     },
     {
       "category": "system-core",
@@ -826,7 +832,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 51073
+      "size_bytes": 51407
     },
     {
       "category": "system-core",
@@ -928,7 +934,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/PROJECT_PROFILE.md",
-      "size_bytes": 7857
+      "size_bytes": 7928
     },
     {
       "category": "system-core",
@@ -1108,7 +1114,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 74454
+      "size_bytes": 74911
     },
     {
       "category": "system-core",
@@ -1197,6 +1203,18 @@
     {
       "category": "system-core",
       "kind": "file",
+      "path": "_system/checkpoints/LATEST.json",
+      "size_bytes": 720
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/LATEST.md",
+      "size_bytes": 728
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
       "path": "_system/checkpoints/README.md",
       "size_bytes": 3593
     },
@@ -1205,6 +1223,30 @@
       "kind": "file",
       "path": "_system/checkpoints/history/.gitkeep",
       "size_bytes": 0
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260503T165416Z-handoff.json",
+      "size_bytes": 760
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260503T165610Z-mid-task.json",
+      "size_bytes": 734
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260503T173624Z-mid-task.json",
+      "size_bytes": 680
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260503T174245Z-mid-task.json",
+      "size_bytes": 720
     },
     {
       "category": "ci",
@@ -1307,6 +1349,12 @@
       "kind": "file",
       "path": "_system/context/prompt-usage-log.json",
       "size_bytes": 163
+    },
+    {
+      "category": "system-context",
+      "kind": "file",
+      "path": "_system/context/scavenge-donor-couples-wealth.md",
+      "size_bytes": 2374
     },
     {
       "category": "system-core",
@@ -2811,6 +2859,18 @@
     {
       "category": "unclassified",
       "kind": "file",
+      "path": "docs/ASSISTANT_CONTEXT_COVERAGE.md",
+      "size_bytes": 1984
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/COMPLETION_MASTER_PLAN.md",
+      "size_bytes": 16094
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
       "path": "docs/CONTEXT_COMPRESS_PILOT.md",
       "size_bytes": 1841
     },
@@ -2819,6 +2879,30 @@
       "kind": "file",
       "path": "docs/DATA_MODEL.md",
       "size_bytes": 326
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/GUI_COMPLETION_CHECKLIST.md",
+      "size_bytes": 24742
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/GUI_COMPLETION_MAP.md",
+      "size_bytes": 11902
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/INTEGRATIONS_STRATEGY.md",
+      "size_bytes": 13759
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/M9_ANDROID_QA_CHECKLIST.md",
+      "size_bytes": 2682
     },
     {
       "category": "unclassified",
@@ -2837,6 +2921,18 @@
       "kind": "file",
       "path": "docs/README.md",
       "size_bytes": 352
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md",
+      "size_bytes": 9813
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/UNGATED_PRODUCT_BACKLOG.md",
+      "size_bytes": 2754
     },
     {
       "category": "unclassified",
@@ -3027,6 +3123,18 @@
     {
       "category": "tools",
       "kind": "file",
+      "path": "tools/audit-controls.baseline.json",
+      "size_bytes": 377
+    },
+    {
+      "category": "tools",
+      "kind": "file",
+      "path": "tools/audit-controls.ts",
+      "size_bytes": 4633
+    },
+    {
+      "category": "tools",
+      "kind": "file",
       "path": "tools/check-port-collisions.py",
       "size_bytes": 805
     },
@@ -3073,7 +3181,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 512,
+  "managed_file_count": 530,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.23.0"
