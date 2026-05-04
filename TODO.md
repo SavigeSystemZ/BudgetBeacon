@@ -7,6 +7,9 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 ## Current Priority
 
+- [x] **M10.4 wiring (2026-05-04).** `syncService` closure bug fixed (per-table observer scope); `bootstrap` treats empty `wsUrl` as local-only (no dead-relay dialing). New `SyncStatusBadge` (sidebar footer + mobile header) and `AuthSyncCard` (opt-in signup/login + relay URL + Start sync) in Settings. **174** tests pass.
+
+
 - [x] **CRITICAL: M0 — Repo Truth Reset.** Rewrite `PLAN.md`, `ROADMAP.md`, `WHERE_LEFT_OFF.md`, `TODO.md`, `FIXME.md`, `RISK_REGISTER.md`. Create `docs/GUI_COMPLETION_MAP.md` and `docs/INTEGRATIONS_STRATEGY.md`. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M1 — GUI Surface Audit & Completion Matrix.** Created `docs/GUI_COMPLETION_CHECKLIST.md` with per-control inventory (~140 buttons + ~80 form fields), component-reuse map, empty/loading/error state matrix, mobile/Android parity matrix, and ordered M3 must-fix list. *(Completed 2026-04-25.)*
 - [x] **CRITICAL: M2 — Core Data + Validation Hardening.** Added test/typecheck/audit-controls scripts, vitest config, ErrorBoundary, IncomeRoute frequency drift fix, backup completeness fix (v2 format covers all 17 JSON-serializable tables; documents/Blob deferred to M4), backup round-trip test. 22 tests passing, typecheck clean. *(Completed 2026-04-25.)*

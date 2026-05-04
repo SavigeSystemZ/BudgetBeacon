@@ -1,4 +1,14 @@
-# Where Left Off — **paused 2026-05-03**
+# Where Left Off — **paused 2026-05-04**
+
+## 2026-05-04 continuation (M10.4 wiring + sync hardening)
+
+- **`src/modules/sync/syncService.ts`:** fixed the closure bug — `wireTable(tableName)` now scopes each Yjs↔Dexie observer to its own `table` reference (previously every observer captured the last loop variable and wrote to the last table). `bootstrap(householdId, key, wsUrl?)` accepts an optional relay URL; when empty/null the service mirrors locally without opening any network connection (no more dialing the placeholder `wss://sync.budgetbeacon.app`). Added `getStatus()`, `onStatusChange()`, and `disconnect()`.
+- **`src/components/sync/SyncStatusBadge.tsx`:** small a11y-labeled pill (Local-only / Connecting / Synced / Offline / Sync error). Mounted in the desktop sidebar footer and the mobile header next to the Beacon wordmark.
+- **`src/components/sync/AuthSyncCard.tsx`:** opt-in Sync & Account card in Settings. Signup/login with passphrase (Argon2-derived KEK; AES-GCM unwrap of household key, all client-side). Relay URL input (persisted to `localStorage["beacon_sync_relay_url"]`); "Start sync" calls `syncService.bootstrap(...)`. Sign-out drops the in-memory household key without touching Dexie data. Effective mode is derived from `accounts.length` rather than via setState-in-effect.
+- **Validation:** `npm run validate` green; **174** Vitest tests pass; `npm run audit:controls` baseline unchanged (`setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`); production build clean.
+- **Notes for next agent:** the relay is still undeployed — sign-up creates a local-only account and key envelope; the "Start sync" button is safe to press without a URL (mirrors locally only). M10/M11 gates around relay deployment + recovery-code model remain open even though the auth/crypto/sync code is wired.
+
+## Earlier — paused 2026-05-03
 
 > **Session stop:** **`main`** is clean for the **2026-05-03** pause. Primary batch: **`ee5ded6`** (*feat: Beacon modals, assistant grounding, CI, debt trajectory polish*). Tip may include an additional **handoff doc** commit after that; use **`git log -2 --oneline`**. Not pushed from this environment. **`npm run validate`** was green with **164** Vitest tests; **`npm run audit:controls`** OK (**`setTimeout=5`**, **`alert=0`**). Next session: **`git pull`** / **`git push`** using the operator account **per `GIT_REMOTE_AND_SYNC_PROTOCOL.md`** when sharing; otherwise continue **`docs/UNGATED_PRODUCT_BACKLOG.md`** Tier A (e.g. **`docs/M9_ANDROID_QA_CHECKLIST.md`** on hardware). **M10/M11** (sync / joint households) stay **gated** until explicit architecture sign-off.
 >

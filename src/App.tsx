@@ -28,6 +28,7 @@ import { ModeToggle } from "./components/mode-toggle";
 import { BeaconChatbot } from "./components/BeaconChatbot";
 import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { SyncStatusBadge } from "./components/sync/SyncStatusBadge";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
   FolderLock, Compass, Library, ShieldCheck, Share2, Wallet, 
@@ -95,8 +96,9 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
         <div className="pt-8 border-t border-primary/5">
-          <div className="p-4 rounded-3xl bg-primary/5 border border-primary/10 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] text-center italic shadow-inner">
-            Engine v2.4.0 • Secured
+          <div className="p-4 rounded-3xl bg-primary/5 border border-primary/10 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] text-center italic shadow-inner space-y-2">
+            <div>Engine v2.4.0 • Secured</div>
+            <div className="flex justify-center"><SyncStatusBadge /></div>
           </div>
         </div>
       </nav>
@@ -105,7 +107,10 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 relative z-0 md:px-12 px-6 pt-10 overflow-x-hidden w-full">
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl py-4 -mx-6 px-6 border-b border-white/5">
-          <span className="font-black text-2xl tracking-tighter italic uppercase text-primary">Beacon</span>
+          <div className="flex items-center gap-2">
+            <span className="font-black text-2xl tracking-tighter italic uppercase text-primary">Beacon</span>
+            <SyncStatusBadge compact />
+          </div>
           <button
             type="button"
             aria-label="Open navigation menu"
