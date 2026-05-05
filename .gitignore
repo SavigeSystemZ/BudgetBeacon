@@ -29,3 +29,23 @@ release/
 
 # npm cache
 .npm-cache/
+
+# Android signing — never commit secrets
+*.keystore
+*.jks
+keystore.properties
+android/app/release-key.keystore
+android/app/release-key.jks
+android/app/google-services.json
+
+# Android build outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/captures/
+android/local.properties
+android/app/release/
+
+# Capacitor generated
+android/app/src/main/assets/public/
+ios/App/App/public/

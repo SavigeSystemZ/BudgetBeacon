@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Budget Beacon FileProvider scope. We only need to share user-initiated
+  exports (backup JSON, CSV reports) and short-lived OCR cache copies.
+  The previous wildcard `path="."` was an accidental data-exfil surface.
+-->
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="my_images" path="." />
-    <cache-path name="my_cache_images" path="." />
+    <!-- Backup / report exports written by the app for "Share" intents -->
+    <external-files-path name="beacon_exports" path="exports/" />
+    <!-- Cached image copies handed to OCR providers; auto-cleared by the OS -->
+    <cache-path name="beacon_shared_cache" path="shared/" />
 </paths>

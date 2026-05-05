@@ -1,7 +1,7 @@
 {
   "name": "budget-beacon",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "electron/main.cjs",
   "build": {
@@ -31,7 +31,12 @@
     "test:watch": "vitest",
     "typecheck": "tsc -b --noEmit",
     "validate": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "audit:controls": "tsx tools/audit-controls.ts"
+    "audit:controls": "tsx tools/audit-controls.ts",
+    "audit:secrets": "tsx tools/audit-secrets.ts",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:lint:release": "cd android && ./gradlew :app:lintRelease",
+    "android:assemble:release": "npm run android:sync && cd android && ./gradlew :app:assembleRelease",
+    "android:assemble:debug": "npm run android:sync && cd android && ./gradlew :app:assembleDebug"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",

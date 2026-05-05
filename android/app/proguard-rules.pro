@@ -1,21 +1,50 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# Budget Beacon — Android release ProGuard / R8 rules.
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# The webview-driven runtime calls Capacitor and AndroidX classes via reflection,
+# so we must keep enough surface to avoid silent runtime failures. Web assets
+# (JS/CSS/HTML) live under assets/public and are not subject to R8.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# --- Stack traces & crash reporting ---
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# --- WebView JS bridge ---
+# Capacitor exposes its bridge through @JavascriptInterface. Keep all such members.
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# --- Capacitor core + plugins ---
+# Capacitor uses runtime annotation scanning to discover plugins.
+-keep class com.getcapacitor.** { *; }
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
+-keepclasseswithmembers class * {
+    @com.getcapacitor.PluginMethod <methods>;
+}
+-keep class com.capacitorjs.** { *; }
+
+# --- Cordova compatibility shim used by Capacitor ---
+-keep class org.apache.cordova.** { *; }
+-keep class com.outsystems.plugins.** { *; }
+
+# --- AndroidX bridges that Capacitor reaches into ---
+-keep class androidx.webkit.** { *; }
+-keep class androidx.core.content.FileProvider { *; }
+-dontwarn androidx.webkit.**
+
+# --- Kotlin metadata (some Capacitor plugins are Kotlin) ---
+-keep class kotlin.Metadata { *; }
+-keep class kotlin.coroutines.Continuation
+-dontwarn kotlin.**
+-dontwarn kotlinx.**
+
+# --- AndroidJUnit / Espresso (only present in androidTest variant) ---
+-dontwarn org.junit.**
+-dontwarn androidx.test.**
+
+# --- Generic safety: don't strip annotations or InnerClasses (required for reflection) ---
+-keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature
+
+# --- Suppress warnings from optional Google Play Services (only loaded if google-services.json present) ---
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.firebase.**

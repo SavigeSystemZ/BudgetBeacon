@@ -1,5 +1,69 @@
 apply plugin: 'com.android.application'
 
+// --- Version derivation from repo package.json (single source of truth) ---
+// versionName mirrors package.json#version verbatim (e.g. "1.0.0").
+// versionCode is derived as MAJOR*10000 + MINOR*100 + PATCH so the integer
+// monotonically increases with semver bumps and stays well under the 2.1B cap.
+def derivePackageVersion = {
+    def pkgFile = rootProject.file('../package.json')
+    if (!pkgFile.exists()) {
+        logger.warn("package.json not found at ${pkgFile}; falling back to 1.0.0/1")
+        return [name: '1.0.0', code: 1]
+    }
+    def matcher = pkgFile.text =~ /"version"\s*:\s*"([^"]+)"/
+    if (!matcher.find()) {
+        logger.warn("Could not parse version from ${pkgFile}; falling back to 1.0.0/1")
+        return [name: '1.0.0', code: 1]
+    }
+    def raw = matcher.group(1)
+    def core = raw.split('-')[0].split('\\+')[0]
+    def parts = core.split('\\.')
+    def major = (parts.length > 0 ? parts[0] : '0') as int
+    def minor = (parts.length > 1 ? parts[1] : '0') as int
+    def patch = (parts.length > 2 ? parts[2] : '0') as int
+    def code = major * 10000 + minor * 100 + patch
+    if (code < 1) code = 1
+    return [name: raw, code: code]
+}
+def pkgVersion = derivePackageVersion()
+
+// --- Signing credentials: env vars > keystore.properties > debug fallback ---
+// Hardcoded passwords in source are a security defect; this loader keeps the
+// release keystore reproducible without committing secrets.
+def loadReleaseSigningConfig = {
+    def storeFileEnv = System.getenv('BEACON_RELEASE_KEYSTORE_FILE')
+    def storePasswordEnv = System.getenv('BEACON_RELEASE_KEYSTORE_PASSWORD')
+    def keyAliasEnv = System.getenv('BEACON_RELEASE_KEY_ALIAS')
+    def keyPasswordEnv = System.getenv('BEACON_RELEASE_KEY_PASSWORD')
+
+    if (storeFileEnv && storePasswordEnv && keyAliasEnv && keyPasswordEnv) {
+        return [
+            storeFile: file(storeFileEnv),
+            storePassword: storePasswordEnv,
+            keyAlias: keyAliasEnv,
+            keyPassword: keyPasswordEnv,
+            source: 'env'
+        ]
+    }
+
+    def propsFile = rootProject.file('keystore.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        propsFile.withInputStream { props.load(it) }
+        if (props['storeFile'] && props['storePassword'] && props['keyAlias'] && props['keyPassword']) {
+            return [
+                storeFile: file(props['storeFile']),
+                storePassword: props['storePassword'],
+                keyAlias: props['keyAlias'],
+                keyPassword: props['keyPassword'],
+                source: 'keystore.properties'
+            ]
+        }
+    }
+
+    return null
+}
+
 android {
     namespace = "com.aiaast.budgetbeacon"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,28 +71,57 @@ android {
         applicationId "com.aiaast.budgetbeacon"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode pkgVersion.code
+        versionName pkgVersion.name
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
-             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    signingConfigs {
-        release {
-            storeFile file("release-key.keystore")
-            storePassword "beacon_secure_123"
-            keyAlias "budgetbeacon"
-            keyPassword "beacon_secure_123"
+
+    def releaseSigning = loadReleaseSigningConfig()
+    if (releaseSigning != null) {
+        signingConfigs {
+            release {
+                storeFile releaseSigning.storeFile
+                storePassword releaseSigning.storePassword
+                keyAlias releaseSigning.keyAlias
+                keyPassword releaseSigning.keyPassword
+            }
         }
+        logger.lifecycle("Release signing config loaded from ${releaseSigning.source}")
+    } else {
+        logger.warn("No release signing config available (set BEACON_RELEASE_KEYSTORE_* env vars or keystore.properties); release builds will be unsigned and reject install.")
     }
+
     buildTypes {
         release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (releaseSigning != null) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+        }
+    }
+
+    lint {
+        abortOnError true
+        warningsAsErrors false
+        checkReleaseBuilds true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += [
+                'META-INF/LICENSE*',
+                'META-INF/NOTICE*',
+                'META-INF/AL2.0',
+                'META-INF/LGPL2.1'
+            ]
         }
     }
 }
