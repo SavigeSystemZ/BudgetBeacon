@@ -1,0 +1,14 @@
+{
+  "$schema": "schemas/project-domain-manifest.schema.json",
+  "schema_version": 1,
+  "product_summary": "Describe in one sentence what this repository builds. Replace this text after scaffold.",
+  "primary_domains": ["example: personal finance", "example: budgeting"],
+  "cross_domain_confirmation_phrase": "CONFIRM_CROSS_DOMAIN_INSTRUCTION",
+  "instruction_mismatch_guards": [
+    {
+      "id": "example-off-domain-security-lab",
+      "description": "Example guard — delete or replace for your product. Triggers when pasted instructions look like a different vertical.",
+      "keywords": ["burp suite", "metasploit", "wpa handshake", "buffer overflow exploit"]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.aiast/project-domain-manifest.schema.json",
+  "title": "Project domain and instruction guard manifest",
+  "type": "object",
+  "required": ["schema_version", "product_summary", "primary_domains", "instruction_mismatch_guards"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "product_summary": { "type": "string" },
+    "primary_domains": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Short phrases describing what this repo legitimately builds."
+    },
+    "cross_domain_confirmation_phrase": {
+      "type": "string",
+      "description": "Operator must send this exact phrase to authorize off-domain work after a halt."
+    },
+    "instruction_mismatch_guards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "keywords"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "keywords": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  }
+}

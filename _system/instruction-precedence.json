@@ -2,6 +2,8 @@
   "canonical_repo_local_files": [
     "AGENTS.md",
     "_system/PROJECT_PROFILE.md",
+    "_system/PROJECT_DOMAIN_MANIFEST.json",
+    "_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md",
     "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
     "_system/REPO_OPERATING_PROFILE.md",
     "_system/LOAD_ORDER.md",
@@ -25,6 +27,8 @@
   },
   "consistency_surfaces": [
     "_system/LOAD_ORDER.md",
+    "_system/PROJECT_DOMAIN_MANIFEST.json",
+    "_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md",
     "_system/REPO_OPERATING_PROFILE.md",
     "_system/repo-operating-profile.json",
     "_system/PROMPT_EMISSION_CONTRACT.md",

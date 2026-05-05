@@ -43,12 +43,11 @@
   `force` all the way down to `generate-runtime-foundations.sh --force`,
   which silently overwrote the downstream's product-customized runtime
   seeds with the template's generic stubs. This was discovered during the
-  first `1.23.0` replay to `ModPilot`, where ~989 lines of M1 host-install
-  work in `runtime-foundation.sh` were erased; the product content was
-  restored from the pre-refresh commit and re-committed as `5d2887c` on
-  `ModPilot` `main`. See `_META_AGENT_SYSTEM/DOWNSTREAM_PROOF_EVIDENCE_2026-04-14.md`
-  for the forensic trail. **This fix is committed on source `main` but is
-  not yet published under a tag; the next release (whether `1.23.1` or
+  first `1.23.0` replay to a production-scale repo, where ~989 lines of M1
+  host-install work in `runtime-foundation.sh` were erased; the product
+  content was restored from the pre-refresh commit. See maintainer proof
+  evidence for the forensic trail. **This fix is committed on source `main`
+  but is not yet published under a tag; the next release (whether `1.23.1` or
   whichever label a maintainer chooses) should ship it.**
 
 ## 1.23.0 (2026-04-14)
@@ -789,7 +788,7 @@
 
 - The neutral source template now validates cleanly in auto/template mode while installed repos still treat unresolved repo-owned placeholders as failures
 - Runtime-foundation validation now includes shell-sourceability checks for generated env defaults and executable smoke for install, repair, launch, and purge flows
-- Golden-example donor curation now records explicit review outcomes for `Immortality` and `Vetraxis` instead of leaving their deferral implicit
+- Golden-example donor curation now records explicit review outcomes for high-scoring candidates instead of leaving their deferral implicit
 
 ### Fixed
 
@@ -869,3 +868,4 @@
 - Bootstrap lifecycle now records install source, timestamps, and README placement
 - Drift and upgrade policy now use explicit template version markers instead of commit-message convention
 - Integrity manifests exclude app-owned state and project-local config surfaces
+tegrity manifests exclude app-owned state and project-local config surfaces

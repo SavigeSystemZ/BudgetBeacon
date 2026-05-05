@@ -1,0 +1,8 @@
+{
+  "$schema": "schemas/project-domain-manifest.schema.json",
+  "schema_version": 1,
+  "product_summary": "Neutral AIAST installable template root (master or downstream copy). Replace in application repos after scaffold.",
+  "primary_domains": ["agent operating system template", "repository governance", "installable AIAST contracts"],
+  "cross_domain_confirmation_phrase": "CONFIRM_CROSS_DOMAIN_INSTRUCTION",
+  "instruction_mismatch_guards": []
+}
