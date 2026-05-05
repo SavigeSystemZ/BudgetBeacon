@@ -29,6 +29,7 @@ import { BeaconChatbot } from "./components/BeaconChatbot";
 import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SyncStatusBadge } from "./components/sync/SyncStatusBadge";
+import { ToastProvider } from "./components/ui/Toast";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
   FolderLock, Compass, Library, ShieldCheck, Share2, Wallet, 
@@ -104,7 +105,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 relative z-0 md:px-12 px-6 pt-10 overflow-x-hidden w-full">
+      <main id="beacon-main-content" tabIndex={-1} className="flex-1 relative z-0 md:px-12 px-6 pt-10 overflow-x-hidden w-full">
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl py-4 -mx-6 px-6 border-b border-white/5">
           <div className="flex items-center gap-2">
@@ -200,7 +201,9 @@ function App() {
   if (showOnboarding) {
     return (
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
-        <OnboardingWizard onComplete={() => {}} />
+        <ToastProvider>
+          <OnboardingWizard onComplete={() => {}} />
+        </ToastProvider>
       </ThemeProvider>
     );
   }
@@ -208,8 +211,15 @@ function App() {
   return (
     <ErrorBoundary scope="root">
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
+        <ToastProvider>
         <HashRouter>
           <DeleteConfirmProvider>
+          <a
+            href="#beacon-main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[400] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Skip to main content
+          </a>
           <AppShell>
             <Routes>
               <Route path="/" element={wrap("Dashboard", <DashboardRoute />)} />
@@ -231,6 +241,7 @@ function App() {
           </AppShell>
           </DeleteConfirmProvider>
         </HashRouter>
+        </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

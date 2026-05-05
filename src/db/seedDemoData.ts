@@ -1,5 +1,6 @@
 import { db } from "./db";
 import { clearFullDatabase } from "./fullDatabaseScope";
+import { logger } from "../lib/logger";
 
 /**
  * Loads bundled demo fixtures when **no households** exist (e.g. fresh install).
@@ -9,18 +10,18 @@ import { clearFullDatabase } from "./fullDatabaseScope";
 export async function seedDemoData() {
   const householdCount = await db.households.count();
   if (householdCount > 0) {
-    console.log("Database already seeded or has data. Skipping demo seed.");
+    logger.info("Database already seeded or has data. Skipping demo seed.");
     return;
   }
 
-  console.log("Seeding from va-assistance-seed.json...");
-  
+  logger.info("Seeding from va-assistance-seed.json...");
+
   try {
     // Note: base path './' in Vite ensures this resolves correctly in Capacitor
     const response = await fetch("./va-assistance-seed.json");
     if (!response.ok) throw new Error("Failed to load seed data");
     const data = await response.json();
-    
+
     await db.transaction("rw", [db.households, db.persons, db.incomeSources, db.bills, db.debts, db.savingsGoals, db.creditSnapshots, db.transactions], async () => {
       if (data.households) await db.households.bulkAdd(data.households);
       if (data.persons) await db.persons.bulkAdd(data.persons);
@@ -32,9 +33,9 @@ export async function seedDemoData() {
       if (data.transactions) await db.transactions.bulkAdd(data.transactions);
     });
 
-    console.log("VA data seeded successfully.");
+    logger.info("VA data seeded successfully.");
   } catch (error) {
-    console.error("Error seeding VA data:", error);
+    logger.error("Error seeding VA data:", error);
   }
 }
 
@@ -61,7 +62,7 @@ export async function ensureHousehold() {
       createdAt: now,
       updatedAt: now,
     });
-    console.log("Default household created.");
+    logger.info("Default household created.");
   }
 }
 
@@ -70,9 +71,9 @@ export async function ensureHousehold() {
  * the app if they need onboarding or empty-shell UX to re-run.
  */
 export async function clearDatabase() {
-  console.log("Clearing database...");
+  logger.info("Clearing database...");
   await clearFullDatabase();
-  console.log("Database cleared.");
+  logger.info("Database cleared.");
 }
 
 /** Full IndexedDB wipe + bundled VA demo JSON (Settings “Reset to demo”). Reload the app afterward if UI must re-mount. */

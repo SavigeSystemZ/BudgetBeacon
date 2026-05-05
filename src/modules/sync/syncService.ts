@@ -2,6 +2,7 @@ import * as Y from "yjs";
 import { db } from "../../db/db";
 import { encryptForSync, decrypt } from "../crypto/crypto";
 import { WebsocketProvider } from "y-websocket";
+import { logger } from "../../lib/logger";
 
 const SYNCABLE_TABLES = [
   "households",
@@ -61,7 +62,7 @@ class SyncService {
     if (this.status === status) return;
     this.status = status;
     for (const l of this.listeners) {
-      try { l(status); } catch (err) { console.error(err); }
+      try { l(status); } catch (err) { logger.error("syncService listener threw", err); }
     }
   }
 
@@ -76,7 +77,7 @@ class SyncService {
           this.ydoc.transact(() => {
             yMap.set(String(primKey), JSON.stringify(encrypted));
           }, "local");
-        }).catch(console.error);
+        }).catch((err) => logger.error("syncService encryptForSync failed", err));
       });
 
       table.hook("updating", (modifications, primKey, obj) => {
@@ -87,7 +88,7 @@ class SyncService {
           this.ydoc.transact(() => {
             yMap.set(String(primKey), JSON.stringify(encrypted));
           }, "local");
-        }).catch(console.error);
+        }).catch((err) => logger.error("syncService encryptForSync failed", err));
       });
 
       table.hook("deleting", (primKey) => {
@@ -136,7 +137,7 @@ class SyncService {
                 const decrypted = await decrypt(encrypted.ciphertext, encrypted.iv, this.householdKey);
                 createsOrUpdates.push(decrypted);
               } catch (err) {
-                console.error("Failed to decrypt incoming sync record", err);
+                logger.error("Failed to decrypt incoming sync record", err);
               }
             }
           } else if (change.action === "delete") {
@@ -192,7 +193,7 @@ class SyncService {
       });
       this.wsProvider.connect();
     } catch (err) {
-      console.error("Sync relay connect failed", err);
+      logger.error("Sync relay connect failed", err);
       this.setStatus("error");
     }
   }
