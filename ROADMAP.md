@@ -1,6 +1,6 @@
 # Roadmap
 
-> **Last updated 2026-04-28.** M6 closed (real OCR for Vault). Two new milestones inserted after M9 to deliver cross-device sync and joint households per `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Detail in `docs/COMPLETION_MASTER_PLAN.md`.
+> **Last updated 2026-05-05.** Final Hardening pass approved (`/home/whyte/.claude/plans/ethereal-hatching-bear.md`): five sequential phases (Phase 0 truth-reset → Phase 1 APK hardening → Phase 2 GUI polish → Phase 3 M10 closeout → Phase 4 M11 → Phase 5 M12 release). M10.1–M10.4 wired in commits `1e21317` + `6637da9`; relay deploy, recovery codes, onboarding, joint household, and release docs are this pass's deliverables. Android emulator (Pixel 7 / API 34) is the accepted M9 verification surface; physical-device run is optional stretch.
 
 ## Current horizons
 
@@ -41,15 +41,15 @@ Tesseract.js browser-side OCR via `OcrProvider` interface. `VaultExtractionRevie
 - **Dependencies:** M7.
 - **Risks:** Tax compliance accuracy — if not real, must be unambiguously labeled draft.
 
-### M9 — Android / Web Final Polish (pre-sync) ✅ (2026-04-28, partial)
+### M9 — Android / Web Final Polish (pre-sync) ✅ (2026-04-28 partial; emulator stand-in accepted 2026-05-05)
 Code-split each route via React.lazy + Suspense — main bundle dropped 1.1 MB → 346 KB (gzip 107 KB). Beacon Bridge route copy links to Settings export/import and uses **`BACKUP_FORMAT_HELP_TEXT`** (current JSON backup format label + import notes). Automatic sync framing points at **M10/M11** and `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Sync feature flags reorganized for the new milestone owners. **Still open in M9:** real-device APK smoke + safe-area visual QA + PWA install validation — use **`docs/M9_ANDROID_QA_CHECKLIST.md`** on a physical Android (not substitutable by emulator-only for final sign-off). The route-load latency is now bounded since each route averages 10–30 KB gzipped, so sync work in M10 won't be sandbagged by an oversized initial bundle.
 
-### M10 — Auth + Cross-Device Sync ⭐ NEW
+### M10 — Auth + Cross-Device Sync ⭐ (M10.1–M10.4 ✅; M10.5/M10.6 in Phase 3 of Final Hardening)
 - **Outcome:** Account signup/login with passphrase-derived key. Same login syncs data across phone ↔ web within seconds. Server (thin relay) only sees ciphertext. Existing local-only path remains supported for users who don't sign up.
-- **Architecture:** End-to-end-encrypted CRDT (Yjs) over a thin websocket relay — see `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`.
-- **Slices:** M10.1 auth scaffold → M10.2 crypto envelope → M10.3 CRDT mirror → M10.4 relay + transport → M10.5 onboarding integration → M10.6 mobile smoke.
-- **Dependencies:** M9 (stable mobile baseline). Architecture choice (option B in the design doc) requires user sign-off before M10.1 starts.
-- **Risks:** Argon2id cost on low-end Android; Yjs ↔ Dexie bridge edge cases on document blobs; relay disconnect must not corrupt local data. Mitigations in the architecture doc.
+- **Architecture:** End-to-end-encrypted CRDT (Yjs) over a thin websocket relay — see `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Option B (recommended) signed off 2026-05-05.
+- **Slices:** M10.1 auth scaffold ✅ → M10.2 crypto envelope ✅ → M10.3 CRDT mirror ✅ → M10.4 relay + transport ✅ → **M10.5 onboarding integration (Phase 3)** → **M10.6 emulator parity smoke (Phase 3)**. Recovery codes added in Phase 3.
+- **Relay shape:** Cloudflare Worker (~150 LOC) + Durable Objects (one DO per `householdId`) + HMAC-signed join token. Optional Node.js fallback for self-hosters.
+- **Risks:** Argon2id cost on low-end Android (mitigated by emulator-only verification this pass); Yjs ↔ Dexie bridge edge cases on document blobs; relay disconnect must not corrupt local data. Mitigations in the architecture doc.
 
 ### M11 — Joint Household / Linked Accounts ⭐ NEW
 - **Outcome:** Two accounts can link to the same household. Both edit the same budget. CRDT auto-merges. Per-record ownership labels (Person A / Person B / Joint). Activity log shows who did what. Either side can leave with their data.
@@ -57,8 +57,9 @@ Code-split each route via React.lazy + Suspense — main bundle dropped 1.1 MB �
 - **Dependencies:** M10 (single-account sync proven first).
 - **Risks:** Invite code leakage, key-rotation correctness on leave, conflict UX. Mitigations in the architecture doc.
 
-### M12 — Public Release / Install & Recovery Docs
-- **Outcome:** Install/update/recovery docs in repo. PWA install flow validated post-sync. Release checklist passes including a sync interruption test and a joint-household-leave test. Privacy / threat-model doc shipped alongside the build.
+### M12 — Public Release / Install & Recovery Docs (Phase 5 of Final Hardening)
+- **Outcome:** `docs/THREAT_MODEL.md`, `docs/INSTALL.md`, `docs/RECOVERY.md` shipped. Release checklist in `RELEASE_NOTES.md` passes (validate green, audit:controls baseline, signed APK uploaded, relay reachable, two-emulator parity green, threat model reviewed). Tag `v1.0.0` triggers `android-release.yml` to publish a signed sideload APK + `mappings.txt` + checksums to the GitHub Release.
+- **Distribution shape:** Sideload APK only (Play Store / AAB explicitly out of scope this pass).
 - **Dependencies:** M11.
 
 ## Cross-cutting themes

@@ -1,11 +1,14 @@
 # M9 — Android / Capacitor QA checklist (pre-sync)
 
-Use this on a **physical device** (or emulator with realistic constraints). Budget Beacon ships **local-first**; there is **no** cloud sync until **M10** is approved.
+> **2026-05-05 amendment:** the **Android emulator (Pixel 7 / API 34)** is the accepted M9 verification surface for the v1.0.0 release. Run every step below on the emulator first. Physical-device runs remain a recommended stretch but no longer block the milestone. Note any emulator-only caveats (low-end RAM, biometrics, real network jitter) explicitly when signing off.
+
+Use this on the emulator (or a physical device when available). Budget Beacon ships **local-first**; cloud sync (M10) is opt-in and uses an end-to-end-encrypted relay.
 
 ## Environment
 
-- [ ] Release or debug APK from `npx cap sync android` + Android Studio install.
-- [ ] Note device model, Android version, available RAM, and free storage.
+- [ ] **Emulator baseline:** Android Studio AVD `Pixel 7 / API 34` (Android 14), 4 GB RAM, 8 GB internal storage, swiftshader_indirect graphics. Wipe data before each cold-install run.
+- [ ] Build the **signed release APK** via `gradlew :app:assembleRelease` (Phase 1 release lane), not just debug.
+- [ ] Note emulator config (AVD name, API level, RAM, accel), and (when applicable) physical device model + Android version.
 - [ ] Fresh install vs upgrade from previous APK (both paths if time allows).
 
 ## Shell & navigation
@@ -59,3 +62,17 @@ Use this on a **physical device** (or emulator with realistic constraints). Budg
 ---
 
 _When M10 lands, extend this checklist with: login, relay disconnect, multi-device conflict, and encrypted backup restore across accounts._
+
+## M10/M11 emulator parity smoke (added 2026-05-05)
+
+Run two emulator instances (`Pixel 7 / API 34` × 2, distinct AVD names) with the deployed relay reachable:
+
+- [ ] Instance A signs up with passphrase → Settings → Start sync; relay status badge transitions Connecting → Synced.
+- [ ] Instance A downloads recovery sheet; verify 10 codes are distinct and printable.
+- [ ] Instance A creates 5 transactions, 2 bills, 1 goal; observe Yjs/Dexie convergence (no console errors).
+- [ ] Instance B logs in with same passphrase → data appears within ≤2 s on LAN.
+- [ ] Edit on each side concurrently → CRDT merge resolves without dupes; counts match.
+- [ ] **M11:** Instance A invites Instance C via QR code (24 h, single-use); C accepts → joins household.
+- [ ] **M11 leave:** C leaves; key rotates; A's stale invite token rejected; activity log records the event with author.
+- [ ] Backup export v4 round-trips on each instance independently.
+- [ ] Force-stop relay → both clients show "Offline" pill, queue local writes, reconcile on reconnect.

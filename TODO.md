@@ -7,6 +7,53 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 
 ## Current Priority
 
+### Final Hardening (2026-05-05) — approved plan
+
+User locked the scope: M10 + M11 + M12, hardened sideload APK via GitHub Release, emulator (Pixel 7 / API 34) stand-in for M9. Source of truth: `/home/whyte/.claude/plans/ethereal-hatching-bear.md`.
+
+- [x] **Phase 0 (2026-05-05):** Truth-reset & contract refresh — `WHERE_LEFT_OFF.md`, `TODO.md`, `PLAN.md`, `ROADMAP.md`, `_system/VALIDATION_GATES.md`, `docs/M9_ANDROID_QA_CHECKLIST.md`. Doc-only.
+- [ ] **CRITICAL: Phase 1 — APK hardening.**
+  - [ ] HIGH: Move release keystore password out of `android/app/build.gradle` to env vars (`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); add `*.keystore`/`keystore.properties`/`*.jks` to `.gitignore`; `git rm --cached` any tracked keystore.
+  - [ ] HIGH: Enable R8 — `minifyEnabled true` + `shrinkResources true` for `release`; populate `proguard-rules.pro` with Capacitor / Yjs / Dexie keep rules; verify release APK boots in emulator.
+  - [ ] HIGH: Manifest hardening — `networkSecurityConfig` (cleartext disabled, localhost allowed in debug), `allowBackup="false"`, `usesCleartextTraffic="false"`. Tighten `file_paths.xml` (drop `path="."`).
+  - [ ] HIGH: Version automation — derive `versionName`/`versionCode` from `package.json` at build time; bump root `package.json` to `1.0.0`.
+  - [ ] MEDIUM: Add Capacitor plugins — `@capacitor/filesystem`, `@capacitor/share`, `@capacitor/preferences`, `@capacitor/app`, `@capacitor/splash-screen`. Optional `@capacitor/biometric` behind a setting.
+  - [ ] HIGH: `.github/workflows/android-release.yml` (tag `v*`) + `android-emulator-smoke.yml` (PR smoke).
+  - [ ] MEDIUM: Distribution doc updates — root `README.md` + `distribution/platforms/android/README.md`.
+- [ ] **CRITICAL: Phase 2 — GUI corner-to-corner polish.**
+  - [ ] HIGH: Semantic color tokens (`--color-success/warning/danger/info`) wired through Tailwind; replace ~30 hardcoded `text-green-500 / red-500 / yellow-500 / blue-500` sites.
+  - [ ] HIGH: Typography scale — collapse 263 arbitrary tailwind sizes into a small scale.
+  - [ ] HIGH: New primitives — `<Skeleton>`, `<CardSkeleton>`, `<TableRowSkeleton>`, `<Toast>` + provider, `<FormField>` (label/error/hint).
+  - [ ] HIGH: BeaconModal — focus trap, `aria-modal`, `role="dialog"`, `aria-labelledby`, focus-return on close. Already has Esc + backdrop close.
+  - [ ] HIGH: aria-label sweep on every icon-only button across sidebar, mobile header, status badge, sync controls, modal close, theme toggle, bottom nav.
+  - [ ] HIGH: Skip-to-content link in `App.tsx` shell. Status indicators get icon + color (no color-only signaling).
+  - [ ] HIGH: axe-core (vitest + jsdom) per route in CI; fail on serious.
+  - [ ] HIGH: Responsive audit at 320 / 380 / 768 / 1024 / 1440. `p-6` → `px-4 md:px-6`. BeaconModal `max-h-[90dvh]`.
+  - [ ] MEDIUM: All `useLiveQuery` consumers → skeleton on first load + toast on Dexie failure. Replace `syncService` `console.error` with user-visible toast + retry.
+  - [ ] MEDIUM: Route-level `<ErrorBoundary>` UI with "Reset and report" button.
+  - [ ] MEDIUM: Console hygiene — `seedDemoData` logs behind `import.meta.env.DEV`; tiny `logger` no-op in prod (unless `?debug=1`).
+  - [ ] LOW: Delete unused empty dirs `src/components/empty-states/` and `src/components/forms/`.
+- [ ] **CRITICAL: Phase 3 — M10 closeout.**
+  - [ ] HIGH: New `relay/` workspace — Cloudflare Worker (~150 LOC) + Durable Objects (one DO per `householdId`) + HMAC join token. Optional Node.js fallback at `relay/node/`. `docs/RELAY_DEPLOY.md`.
+  - [ ] HIGH: **M10.5** — `OnboardingWizard` learns local-only vs sign-up branch; on sign-up, migrates existing local Dexie under new `householdId`; "Add this device" QR/code flow.
+  - [ ] HIGH: Recovery codes — 10 single-use codes generated on signup, KEK encrypted to each (Argon2id-derived), stored in Dexie. UI: print/save sheet + "I've saved these" gate. Settings → "Show new recovery codes" regenerates and invalidates the prior set. Vitest covers wrap/unwrap with a recovery code.
+  - [ ] HIGH: **M10.6** — emulator parity smoke (two Pixel 7 / API 34 instances) signup → seed data → second instance joins → convergence asserted.
+- [ ] **CRITICAL: Phase 4 — M11 joint household.**
+  - [ ] HIGH: **M11.1** invite codes — time-limited (24 h) HMAC tokens, single-use, embedded in QR.
+  - [ ] HIGH: **M11.2** accept flow — receiver pubkey exchange via relay; sender wraps household key to receiver's pubkey; relay never sees plaintext.
+  - [ ] HIGH: **M11.3** per-record ownership — surface existing `personId` in UI ("Created by Alice"), filter chips per member.
+  - [ ] HIGH: **M11.4** activity log — append-only Dexie table; one row per CRUD event with author + timestamp.
+  - [ ] HIGH: **M11.5** leave / unlink — rotates household key, re-wraps to remaining members, marks leaver's device revoked.
+  - [ ] MEDIUM: **M11.6** view-only mode (stretch) — read-only token variant.
+- [ ] **CRITICAL: Phase 5 — M12 release.**
+  - [ ] HIGH: `docs/THREAT_MODEL.md` — STRIDE pass on auth, sync, relay, joint household.
+  - [ ] HIGH: `docs/INSTALL.md` — sideload APK + PWA install (one page).
+  - [ ] HIGH: `docs/RECOVERY.md` — passphrase loss, lost device, suspicious access.
+  - [ ] HIGH: Release checklist in `RELEASE_NOTES.md`.
+  - [ ] HIGH: Tag `v1.0.0` → `android-release.yml` publishes signed APK + `mappings.txt` + checksums to GitHub Release.
+
+---
+
 - [x] **M10.4 wiring (2026-05-04).** `syncService` closure bug fixed (per-table observer scope); `bootstrap` treats empty `wsUrl` as local-only (no dead-relay dialing). New `SyncStatusBadge` (sidebar footer + mobile header) and `AuthSyncCard` (opt-in signup/login + relay URL + Start sync) in Settings. **174** tests pass.
 
 

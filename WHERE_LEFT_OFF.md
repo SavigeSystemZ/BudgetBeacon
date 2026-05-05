@@ -1,4 +1,42 @@
-# Where Left Off — **paused 2026-05-04**
+# Where Left Off — **active 2026-05-05** (Final Hardening pass)
+
+## 2026-05-05 — Final Hardening kickoff (Phase 0)
+
+User-approved master plan (`/home/whyte/.claude/plans/ethereal-hatching-bear.md`) drives the rest of the project to a tagged `v1.0.0` GitHub Release. Three scope decisions locked:
+
+- **Sync:** push **M10 + M11 + M12** to fully done (Cloudflare Worker relay, recovery codes, onboarding integration, joint household, release docs).
+- **APK target:** **hardened sideload APK published via GitHub Release.** No Play Store / AAB.
+- **Device QA:** **Android emulator** is accepted as the M9 stand-in (Pixel 7 / API 34). M9 checklist amended accordingly.
+
+Five-phase plan with hard gates between phases:
+
+| Phase | Scope | Gate |
+|---|---|---|
+| **0** | Truth-reset & contract refresh (this session) | Docs match code; commit `docs: phase-0 truth refresh` |
+| **1** | APK hardening: secrets→env, R8/ProGuard, manifest+FileProvider, version automation, plugin coverage, GH Actions release lane, distribution doc | Signed release APK boots in emulator; `git ls-files` has no keystore/password; `gradlew :app:lintRelease :app:assembleRelease` clean |
+| **2** | GUI corner-to-corner: design tokens, Skeleton/Toast/FormField primitives, BeaconModal focus trap + axe CI, responsive 320–1440, async/error UX, console hygiene | axe-core CI green; manual responsive walk at 5 widths; no `console.*` in prod bundle |
+| **3** | M10 closeout: relay package + recovery codes + OnboardingWizard sync branch + emulator parity smoke | Two emulator instances converge via relay |
+| **4** | M11: invite/accept, per-record ownership UI, activity log, leave + key rotation | 3-device parity + leave rotates keys |
+| **5** | M12 release: THREAT_MODEL / INSTALL / RECOVERY docs, release checklist, tag `v1.0.0` | Tag pushed; signed APK uploaded by `android-release.yml` |
+
+### Phase 0 deltas (this session)
+
+- `WHERE_LEFT_OFF.md` (this file), `TODO.md`, `PLAN.md`, `ROADMAP.md` — rewritten to reflect the approved plan; prior 2026-05-04 handoff retained below as historical record.
+- `_system/VALIDATION_GATES.md` — add APK gates (assemble:release, lint:release, secrets-in-tree scan, axe a11y, emulator parity smoke).
+- `docs/M9_ANDROID_QA_CHECKLIST.md` — emulator (Pixel 7 / API 34) accepted as primary M9 verification surface; physical-device run kept as optional stretch.
+- Memory note `project_completion_plan.md` — refreshed to reflect 2026-05-05 final-hardening drive.
+
+### Validation evidence (Phase 0)
+
+- Phase 0 is doc-only. `npm run validate` baseline carried from `6637da9`: lint + typecheck clean, **174** Vitest tests pass, prod build clean. `npm run audit:controls` baseline `setTimeout=5 mathRandom=0 alert=0 emptyOnClick=0`.
+
+### Next agent — pick up from Phase 1
+
+1. Read the approved plan: `/home/whyte/.claude/plans/ethereal-hatching-bear.md`.
+2. Phase 1 entry point: `android/app/build.gradle` (kill the hardcoded `beacon_secure_123` keystore password) and `.gitignore` (add `*.keystore`, `keystore.properties`, `*.jks`).
+3. Do not regress the audit-controls baseline. New release-only timer? Update `tools/audit-controls.baseline.json` in the same commit and explain.
+
+---
 
 ## 2026-05-04 continuation (M10.4 wiring + sync hardening)
 

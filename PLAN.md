@@ -37,7 +37,23 @@
 7. Create `docs/GUI_COMPLETION_MAP.md` with route-by-route classification + file:line evidence.
 8. Create `docs/INTEGRATIONS_STRATEGY.md` with phased real-integration plan.
 
-## Active execution slice (post-M9-partial, 2026-04-28)
+## Active execution slice (2026-05-05) — Final Hardening
+
+User-approved master plan: `/home/whyte/.claude/plans/ethereal-hatching-bear.md`. Five sequential phases, hard validation gate between each, terminal artifact is a tagged `v1.0.0` GitHub Release with a signed sideload APK.
+
+- **Scope decisions locked:** push M10 + M11 + M12 to done; hardened sideload APK published via GitHub Release (no Play Store / AAB); Android emulator (Pixel 7 / API 34) is the M9 stand-in.
+- **Phase 0 (current, doc-only):** Truth-reset across `WHERE_LEFT_OFF.md`, `TODO.md`, this file, `ROADMAP.md`, `_system/VALIDATION_GATES.md`, `docs/M9_ANDROID_QA_CHECKLIST.md`, and the `project_completion_plan.md` memory. Single `docs:` commit.
+- **Phase 1:** APK hardening — secrets out of source, R8/ProGuard, manifest + FileProvider tightening, version automation, Capacitor plugin coverage, GH Actions release lane, distribution doc.
+- **Phase 2:** GUI corner-to-corner — design tokens, Skeleton/Toast/FormField primitives, BeaconModal focus trap + axe CI, responsive audit (320–1440), async/error UX, console hygiene.
+- **Phase 3:** M10 closeout — Cloudflare Worker relay + recovery codes + `OnboardingWizard` sync branch + emulator parity smoke.
+- **Phase 4:** M11 joint household — invite/accept, per-record ownership UI, activity log, leave + key rotation, view-only mode (stretch).
+- **Phase 5:** M12 release — `THREAT_MODEL.md`, `INSTALL.md`, `RECOVERY.md`, release checklist, tag `v1.0.0`.
+
+Validation per phase boundary: `npm run validate` + `npm run audit:controls` green, plus the new gates added to `_system/VALIDATION_GATES.md` (assemble:release, lint:release, secrets-in-tree scan, axe a11y, emulator parity smoke).
+
+---
+
+## Historical execution slice (post-M9-partial, 2026-04-28)
 
 M0–M8 closed. M9 partially closed (code-split + Bridge stub done; real-device QA needs hardware).
 
