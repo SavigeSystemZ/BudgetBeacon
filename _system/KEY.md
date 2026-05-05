@@ -2,7 +2,7 @@
 
 This file is the exhaustive agent-facing key for the installable AIAST surface.
 
-It covers 542 managed files and is generated from the canonical managed-file inventory.
+It covers 549 managed files and is generated from the canonical managed-file inventory.
 
 ## How To Use This File
 
@@ -62,6 +62,7 @@ These files hold the repo's active execution, continuity, design, validation, an
 These files install, update, repair, validate, and generate the AIAST operating layer.
 
 - `bootstrap/README.md` - Operator guide to the install, repair, validation, and generation scripts. Read before running lifecycle scripts or debugging bootstrap flows.
+- `bootstrap/agent-isolation.sh` - Bootstrap command for Agent Isolation. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/apply-starter-blueprint.sh` - Bootstrap command for Apply Starter Blueprint. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-agent-orchestration.sh` - Bootstrap command for Check Agent Orchestration. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-agent-surface-integrity.sh` - Bootstrap command for Check Agent Surface Integrity. Run when performing the named install, repair, validation, emission, or generation task.
@@ -211,6 +212,11 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/AGENT_SURFACE_TAXONOMY.md` - Core operating-system reference for Agent Surface Taxonomy. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AI_RULES.md` - Core operating-system reference for AI Rules. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/API_DESIGN_STANDARDS.md` - Core operating-system reference for API Design Standards. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md` - Core operating-system reference for App Builder Domain Adaptation Rails. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md` - Core operating-system reference for App Builder Meta System Orchestration. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` - Core operating-system reference for App Builder Regression And Benchmark Protocol. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md` - Core operating-system reference for App Builder Release Readiness Standard. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md` - Core operating-system reference for App Builder Security And Auto Correction Contract. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/ARCHITECTURE_DIAGRAM.md` - ASCII box diagrams of the three-layer model, loading flow, adapter pipeline, and validation chain. Read when understanding the system architecture or explaining it to others.
 - `_system/AUTH_AND_ONBOARDING_PATTERNS.md` - Core operating-system reference for Auth And Onboarding Patterns. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AUTH_RECOVERY_PROTOCOL.md` - Core operating-system reference for Auth Recovery Protocol. Load when the task touches that named contract, policy, guide, or manifest.
@@ -390,6 +396,7 @@ These files support prompt emission, reusable prompt templates, and prompt packs
 - `_system/prompt-packs/M14_SECURITY_HARDENING.md` - Prompt-pack asset for M14 Security Hardening. Load when generating prompts for the matching workflow or role.
 - `_system/prompt-packs/M15_WHOLE_REPO_ANALYSIS.md` - Prompt-pack asset for M15 Whole Repo Analysis. Load when generating prompts for the matching workflow or role.
 - `_system/prompt-packs/M16_PLATFORM_PRODUCT_EXPANSION.md` - Prompt-pack asset for M16 Platform Product Expansion. Load when generating prompts for the matching workflow or role.
+- `_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md` - Prompt-pack asset for M17 App Builder Meta System Execution. Load when generating prompts for the matching workflow or role.
 - `_system/prompt-packs/M1_FEATURE_DELIVERY.md` - Prompt-pack asset for M1 Feature Delivery. Load when generating prompts for the matching workflow or role.
 - `_system/prompt-packs/M2_DEBUG_AND_STABILIZE.md` - Prompt-pack asset for M2 Debug And Stabilize. Load when generating prompts for the matching workflow or role.
 - `_system/prompt-packs/M3_REVIEW_AND_RELEASE.md` - Prompt-pack asset for M3 Review And Release. Load when generating prompts for the matching workflow or role.

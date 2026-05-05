@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- **Enhancement — App-builder meta-system tranche A-D:** added and integrated four new installable contracts:
+  - `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md`
+  - `_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md`
+  - `_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md`
+  - `_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md`
+  These are wired into `_system/CONTEXT_INDEX.md`, `_system/LOAD_ORDER.md`,
+  `_system/PROMPTS_INDEX.md`, and prompt pack
+  `_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md` so
+  app-builder execution is deterministic, domain-adaptive, containment-aware,
+  bounded for auto-correction, and release-gated.
+- **Validation proof (maintainer host, run as `whyte`):**
+  - `bash TEMPLATE/bootstrap/validate-instruction-layer.sh TEMPLATE` -> pass
+  - `bash TEMPLATE/bootstrap/check-system-awareness.sh TEMPLATE` -> pass
+  - `bash TEMPLATE/bootstrap/system-doctor.sh TEMPLATE` -> pass
+  - `bash TEMPLATE/bootstrap/validate-system.sh TEMPLATE --strict` -> pass
+  - `bash _TEMPLATE_FACTORY/run-automation-lane.sh` -> `automation_lane_ok`
+  - `bash _MOS_TEMPLATE_FACTORY/run-automation-lane.sh` -> `mos_template_validation_ok`
+
 - **Enhancement — Downstream preservation + sync notice:** added `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` (master template vs app repo, preserve-first recap, agent health gate), `_system/TEMPLATE_SYNC_NOTICE.md` baseline, `bootstrap/clear-template-sync-notice.sh`, and `aiaast_emit_template_sync_notice` in `bootstrap/lib/aiaast-lib.sh`. Successful non-dry-run `init-project.sh`, `install-missing-files.sh`, and `update-template.sh` runs now write `_system/TEMPLATE_SYNC_NOTICE.md` with **PENDING_HEALTH_CHECK** and append `_system/history/template-sync-events.jsonl`. `LOAD_ORDER.md`, `CONTEXT_INDEX.md`, `UPGRADE_AND_DRIFT_POLICY.md`, `TEMPLATE_CHANGE_IMPACT_POLICY.md`, and `AGENT_INIT_CONVERGENCE.md` cross-link the policy. Maintainer boundary doc: `_META_AGENT_SYSTEM/DOWNSTREAM_ROLLOUT_PRESERVATION_AND_MASTER_REPO_BOUNDARY.md`.
 - **Fix — Template sync history vs managed-file registry:** `_system/history/template-sync-events.jsonl` is classified as stateful/runtime-only, and `_system/history/*` is omitted from `aiaast_print_managed_files` so `check-system-awareness` does not report “Managed file missing from registry” on the same `init-project` run that creates the JSONL append-only log (before a later registry refresh).
 - **Fix — Template sync notice vs integrity / doctor:** `_system/TEMPLATE_SYNC_NOTICE.md` is treated as local volatile state for integrity manifest purposes (bootstrap rewrites it after install/update), so `verify-integrity` no longer false-fails on fresh downstream repos. **`system-doctor.sh`:** corrected `check-swarm-fleet` control flow so a failed swarm check sets `failed=1` without being masked by the `|| failed=1` idiom inside the `if` condition.

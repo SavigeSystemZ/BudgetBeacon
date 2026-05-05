@@ -436,7 +436,7 @@
       "category": "system-metadata",
       "kind": "file",
       "path": "AIAST_CHANGELOG.md",
-      "size_bytes": 56550
+      "size_bytes": 57724
     },
     {
       "category": "system-metadata",
@@ -651,6 +651,36 @@
     {
       "category": "system-core",
       "kind": "file",
+      "path": "_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md",
+      "size_bytes": 2197
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md",
+      "size_bytes": 3214
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md",
+      "size_bytes": 2359
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md",
+      "size_bytes": 2019
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md",
+      "size_bytes": 2474
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
       "path": "_system/ARCHITECTURE_DIAGRAM.md",
       "size_bytes": 5703
     },
@@ -850,13 +880,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 46882
+      "size_bytes": 54396
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/KEY.md",
-      "size_bytes": 89067
+      "size_bytes": 90491
     },
     {
       "category": "system-core",
@@ -1060,7 +1090,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/REPO_OPERATING_PROFILE.md",
-      "size_bytes": 5048
+      "size_bytes": 5073
     },
     {
       "category": "system-core",
@@ -1150,7 +1180,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 78794
+      "size_bytes": 79368
     },
     {
       "category": "system-core",
@@ -1168,7 +1198,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/TEMPLATE_SYNC_NOTICE.md",
-      "size_bytes": 530
+      "size_bytes": 424
     },
     {
       "category": "system-core",
@@ -1342,7 +1372,7 @@
       "category": "system-context",
       "kind": "file",
       "path": "_system/context/CURRENT_STATUS.md",
-      "size_bytes": 1810
+      "size_bytes": 1819
     },
     {
       "category": "system-context",
@@ -1773,6 +1803,12 @@
     {
       "category": "prompting",
       "kind": "file",
+      "path": "_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md",
+      "size_bytes": 2645
+    },
+    {
+      "category": "prompting",
+      "kind": "file",
       "path": "_system/prompt-packs/M1_FEATURE_DELIVERY.md",
       "size_bytes": 1596
     },
@@ -1870,7 +1906,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/repo-operating-profile.json",
-      "size_bytes": 5551
+      "size_bytes": 5618
     },
     {
       "category": "review-playbook",
@@ -2069,6 +2105,12 @@
       "kind": "file",
       "path": "bootstrap/README.md",
       "size_bytes": 15166
+    },
+    {
+      "category": "bootstrap",
+      "kind": "file",
+      "path": "bootstrap/agent-isolation.sh",
+      "size_bytes": 1754
     },
     {
       "category": "bootstrap",
@@ -3253,7 +3295,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 542,
+  "managed_file_count": 549,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.23.0"
