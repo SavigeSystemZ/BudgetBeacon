@@ -27,6 +27,7 @@ import {
   CANNOT_UNDONE_SHORT,
 } from "../lib/fullDatabaseWipeCopy";
 import { clearDatabase } from "../db/seedDemoData";
+import { CardSkeleton, MetricSkeleton } from "../components/ui/Skeleton";
 
 export default function DashboardRoute() {
   const [wipeOpen, setWipeOpen] = useState(false);
@@ -65,7 +66,28 @@ export default function DashboardRoute() {
     window.location.reload();
   };
 
-  if (!summary) return <div className="flex h-screen items-center justify-center text-primary font-black uppercase italic animate-pulse">Synchronizing Cockpit...</div>;
+  if (!summary) {
+    return (
+      <div
+        className="space-y-6 pb-20 px-4 md:px-0"
+        role="status"
+        aria-label="Loading Dashboard"
+      >
+        <CardSkeleton rows={1} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <MetricSkeleton />
+          <MetricSkeleton />
+          <MetricSkeleton />
+          <MetricSkeleton />
+        </div>
+        <CardSkeleton rows={4} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <CardSkeleton rows={3} />
+          <CardSkeleton rows={3} />
+        </div>
+      </div>
+    );
+  }
 
   const burnBarPct = Math.min(100, summary.payPathPressureRatio * 100);
   const stashBarPct = Math.min(Math.max(0, 100 - burnBarPct), summary.savingsRate * 100);

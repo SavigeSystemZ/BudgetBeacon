@@ -1,5 +1,14 @@
 # Where Left Off — **active 2026-05-05** (Final Hardening pass)
 
+## 2026-05-05 (late) — Phase 2 per-route skeleton sweep (Dashboard / Ledger / Reports)
+
+- **Dashboard / Ledger / Reports first-load shows layout-matching skeletons** instead of `animate-pulse` text spinners ("Synchronizing Cockpit…", "Opening Ledger…", "Compiling Report Telemetry…"). Each replacement renders a `role="status"` aria region with `aria-label` and a skeleton stack that mirrors the final route's chrome (headers + metric/table/card grid), preventing visual layout shift between loading state and ready state.
+  - `DashboardRoute.tsx`: header `CardSkeleton` + 4 `MetricSkeleton` + body `CardSkeleton` + 2-up grid of `CardSkeleton`.
+  - `LedgerRoute.tsx`: header `CardSkeleton` + 5-row `TableRowSkeleton` block in a card-shaped wrapper.
+  - `ReportsRoute.tsx`: header `CardSkeleton` + 5-tab strip + body `CardSkeleton`.
+- **Validation:** `npm run validate` green; **174** tests still pass; `tsc -b` clean; eslint clean; prod build clean.
+- **Remainder of useLiveQuery skeleton sweep:** ~12 routes still have bare-text loading states — Income, PayPath, StashMap, DebtCenter, Credit, TaxTaxi, DocumentStore, Subscriptions, Insurance, BeaconBridge, BudgetMissionControl, Settings. Same mechanical pattern, one route per future commit.
+
 ## 2026-05-05 (late) — Phase 2 Dexie error toast bridge
 
 - **New `src/components/db/DexieErrorToastBridge.tsx`.** Mounted inside `<ToastProvider>` in `App.tsx` next to `SyncToastBridge`. Listens at three boundaries:

@@ -14,6 +14,7 @@ import { cn } from "../lib/utils";
 import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
 import { EmptyState } from "../components/ui/EmptyState";
 import { logger } from "../lib/logger";
+import { CardSkeleton } from "../components/ui/Skeleton";
 
 type ReportTab = "monthly" | "debt" | "savings" | "subscriptions" | "documents";
 
@@ -51,7 +52,21 @@ export default function ReportsRoute() {
   const [exportStatus, setExportStatus] = useState<string | null>(null);
 
   if (!incomes || !bills || !debts || !goals || !transactions || !subscriptions || !insurance || !documents) {
-    return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic text-center mt-20">Compiling Report Telemetry...</div>;
+    return (
+      <div
+        className="space-y-6 pb-20 px-4 md:px-0 max-w-5xl mx-auto"
+        role="status"
+        aria-label="Compiling reports"
+      >
+        <CardSkeleton rows={1} />
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <CardSkeleton key={i} rows={1} className="!p-3" />
+          ))}
+        </div>
+        <CardSkeleton rows={6} />
+      </div>
+    );
   }
 
   const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions, subscriptions, insurance);

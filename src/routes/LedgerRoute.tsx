@@ -23,6 +23,7 @@ import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { featureFlags } from "../lib/flags/featureFlags";
 import { LedgerImportFlow } from "../components/import/LedgerImportFlow";
+import { CardSkeleton, TableRowSkeleton } from "../components/ui/Skeleton";
 import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 const formSchema = transactionSchema.omit({ id: true, householdId: true, createdAt: true, updatedAt: true });
@@ -71,7 +72,24 @@ export default function LedgerRoute() {
       .slice(0, 3);
   }, [transactions, monthPrefix]);
 
-  if (!transactions) return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic">Opening Ledger...</div>;
+  if (!transactions) {
+    return (
+      <div
+        className="space-y-6 pb-20 px-4 md:px-0"
+        role="status"
+        aria-label="Opening Ledger"
+      >
+        <CardSkeleton rows={1} />
+        <div className="rounded-3xl border border-primary/10 bg-card/60 overflow-hidden">
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+          <TableRowSkeleton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
