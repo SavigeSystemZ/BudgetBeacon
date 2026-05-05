@@ -134,7 +134,7 @@ export default function IncomeRoute() {
                     <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">{persons?.find(p => p.id === inc.personId)?.name?.[0]}</div>
                     <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">{persons?.find(p => p.id === inc.personId)?.name}</span>
                   </div>
-                  <div className={cn("text-[8px] font-black uppercase px-2 py-1 rounded-full border", inc.isActive ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-muted text-muted-foreground border-transparent")}>
+                  <div className={cn("text-[8px] font-black uppercase px-2 py-1 rounded-full border", inc.isActive ? "bg-success/10 text-success border-success/20" : "bg-muted text-muted-foreground border-transparent")}>
                     {inc.isActive ? "Active Stream" : "Inactive"}
                   </div>
                 </div>

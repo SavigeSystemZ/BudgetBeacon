@@ -122,7 +122,7 @@ export default function LedgerRoute() {
                       {t.type === "expense" ? (
                         <div className="h-10 w-10 rounded-2xl bg-destructive/10 flex items-center justify-center text-destructive border border-destructive/20 shadow-inner"><ArrowDownCircle className="h-5 w-5" /></div>
                       ) : (
-                        <div className="h-10 w-10 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20 shadow-inner"><ArrowUpCircle className="h-5 w-5" /></div>
+                        <div className="h-10 w-10 rounded-2xl bg-success/10 flex items-center justify-center text-success border border-success/20 shadow-inner"><ArrowUpCircle className="h-5 w-5" /></div>
                       )}
                       <div>
                         <div className="font-black italic text-sm truncate max-w-[200px] uppercase tracking-tighter">{t.payee}</div>
@@ -130,7 +130,7 @@ export default function LedgerRoute() {
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
-                      <div className={cn("text-xl font-black italic tracking-tighter", t.type === "expense" ? "text-foreground" : "text-green-500")}>
+                      <div className={cn("text-xl font-black italic tracking-tighter", t.type === "expense" ? "text-foreground" : "text-success")}>
                         {shown.sign}
                         {shown.currencyBody}
                       </div>
@@ -175,9 +175,9 @@ export default function LedgerRoute() {
               </CardContent>
             </GlassCard>
           ) : (
-            <GlassCard className="border-amber-400/20 bg-amber-400/5">
+            <GlassCard className="border-warning/20 bg-warning/5">
               <CardHeader className="pb-3 flex flex-row items-center gap-2">
-                <Database className="h-4 w-4 text-amber-400" />
+                <Database className="h-4 w-4 text-warning" />
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest">Bank Import</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">

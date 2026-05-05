@@ -41,7 +41,7 @@ export function MetricCard({
               <span
                 className={cn(
                   "font-medium",
-                  trend === "up" ? "text-green-600 dark:text-green-400" : "",
+                  trend === "up" ? "text-success dark:text-success" : "",
                   trend === "down" ? "text-destructive" : "",
                   trend === "neutral" ? "text-muted-foreground" : ""
                 )}

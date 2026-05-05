@@ -113,9 +113,9 @@ export default function InsuranceInspectRoute() {
           </GlassCard>
 
           {!featureFlags.insuranceMarketScrape && (
-            <GlassCard className="border-amber-400/20 bg-amber-400/5">
+            <GlassCard className="border-warning/20 bg-warning/5">
               <CardHeader className="pb-3 flex flex-row items-center gap-2">
-                <ShieldAlert className="h-4 w-4 text-amber-400" />
+                <ShieldAlert className="h-4 w-4 text-warning" />
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest">Market Sweep</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">

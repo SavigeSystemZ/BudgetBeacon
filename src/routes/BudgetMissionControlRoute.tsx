@@ -75,7 +75,7 @@ export default function BudgetMissionControlRoute() {
             <div className="space-y-3">
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Monthly Inflow (Fill Rate)</span>
-                <span className="text-xl font-black italic text-green-500">${summary.totalMonthlyIncome.toLocaleString()}</span>
+                <span className="text-xl font-black italic text-success">${summary.totalMonthlyIncome.toLocaleString()}</span>
               </div>
               <Progress value={100} className="h-4 bg-primary/5 shadow-inner rounded-full" />
             </div>
@@ -97,7 +97,7 @@ export default function BudgetMissionControlRoute() {
             <div className="space-y-3">
               <div className="flex justify-between items-end">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Strategic Allocation (Stash Rate)</span>
-                <span className="text-xl font-black italic text-blue-500">${summary.totalStashMapScheduled.toLocaleString()}</span>
+                <span className="text-xl font-black italic text-info">${summary.totalStashMapScheduled.toLocaleString()}</span>
               </div>
               <Progress
                 value={pctOfIncome(summary.totalStashMapScheduled, summary.totalMonthlyIncome)}

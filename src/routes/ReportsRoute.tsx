@@ -196,9 +196,9 @@ function MonthlyReport({
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <Stat label="Aggregate Inflow" value={summary.totalMonthlyIncome} color="text-green-500" />
+        <Stat label="Aggregate Inflow" value={summary.totalMonthlyIncome} color="text-success" />
         <Stat label="Tactical Outflow" value={summary.requiredOutflow} color="text-destructive" border />
-        <Stat label="Strategic Surplus" value={summary.leftoverAfterSavings} color="text-blue-500" align="right" />
+        <Stat label="Strategic Surplus" value={summary.leftoverAfterSavings} color="text-info" align="right" />
       </div>
       <div className="space-y-6">
         <h3 className="text-sm font-black uppercase italic border-b border-primary/5 pb-2 text-primary">Mission Telemetry Details</h3>
@@ -314,8 +314,8 @@ function SavingsReport({ goals }: { goals: { id: string; label: string; targetAm
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <Stat label="Total Target" value={totalTarget} color="text-blue-500" />
-        <Stat label="Currently Saved" value={totalCurrent} color="text-green-500" border />
+        <Stat label="Total Target" value={totalTarget} color="text-info" />
+        <Stat label="Currently Saved" value={totalCurrent} color="text-success" border />
         <Stat label="Monthly Allocation" value={totalMonthly} color="text-foreground" align="right" />
       </div>
       <div className="space-y-3">

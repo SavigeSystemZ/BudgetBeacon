@@ -28,7 +28,7 @@ export function BudgetHealthScoreCard({
   );
 
   const scoreColor =
-    overallScore >= 80 ? "text-emerald-500" : overallScore >= 60 ? "text-amber-500" : "text-destructive";
+    overallScore >= 80 ? "text-success" : overallScore >= 60 ? "text-warning" : "text-destructive";
 
   const scoreLabel =
     overallScore >= 90

@@ -108,8 +108,8 @@ export function AuthSyncCard() {
       <CardContent className="pt-6 space-y-4">
         {isAuthed ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm">
-              <div className="font-bold text-emerald-500">Signed in as {activeAccount?.email}</div>
+            <div className="rounded-2xl border border-success/20 bg-success/5 p-4 text-sm">
+              <div className="font-bold text-success">Signed in as {activeAccount?.email}</div>
               <div className="text-xs text-muted-foreground mt-1">
                 Household key is in memory only. Logging out clears it; local Dexie data is untouched.
               </div>
@@ -196,7 +196,7 @@ export function AuthSyncCard() {
         )}
 
         {error && <div role="alert" className="text-xs font-bold text-destructive">{error}</div>}
-        {info && <div role="status" className="text-xs font-bold text-emerald-500">{info}</div>}
+        {info && <div role="status" className="text-xs font-bold text-success">{info}</div>}
       </CardContent>
     </GlassCard>
   );

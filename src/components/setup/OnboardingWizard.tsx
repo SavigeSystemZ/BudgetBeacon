@@ -262,8 +262,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           {/* Complete Step */}
           {step === "complete" && (
             <div className="space-y-4 text-center">
-              <div className="h-16 w-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
-                <Sparkles className="h-8 w-8 text-green-500" />
+              <div className="h-16 w-16 rounded-full bg-success/20 flex items-center justify-center mx-auto">
+                <Sparkles className="h-8 w-8 text-success" />
               </div>
               <h3 className="font-semibold text-lg">Setup Complete!</h3>
               <p className="text-sm text-muted-foreground">

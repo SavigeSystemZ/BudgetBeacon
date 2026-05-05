@@ -235,7 +235,7 @@ function StrategyCard({
         Total paid: {fmt(result.totalPaid)}
       </div>
       {savedVsMin !== undefined && savedVsMin > 0 && (
-        <div className="text-[10px] font-black text-green-600">
+        <div className="text-[10px] font-black text-success">
           Saves {fmt(savedVsMin)} vs minimums
         </div>
       )}

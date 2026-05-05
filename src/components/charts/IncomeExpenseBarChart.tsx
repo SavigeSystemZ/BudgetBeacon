@@ -57,7 +57,7 @@ export function IncomeExpenseBarChart({ transactions, months = 6, className }: I
                   return (
                     <div className="rounded-2xl border border-white/10 bg-background/95 p-3 text-xs shadow-xl backdrop-blur-md">
                       <p className="mb-2 font-bold text-foreground">{row.fullMonth}</p>
-                      <p className="text-emerald-500">Income: ${row.income.toLocaleString()}</p>
+                      <p className="text-success">Income: ${row.income.toLocaleString()}</p>
                       <p className="text-rose-500">Expenses: ${row.expenses.toLocaleString()}</p>
                       <hr className="my-2 border-border" />
                       <p className={row.net >= 0 ? "font-semibold text-primary" : "font-semibold text-destructive"}>
@@ -74,7 +74,7 @@ export function IncomeExpenseBarChart({ transactions, months = 6, className }: I
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
           <span className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-600" />
+            <span className="h-2.5 w-2.5 rounded-full bg-success" />
             Income
           </span>
           <span className="flex items-center gap-2">

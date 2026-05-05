@@ -24,8 +24,8 @@ export function SyncStatusBadge({ compact = false, className }: { compact?: bool
     : WifiOff;
 
   const tone =
-    status === "connected" ? "text-emerald-500"
-    : status === "connecting" ? "text-amber-500"
+    status === "connected" ? "text-success"
+    : status === "connecting" ? "text-warning"
     : status === "error" ? "text-destructive"
     : status === "disconnected" ? "text-muted-foreground"
     : "text-primary";

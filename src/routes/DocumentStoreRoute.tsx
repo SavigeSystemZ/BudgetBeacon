@@ -168,15 +168,15 @@ export default function DocumentStoreRoute() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="space-y-6 lg:col-span-1">
           {/* Scavenge / OCR panel */}
-          <GlassCard className={featureFlags.ocrLocal ? "border-green-400/20 bg-green-400/5" : "border-amber-400/20 bg-amber-400/5"}>
+          <GlassCard className={featureFlags.ocrLocal ? "border-success/20 bg-success/5" : "border-warning/20 bg-warning/5"}>
             <CardHeader className="pb-3 flex flex-row items-center gap-2">
-              <Zap className={`h-5 w-5 ${featureFlags.ocrLocal ? "text-green-400" : "text-amber-400"}`} />
+              <Zap className={`h-5 w-5 ${featureFlags.ocrLocal ? "text-success" : "text-warning"}`} />
               <CardTitle className="text-[10px] font-black uppercase tracking-widest">Document Extraction</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {featureFlags.ocrLocal ? (
                 <>
-                  <div className="text-[10px] font-black text-green-600">✓ LIVE: Tesseract.js OCR</div>
+                  <div className="text-[10px] font-black text-success">✓ LIVE: Tesseract.js OCR</div>
                   <p className="text-[10px] text-muted-foreground leading-relaxed">
                     Click "Scavenge" on any document to extract income, bill, or tax data with per-field confidence indicators. Edit and approve before committing to records.
                   </p>

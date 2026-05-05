@@ -97,8 +97,8 @@ function VaultExtractionReviewBody({
 
   const confidenceColor = (conf?: number) => {
     if (!conf) return "text-muted-foreground";
-    if (conf >= 0.9) return "text-green-500";
-    if (conf >= 0.7) return "text-yellow-500";
+    if (conf >= 0.9) return "text-success";
+    if (conf >= 0.7) return "text-warning";
     return "text-orange-500";
   };
 
@@ -111,7 +111,7 @@ function VaultExtractionReviewBody({
     <div className="space-y-6 max-h-[70vh] overflow-y-auto">
       {/* Header: extraction summary */}
       <div className="flex items-center gap-3 pb-4 border-b border-primary/10">
-        <Zap className="h-5 w-5 text-amber-400" />
+        <Zap className="h-5 w-5 text-warning" />
         <div className="flex-1">
           <div className="font-semibold text-sm">Extraction Results</div>
           <div className="text-[10px] text-muted-foreground">
@@ -125,7 +125,7 @@ function VaultExtractionReviewBody({
 
       {/* Raw text fallback */}
       {extraction.fields.length === 0 && extraction.rawText && (
-        <GlassCard className="bg-amber-400/5 border-amber-400/20">
+        <GlassCard className="bg-warning/5 border-warning/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs">Raw OCR Text (No Fields Detected)</CardTitle>
           </CardHeader>

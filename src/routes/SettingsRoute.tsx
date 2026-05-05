@@ -212,7 +212,7 @@ export default function SettingsRoute() {
   };
 
   const themes: { id: Theme; label: string; color: string }[] = [
-    { id: "glass", label: "Deep Glass", color: "bg-blue-400" },
+    { id: "glass", label: "Deep Glass", color: "bg-info" },
     { id: "oceanic", label: "Oceanic Drift", color: "bg-cyan-600" },
     { id: "cyber", label: "Cyber Neon", color: "bg-fuchsia-500" },
     { id: "forest", label: "Forest Whisper", color: "bg-emerald-700" },
@@ -220,7 +220,7 @@ export default function SettingsRoute() {
     { id: "midnight", label: "Midnight Sky", color: "bg-slate-950" },
     { id: "royal", label: "Royal Velvet", color: "bg-violet-700" },
     { id: "slate", label: "Slate Industrial", color: "bg-slate-500" },
-    { id: "emerald", label: "Pure Emerald", color: "bg-green-500" },
+    { id: "emerald", label: "Pure Emerald", color: "bg-success" },
     { id: "minimal", label: "Minimalist", color: "bg-white border" },
   ];
 
@@ -248,7 +248,7 @@ export default function SettingsRoute() {
         </div>
         <div className="flex items-center gap-3">
           {savedFlash && (
-            <span role="status" className="text-xs font-bold text-green-500 uppercase tracking-widest">
+            <span role="status" className="text-xs font-bold text-success uppercase tracking-widest">
               ✓ Saved
             </span>
           )}
@@ -301,7 +301,7 @@ export default function SettingsRoute() {
               </div>
             </div>
             {importStatus === "loading" && <p role="status" className="text-xs text-muted-foreground font-bold">Reading backup…</p>}
-            {importStatus === "success" && <p role="status" className="text-xs text-green-500 font-bold">✓ Backup imported successfully.</p>}
+            {importStatus === "success" && <p role="status" className="text-xs text-success font-bold">✓ Backup imported successfully.</p>}
             {importStatus === "error" && <p role="alert" className="text-xs text-destructive font-bold">✕ {errorMessage}</p>}
 
             {pendingImport && (
@@ -437,7 +437,7 @@ export default function SettingsRoute() {
                       onChange={(e) => setLocalEndpoint(e.target.value)}
                       placeholder="https://api.openai.com (default)"
                     />
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter text-yellow-600">Any OpenAI-compatible endpoint (Groq, Together, OpenRouter, LM Studio, llama.cpp).</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter text-warning">Any OpenAI-compatible endpoint (Groq, Together, OpenRouter, LM Studio, llama.cpp).</p>
                   </div>
                 </div>
               )}
@@ -454,11 +454,11 @@ export default function SettingsRoute() {
 
             <div className="flex flex-wrap items-center gap-3">
               <Button onClick={handleTestConnection} variant="outline" size="sm" className="gap-2" disabled={healthState.status === "testing"}>
-                {healthState.status === "testing" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : healthState.status === "ok" ? <Wifi className="h-3.5 w-3.5 text-green-500" /> : healthState.status === "error" ? <WifiOff className="h-3.5 w-3.5 text-destructive" /> : <Wifi className="h-3.5 w-3.5" />}
+                {healthState.status === "testing" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : healthState.status === "ok" ? <Wifi className="h-3.5 w-3.5 text-success" /> : healthState.status === "error" ? <WifiOff className="h-3.5 w-3.5 text-destructive" /> : <Wifi className="h-3.5 w-3.5" />}
                 Test Connection
               </Button>
               {healthState.status === "ok" && (
-                <span role="status" className="text-[11px] font-bold text-green-600">✓ {healthState.message}</span>
+                <span role="status" className="text-[11px] font-bold text-success">✓ {healthState.message}</span>
               )}
               {healthState.status === "error" && (
                 <span role="alert" className="text-[11px] font-bold text-destructive">✕ {healthState.message}</span>
@@ -581,9 +581,9 @@ function RestoreDiffPanel({
   const totalLive = COUNT_LABELS.reduce((s, c) => s + (liveCounts[c.key] || 0), 0);
 
   return (
-    <div role="dialog" aria-label="Confirm restore" className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-5 space-y-4">
+    <div role="dialog" aria-label="Confirm restore" className="rounded-2xl border border-warning/30 bg-warning/5 p-5 space-y-4">
       <div>
-        <h3 className="text-sm font-black uppercase italic tracking-tighter text-amber-500">Confirm Restore</h3>
+        <h3 className="text-sm font-black uppercase italic tracking-tighter text-warning">Confirm Restore</h3>
         <p className="text-[11px] text-muted-foreground mt-1">
           From <strong className="text-foreground">{filename}</strong> · backup format v{parsed.version} · exported{" "}
           {parsed.exportedAt.split("T")[0]}.
@@ -591,7 +591,7 @@ function RestoreDiffPanel({
       </div>
 
       <p className="text-xs text-muted-foreground leading-relaxed">
-        Importing will <strong className="text-amber-500">REPLACE all current data</strong> with the contents of this backup.
+        Importing will <strong className="text-warning">REPLACE all current data</strong> with the contents of this backup.
         Compare row counts before confirming:
       </p>
 
@@ -612,7 +612,7 @@ function RestoreDiffPanel({
             >
               <span>{c.label}</span>
               <span className="text-right tabular-nums">{cur}</span>
-              <span className={`text-right tabular-nums ${changed ? (bak > cur ? "text-green-500" : bak < cur ? "text-destructive" : "") : ""}`}>{bak}</span>
+              <span className={`text-right tabular-nums ${changed ? (bak > cur ? "text-success" : bak < cur ? "text-destructive" : "") : ""}`}>{bak}</span>
             </div>
           );
         })}
@@ -627,7 +627,7 @@ function RestoreDiffPanel({
         <Button variant="outline" onClick={onCancel} className="flex-1">
           Cancel
         </Button>
-        <Button onClick={onConfirm} className="flex-[2] bg-amber-500 hover:bg-amber-600 text-white">
+        <Button onClick={onConfirm} className="flex-[2] bg-warning hover:bg-warning text-white">
           Replace data with backup
         </Button>
       </div>

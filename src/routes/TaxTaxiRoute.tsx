@@ -211,7 +211,7 @@ export default function TaxTaxiRoute() {
                             <div className="text-xl font-black italic tracking-tighter text-foreground">${record.estimatedTaxLiability.toLocaleString()} / <span className="text-primary">${record.totalWithheld.toLocaleString()}</span></div>
                           </div>
                         </div>
-                        <div className={cn("p-3 rounded-2xl text-center font-black italic text-xs border shadow-inner uppercase tracking-widest", diff >= 0 ? "bg-green-500/5 border-green-500/20 text-green-500" : "bg-destructive/5 border-destructive/20 text-destructive")}>
+                        <div className={cn("p-3 rounded-2xl text-center font-black italic text-xs border shadow-inner uppercase tracking-widest", diff >= 0 ? "bg-success/5 border-success/20 text-success" : "bg-destructive/5 border-destructive/20 text-destructive")}>
                           {diff >= 0 ? "Estimated Refund: " : "Telemetry Owed: "}${Math.abs(diff).toLocaleString()}
                         </div>
                       </CardContent>

@@ -29,7 +29,9 @@ import { BeaconChatbot } from "./components/BeaconChatbot";
 import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SyncStatusBadge } from "./components/sync/SyncStatusBadge";
+import { SyncToastBridge } from "./components/sync/SyncToastBridge";
 import { ToastProvider } from "./components/ui/Toast";
+import { CardSkeleton } from "./components/ui/Skeleton";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
   FolderLock, Compass, Library, ShieldCheck, Share2, Wallet, 
@@ -55,7 +57,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
     { to: "/documents", label: "The Vault", icon: FolderLock },
     { to: "/subscriptions", label: "Subscriptions Shelf", icon: Library },
     { to: "/insurance", label: "Insurance Inspect", icon: ShieldCheck },
-    { to: "/bridge", label: "Beacon Bridge", icon: Share2, color: "text-blue-500" },
+    { to: "/bridge", label: "Beacon Bridge", icon: Share2, color: "text-info" },
     { to: "/credit", label: "Credit Snapshot", icon: FileText },
     { to: "/reports", label: "Reports Arena", icon: Sparkles },
     { to: "/settings", label: "System Settings", icon: Settings },
@@ -191,7 +193,17 @@ function App() {
 
   const wrap = (scope: string, node: ReactNode) => (
     <ErrorBoundary scope={scope}>
-      <Suspense fallback={<div className="p-8 text-center text-muted-foreground animate-pulse text-xs uppercase font-black tracking-widest">Loading {scope}…</div>}>
+      <Suspense
+        fallback={
+          <div className="space-y-4 p-4 sm:p-6" role="status" aria-label={`Loading ${scope}`}>
+            <CardSkeleton rows={2} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <CardSkeleton rows={3} />
+              <CardSkeleton rows={3} />
+            </div>
+          </div>
+        }
+      >
         {node}
       </Suspense>
     </ErrorBoundary>
@@ -212,6 +224,7 @@ function App() {
     <ErrorBoundary scope="root">
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
         <ToastProvider>
+        <SyncToastBridge />
         <HashRouter>
           <DeleteConfirmProvider>
           <a

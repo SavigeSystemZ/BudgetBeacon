@@ -31,22 +31,22 @@ export default function BeaconBridgeRoute() {
         subtitle="Move household data between devices."
         actions={
           <div
-            className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 shadow-xl shadow-blue-500/10"
+            className="h-12 w-12 rounded-full bg-info/10 flex items-center justify-center border border-info/20 shadow-xl shadow-info/10"
             role="img"
             aria-label="Manual relay: export and import today; automatic sync is M10"
           >
-            <Radio className="h-6 w-6 text-blue-500" aria-hidden />
+            <Radio className="h-6 w-6 text-info" aria-hidden />
           </div>
         }
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <GlassCard intensity="high" className="border-blue-500/20 bg-blue-500/5">
-          <CardHeader className="border-b border-blue-500/10 bg-blue-500/5 pb-6">
-            <CardTitle className="flex items-center gap-2 uppercase italic font-black text-blue-500">
+        <GlassCard intensity="high" className="border-info/20 bg-info/5">
+          <CardHeader className="border-b border-info/10 bg-info/5 pb-6">
+            <CardTitle className="flex items-center gap-2 uppercase italic font-black text-info">
               <Smartphone className="h-5 w-5" /> Today: Manual Bundle
             </CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-blue-500/70">
+            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-info/70">
               Export → transfer → import
             </CardDescription>
           </CardHeader>
@@ -64,17 +64,17 @@ export default function BeaconBridgeRoute() {
             </ol>
             <div className="grid grid-cols-2 gap-3">
               <RouterLink to="/settings">
-                <Button className="w-full gap-2 h-12 bg-blue-500 hover:bg-blue-600 text-white uppercase font-black italic text-[11px] tracking-widest">
+                <Button className="w-full gap-2 h-12 bg-info hover:bg-info text-white uppercase font-black italic text-[11px] tracking-widest">
                   <Download className="h-4 w-4" /> Open Export
                 </Button>
               </RouterLink>
               <RouterLink to="/settings">
-                <Button variant="outline" className="w-full gap-2 h-12 border-blue-500/30 text-blue-500 uppercase font-black italic text-[11px] tracking-widest">
+                <Button variant="outline" className="w-full gap-2 h-12 border-info/30 text-info uppercase font-black italic text-[11px] tracking-widest">
                   <Upload className="h-4 w-4" /> Open Import
                 </Button>
               </RouterLink>
             </div>
-            <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-blue-500/10">
+            <p className="text-[10px] text-muted-foreground leading-relaxed pt-2 border-t border-info/10">
               {BACKUP_FORMAT_HELP_TEXT}
             </p>
           </CardContent>
@@ -82,9 +82,9 @@ export default function BeaconBridgeRoute() {
 
         <div className="space-y-6">
           {!featureFlags.syncBundleExport && (
-            <GlassCard className="border-amber-400/20 bg-amber-400/5">
+            <GlassCard className="border-warning/20 bg-warning/5">
               <CardHeader className="pb-3 flex flex-row items-center gap-2">
-                <Radio className="h-5 w-5 text-amber-400" />
+                <Radio className="h-5 w-5 text-warning" />
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest">Cross-device sync — coming in M10</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">

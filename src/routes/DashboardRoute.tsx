@@ -121,15 +121,15 @@ export default function DashboardRoute() {
         <AgenticTooltip content={`Your budget status is ${summary.budgetStatus}. Strategic margin of 20% is recommended.`}>
           <div className={cn(
             "px-6 py-2.5 rounded-full text-xs font-black uppercase italic tracking-widest border flex items-center gap-3 transition-all hover:scale-105 shadow-2xl",
-            summary.budgetStatus === "GREEN" && "bg-green-500/10 text-green-500 border-green-500/20 shadow-green-500/10",
-            summary.budgetStatus === "YELLOW" && "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-yellow-500/10",
-            summary.budgetStatus === "RED" && "bg-red-500/10 text-red-500 border-red-500/20 shadow-red-500/10"
+            summary.budgetStatus === "GREEN" && "bg-success/10 text-success border-success/20 shadow-success/10",
+            summary.budgetStatus === "YELLOW" && "bg-warning/10 text-warning border-warning/20 shadow-warning/10",
+            summary.budgetStatus === "RED" && "bg-destructive/10 text-destructive border-destructive/20 shadow-destructive/10"
           )}>
             <div className={cn(
               "h-3 w-3 rounded-full animate-pulse",
-              summary.budgetStatus === "GREEN" && "bg-green-500",
-              summary.budgetStatus === "YELLOW" && "bg-yellow-500",
-              summary.budgetStatus === "RED" && "bg-red-500"
+              summary.budgetStatus === "GREEN" && "bg-success",
+              summary.budgetStatus === "YELLOW" && "bg-warning",
+              summary.budgetStatus === "RED" && "bg-destructive"
             )} />
             {summary.budgetStatus === "GREEN" && "Healthy Margin"}
             {summary.budgetStatus === "YELLOW" && "Propulsion Pressure"}
@@ -236,7 +236,7 @@ export default function DashboardRoute() {
                       style={{ width: `${burnBarPct}%` }}
                     />
                     <div
-                      className="h-full bg-blue-500 transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(59,130,246,0.5)]"
+                      className="h-full bg-info transition-all duration-1000 ease-out shadow-[10px_0_25px_rgba(59,130,246,0.5)]"
                       style={{ width: `${stashBarPct}%` }}
                     />
                   </>
@@ -253,7 +253,7 @@ export default function DashboardRoute() {
                     <div className="text-xl font-black italic tracking-tighter">{(summary.payPathPressureRatio * 100).toFixed(1)}%</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Stash Rate</div>
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-70"><div className="w-2.5 h-2.5 rounded-full bg-info" /> Stash Rate</div>
                     <div className="text-xl font-black italic tracking-tighter">{(summary.savingsRate * 100).toFixed(1)}%</div>
                   </div>
                   <div className="space-y-1">

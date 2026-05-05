@@ -283,8 +283,8 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
               </div>
             )}
             {skipped.length > 0 && (
-              <details className="text-[11px] p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                <summary className="font-black uppercase tracking-widest text-amber-500 cursor-pointer">{skipped.length} rows skipped (click to view)</summary>
+              <details className="text-[11px] p-3 rounded-xl bg-warning/10 border border-warning/20">
+                <summary className="font-black uppercase tracking-widest text-warning cursor-pointer">{skipped.length} rows skipped (click to view)</summary>
                 <ul className="mt-2 space-y-1 max-h-24 overflow-y-auto opacity-80">
                   {skipped.map((s, i) => (
                     <li key={i}>Row {s.row}: {s.reason}</li>
@@ -318,16 +318,16 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
                       </button>
                       <span className="truncate font-medium">{d.payee}</span>
                       <span className="font-mono text-[10px] opacity-70">{d.date}</span>
-                      <span className={`font-black tabular-nums ${d.type === "income" ? "text-green-500" : "text-foreground"}`}>
+                      <span className={`font-black tabular-nums ${d.type === "income" ? "text-success" : "text-foreground"}`}>
                         {d.type === "expense" ? "-" : "+"}${d.amount.toFixed(2)}
                       </span>
                       {d.type === "income" ? (
-                        <ArrowUpCircle className="h-4 w-4 text-green-500" />
+                        <ArrowUpCircle className="h-4 w-4 text-success" />
                       ) : (
                         <ArrowDownCircle className="h-4 w-4 text-muted-foreground" />
                       )}
                       {isDup && (
-                        <span className="col-start-2 col-span-4 text-[9px] uppercase tracking-widest text-amber-500 font-black -mt-1">
+                        <span className="col-start-2 col-span-4 text-[9px] uppercase tracking-widest text-warning font-black -mt-1">
                           Possible duplicate of an existing transaction
                         </span>
                       )}
@@ -348,8 +348,8 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
         {/* Step 4: done */}
         {step === "done" && (
           <div className="space-y-4 text-center py-4">
-            <div className="h-16 w-16 rounded-2xl bg-green-500/10 flex items-center justify-center border border-green-500/20 mx-auto">
-              <Check className="h-8 w-8 text-green-500" />
+            <div className="h-16 w-16 rounded-2xl bg-success/10 flex items-center justify-center border border-success/20 mx-auto">
+              <Check className="h-8 w-8 text-success" />
             </div>
             <div>
               <h3 className="text-2xl font-black italic uppercase tracking-tighter">Imported {committed}</h3>
@@ -394,7 +394,7 @@ function ColumnSelect({
 }
 
 function Stat({ label, value, accent }: { label: string; value: number; accent?: "amber" | "green" }) {
-  const color = accent === "amber" ? "text-amber-500" : accent === "green" ? "text-green-500" : "text-foreground";
+  const color = accent === "amber" ? "text-warning" : accent === "green" ? "text-success" : "text-foreground";
   return (
     <div className="p-3 rounded-2xl bg-primary/5 border border-primary/10">
       <div className={`text-2xl font-black italic tracking-tighter ${color}`}>{value}</div>
