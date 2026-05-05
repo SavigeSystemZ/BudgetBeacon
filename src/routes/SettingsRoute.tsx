@@ -18,6 +18,7 @@ import {
 import { clearDatabase, resetToBundledDemo } from "../db/seedDemoData";
 import { useTheme, type Theme } from "../components/theme-provider";
 import { loadPreferences, savePreferences, type Preferences } from "../lib/preferences/preferences";
+import { logger } from "../lib/logger";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { resolveProviderFromConfig } from "../modules/ai/providerFactory";
 import { PayeeRulesPanel } from "../components/import/PayeeRulesPanel";
@@ -100,7 +101,7 @@ export default function SettingsRoute() {
     try {
       await exportDatabaseToJson();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setErrorMessage("Failed to export data. See console.");
       setImportStatus("error");
     }

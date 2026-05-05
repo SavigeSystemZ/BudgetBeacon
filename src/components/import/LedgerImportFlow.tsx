@@ -7,6 +7,7 @@ import { mapRowsToDrafts, partitionByDedupe, type ColumnMapping, type MappedTran
 import { dedupeKey } from "../../modules/import/dedupeKey";
 import { autoDetectMapping } from "../../modules/import/autoDetect";
 import { applyPayeeRules } from "../../modules/import/applyPayeeRules";
+import { logger } from "../../lib/logger";
 import { Button } from "../ui/button";
 import { NativeSelect } from "../ui/native-select";
 import { Label } from "../ui/label";
@@ -118,7 +119,7 @@ export function LedgerImportFlow({ isOpen, onClose, householdId }: Props) {
       setMapping(autoDetectMapping(parsed.headers));
       setStep("map");
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setParseError(err instanceof Error ? err.message : "Failed to read file");
     }
   };

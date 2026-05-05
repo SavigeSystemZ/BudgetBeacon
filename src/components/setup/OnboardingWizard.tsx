@@ -5,6 +5,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { createId } from "../../lib/ids/createId";
+import { logger } from "../../lib/logger";
 import { Sparkles, Users } from "lucide-react";
 
 interface OnboardingWizardProps {
@@ -92,7 +93,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       setStep("complete");
       setTimeout(onComplete, 2000);
     } catch (err) {
-      console.error("Setup error:", err);
+      logger.error("Setup error:", err);
       setIsProcessing(false);
     }
   };

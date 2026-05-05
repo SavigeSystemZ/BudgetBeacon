@@ -6,6 +6,8 @@
  * aiConfig Dexie table). M2/M3 baseline; M4 may migrate this to a Dexie
  * `preferences` table if multi-device sync requires it.
  */
+import { logger } from "../logger";
+
 const STORAGE_KEY = "budget-beacon:preferences:v1";
 
 export interface Preferences {
@@ -42,6 +44,6 @@ export function savePreferences(prefs: Preferences): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
   } catch (err) {
-    console.error("[preferences] save failed:", err);
+    logger.error("[preferences] save failed:", err);
   }
 }

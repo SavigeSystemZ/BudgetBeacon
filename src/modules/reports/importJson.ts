@@ -8,6 +8,7 @@ import { savingsGoalSchema } from "../stash-map/stash-map.schema";
 import { creditSnapshotSchema } from "../credit/credit.schema";
 import { transactionSchema } from "../ledger/ledger.schema";
 import { base64ToBlob } from "../../lib/encoding/base64";
+import { logger } from "../../lib/logger";
 
 // Minimal schemas for tables that don't have dedicated schema files yet.
 // Strict enough to reject obvious garbage; loose enough to accept evolving shapes.
@@ -263,7 +264,7 @@ export async function importDatabaseFromJson(file: File): Promise<void> {
         await applyBackupPayload(parsed);
         resolve();
       } catch (error) {
-        console.error("Backup import failed:", error);
+        logger.error("Backup import failed:", error);
         reject(error instanceof Error ? error : new Error("Failed to import valid JSON backup"));
       }
     };

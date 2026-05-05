@@ -7,6 +7,8 @@
  * `String.fromCharCode(...buffer)` blows up past ~64 KB worth of args on most
  * engines.
  */
+import { logger } from "../logger";
+
 const CHUNK_SIZE = 0x8000; // 32K bytes per chunk
 
 export function arrayBufferToBase64(buffer: ArrayBuffer): string {
@@ -46,7 +48,7 @@ export async function blobToBase64(blob: Blob): Promise<string> {
     // Last-resort path for the test environment where fake-indexeddb stores
     // Blobs as plain objects without a working bytes interface. Production
     // (Chromium, WebKit, Capacitor) never hits this branch.
-    console.warn("[base64] blobToBase64: input is not a readable Blob, exporting empty body.", err);
+    logger.warn("[base64] blobToBase64: input is not a readable Blob, exporting empty body.", err);
     return "";
   }
 }

@@ -30,6 +30,7 @@ import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { SyncStatusBadge } from "./components/sync/SyncStatusBadge";
 import { SyncToastBridge } from "./components/sync/SyncToastBridge";
+import { DexieErrorToastBridge } from "./components/db/DexieErrorToastBridge";
 import { ToastProvider } from "./components/ui/Toast";
 import { CardSkeleton } from "./components/ui/Skeleton";
 import { 
@@ -225,6 +226,7 @@ function App() {
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
         <ToastProvider>
         <SyncToastBridge />
+        <DexieErrorToastBridge />
         <HashRouter>
           <DeleteConfirmProvider>
           <a

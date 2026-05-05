@@ -13,6 +13,7 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { cn } from "../lib/utils";
 import { ExpenseCategoryRollup } from "../components/reports/ExpenseCategoryRollup";
 import { EmptyState } from "../components/ui/EmptyState";
+import { logger } from "../lib/logger";
 
 type ReportTab = "monthly" | "debt" | "savings" | "subscriptions" | "documents";
 
@@ -66,7 +67,7 @@ export default function ReportsRoute() {
       setExportStatus(`✓ Exported ${rowCount} row${rowCount === 1 ? "" : "s"} to ${filename}`);
       window.setTimeout(() => setExportStatus(null), 4000);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setExportStatus("✕ Export failed. See console.");
     }
   };
@@ -79,7 +80,7 @@ export default function ReportsRoute() {
       setExportStatus("✓ Full backup downloaded.");
       window.setTimeout(() => setExportStatus(null), 4000);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setExportStatus("✕ Export failed. See console.");
     }
   };

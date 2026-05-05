@@ -8,23 +8,77 @@ interface Props {
 
 interface State {
   error: Error | null;
+  info: ErrorInfo | null;
+  copied: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { error: null };
+  state: State = { error: null, info: null, copied: false };
 
   static getDerivedStateFromError(error: Error): State {
-    return { error };
+    return { error, info: null, copied: false };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    // Boundary uses bare console.error intentionally — it must work even if
+    // the logger module ever fails to load.
     console.error(`[ErrorBoundary${this.props.scope ? ":" + this.props.scope : ""}]`, error, info);
+    this.setState({ info });
   }
 
-  reset = () => this.setState({ error: null });
+  reset = () => this.setState({ error: null, info: null, copied: false });
+
+  buildReport = (): string => {
+    const { error, info } = this.state;
+    if (!error) return "";
+    const lines = [
+      `Budget Beacon error report`,
+      `Scope: ${this.props.scope ?? "root"}`,
+      `When: ${new Date().toISOString()}`,
+      `Where: ${typeof window !== "undefined" ? window.location.href : "n/a"}`,
+      `User agent: ${typeof navigator !== "undefined" ? navigator.userAgent : "n/a"}`,
+      ``,
+      `Message: ${error.message}`,
+      ``,
+      `Stack:`,
+      error.stack ?? "(no stack)",
+    ];
+    if (info?.componentStack) {
+      lines.push("", "Component stack:", info.componentStack);
+    }
+    return lines.join("\n");
+  };
+
+  copyReport = async () => {
+    const report = this.buildReport();
+    if (!report) return;
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(report);
+        this.setState({ copied: true });
+        return;
+      }
+    } catch {
+      // Fall through to textarea fallback for older WebViews / locked-down env.
+    }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = report;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      this.setState({ copied: true });
+    } catch {
+      // Last resort — leave copied=false so the UI doesn't lie about success.
+    }
+  };
 
   render() {
-    const { error } = this.state;
+    const { error, copied } = this.state;
     if (!error) return this.props.children;
 
     if (this.props.fallback) return this.props.fallback(error, this.reset);
@@ -32,49 +86,36 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div
         role="alert"
-        style={{
-          padding: "1.5rem",
-          margin: "1.5rem",
-          borderRadius: "0.75rem",
-          border: "1px solid rgba(239, 68, 68, 0.4)",
-          background: "rgba(15, 15, 20, 0.85)",
-          color: "#f5f5f5",
-          fontFamily: "system-ui, sans-serif",
-        }}
+        aria-live="assertive"
+        className="m-6 rounded-xl border border-destructive/40 bg-card/90 p-6 text-card-foreground shadow-lg backdrop-blur-sm"
       >
-        <h2 style={{ marginTop: 0, color: "#f87171" }}>
+        <h2 className="m-0 text-lg font-semibold text-destructive">
           Something broke{this.props.scope ? ` in ${this.props.scope}` : ""}.
         </h2>
-        <p style={{ opacity: 0.8 }}>
+        <p className="mt-2 text-sm text-muted-foreground">
           The app caught a render error and stopped this section from crashing the whole UI.
           Your data is safe.
         </p>
-        <pre
-          style={{
-            background: "rgba(0, 0, 0, 0.4)",
-            padding: "0.75rem",
-            borderRadius: "0.5rem",
-            overflowX: "auto",
-            fontSize: "0.75rem",
-            maxHeight: "10rem",
-          }}
-        >
+        <pre className="mt-3 max-h-40 overflow-x-auto rounded-md bg-background/60 p-3 text-xs text-foreground/90">
           {error.message}
         </pre>
-        <button
-          onClick={this.reset}
-          style={{
-            marginTop: "0.75rem",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.5rem",
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(255,255,255,0.05)",
-            color: "inherit",
-            cursor: "pointer",
-          }}
-        >
-          Try again
-        </button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={this.reset}
+            className="inline-flex items-center rounded-md border border-border bg-background/50 px-3 py-1.5 text-sm font-medium text-foreground hover:bg-background/80 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            Try again
+          </button>
+          <button
+            type="button"
+            onClick={this.copyReport}
+            aria-live="polite"
+            className="inline-flex items-center rounded-md border border-border bg-background/50 px-3 py-1.5 text-sm font-medium text-foreground hover:bg-background/80 focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            {copied ? "Report copied ✓" : "Copy report"}
+          </button>
+        </div>
       </div>
     );
   }

@@ -1,5 +1,40 @@
 # Where Left Off — **active 2026-05-05** (Final Hardening pass)
 
+## 2026-05-05 (late) — Phase 2 Dexie error toast bridge
+
+- **New `src/components/db/DexieErrorToastBridge.tsx`.** Mounted inside `<ToastProvider>` in `App.tsx` next to `SyncToastBridge`. Listens at three boundaries:
+  1. `db.on("versionchange")` — another tab upgraded the schema; sticky warning toast with **Reload** action.
+  2. `db.on("blocked")` — schema upgrade blocked by another tab; sticky warning telling user to close other tabs.
+  3. `window.unhandledrejection` — filters reasons whose `name` starts with `Dexie` (or matches `QuotaExceededError` / `InvalidStateError`) and surfaces a destructive toast with **Reload** action. `QuotaExceededError` gets a tailored "Storage full" message. Deduplicated by `name+message` via a `useRef<Set>` so an error loop doesn't spam.
+  - All Dexie errors also flow through `logger.error` for consistency with the console-hygiene pass.
+- **Validation:** `npm run validate` green; **174** tests still pass; `tsc -b` clean; eslint clean; prod build clean.
+- **Remainder of "useLiveQuery → skeleton/toast on first load" line:** the toast half is done at the global level; the per-route skeleton-on-first-load conversion (81 `useLiveQuery` call sites — replace each `if (!data) return <Loading/>` with a `<CardSkeleton/>` matching the route's final layout) is still open. That's a route-by-route mechanical sweep, best done one route per commit so visual diffs stay reviewable.
+
+## 2026-05-05 (late) — Phase 2 ErrorBoundary upgrade
+
+- **`src/components/ErrorBoundary.tsx` rewritten.** Migrated inline styles → semantic Tailwind tokens (`text-destructive`, `bg-card/90`, `border-border`, `text-muted-foreground`, etc.) so the boundary respects the active theme. Added `aria-live="assertive"` on the alert region. Captures `ErrorInfo.componentStack` in state. New **Copy report** button produces a structured report (scope, ISO timestamp, URL, user-agent, message, stack, component stack) and writes it to the clipboard via `navigator.clipboard.writeText` with a hidden-textarea + `execCommand("copy")` fallback for older WebViews / locked-down environments. Button label flips to "Report copied ✓" on success. **Try again** preserved (calls existing `reset()`). Already wired root + per-route in `App.tsx` (`scope="root"` outermost, `scope={routeName}` per lazy route).
+- **Validation:** `npm run validate` green; **174** tests still pass; `tsc -b` clean; eslint clean; prod build clean. Bundle delta tiny (ErrorBoundary chunk grew by Tailwind class strings only — no new dependency).
+
+## 2026-05-05 (late) — Phase 2 console hygiene migration
+
+- **Console hygiene complete.** Migrated 14 raw `console.error/warn` call sites in 8 files (`src/lib/preferences/preferences.ts`, `src/lib/encoding/base64.ts`, `src/modules/reports/importJson.ts`, `src/components/setup/OnboardingWizard.tsx`, `src/components/import/LedgerImportFlow.tsx`, `src/routes/SettingsRoute.tsx`, `src/routes/DocumentStoreRoute.tsx`, `src/routes/ReportsRoute.tsx`) to `logger.{error,warn}` from `src/lib/logger.ts`. `logger.error` always forwards (errors stay visible); `logger.warn`/`info`/`log` no-op in prod unless `?debug=1`. `ErrorBoundary.tsx` keeps bare `console.error` intentionally — it's the safety-net surface and must work even if the logger module ever fails to load.
+- **Validation:** `npm run validate` green — eslint clean, `tsc -b` clean, **174 tests pass** (30 files), prod `vite build` clean, PWA precache 63 entries / 1372 KiB. `npm run audit:controls` baseline matched (`setTimeout=6 mathRandom=0 alert=0 emptyOnClick=0`). `npm run audit:secrets` zero hits across **773** tracked files.
+- **Phase 2 status updated in TODO.md** — console-hygiene line ticked. Remaining Phase 2: axe-core CI per route, useLiveQuery → skeleton/toast wiring on first-load, route-level ErrorBoundary UI with Reset/report button, responsive audit @ 320/380/768/1024/1440. Phase 3 M10 closeout (`relay/` Cloudflare Worker scaffold, recovery codes, OnboardingWizard sync branch) is the next critical lane after Phase 2 finishes.
+
+## 2026-05-05 (late) — meta-system health check + cross-agent memory locality
+
+- **Template sync gate cleared.** Repo was at `PENDING_HEALTH_CHECK` after sync to AIAST `1.23.0` (commit `a5b3e99`, then fleet repair `00a3a08`). Ran `bootstrap/emit-session-environment.sh`, `bootstrap/system-doctor.sh`, `bootstrap/validate-system.sh` — all pass (`system_ok`). Doctor warns are non-blocking working-file staleness only (`RELEASE_NOTES.md` 14 days, `_system/context/DECISIONS.md` 14 days, TODO priority signals — all pre-existing). Cleared via `bootstrap/clear-template-sync-notice.sh`.
+- **New 1.23.0 / unreleased contracts now active:** `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md`, `APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md`, `APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md`, `APP_BUILDER_RELEASE_READINESS_STANDARD.md`, `APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md`, `_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md`. App-builder execution is now domain-adaptive, containment-aware, bounded for auto-correction, and release-gated.
+- **Cross-agent memory locality fix.** Created `_system/context/AGENT_SHARED_MEMORY.md` as the canonical cross-agent durable-memory surface for this repo. Rewrote Claude harness memory at `~/.claude/projects/-home-whyte--MyAppZ-BudgetBeacon/memory/project_completion_plan.md` to a thin pointer (no duplicated plan content). Pattern: tool-local memory holds **pointers**; repo-local `_system/context/` holds **content**, so Codex/Gemini/Cursor/Windsurf/etc. all read the same source of truth. Maintainer note dropped at `~/.MyAppZ/_AI_AGENT_SYSTEM_TEMPLATE/_META_AGENT_SYSTEM/AGENT_MEMORY_LOCALITY_NOTE.md` proposing the same baseline file land in the installable template (with placeholder content) and that `AGENTS.md` working-file model section spell out the pointer-vs-content split.
+- **Phase status check:** Phase 0 → 2B all committed (`386ef2a`, `11237c5`, `4385d01`, `09270ef`). Remaining Phase 2: axe-core CI per route, useLiveQuery skeleton/toast wiring, route-level ErrorBoundary UI, console hygiene (logger primitive at `src/lib/logger.ts` already exists; ~20 `console.*` call sites still need migration). Phase 3 (M10 closeout — `relay/` worker, recovery codes, OnboardingWizard sync branch, two-emulator parity smoke) is the next critical lane.
+- **Uncommitted at session end:** `_system/{KEY,SYSTEM_REGISTRY,INTEGRITY_MANIFEST,.template-install,TEMPLATE_SYNC_NOTICE}.md/json/sha256` and `_system/context/CURRENT_STATUS.md` are tracked-modified from the 1.23.0 sync + sync-notice clear. Also `AIAST_CHANGELOG.md`, `_system/history/template-sync-events.jsonl`, the new `_system/APP_BUILDER_*.md` and `M17_*.md` (untracked), and `bootstrap/agent-isolation.sh` (untracked). Plus the new `_system/context/AGENT_SHARED_MEMORY.md` and updated `WHERE_LEFT_OFF.md` from this session. Operator: review and commit as `chore(meta): clear 1.23.0 sync gate + repo-local cross-agent memory pattern` (or split into two commits — meta-system sync vs memory pattern).
+
+### Next agent — pick from
+
+1. **Phase 2 finish (recommended next slice):** Console hygiene migration — replace ~20 `console.*` call sites in routes/components with `src/lib/logger.ts`'s `logger.{warn,error}`. Quick, low-risk, ticks one Phase 2 item without touching test wiring or CI.
+2. **Phase 2 axe-core CI:** wire `vitest-axe` per route, fail on serious violations. Larger; touches `vitest.config.ts` + per-route test files.
+3. **Phase 3 M10 closeout entry:** scaffold `relay/` workspace — Cloudflare Worker (~150 LOC) + Durable Objects + HMAC join token. Architecture in `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` (Option B).
+
 ## 2026-05-05 — Final Hardening kickoff (Phase 0)
 
 User-approved master plan (`/home/whyte/.claude/plans/ethereal-hatching-bear.md`) drives the rest of the project to a tagged `v1.0.0` GitHub Release. Three scope decisions locked:

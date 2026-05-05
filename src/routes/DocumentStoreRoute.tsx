@@ -18,6 +18,7 @@ import { VaultExtractionReview } from "../components/vault/VaultExtractionReview
 import { tesseractProvider } from "../modules/ocr/tesseractProvider";
 import { applyExtractionToDb } from "../modules/ocr/applyExtraction";
 import type { ExtractionDraft, ExtractedField } from "../modules/ocr/types";
+import { logger } from "../lib/logger";
 import { useDeleteConfirm } from "../context/DeleteConfirmContext";
 
 export default function DocumentStoreRoute() {
@@ -76,7 +77,7 @@ export default function DocumentStoreRoute() {
       };
       reader.readAsArrayBuffer(file);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setUploadError("Failed to store document. Try again.");
     } finally {
       setUploading(false);
@@ -100,7 +101,7 @@ export default function DocumentStoreRoute() {
       setExtractionDocId(docId);
       setIsExtractionReviewOpen(true);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setExtractionError(`Extraction failed: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setExtracting(false);
@@ -137,7 +138,7 @@ export default function DocumentStoreRoute() {
       setExtractionDocId(null);
       setIsExtractionReviewOpen(false);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setExtractionError(`Failed to apply extraction: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setIsApproving(false);
