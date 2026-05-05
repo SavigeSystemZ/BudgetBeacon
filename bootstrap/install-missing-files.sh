@@ -162,6 +162,8 @@ else
   validation_command="bootstrap/validate-system.sh ${TARGET_REPO}"
 fi
 
+aiaast_emit_template_sync_notice "${RESOLVED_TARGET}" "install-missing-files" 0
+
 aiaast_record_validation_success \
   "${RESOLVED_TARGET}" \
   "${validation_command}" \

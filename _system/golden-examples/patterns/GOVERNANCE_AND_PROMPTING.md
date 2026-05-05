@@ -8,8 +8,7 @@
 
 ## Primary donors
 
-- IdeaForge
-- EtherWeave
+- curated-donor
 
 ## What to emulate
 

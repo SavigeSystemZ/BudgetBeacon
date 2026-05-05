@@ -405,6 +405,18 @@
     {
       "category": "copilot-overlay",
       "kind": "file",
+      "path": ".github/workflows/android-emulator-smoke.yml",
+      "size_bytes": 2183
+    },
+    {
+      "category": "copilot-overlay",
+      "kind": "file",
+      "path": ".github/workflows/android-release.yml",
+      "size_bytes": 3089
+    },
+    {
+      "category": "copilot-overlay",
+      "kind": "file",
       "path": ".github/workflows/ci.yml",
       "size_bytes": 567
     },
@@ -418,7 +430,7 @@
       "category": "entrypoint",
       "kind": "file",
       "path": "AGENTS.md",
-      "size_bytes": 12377
+      "size_bytes": 13138
     },
     {
       "category": "system-metadata",
@@ -508,7 +520,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "PLAN.md",
-      "size_bytes": 7614
+      "size_bytes": 9343
     },
     {
       "category": "working-state",
@@ -544,7 +556,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "ROADMAP.md",
-      "size_bytes": 7167
+      "size_bytes": 8060
     },
     {
       "category": "working-state",
@@ -556,13 +568,13 @@
       "category": "working-state",
       "kind": "file",
       "path": "TODO.md",
-      "size_bytes": 20599
+      "size_bytes": 26037
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "WHERE_LEFT_OFF.md",
-      "size_bytes": 19496
+      "size_bytes": 22653
     },
     {
       "category": "entrypoint",
@@ -598,7 +610,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/AGENT_INIT_CONVERGENCE.md",
-      "size_bytes": 5099
+      "size_bytes": 5315
     },
     {
       "category": "system-core",
@@ -676,7 +688,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/CHECKPOINT_PROTOCOL.md",
-      "size_bytes": 9703
+      "size_bytes": 9709
     },
     {
       "category": "system-core",
@@ -694,7 +706,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/CONTEXT_INDEX.md",
-      "size_bytes": 15977
+      "size_bytes": 16474
     },
     {
       "category": "system-core",
@@ -748,7 +760,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/EXECUTION_PROTOCOL.md",
-      "size_bytes": 4441
+      "size_bytes": 4690
     },
     {
       "category": "system-core",
@@ -832,31 +844,31 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
-      "size_bytes": 6199
+      "size_bytes": 6495
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 53324
+      "size_bytes": 46882
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/KEY.md",
-      "size_bytes": 88645
+      "size_bytes": 89067
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/LOAD_ORDER.md",
-      "size_bytes": 7774
+      "size_bytes": 8527
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/MASTER_SYSTEM_PROMPT.md",
-      "size_bytes": 9869
+      "size_bytes": 10873
     },
     {
       "category": "system-core",
@@ -892,7 +904,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/MULTI_AGENT_COORDINATION.md",
-      "size_bytes": 7197
+      "size_bytes": 7198
     },
     {
       "category": "system-core",
@@ -946,7 +958,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md",
-      "size_bytes": 1413
+      "size_bytes": 1777
     },
     {
       "category": "system-core",
@@ -1048,7 +1060,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/REPO_OPERATING_PROFILE.md",
-      "size_bytes": 4979
+      "size_bytes": 5048
     },
     {
       "category": "system-core",
@@ -1138,13 +1150,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 77587
+      "size_bytes": 78794
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md",
-      "size_bytes": 2294
+      "size_bytes": 2573
     },
     {
       "category": "system-core",
@@ -1174,7 +1186,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/UPGRADE_AND_DRIFT_POLICY.md",
-      "size_bytes": 3708
+      "size_bytes": 3887
     },
     {
       "category": "system-core",
@@ -1390,7 +1402,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/PATTERN_INDEX.md",
-      "size_bytes": 2579
+      "size_bytes": 2350
     },
     {
       "category": "system-core",
@@ -1402,7 +1414,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/golden-example-manifest.json",
-      "size_bytes": 5317
+      "size_bytes": 5193
     },
     {
       "category": "system-core",
@@ -1414,7 +1426,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/patterns/CONTINUITY_AND_HANDOFF.md",
-      "size_bytes": 1143
+      "size_bytes": 1130
     },
     {
       "category": "system-core",
@@ -1438,7 +1450,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/patterns/GOVERNANCE_AND_PROMPTING.md",
-      "size_bytes": 954
+      "size_bytes": 945
     },
     {
       "category": "system-core",
@@ -1450,13 +1462,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/patterns/MULTI_AGENT_AND_MCP.md",
-      "size_bytes": 967
+      "size_bytes": 958
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/patterns/PLATFORM_SURFACES.md",
-      "size_bytes": 1070
+      "size_bytes": 1044
     },
     {
       "category": "system-core",
@@ -1480,7 +1492,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/golden-examples/patterns/VALIDATION_AND_RELEASE.md",
-      "size_bytes": 1078
+      "size_bytes": 1065
     },
     {
       "category": "system-core",
@@ -1858,7 +1870,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/repo-operating-profile.json",
-      "size_bytes": 5518
+      "size_bytes": 5551
     },
     {
       "category": "review-playbook",
@@ -2056,7 +2068,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/README.md",
-      "size_bytes": 14769
+      "size_bytes": 15166
     },
     {
       "category": "bootstrap",
@@ -2194,7 +2206,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-system-awareness.sh",
-      "size_bytes": 7791
+      "size_bytes": 7832
     },
     {
       "category": "bootstrap",
@@ -2284,7 +2296,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-host-adapters.sh",
-      "size_bytes": 9686
+      "size_bytes": 10014
     },
     {
       "category": "bootstrap",
@@ -2332,7 +2344,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/init-project.sh",
-      "size_bytes": 6287
+      "size_bytes": 6355
     },
     {
       "category": "bootstrap",
@@ -2350,7 +2362,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/install-missing-files.sh",
-      "size_bytes": 5063
+      "size_bytes": 5144
     },
     {
       "category": "bootstrap",
@@ -2368,7 +2380,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/lib/aiaast-lib.sh",
-      "size_bytes": 19043
+      "size_bytes": 22471
     },
     {
       "category": "bootstrap",
@@ -2506,7 +2518,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/system-doctor.sh",
-      "size_bytes": 8577
+      "size_bytes": 8581
     },
     {
       "category": "bootstrap",
@@ -2806,7 +2818,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/update-template.sh",
-      "size_bytes": 9664
+      "size_bytes": 10225
     },
     {
       "category": "bootstrap",
@@ -2818,7 +2830,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/validate-instruction-layer.sh",
-      "size_bytes": 9681
+      "size_bytes": 10190
     },
     {
       "category": "bootstrap",
@@ -2836,7 +2848,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/validate-system.sh",
-      "size_bytes": 25769
+      "size_bytes": 26250
     },
     {
       "category": "bootstrap",
@@ -2854,7 +2866,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/write-checkpoint.sh",
-      "size_bytes": 14979
+      "size_bytes": 15015
     },
     {
       "category": "unclassified",
@@ -2866,7 +2878,7 @@
       "category": "unclassified",
       "kind": "file",
       "path": "distribution/platforms/android/README.md",
-      "size_bytes": 561
+      "size_bytes": 1261
     },
     {
       "category": "unclassified",
@@ -2897,6 +2909,12 @@
       "kind": "file",
       "path": "distribution/platforms/windows/README.md",
       "size_bytes": 617
+    },
+    {
+      "category": "unclassified",
+      "kind": "file",
+      "path": "docs/APK_RELEASE.md",
+      "size_bytes": 4791
     },
     {
       "category": "unclassified",
@@ -2950,7 +2968,7 @@
       "category": "unclassified",
       "kind": "file",
       "path": "docs/M9_ANDROID_QA_CHECKLIST.md",
-      "size_bytes": 2682
+      "size_bytes": 4384
     },
     {
       "category": "unclassified",
@@ -3172,13 +3190,19 @@
       "category": "tools",
       "kind": "file",
       "path": "tools/audit-controls.baseline.json",
-      "size_bytes": 377
+      "size_bytes": 443
     },
     {
       "category": "tools",
       "kind": "file",
       "path": "tools/audit-controls.ts",
       "size_bytes": 4633
+    },
+    {
+      "category": "tools",
+      "kind": "file",
+      "path": "tools/audit-secrets.ts",
+      "size_bytes": 4441
     },
     {
       "category": "tools",
@@ -3229,7 +3253,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 538,
+  "managed_file_count": 542,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.23.0"

@@ -22,13 +22,15 @@ Treat these as the authoritative repo-local instruction layer:
 
 1. `AGENTS.md`
 2. `_system/PROJECT_PROFILE.md`
-3. `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md`
-4. `_system/REPO_OPERATING_PROFILE.md`
-5. `_system/LOAD_ORDER.md`
-6. `_system/MASTER_SYSTEM_PROMPT.md`
-7. `_system/PROJECT_RULES.md`
-8. `_system/AGENT_ROLE_CATALOG.md`
-9. `_system/AGENT_DISCOVERY_MATRIX.md`
+3. `_system/PROJECT_DOMAIN_MANIFEST.json` (declared product domain and off-domain instruction guards)
+4. `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` (wrong-app / wrong-vertical pasted prompts)
+5. `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md`
+6. `_system/REPO_OPERATING_PROFILE.md`
+7. `_system/LOAD_ORDER.md`
+8. `_system/MASTER_SYSTEM_PROMPT.md`
+9. `_system/PROJECT_RULES.md`
+10. `_system/AGENT_ROLE_CATALOG.md`
+11. `_system/AGENT_DISCOVERY_MATRIX.md`
 
 When the question is factual rather than instructional, the highest authority is the actual repo runtime/configuration surface itself: source code, migrations, schemas, tests, package manifests, deployment config, and operator docs.
 
@@ -38,6 +40,8 @@ These surfaces are not a second authority layer, but they must stay semantically
 aligned with the core contract:
 
 - `_system/LOAD_ORDER.md`
+- `_system/PROJECT_DOMAIN_MANIFEST.json`
+- `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md`
 - `_system/REPO_OPERATING_PROFILE.md`
 - `_system/repo-operating-profile.json`
 - `_system/PROMPT_EMISSION_CONTRACT.md`

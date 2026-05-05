@@ -94,6 +94,11 @@ required_files=(
   "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"
   "_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md"
   "_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md"
+  "_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md"
+  "_system/PROJECT_DOMAIN_MANIFEST.json"
+  "_system/PROJECT_DOMAIN_MANIFEST.template.json"
+  "_system/schemas/project-domain-manifest.schema.json"
+  "bootstrap/check-instruction-domain-alignment.sh"
   "_system/GLOBAL_REDIRECT_SHIM_POLICY.md"
   "_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md"
   "_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md"
@@ -151,17 +156,17 @@ repo = Path(sys.argv[1]).resolve()
 issues: list[str] = []
 
 required_mentions = {
-    repo / "AGENTS.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md", "_system/READ_BUNDLES.md", "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md", "_system/SELF_HEALING_BOUNDARY.md", "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"],
-    repo / "_system" / "CONTEXT_INDEX.md": ["INSTRUCTION_PRECEDENCE_CONTRACT.md", "REPO_OPERATING_PROFILE.md", "PROMPT_EMISSION_CONTRACT.md", "HOST_BUNDLE_CONTRACT.md", "READ_BUNDLES.md", "TEMPLATE_CHANGE_IMPACT_POLICY.md", "SELF_HEALING_BOUNDARY.md", "VERSION_SENSITIVE_RESEARCH_PROTOCOL.md", "WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md", "PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md", "GLOBAL_REDIRECT_SHIM_POLICY.md", "SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md", "SESSION_ENVIRONMENT_REPORT_CONTRACT.md", "ORPHAN_META_SNAPSHOT_POLICY.md"],
-    repo / "_system" / "LOAD_ORDER.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md", "_system/READ_BUNDLES.md"],
+    repo / "AGENTS.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md", "_system/READ_BUNDLES.md", "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md", "_system/SELF_HEALING_BOUNDARY.md", "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md", "_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md"],
+    repo / "_system" / "CONTEXT_INDEX.md": ["INSTRUCTION_PRECEDENCE_CONTRACT.md", "REPO_OPERATING_PROFILE.md", "PROMPT_EMISSION_CONTRACT.md", "HOST_BUNDLE_CONTRACT.md", "READ_BUNDLES.md", "TEMPLATE_CHANGE_IMPACT_POLICY.md", "SELF_HEALING_BOUNDARY.md", "VERSION_SENSITIVE_RESEARCH_PROTOCOL.md", "WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md", "PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md", "INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md", "PROJECT_DOMAIN_MANIFEST.json", "GLOBAL_REDIRECT_SHIM_POLICY.md", "SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md", "SESSION_ENVIRONMENT_REPORT_CONTRACT.md", "ORPHAN_META_SNAPSHOT_POLICY.md"],
+    repo / "_system" / "LOAD_ORDER.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md", "_system/READ_BUNDLES.md", "INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md"],
     repo / "_system" / "AGENT_DISCOVERY_MATRIX.md": ["_system/HOST_ADAPTER_POLICY.md", "bootstrap/generate-host-adapters.sh", "bootstrap/check-host-adapter-alignment.sh", "_system/READ_BUNDLES.md", "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md", "_system/SELF_HEALING_BOUNDARY.md", "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"],
-    repo / "_system" / "MASTER_SYSTEM_PROMPT.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md"],
+    repo / "_system" / "MASTER_SYSTEM_PROMPT.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md", "_system/REPO_OPERATING_PROFILE.md", "INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md"],
     repo / "_system" / "PROJECT_RULES.md": ["_system/INSTRUCTION_PRECEDENCE_CONTRACT.md"],
     repo / "_system" / "TEMPLATE_NEUTRALITY_POLICY.md": ["PROMPT_EMISSION_CONTRACT.md"],
     repo / "_system" / "HOST_ADAPTER_POLICY.md": ["host-adapter-manifest.json", "generate-host-adapters.sh", "check-host-adapter-alignment.sh"],
     repo / "_system" / "HOST_BUNDLE_CONTRACT.md": ["PROMPT_EMISSION_CONTRACT.md", "emit-host-bundle.sh", "check-host-bundle.sh", "_system/READ_BUNDLES.md"],
     repo / "_system" / "PROMPTS_INDEX.md": ["_system/PROMPT_EMISSION_CONTRACT.md", "_system/HOST_BUNDLE_CONTRACT.md", "bootstrap/emit-host-prompt.sh", "bootstrap/emit-host-bundle.sh", "bootstrap/check-host-bundle.sh"],
-    repo / "bootstrap" / "README.md": ["detect-instruction-conflicts.sh", "generate-host-adapters.sh", "check-host-adapter-alignment.sh", "generate-operating-profile.sh", "validate-instruction-layer.sh", "emit-host-prompt.sh", "check-host-ingestion.sh", "emit-host-bundle.sh", "check-host-bundle.sh", "INSTALLER_AND_UPGRADE_CONTRACT.md", "_system/READ_BUNDLES.md", "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md", "_system/SELF_HEALING_BOUNDARY.md", "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"],
+    repo / "bootstrap" / "README.md": ["detect-instruction-conflicts.sh", "generate-host-adapters.sh", "check-host-adapter-alignment.sh", "generate-operating-profile.sh", "validate-instruction-layer.sh", "emit-host-prompt.sh", "check-host-ingestion.sh", "emit-host-bundle.sh", "check-host-bundle.sh", "check-instruction-domain-alignment.sh", "INSTALLER_AND_UPGRADE_CONTRACT.md", "_system/READ_BUNDLES.md", "_system/TEMPLATE_CHANGE_IMPACT_POLICY.md", "_system/SELF_HEALING_BOUNDARY.md", "_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md"],
 }
 
 for path, expected in required_mentions.items():

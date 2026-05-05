@@ -8,8 +8,7 @@
 
 ## Primary donors
 
-- CandleCompass
-- LedgerLoop
+- curated-donor
 
 ## What to emulate
 

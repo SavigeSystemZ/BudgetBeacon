@@ -4,6 +4,12 @@ These rules are binding for every coding agent and tool operating in this reposi
 
 This repo is expected to carry its own local agent operating system. The system files live in `_system/`; the runtime application must remain independent from them.
 
+When this tree is used as the **canonical AIAST installable template root**
+(source for `bootstrap/update-template.sh` on other repos), it is the **master
+operating-layer copy**, not an application sandbox. Downstream app installs must
+follow `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` so
+project-specific instructions and continuity files stay preserve-first.
+
 ## Load first
 
 Read these files before making meaningful edits.
@@ -85,6 +91,11 @@ If context appears reset, incomplete, or stale, reload the canonical docs before
 - Use `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` and
   `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` before writes that could cross
   repo boundaries.
+- If a user prompt looks like it belongs to a **different app or product vertical**
+  than this repository (wrong instructions pasted), read
+  `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` and reconcile against
+  `_system/PROJECT_DOMAIN_MANIFEST.json` and `_system/PROJECT_PROFILE.md` before
+  mutating files; halt off-domain work until explicitly confirmed per that protocol.
 - Use `_system/GLOBAL_REDIRECT_SHIM_POLICY.md` before placing parent/global
   redirect files, and keep those files thin and non-authoritative.
 - Use `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md` for allowed local

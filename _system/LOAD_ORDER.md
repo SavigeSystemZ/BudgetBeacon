@@ -23,6 +23,20 @@ bundle-first rule below. An agent that cannot run `bash` should open the
 LATEST.md file inside `_system/checkpoints/` (when one exists) directly
 instead.
 
+## Template sync gate (downstream repos)
+
+Immediately after the checkpoint rule, open `_system/TEMPLATE_SYNC_NOTICE.md`.
+
+- If **`Agent gate: PENDING_HEALTH_CHECK`** appears, the operating layer was
+  refreshed from the canonical AIAST template since the last human-reviewed
+  clear. Complete the checklist in that file (and in
+  `DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md`) **before** product
+  feature work — typically `bootstrap/system-doctor.sh` and
+  `bootstrap/validate-system.sh --strict`.
+- If **`Agent gate: CLEARED`** or **`NOT_APPLICABLE_TEMPLATE_SOURCE`**, there
+  is no pending template-rollup health block.
+- After review: `bash bootstrap/clear-template-sync-notice.sh .`
+
 ## Bundle-first rule
 
 Before defaulting to the full tier stack, check `_system/READ_BUNDLES.md` and
@@ -182,7 +196,8 @@ tooling work, also load:
 113. `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md`
 114. `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md`
 115. `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md`
-116. `_system/GLOBAL_REDIRECT_SHIM_POLICY.md`
-117. `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md`
-118. `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
-119. `_system/ORPHAN_META_SNAPSHOT_POLICY.md`
+116. `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md`
+117. `_system/GLOBAL_REDIRECT_SHIM_POLICY.md`
+118. `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md`
+119. `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
+120. `_system/ORPHAN_META_SNAPSHOT_POLICY.md`

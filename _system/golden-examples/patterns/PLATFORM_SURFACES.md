@@ -8,9 +8,7 @@
 
 ## Primary donors
 
-- PromptMage
-- LedgerLoop
-- CandleCompass
+- curated-donor
 
 ## What to emulate
 

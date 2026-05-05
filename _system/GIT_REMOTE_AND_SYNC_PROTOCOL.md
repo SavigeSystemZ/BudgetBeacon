@@ -46,10 +46,10 @@ This subsection is maintained for **Michael Spaulding**’s workspace. Forks for
 
 **Naming:** On this operator’s machine, app roots live under `~/.MyAppZ/<LocalRepoName>`. New GitHub repos for those apps are **`SavigeSystemZ/<LocalRepoName>`** (name matches the folder **exactly**), unless the folder name is not a valid repo name—then set remotes manually.
 
-**Example SSH remote** for an app whose directory name is `LedgerLoop`:
+**Example SSH remote** for an app whose directory name is `<ProjectX>`:
 
 ```text
-git@github.com:SavigeSystemZ/LedgerLoop.git
+git@github.com:SavigeSystemZ/<ProjectX>.git
 ```
 
 Legacy or personal repos may still use `SavageO13/<repo>`; always confirm with `git remote -v` before changing remotes.

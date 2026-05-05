@@ -94,35 +94,6 @@ Run `bootstrap/check-evidence-quality.sh` to validate that handoff claims are
 grounded. Run `bootstrap/check-working-file-staleness.sh` to detect stale
 handoff surfaces.
 
-## Final Hardening gates (added 2026-05-05)
-
-The five-phase Final Hardening pass (`/home/whyte/.claude/plans/ethereal-hatching-bear.md`) introduces hard gates in addition to the standard validation ladder.
-
-### APK gates (Phase 1+, every release-shaped change)
-
-- `gradlew :app:lintRelease` clean — Android lint at release config.
-- `gradlew :app:assembleRelease` produces a signed APK; the binary boots in the Pixel 7 / API 34 emulator.
-- `npm run audit:secrets` (added in Phase 1) finds zero hits for keystore passwords, alias names, or aggregator API keys in tracked files.
-- `git ls-files | grep -E '\.(keystore|jks)$'` returns empty.
-- `package.json#version` and the derived `versionName` / `versionCode` move monotonically per release tag.
-
-### A11y gates (Phase 2+, every UI change)
-
-- `axe-core` (vitest + jsdom) green per route; serious or critical violations fail the build.
-- BeaconModal + every modal-shaped component traps focus, exposes `aria-modal="true"` / `role="dialog"` / `aria-labelledby`, and returns focus to the trigger on close.
-- No color-only signaling: every status indicator pairs color with an icon or shape.
-
-### Sync parity gates (Phase 3+, every M10/M11 change)
-
-- Two-emulator parity smoke (per `docs/M9_ANDROID_QA_CHECKLIST.md` § "M10/M11 emulator parity smoke") green before merge.
-- Recovery-code wrap/unwrap round-trip covered by Vitest.
-- M11 leave flow rotates the household key and rejects the leaver's stale tokens (asserted in test).
-
-### Release gate (Phase 5)
-
-- Tag `v1.0.0` is only pushed after every gate above is green and the release checklist in `RELEASE_NOTES.md` is fully ticked.
-- `android-release.yml` produces a signed APK + `mappings.txt` + SHA-256 checksums attached to the GitHub Release.
-
 ## Release and checkpoint rule
 
 Before a checkpoint or release claim:

@@ -85,6 +85,7 @@ aiaast_is_stateful_path() {
     "RELEASE_NOTES.md"|\
     "CHANGELOG.md"|\
     "_system/PROJECT_PROFILE.md"|\
+    "_system/PROJECT_DOMAIN_MANIFEST.json"|\
     "_system/context/CURRENT_STATUS.md"|\
     "_system/context/DECISIONS.md"|\
     "_system/context/MEMORY.md"|\
@@ -92,7 +93,8 @@ aiaast_is_stateful_path() {
     "_system/context/ASSUMPTIONS.md"|\
     "_system/context/INTEGRATION_SURFACES.md"|\
     "_system/context/OPEN_QUESTIONS.md"|\
-    "_system/context/QUALITY_DEBT.md")
+    "_system/context/QUALITY_DEBT.md"|\
+    "_system/history/template-sync-events.jsonl")
       return 0
       ;;
   esac
@@ -105,6 +107,7 @@ aiaast_is_local_config_path() {
     ".cursor/mcp.json"|\
     "_system/.template-install.json"|\
     "_system/SYSTEM_REGISTRY.json"|\
+    "_system/TEMPLATE_SYNC_NOTICE.md"|\
     "AIAST_REMOVED.md")
       return 0
       ;;
@@ -364,6 +367,89 @@ aiaast_refresh_onboarding_baseline() {
   bash "${script_dir}/seed-test-strategy.sh" "${repo_root}"
   bash "${script_dir}/seed-risk-register.sh" "${repo_root}"
   bash "${script_dir}/seed-working-state.sh" "${repo_root}" --app-name "${app_name}"
+}
+
+# Write _system/TEMPLATE_SYNC_NOTICE.md plus append-only history after a
+# successful bootstrap install/update (non-dry-run). See
+# _system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md.
+# Args: repo_root, event_label, refresh_managed (0|1)
+aiaast_emit_template_sync_notice() {
+  local repo_root="$1"
+  local event_label="$2"
+  local refresh_managed="${3:-0}"
+  local ts ver hist_dir hist_file notice_path
+  ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  ver="$(aiaast_template_version "${repo_root}")"
+  hist_dir="${repo_root}/_system/history"
+  hist_file="${hist_dir}/template-sync-events.jsonl"
+  notice_path="${repo_root}/_system/TEMPLATE_SYNC_NOTICE.md"
+  mkdir -p "${hist_dir}"
+  printf '{"ts":"%s","event":"%s","refresh_managed":%s,"installed_template_version":"%s"}\n' \
+    "${ts}" "${event_label}" "${refresh_managed}" "${ver}" >>"${hist_file}"
+  python3 - <<'PY' "${notice_path}" "${ts}" "${event_label}" "${refresh_managed}" "${ver}"
+from pathlib import Path
+import json
+import sys
+
+path = Path(sys.argv[1])
+ts, event, rm, ver = sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+rm_yes = rm == "1"
+lines = [
+    "# Template operating-layer sync notice",
+    "",
+    "**Agent gate:** PENDING_HEALTH_CHECK",
+    "",
+    f"**When (UTC):** {ts}",
+    f"**Event:** {event}",
+    "**Refresh-managed from source:** " + ("yes" if rm_yes else "no"),
+    f"**Installed template version marker (`_system/.template-version`):** {ver}",
+    "",
+    "## What happened",
+    "",
+    "Bootstrap synchronized this **downstream application repository** with the",
+    "canonical AIAST installable template (`TEMPLATE/`). This directory is **not**",
+    "the master template copy; treat your pinned template checkout as the source of",
+    "operating-layer churn.",
+    "",
+    "## Preserve-first reminder",
+    "",
+    "Stateful / repo-owned surfaces (for example `PRODUCT_BRIEF.md`,",
+    "`_system/PROJECT_PROFILE.md`, `_system/context/*.md`, and standard working",
+    "files) are protected from template **diff refresh** paths unless you explicitly",
+    "chose `--refresh-managed`. If onboarding seeds ran, review narrative files for",
+    "unintended edits before committing.",
+    "",
+    "## Health gate — run before product work",
+    "",
+    "1. `bash bootstrap/emit-session-environment.sh .`",
+    "2. `bash bootstrap/system-doctor.sh . --strict` (or omit `--strict` once, then tighten)",
+    "3. `bash bootstrap/validate-system.sh . --strict` when this repo should be contract-clean",
+    "4. Review `git status` and resolve anything unexpected",
+    "5. When satisfied: `bash bootstrap/clear-template-sync-notice.sh .`",
+    "",
+    "## Policy",
+    "",
+    "- `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md`",
+    "- `_system/UPGRADE_AND_DRIFT_POLICY.md`",
+    "- `_system/AGENT_INIT_CONVERGENCE.md`",
+    "",
+    "<!-- machine_json: "
+    + json.dumps(
+        {
+            "agent_gate": "PENDING_HEALTH_CHECK",
+            "ts": ts,
+            "event": event,
+            "refresh_managed": rm_yes,
+            "installed_template_version": ver,
+        },
+        separators=(",", ":"),
+    )
+    + " -->",
+    "",
+]
+path.parent.mkdir(parents=True, exist_ok=True)
+path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+PY
 }
 
 aiaast_record_validation_success() {
@@ -637,6 +723,7 @@ aiaast_print_managed_files() {
         find "${dir}" -type f \
           ! -path '*/.git/*' \
           ! -path '*/__pycache__/*' \
+          ! -path '_system/history/*' \
           ! -path '_system/automation/*.log' \
           ! -path '_system/automation/*.json' \
           ! -path '_system/automation/latest.log' \

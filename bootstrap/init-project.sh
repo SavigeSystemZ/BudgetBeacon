@@ -196,6 +196,8 @@ else
   validation_command="bootstrap/validate-system.sh ${TARGET_REPO}"
 fi
 
+aiaast_emit_template_sync_notice "${TARGET_REPO}" "init-project" 0
+
 aiaast_record_validation_success \
   "${TARGET_REPO}" \
   "${validation_command}" \

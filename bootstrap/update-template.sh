@@ -263,6 +263,13 @@ aiaast_write_install_metadata \
   "copied-template" \
   "${readme_dest}" \
   "update-template"
+
+# Manifest and onboarding hooks may refresh immediately before adapter emission.
+# Always re-pin the emitter script to the source template version so renderer
+# tables stay aligned with `generated_adapters` kinds (avoids skew on large jumps).
+if [[ -f "${RESOLVED_TEMPLATE}/bootstrap/generate-host-adapters.sh" ]]; then
+  aiaast_copy_rel_file "${RESOLVED_TEMPLATE}" "bootstrap/generate-host-adapters.sh" "${RESOLVED_TARGET}" "bootstrap/generate-host-adapters.sh"
+fi
 bash "${RESOLVED_TARGET}/bootstrap/generate-host-adapters.sh" "${RESOLVED_TARGET}" --write
 bash "${RESOLVED_TARGET}/bootstrap/generate-system-key.sh" "${RESOLVED_TARGET}" --write
 bash "${RESOLVED_TARGET}/bootstrap/generate-system-registry.sh" "${RESOLVED_TARGET}" --write
@@ -294,6 +301,8 @@ else
     fi
   fi
 fi
+
+aiaast_emit_template_sync_notice "${RESOLVED_TARGET}" "update-template" "${REFRESH_MANAGED}"
 
 aiaast_record_validation_success \
   "${RESOLVED_TARGET}" \

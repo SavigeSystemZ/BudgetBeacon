@@ -68,3 +68,10 @@ stage it deterministically and restore it explicitly.
 - `bootstrap/detect-instruction-conflicts.sh`
 - `bootstrap/check-system-awareness.sh`
 - `bootstrap/system-doctor.sh`
+
+## Downstream preservation and sync notices
+
+Install/update flows that touch application repos must honor
+`DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` and emit
+`_system/TEMPLATE_SYNC_NOTICE.md` when writes succeed so the next agent session
+runs a documented health gate.

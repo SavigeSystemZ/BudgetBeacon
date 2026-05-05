@@ -5,6 +5,7 @@ This is the standard operating model for how agents should work inside the repo.
 ## Preflight
 
 - Load the canonical docs (optionally read `_system/SYSTEM_ORCHESTRATION_GUIDE.md` first for a single map of surfaces, review order, and validation order).
+- For **large or domain-shaping** user requests, reconcile against `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md`, `_system/PROJECT_DOMAIN_MANIFEST.json`, and `_system/PROJECT_PROFILE.md` so you do not execute prompts meant for another product.
 - Read the latest handoff state.
 - Inspect the actual repo state before deciding anything.
 - Separate confirmed repo facts from assumptions.

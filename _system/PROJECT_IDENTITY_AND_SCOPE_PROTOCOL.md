@@ -35,3 +35,7 @@ This protocol prevents unintended writes by checking that requested target ident
 - Startup preflight for adapters and tool overlays.
 - `bootstrap/init-project.sh` preflight when global or snapshot flags are enabled.
 - `bootstrap/system-doctor.sh` for ongoing health checks.
+
+## Instruction domain (wrong-app prompts)
+
+Path and remote checks above do **not** detect when a human pastes a prompt meant for a **different product** into this repo. For that class of mistake, load and follow `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` and keep `_system/PROJECT_DOMAIN_MANIFEST.json` accurate for the product you are actually building.

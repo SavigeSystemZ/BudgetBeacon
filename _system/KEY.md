@@ -2,7 +2,7 @@
 
 This file is the exhaustive agent-facing key for the installable AIAST surface.
 
-It covers 538 managed files and is generated from the canonical managed-file inventory.
+It covers 542 managed files and is generated from the canonical managed-file inventory.
 
 ## How To Use This File
 
@@ -586,6 +586,8 @@ These files provide repo-local guidance to GitHub Copilot.
 - `.github/ISSUE_TEMPLATE/config.yml` - GitHub Copilot overlay for Config. Used when Copilot loads repo-local instructions.
 - `.github/ISSUE_TEMPLATE/feature_request.md` - GitHub Copilot overlay for Feature Request. Used when Copilot loads repo-local instructions.
 - `.github/pull_request_template.md` - GitHub Copilot overlay for Pull Request Template. Used when Copilot loads repo-local instructions.
+- `.github/workflows/android-emulator-smoke.yml` - GitHub Copilot overlay for Android Emulator Smoke. Used when Copilot loads repo-local instructions.
+- `.github/workflows/android-release.yml` - GitHub Copilot overlay for Android Release. Used when Copilot loads repo-local instructions.
 - `.github/workflows/ci.yml` - GitHub Copilot overlay for CI. Used when Copilot loads repo-local instructions.
 
 ### Unclassified
@@ -602,6 +604,7 @@ These files are managed but do not currently fit a more specific category.
 - `distribution/platforms/macos/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
 - `distribution/platforms/windows/Install.ps1` - Managed AIAST surface for Install Ps1. Use it when the task clearly touches the surface named by this file.
 - `distribution/platforms/windows/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
+- `docs/APK_RELEASE.md` - Managed AIAST surface for Apk Release. Use it when the task clearly touches the surface named by this file.
 - `docs/ARCHITECTURE.md` - Managed AIAST surface for Architecture. Use it when the task clearly touches the surface named by this file.
 - `docs/ASSISTANT_CONTEXT_COVERAGE.md` - Managed AIAST surface for Assistant Context Coverage. Use it when the task clearly touches the surface named by this file.
 - `docs/COMPLETION_MASTER_PLAN.md` - Managed AIAST surface for Completion Master Plan. Use it when the task clearly touches the surface named by this file.

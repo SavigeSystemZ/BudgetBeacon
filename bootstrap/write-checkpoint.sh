@@ -68,10 +68,11 @@ Examples:
   bash bootstrap/write-checkpoint.sh . \
     --agent codex --kind rate-limit-save \
     --phase "Mid rollout of AIAST 1.23.0" \
-    --completed "Ran update-template.sh on ModPilot" \
-    --in-progress "Refreshing ModPilot handoff docs" \
-    --next "Run system-doctor.sh on ModPilot" \
-    --next "Commit and push ModPilot replay" \
+    --completed "Ran update-template.sh on <ProjectX>" \
+    L72:     --in-progress "Refreshing <ProjectX> handoff docs" \
+    L73:     --next "Run system-doctor.sh on <ProjectX>" \
+    L74:     --next "Commit and push <ProjectX> replay" \
+
     --confidence medium
 EOF
 }

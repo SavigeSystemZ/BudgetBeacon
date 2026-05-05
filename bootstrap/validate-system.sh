@@ -122,6 +122,10 @@ require_files \
   "_system/.template-version" \
   "_system/.template-install.json" \
   "_system/PROJECT_PROFILE.md" \
+  "_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md" \
+  "_system/PROJECT_DOMAIN_MANIFEST.json" \
+  "_system/PROJECT_DOMAIN_MANIFEST.template.json" \
+  "_system/schemas/project-domain-manifest.schema.json" \
   "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md" \
   "_system/REPO_OPERATING_PROFILE.md" \
   "_system/CONTEXT_INDEX.md" \
@@ -170,6 +174,8 @@ require_files \
   "_system/SYSTEM_EVOLUTION_POLICY.md" \
   "_system/STANDARDS_CONFLICT_RESOLUTION.md" \
   "_system/UPGRADE_AND_DRIFT_POLICY.md" \
+  "_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md" \
+  "_system/TEMPLATE_SYNC_NOTICE.md" \
   "_system/INSTALLER_AND_UPGRADE_CONTRACT.md" \
   "_system/CODING_STANDARDS.md" \
   "_system/PERFORMANCE_BUDGET.md" \
@@ -604,6 +610,8 @@ _run_aiaast_subvalidator() {
 
 _run_aiaast_subvalidator "validate-instruction-layer" \
   bash "${VALIDATOR_ROOT}/bootstrap/validate-instruction-layer.sh" "${TARGET}" --validator-root "${VALIDATOR_ROOT}"
+_run_aiaast_subvalidator "check-instruction-domain-alignment" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-instruction-domain-alignment.sh" "${TARGET}" --validate-manifest
 _run_aiaast_subvalidator "check-system-awareness" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-system-awareness.sh" "${TARGET}"
 _run_aiaast_subvalidator "check-repo-permissions" \

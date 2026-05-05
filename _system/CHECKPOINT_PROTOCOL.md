@@ -76,15 +76,15 @@ The minimum viable rate-limit save:
 bash bootstrap/write-checkpoint.sh . \
   --agent claude \
   --kind rate-limit-save \
-  --phase "AIAST 1.23.0 downstream replay on ModPilot" \
+  --phase "AIAST 1.23.0 downstream replay on <ProjectX>" \
   --completed "Ran update-template.sh --refresh-managed --strict" \
-  --in-progress "Refreshing ModPilot WHERE_LEFT_OFF.md" \
+  --in-progress "Refreshing <ProjectX> WHERE_LEFT_OFF.md" \
   --next "Finish WHERE_LEFT_OFF.md refresh" \
   --next "Run system-doctor.sh" \
   --next "Commit and push" \
   --resume-file "WHERE_LEFT_OFF.md" \
   --resume-file "_system/context/CURRENT_STATUS.md" \
-  --resume-command "Continue ModPilot 1.23.0 replay from the WHERE_LEFT_OFF.md refresh step, then run system-doctor.sh and commit." \
+  --resume-command "Continue <ProjectX> 1.23.0 replay from the WHERE_LEFT_OFF.md refresh step, then run system-doctor.sh and commit." \
   --confidence medium
 ```
 

@@ -56,6 +56,10 @@ Additional adapters may be added as long as they are declared in `_system/host-a
 
 Rollouts must not silently erase project-specific truth.
 
+For the **master template vs downstream app** distinction, the agent health gate
+after installs/updates, and the `_system/TEMPLATE_SYNC_NOTICE.md` contract, read
+`DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md`.
+
 - **Stateful surfaces (never overwritten by template diff refresh):** paths classified in `bootstrap/lib/aiaast-lib.sh` as `aiaast_is_stateful_path` — for example `TODO.md`, `PLAN.md`, `WHERE_LEFT_OFF.md`, `PRODUCT_BRIEF.md`, `TEST_STRATEGY.md`, `RISK_REGISTER.md`, `_system/PROJECT_PROFILE.md`, and `_system/context/*.md` continuity files.
 - **Product-owned runtime seeds:** files under `bootstrap/templates/runtime/` are materialized once into the app tree and then owned by the product; refresh paths must not force-overwrite them (see `aiaast_refresh_onboarding_baseline` commentary on `generate-runtime-foundations.sh`).
 - **`migrate-agent-surface-upgrade.sh`:** when `--write` runs `install-missing-files.sh --skip-onboarding-seeds` so suggest/seed passes that would rewrite `PRODUCT_BRIEF.md`, working files, or context bullets are skipped (same contract as `export AIAST_SKIP_ONBOARDING_SEEDS=1` for that refresh only). Only missing template files are copied (rsync `--ignore-existing`), then append-only contract patches and regenerators run.

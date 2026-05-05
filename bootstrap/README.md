@@ -16,6 +16,7 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `init-project.sh` — copy and initialize the system into a target repo
 - `install-missing-files.sh` — add newly introduced template files into an existing installed repo without overwriting existing repo state, then backfill missing runtime scaffolds and safe onboarding defaults; pass `--skip-onboarding-seeds` when you must not re-run suggest/seed passes (same as `migrate-agent-surface-upgrade.sh --write`)
 - `update-template.sh` — compare an installed repo with a newer template source and apply additive updates; always refresh version and contract-manifest surfaces needed for truthful upgrade state, optionally refresh broader template-managed drift, then re-run the safe onboarding backfill path
+- `clear-template-sync-notice.sh` — after post-sync health checks, reset `_system/TEMPLATE_SYNC_NOTICE.md` from `PENDING_HEALTH_CHECK` to `CLEARED` (see `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md`)
 - `repair-system.sh` — restore missing or drifted template-managed files while preserving app-owned state
 - `uninstall-system.sh` — remove the operating layer cleanly while leaving runtime app code intact
 - `configure-project-profile.sh` — stamp initial profile values
@@ -38,6 +39,7 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `generate-host-adapters.sh` — regenerate managed tool-entry and load-context adapter files from the host-adapter manifest
 - `generate-operating-profile.sh` — rebuild the compact host-ingestion profile
 - `detect-instruction-conflicts.sh` — scan adapters, prompt surfaces, and manifests for overlap or contradiction
+- `check-instruction-domain-alignment.sh` — validate `_system/PROJECT_DOMAIN_MANIFEST.json` and scan instruction text for manifest guard keywords (cross-product mismatch signals)
 - `check-host-adapter-alignment.sh` — verify generated tool adapters are aligned with the canonical manifest
 - `check-agent-surface-integrity.sh` — verify taxonomy/convergence contracts and required placeholder adapters are present
 - `sync-metasystem-contracts.sh` — one-command adapter/registry/profile/integrity regeneration plus validation checks

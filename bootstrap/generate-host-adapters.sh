@@ -275,8 +275,16 @@ renderers = {
 
 rendered: dict[str, str] = {}
 for name, spec in adapter_specs.items():
-    kind = str(spec["kind"])
-    renderer = renderers[kind]
+    kind = str(spec.get("kind", "")).strip()
+    renderer = renderers.get(kind)
+    if renderer is None:
+        print(
+            f"Host adapter {name!r}: unknown kind {kind!r}. "
+            "Sync bootstrap/generate-host-adapters.sh from the template source "
+            "or fix _system/host-adapter-manifest.json.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
     rendered[str(spec["path"])] = renderer(spec)
 
 if check:

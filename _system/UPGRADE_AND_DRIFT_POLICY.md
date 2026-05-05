@@ -2,6 +2,10 @@
 
 How to keep installed repos current with the master AIAST template without losing app-specific state.
 
+For the **downstream preservation doctrine**, sync notice file, and mandatory
+agent health gate after installs/updates, read
+`DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md`.
+
 For a single map of install vs upgrade vs repair entry points, read `INSTALLER_AND_UPGRADE_CONTRACT.md`.
 
 ## Version tracking

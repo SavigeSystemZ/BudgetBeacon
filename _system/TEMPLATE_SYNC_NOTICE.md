@@ -1,14 +1,13 @@
 # Template operating-layer sync notice
 
-**Agent gate:** NOT_APPLICABLE_TEMPLATE_SOURCE
+**Agent gate:** CLEARED
 
-This path is inside the **canonical AIAST `TEMPLATE/` product tree** (or a
-maintainer checkout used as `--source`). It is **not** a downstream
-application repository.
+**Cleared (UTC):** 2026-05-05T06:01:01Z
+**Installed template version marker:** 1.23.0
 
-Downstream app workspaces receive **`Agent gate: PENDING_HEALTH_CHECK`**
-after `init-project.sh`, `install-missing-files.sh`, or `update-template.sh`
-performs a successful write.
+No pending template-sync health gate. The next `init-project`,
+`install-missing-files`, or `update-template` write will set
+**PENDING_HEALTH_CHECK** again.
 
-Read `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` and
-`_system/LOAD_ORDER.md`.
+<!-- machine_json: {"agent_gate":"CLEARED","ts":"2026-05-05T06:01:01Z","installed_template_version":"1.23.0"} -->
+

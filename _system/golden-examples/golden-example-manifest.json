@@ -12,8 +12,7 @@
       "title": "Continuity And Handoff",
       "path": "_system/golden-examples/patterns/CONTINUITY_AND_HANDOFF.md",
       "donors": [
-        "CandleCompass",
-        "LedgerLoop"
+        "curated-donor"
       ],
       "load_when": [
         "handoff quality needs improvement",
@@ -26,8 +25,7 @@
       "title": "Governance And Prompting",
       "path": "_system/golden-examples/patterns/GOVERNANCE_AND_PROMPTING.md",
       "donors": [
-        "IdeaForge",
-        "EtherWeave"
+        "curated-donor"
       ],
       "load_when": [
         "prompt pack restructuring",
@@ -40,8 +38,7 @@
       "title": "Multi-Agent And MCP",
       "path": "_system/golden-examples/patterns/MULTI_AGENT_AND_MCP.md",
       "donors": [
-        "EtherWeave",
-        "IdeaForge"
+        "curated-donor"
       ],
       "load_when": [
         "multi-agent workflow design",
@@ -54,8 +51,7 @@
       "title": "Validation And Release",
       "path": "_system/golden-examples/patterns/VALIDATION_AND_RELEASE.md",
       "donors": [
-        "LedgerLoop",
-        "CandleCompass"
+        "curated-donor"
       ],
       "load_when": [
         "runtime verification",
@@ -68,9 +64,7 @@
       "title": "Platform Surfaces",
       "path": "_system/golden-examples/patterns/PLATFORM_SURFACES.md",
       "donors": [
-        "PromptMage",
-        "LedgerLoop",
-        "CandleCompass"
+        "curated-donor"
       ],
       "load_when": [
         "multi-surface repo design",

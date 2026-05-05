@@ -15,6 +15,8 @@ This file is the map of the local agent operating system.
 - `HOST_ADAPTER_POLICY.md` — policy for generated tool-entry and adapter-load surfaces
 - `AGENT_SURFACE_TAXONOMY.md` — canonical adapter classes, naming, and placeholder boundaries
 - `AGENT_INIT_CONVERGENCE.md` — mapping from external init workspaces to installable AIAST contracts
+- `DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` — master template vs downstream app repo; preserve-first rules; template sync notice + health gate
+- `TEMPLATE_SYNC_NOTICE.md` — latest template sync state for agents (`PENDING_HEALTH_CHECK` vs `CLEARED`); see `LOAD_ORDER.md`
 - `HOST_BUNDLE_CONTRACT.md` — contract for self-contained external host bundles
 - `_system/READ_BUNDLES.md` — smallest-useful-context bundles for common AIAST task families
 - `LOAD_ORDER.md` — what to read and in what order
@@ -31,6 +33,8 @@ This file is the map of the local agent operating system.
 - `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md` — how to handle framework, package, platform, installer, and API research that may change over time
 - `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` — working-directory authority and write containment rules
 - `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` — identity mismatch detection and halt behavior
+- `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` — wrong-app / wrong-vertical pasted prompts; halt until reconciled with `PROJECT_DOMAIN_MANIFEST.json`
+- `_system/PROJECT_DOMAIN_MANIFEST.json` — machine-readable product domain and off-domain keyword guards (copy from `PROJECT_DOMAIN_MANIFEST.template.json` when bootstrapping)
 - `_system/GLOBAL_REDIRECT_SHIM_POLICY.md` — thin redirect shim policy for parent/tool-global surfaces
 - `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md` — authorized local discovery scope and write constraints
 - `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md` — required session environment report fields and usage
@@ -129,7 +133,6 @@ This file is the map of the local agent operating system.
 - `context/INTEGRATION_SURFACES.md`
 - `context/OPEN_QUESTIONS.md`
 - `context/QUALITY_DEBT.md`
-- `context/scavenge-donor-couples-wealth.md` — read-only scavenging trace from sibling `CouplesWealth` (no donor writes)
 
 ## Optional longform trees
 

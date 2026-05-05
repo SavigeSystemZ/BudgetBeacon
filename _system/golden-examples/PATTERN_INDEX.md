@@ -6,23 +6,18 @@ Use this index when you need a concrete model for what "good" should look like w
 
 - `patterns/CONTINUITY_AND_HANDOFF.md`
   Use when improving `TODO.md`, `PLAN.md`, `WHERE_LEFT_OFF.md`, or durable context quality.
-  Primary donors: CandleCompass, LedgerLoop.
 
 - `patterns/GOVERNANCE_AND_PROMPTING.md`
   Use when restructuring prompts, rules, prompt packs, or repo-governance layers.
-  Primary donors: IdeaForge, EtherWeave.
 
 - `patterns/MULTI_AGENT_AND_MCP.md`
   Use when defining turn-taking, subagent responsibilities, MCP selection policy, or fallback behavior.
-  Primary donors: EtherWeave, IdeaForge.
 
 - `patterns/VALIDATION_AND_RELEASE.md`
   Use when changing runtime verification, install/package checks, signoff rules, or release posture.
-  Primary donors: LedgerLoop, CandleCompass.
 
 - `patterns/PLATFORM_SURFACES.md`
   Use when deciding how web, desktop, mobile, packaging, ops, and AI surfaces should be separated.
-  Primary donors: PromptMage, LedgerLoop, CandleCompass.
 
 ## Application-architecture patterns
 
