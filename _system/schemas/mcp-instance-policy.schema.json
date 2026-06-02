@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaast.invalid/schemas/mcp-instance-policy.schema.json",
+  "title": "AIAST MCP Instance Policy",
+  "description": "Per-server-type MCP instance policy controlling allowed/denied roots, required namespace bindings, and tier binding. See _system/mcp/MCP_INSTANCE_REGISTRY_PROTOCOL.md and _system/mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "validation_profile_default",
+    "instance_id_pattern",
+    "registry",
+    "global_invariants",
+    "server_types"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": { "type": "string" },
+    "validation_profile_default": {
+      "type": "string",
+      "enum": ["strict", "standard", "lenient"]
+    },
+    "instance_id_pattern": {
+      "type": "string",
+      "description": "Anchored ERE pattern every mcp_instance_id MUST match."
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instances_dir",
+        "quarantine_dir",
+        "runtime_dir",
+        "provenance_log",
+        "local_overrides_dir"
+      ],
+      "properties": {
+        "instances_dir":       { "type": "string" },
+        "quarantine_dir":      { "type": "string" },
+        "runtime_dir":         { "type": "string" },
+        "provenance_log":      { "type": "string" },
+        "local_overrides_dir": { "type": "string" }
+      }
+    },
+    "global_invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace_mcp_prefix_must_match_app",
+        "tier_declared_must_be_le_tier_ceiling",
+        "credentials_must_not_be_tracked",
+        "browser_profile_must_be_inside_repo",
+        "refuse_parent_template_role"
+      ],
+      "properties": {
+        "namespace_mcp_prefix_must_match_app":   { "type": "boolean" },
+        "tier_declared_must_be_le_tier_ceiling": { "type": "boolean" },
+        "credentials_must_not_be_tracked":       { "type": "boolean" },
+        "browser_profile_must_be_inside_repo":   { "type": "boolean" },
+        "refuse_parent_template_role":           { "type": "boolean" }
+      }
+    },
+    "server_types": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "filesystem",
+        "github",
+        "postgres",
+        "redis",
+        "browser",
+        "memory_artifact",
+        "http_remote",
+        "unknown"
+      ],
+      "properties": {
+        "filesystem":      { "$ref": "#/$defs/FilesystemEntry" },
+        "github":          { "$ref": "#/$defs/GithubEntry" },
+        "postgres":        { "$ref": "#/$defs/PostgresEntry" },
+        "redis":           { "$ref": "#/$defs/RedisEntry" },
+        "browser":         { "$ref": "#/$defs/BrowserEntry" },
+        "memory_artifact": { "$ref": "#/$defs/MemoryArtifactEntry" },
+        "http_remote":     { "$ref": "#/$defs/HttpRemoteEntry" },
+        "unknown":         { "$ref": "#/$defs/UnknownEntry" }
+      }
+    }
+  },
+  "$defs": {
+    "Tier": { "type": "string", "enum": ["T0", "T1", "T2", "T3"] },
+    "RequiredFields": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "allowed_roots",
+          "denied_roots",
+          "credentials_scope",
+          "allowed_repos",
+          "db_schema_or_prefix",
+          "db_index",
+          "cache_namespace",
+          "browser_profile_path",
+          "memory_namespace",
+          "base_url",
+          "allowed_paths_regex"
+        ]
+      }
+    },
+    "FilesystemEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "allowed_roots_must_be_inside_repo_root_realpath", "refuse_symlinks_outside_repo_root"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "allowed_roots_must_be_inside_repo_root_realpath": { "type": "boolean" },
+        "denied_roots_default": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "refuse_symlinks_outside_repo_root": { "type": "boolean" }
+      }
+    },
+    "GithubEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "credentials_must_be_env_or_local_override", "allowed_repos_min"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "credentials_must_be_env_or_local_override": { "type": "boolean" },
+        "allowed_repos_min": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "PostgresEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "credentials_must_be_env_or_local_override", "schema_or_prefix_pattern"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "credentials_must_be_env_or_local_override": { "type": "boolean" },
+        "schema_or_prefix_pattern": { "type": "string" }
+      }
+    },
+    "RedisEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "db_index_min", "db_index_max", "cache_namespace_pattern"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "db_index_min":   { "type": "integer", "minimum": 0 },
+        "db_index_max":   { "type": "integer", "minimum": 0 },
+        "cache_namespace_pattern": { "type": "string" }
+      }
+    },
+    "BrowserEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "browser_profile_root_template", "refuse_profile_outside_root"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "browser_profile_root_template": { "type": "string" },
+        "refuse_profile_outside_root":   { "type": "boolean" }
+      }
+    },
+    "MemoryArtifactEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "memory_namespace_must_start_with_app_id"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "memory_namespace_must_start_with_app_id": { "type": "boolean" }
+      }
+    },
+    "HttpRemoteEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "base_url_must_be_https", "allowed_paths_regex_must_be_anchored"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "base_url_must_be_https":              { "type": "boolean" },
+        "allowed_paths_regex_must_be_anchored": { "type": "boolean" }
+      }
+    },
+    "UnknownEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_ceiling", "required_fields", "validation_profile_action"],
+      "properties": {
+        "tier_ceiling":   { "$ref": "#/$defs/Tier" },
+        "required_fields": { "$ref": "#/$defs/RequiredFields" },
+        "validation_profile_action": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["strict", "standard", "lenient"],
+          "properties": {
+            "strict":   { "type": "string", "enum": ["refuse", "warn", "allow"] },
+            "standard": { "type": "string", "enum": ["refuse", "warn", "allow"] },
+            "lenient":  { "type": "string", "enum": ["refuse", "warn", "allow"] }
+          }
+        }
+      }
+    }
+  }
+}

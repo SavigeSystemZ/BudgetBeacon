@@ -300,3 +300,111 @@ Start M10.1 — auth scaffolding only, no UI changes yet:
 - **Objective:** Meta system completeness
 - **Next best step:** Proceed with outstanding priority work
 
+
+## Meta-sync reconciled 2026-05-14T21:20:44Z
+
+- **Sync window:** PENDING emitted 2026-05-14T21:05:13Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=75, always_refresh_applied=20.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `AGENTS.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `AIAST_CHANGELOG.md`, `bootstrap/validate-system.sh`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-16T15:42:31Z
+
+- **Sync window:** PENDING emitted 2026-05-16T15:26:35Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=78, always_refresh_applied=20.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `AGENTS.md`, `bootstrap/validate-system.sh`, `_system/context/AGENT_SHARED_MEMORY.md`, `AIAST_CHANGELOG.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-16T18:02:08Z
+
+- **Sync window:** PENDING emitted 2026-05-16T17:47:05Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=78, always_refresh_applied=20.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `AIAST_CHANGELOG.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `bootstrap/validate-system.sh`, `AGENTS.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-16T23:15:05Z
+
+- **Sync window:** PENDING emitted 2026-05-16T23:00:20Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=82, always_refresh_applied=20.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `bootstrap/validate-system.sh`, `AGENTS.md`, `AIAST_CHANGELOG.md`, `_system/context/AGENT_SHARED_MEMORY.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-17T01:04:34Z
+
+- **Sync window:** PENDING emitted 2026-05-17T00:47:45Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=82, always_refresh_applied=27.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `bootstrap/validate-system.sh`, `_system/context/AGENT_SHARED_MEMORY.md`, `AGENTS.md`, `AIAST_CHANGELOG.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-17T03:36:49Z
+
+- **Sync window:** PENDING emitted 2026-05-17T03:20:20Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=83, always_refresh_applied=27.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `_system/context/AGENT_SHARED_MEMORY.md`, `AGENTS.md`, `AIAST_CHANGELOG.md`, `bootstrap/validate-system.sh`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-17T19:37:14Z
+
+- **Sync window:** PENDING emitted 2026-05-17T19:19:30Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=84, always_refresh_applied=27.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `AIAST_CHANGELOG.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `bootstrap/validate-system.sh`, `AGENTS.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-23T16:01:35Z
+
+- **Sync window:** PENDING emitted 2026-05-23T15:39:45Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.23.0 → 1.23.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=99, always_refresh_applied=27.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `bootstrap/validate-system.sh`, `_system/VALIDATION_GATES.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `AGENTS.md`, `AIAST_CHANGELOG.md`, `bootstrap/system-doctor.sh`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-23T19:47:20Z
+
+- **Sync window:** PENDING emitted 2026-05-23T19:24:37Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.24.0 → 1.24.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=108, always_refresh_applied=31.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `AGENTS.md`, `AIAST_CHANGELOG.md`, `bootstrap/validate-system.sh`, `_system/context/AGENT_SHARED_MEMORY.md`, `_system/VALIDATION_GATES.md`, `bootstrap/system-doctor.sh`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-23T20:57:15Z
+
+- **Sync window:** PENDING emitted 2026-05-23T20:36:21Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.24.0 → 1.24.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=104, always_refresh_applied=31.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `bootstrap/validate-system.sh`, `_system/VALIDATION_GATES.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `AIAST_CHANGELOG.md`, `AGENTS.md`, `bootstrap/system-doctor.sh`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-23T21:37:24Z
+
+- **Sync window:** PENDING emitted 2026-05-23T21:16:05Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.24.0 → 1.24.0.
+- **Changeset:** missing_installed=0, drifted_refreshed=110, always_refresh_applied=39.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `bootstrap/validate-system.sh`, `bootstrap/system-doctor.sh`, `_system/VALIDATION_GATES.md`, `_system/context/AGENT_SHARED_MEMORY.md`, `AGENTS.md`, `AIAST_CHANGELOG.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.
+
+## Meta-sync reconciled 2026-05-28T05:43:14Z
+
+- **Sync window:** PENDING emitted 2026-05-28T05:21:37Z by `update-template.sh` (event=update-template).
+- **Template version:** 1.24.0 → 1.24.0.
+- **Changeset:** missing_installed=9, drifted_refreshed=117, always_refresh_applied=39.
+- **Checks:** integrity=ok, host_settings_baseline=ok, system_awareness=ok, host_adapter_alignment=ok, instruction_layer=ok, host_settings_apply=ok.
+- **Project-context relevance:** ⚠ overlap with last WHERE_LEFT_OFF note: `_system/context/AGENT_SHARED_MEMORY.md`, `bootstrap/system-doctor.sh`, `bootstrap/validate-system.sh`, `_system/VALIDATION_GATES.md`, `AGENTS.md`, `AIAST_CHANGELOG.md`. Re-read prior note + targeted re-test before resuming.
+- **Status:** ok — proceed with previously-noted project work.

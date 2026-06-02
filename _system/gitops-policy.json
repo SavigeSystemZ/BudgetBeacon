@@ -1,0 +1,22 @@
+{
+  "default_base_branch": "main",
+  "branch_strategy": "main_only",
+  "allowed_branch_types": [],
+  "allow_topic_branches_by_default": false,
+  "allow_infrastructure_branches_by_default": false,
+  "github_remote_model": "local_authoritative_full_mirror",
+  "github_host": "github.com",
+  "github_org": "SavigeSystemZ",
+  "github_remote_name": "origin",
+  "github_repo_visibility": "private",
+  "github_repo_name_source": "local_directory_name",
+  "github_disable_issues_by_default": true,
+  "github_disable_wiki_by_default": true,
+  "github_disable_projects_by_default": true,
+  "github_delete_branch_on_merge": true,
+  "github_preferred_merge": "squash_only_when_pr_exception_is_used",
+  "require_private_remotes": true,
+  "require_validation_before_push": true,
+  "forbid_force_push_main": true,
+  "sync_requires_fetch_first": true
+}

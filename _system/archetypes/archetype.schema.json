@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIAST Archetype Manifest",
+  "type": "object",
+  "required": ["version", "archetypes"],
+  "properties": {
+    "version": { "type": "string" },
+    "archetypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "doc", "required_docs", "required_gates"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "doc": { "type": "string" },
+          "required_docs": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required_gates": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

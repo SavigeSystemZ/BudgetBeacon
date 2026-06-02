@@ -1,0 +1,28 @@
+# One glob pattern per line.
+# Matching evidence files are never deleted by retention apply mode.
+# See _system/EVIDENCE_RETENTION_AND_ROTATION_POLICY.md.
+
+# Maintainer evidence packets (milestone-tagged narrative reports)
+APP_BUILDER_*.md
+
+# Governance lane reports (lane-by-lane fingerprint)
+WAVE5_GOVERNANCE_LANE_REPORT_*.json
+WAVE5_GOVERNANCE_LANE_REPORT_*.md
+
+# Meta-system health dashboard (long-term trend signal)
+META_HEALTH_DASHBOARD_*.json
+META_HEALTH_DASHBOARD_*.md
+
+# Benchmark matrix reports — drive trend computation; deleting them breaks history
+BENCHMARK_MATRIX_*.json
+BENCHMARK_MATRIX_*.md
+
+# Benchmark trend summaries — derived analytics worth keeping for cross-version comparison
+BENCHMARK_TREND_*.json
+BENCHMARK_TREND_*.md
+
+# Release packets — milestone evidence retained indefinitely per policy
+RELEASE_PACKET_*.json
+RELEASE_PACKET_*.md
+RELEASE_PACKET_*.artifacts.json
+RELEASE_PACKET_*.sha256

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "$aiaast": {
+    "managed_by": "_AI_AGENT_SYSTEM_TEMPLATE",
+    "policy_doc": "_system/HOST_SETTINGS_BASELINE.md",
+    "preserve_first_sibling": ".claude/settings.json",
+    "always_refresh": true,
+    "schema_version": "1.0.0"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(tree:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote -v)",
+      "Bash(git config --get:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh repo view:*)",
+      "Bash(bash bootstrap/system-doctor.sh:*)",
+      "Bash(bash bootstrap/verify-integrity.sh --check:*)",
+      "Bash(bash bootstrap/validate-system.sh:*)",
+      "Bash(bash bootstrap/check-system-awareness.sh:*)",
+      "Bash(bash bootstrap/check-host-adapter-alignment.sh:*)",
+      "Bash(bash bootstrap/validate-instruction-layer.sh:*)",
+      "Bash(jq:*)",
+      "Bash(python3 -m json.tool:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(curl:* | sh)",
+      "Bash(curl:* | bash)",
+      "Bash(wget:* | sh)",
+      "Bash(wget:* | bash)"
+    ],
+    "additionalDirectories": []
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash bootstrap/verify-integrity.sh --check --target . 2>&1 | tail -3 || true"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f _system/.template-version && { v=$(cat _system/.template-version); i=$(bash bootstrap/verify-integrity.sh --check --target . >/dev/null 2>&1 && echo ok || echo drift); m=$(test -f _system/agent-state/meta-sync/PENDING.json && echo pending || echo clean); printf '[aiaast] template-version=%s integrity=%s meta-sync=%s' \"$v\" \"$i\" \"$m\"; test \"$m\" = pending && printf ' → run: bash bootstrap/reconcile-meta-sync.sh'; printf '\\n'; } || true"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "AIAST_HOST_ADAPTER": "claude-code"
+  }
+}

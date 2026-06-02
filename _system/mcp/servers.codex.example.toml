@@ -1,6 +1,8 @@
-[projects."/ABSOLUTE/PATH/TO/PROJECT"]
+# Example only. If Codex requires a resolved absolute project path, keep that
+# value in user-local config, not in a tracked repo file.
+[projects."__AIAST_PROJECT_ROOT__"]
 trust_level = "trusted"
 
 [mcp_servers.project_filesystem]
 command = "npx"
-args = ["-y", "@modelcontextprotocol/server-filesystem", "/ABSOLUTE/PATH/TO/PROJECT"]
+args = ["-y", "@modelcontextprotocol/server-filesystem", "."]

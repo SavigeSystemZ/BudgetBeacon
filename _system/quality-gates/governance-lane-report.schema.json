@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Governance Lane Report",
+  "type": "object",
+  "required": ["ok", "generated_at", "summary", "checks"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "generated_at": { "type": "string", "minLength": 1 },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "status", "duration_ms", "payload", "stderr"],
+        "properties": {
+          "command": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "payload": { "type": "object" },
+          "stderr": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

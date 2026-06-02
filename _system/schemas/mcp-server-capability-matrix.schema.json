@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaast.invalid/schemas/mcp-server-capability-matrix.schema.json",
+  "title": "AIAST MCP Server Capability Matrix",
+  "description": "Catalogue of MCP server types and the isolation tier each can reach. See _system/mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "tiers", "unknown_handling", "server_types"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": { "type": "string" },
+    "tiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["T0", "T1", "T2", "T3"],
+      "properties": {
+        "T0": { "type": "string" },
+        "T1": { "type": "string" },
+        "T2": { "type": "string" },
+        "T3": { "type": "string" }
+      }
+    },
+    "unknown_handling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strict", "standard", "lenient"],
+      "properties": {
+        "strict":   { "type": "string", "enum": ["refuse", "warn", "allow"] },
+        "standard": { "type": "string", "enum": ["refuse", "warn", "allow"] },
+        "lenient":  { "type": "string", "enum": ["refuse", "warn", "allow"] }
+      }
+    },
+    "server_types": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/ServerType" }
+    }
+  },
+  "$defs": {
+    "ServerType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "supports_allowed_roots",
+        "supports_per_instance_credentials",
+        "supports_namespaced_cache",
+        "tier_ceiling",
+        "required_fields"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "filesystem",
+            "github",
+            "postgres",
+            "redis",
+            "browser",
+            "memory_artifact",
+            "http_remote",
+            "unknown"
+          ]
+        },
+        "supports_allowed_roots":            { "type": "boolean" },
+        "supports_per_instance_credentials": { "type": "boolean" },
+        "supports_namespaced_cache":         { "type": "boolean" },
+        "tier_ceiling": {
+          "type": "string",
+          "enum": ["T0", "T1", "T2", "T3"]
+        },
+        "required_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "allowed_roots",
+              "denied_roots",
+              "credentials_scope",
+              "allowed_repos",
+              "db_schema_or_prefix",
+              "db_index",
+              "cache_namespace",
+              "browser_profile_path",
+              "memory_namespace",
+              "base_url",
+              "allowed_paths_regex"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

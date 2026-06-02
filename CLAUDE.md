@@ -51,5 +51,6 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - Treat host-level orchestration as context, not repo-local truth; the repo-local files named in `AGENTS.md` and `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` remain authoritative.
 - Assume other agents may continue your work.
 - Leave a high-signal handoff packet in repo files.
-- Be aware that other primary adapter files exist: `CODEX.md`, `GEMINI.md`, `WINDSURF.md`, `.cursorrules`, `.windsurfrules`, and `.github/copilot-instructions.md`.
+- Be aware that other primary adapter files exist: `CODEX.md`, `GEMINI.md`, `WINDSURF.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`, and `ANTIGRAVITY.md`.
 - If context appears contradictory, run `bootstrap/system-doctor.sh`.
+- Before writing non-trivial content to `_system/tool-memory/claude-memory.md`, invoke `bootstrap/stamp-tool-memory.sh --adapter claude-code --file _system/tool-memory/claude-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Check Context Freshness Result",
+  "type": "object",
+  "required": ["status", "checkpoint"],
+  "properties": {
+    "status": { "type": "string", "enum": ["pass"] },
+    "checkpoint": { "type": "string", "enum": ["absent", "present"] }
+  },
+  "additionalProperties": false
+}

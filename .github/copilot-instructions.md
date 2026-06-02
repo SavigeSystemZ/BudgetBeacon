@@ -54,3 +54,4 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - If repo state or docs appear inconsistent, run `bootstrap/system-doctor.sh`.
 - Use MCP servers only within the least-privilege scope defined in `_system/MCP_CONFIG.md`.
 - Be aware that other tool-specific entry files exist and may be used before or after your turn.
+- Before appending non-trivial content to `_system/tool-memory/copilot-memory.md`, invoke `bootstrap/stamp-tool-memory.sh --adapter copilot --file _system/tool-memory/copilot-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

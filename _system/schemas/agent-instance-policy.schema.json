@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaast.invalid/schemas/agent-instance-policy.schema.json",
+  "title": "AIAST Agent Instance Policy",
+  "description": "Repo-local policy controlling agent instance identity, lease lifecycle, fencing, and concurrency caps. See _system/AGENT_INSTANCE_ISOLATION_POLICY.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "naming",
+    "leases",
+    "fencing",
+    "concurrency_caps",
+    "state_layout"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["regex", "allowed_agent_types"],
+      "properties": {
+        "regex": {
+          "type": "string",
+          "description": "Anchored ERE pattern that every agent_id MUST match."
+        },
+        "allowed_agent_types": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,31}$" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "leases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ttl_seconds", "heartbeat_interval_seconds", "grace_cycles", "expired_action"],
+      "properties": {
+        "ttl_seconds":                  { "type": "integer", "minimum": 30,  "maximum": 7200 },
+        "heartbeat_interval_seconds":   { "type": "integer", "minimum": 5,   "maximum": 600 },
+        "grace_cycles":                 { "type": "integer", "minimum": 0,   "maximum": 5 },
+        "expired_action":               { "type": "string", "enum": ["quarantine", "delete", "release"] }
+      }
+    },
+    "fencing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "counter_path", "monotonic"],
+      "properties": {
+        "enabled":      { "type": "boolean" },
+        "counter_path": { "type": "string", "description": "Repo-relative path to the monotonic fencing counter file." },
+        "monotonic":    { "type": "boolean", "description": "MUST be true; documented invariant." },
+        "stale_token_action": {
+          "type": "string",
+          "enum": ["reject", "quarantine"],
+          "description": "What to do when a write arrives with a token strictly less than the current max for its scope."
+        }
+      }
+    },
+    "concurrency_caps": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1, "maximum": 64 },
+      "description": "Map from agent_type to max concurrent instances per repo."
+    },
+    "state_layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locks_dir", "leases_dir", "heartbeats_dir", "lanes_dir", "conflicts_dir", "active_agents_index"],
+      "properties": {
+        "locks_dir":           { "type": "string" },
+        "leases_dir":          { "type": "string" },
+        "heartbeats_dir":      { "type": "string" },
+        "lanes_dir":           { "type": "string" },
+        "conflicts_dir":       { "type": "string" },
+        "active_agents_index": { "type": "string" },
+        "audit_dir":           { "type": "string" },
+        "quarantine_dir":      { "type": "string" }
+      }
+    },
+    "multi_host": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_host_fingerprint": { "type": "boolean" },
+        "on_host_clash":            { "type": "string", "enum": ["warn", "refuse"] }
+      }
+    }
+  }
+}

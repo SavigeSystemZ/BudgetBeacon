@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaast.invalid/schemas/bleed-event.schema.json",
+  "title": "AIAST Bleed Event",
+  "description": "Structured isolation-boundary event emitted by validators to _system/agent-state/audit/<YYYY-MM>.jsonl. See _system/BLEED_EVENT_AND_INCIDENT_RESPONSE.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id", "ts", "severity", "type", "detected_by",
+    "scope", "intended_boundary", "remediation"
+  ],
+  "properties": {
+    "event_id":   { "type": "string", "pattern": "^evt_[0-9A-Za-z]{12,32}$" },
+    "ts":         { "type": "string", "format": "date-time" },
+    "severity":   { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+    "type": {
+      "type": "string",
+      "enum": [
+        "scope-escape",
+        "namespace-collision",
+        "lease-violation",
+        "host-clash",
+        "credential-leak",
+        "memory-authority-inversion",
+        "schema-violation",
+        "provenance-drift",
+        "template-app-confusion",
+        "remediation",
+        "unknown"
+      ]
+    },
+    "detected_by":         { "type": "string", "minLength": 1 },
+    "agent_id":            { "type": ["string", "null"] },
+    "app_id":              { "type": ["string", "null"] },
+    "host_fingerprint_id": { "type": ["string", "null"] },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "operation"],
+      "properties": {
+        "path":      { "type": "string" },
+        "operation": {
+          "type": "string",
+          "enum": ["register", "refresh", "retire", "quarantine", "read", "write", "claim", "release", "detect"]
+        }
+      }
+    },
+    "intended_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed_repo_root": { "type": ["string", "null"] }
+      }
+    },
+    "observed_target":     { "type": ["string", "null"] },
+    "fencing_token":       { "type": "integer", "minimum": 0 },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action"],
+      "properties": {
+        "action": { "type": "string", "enum": ["quarantine", "notify", "allow", "refused", "released"] },
+        "by":     { "type": ["string", "null"] },
+        "ts":     { "type": ["string", "null"] }
+      }
+    },
+    "context": { "type": "object" }
+  }
+}

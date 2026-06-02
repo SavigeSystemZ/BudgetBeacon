@@ -1,0 +1,11 @@
+{
+  "_comment": "Per-app preserve-first Gemini CLI settings. Customize freely. The meta-managed sibling .gemini/settings.aiaast.json carries fleet-wide policy and must not be edited here. See _system/HOST_SETTINGS_BASELINE.md.",
+  "theme": "default",
+  "contextFileName": "GEMINI.md",
+  "selectedAuthType": null,
+  "mcpServers": {},
+  "tools": {
+    "allowed": [],
+    "denied": []
+  }
+}

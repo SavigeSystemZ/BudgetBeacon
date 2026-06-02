@@ -90,7 +90,7 @@
   "session_environment_report_contract_path": "_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md",
   "system_readme_path": "README.md",
   "template_name": "AIAST",
-  "template_version": "1.23.0",
+  "template_version": "1.24.0",
   "terminology_mappings": {
     "host_level_orchestration_context": "Task framing or operator intent emitted outside the repo.",
     "repo_local_truth": "Facts stored in repo-local runtime/config/docs and the authoritative AIAST core docs.",

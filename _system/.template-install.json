@@ -3,9 +3,10 @@
   "install_mode": "copied-template",
   "installed_at": "2026-04-20T19:42:31Z",
   "last_event": "update-template",
+  "scaffold_profile": "standard",
   "source_template": "TEMPLATE",
   "system_readme_path": "README.md",
   "template_name": "AIAST",
-  "template_version": "1.23.0",
-  "updated_at": "2026-05-05T15:31:23Z"
+  "template_version": "1.24.0",
+  "updated_at": "2026-05-28T05:21:05Z"
 }

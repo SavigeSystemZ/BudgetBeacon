@@ -1,0 +1,18 @@
+{
+  "pre_commit": [
+    "lint",
+    "typecheck",
+    "test",
+    "secret_scan"
+  ],
+  "pre_push": [
+    "validate_system_strict",
+    "verify_integrity",
+    "detect_drift"
+  ],
+  "merge": [
+    "rebase_on_base_branch",
+    "full_validation",
+    "snapshot_checkpoint"
+  ]
+}

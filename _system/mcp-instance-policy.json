@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Per-server-type MCP instance policy: allowed/denied roots, required namespace bindings, capability tier binding. Authoritative for register-mcp-instance.sh and check-mcp-project-isolation.sh.",
+  "validation_profile_default": "strict",
+  "instance_id_pattern": "^[a-z0-9-]{3,64}-[0-9a-f]{8,32}:mcp:(filesystem|github|postgres|redis|browser|memory_artifact|http_remote|unknown):[0-9a-f]{8,32}$",
+  "registry": {
+    "instances_dir":  "_system/mcp/instances",
+    "quarantine_dir": "_system/mcp/instances/quarantine",
+    "runtime_dir":    "_system/mcp/runtime",
+    "provenance_log": "_system/mcp/runtime/mcp-server-provenance.jsonl",
+    "local_overrides_dir": "_system/mcp/local-overrides"
+  },
+  "global_invariants": {
+    "namespace_mcp_prefix_must_match_app":   true,
+    "tier_declared_must_be_le_tier_ceiling": true,
+    "credentials_must_not_be_tracked":       true,
+    "browser_profile_must_be_inside_repo":   true,
+    "refuse_parent_template_role":           true
+  },
+  "server_types": {
+    "filesystem": {
+      "tier_ceiling": "T3",
+      "required_fields": ["allowed_roots", "denied_roots"],
+      "allowed_roots_must_be_inside_repo_root_realpath": true,
+      "denied_roots_default": [".git/objects", "node_modules"],
+      "refuse_symlinks_outside_repo_root":  true
+    },
+    "github": {
+      "tier_ceiling": "T3",
+      "required_fields": ["credentials_scope", "allowed_repos"],
+      "credentials_must_be_env_or_local_override": true,
+      "allowed_repos_min": 1
+    },
+    "postgres": {
+      "tier_ceiling": "T3",
+      "required_fields": ["db_schema_or_prefix"],
+      "credentials_must_be_env_or_local_override": true,
+      "schema_or_prefix_pattern": "^[a-z][a-z0-9_]{1,62}$"
+    },
+    "redis": {
+      "tier_ceiling": "T3",
+      "required_fields": ["db_index", "cache_namespace"],
+      "db_index_min": 0,
+      "db_index_max": 15,
+      "cache_namespace_pattern": "^[a-z0-9_-]{1,64}:$"
+    },
+    "browser": {
+      "tier_ceiling": "T3",
+      "required_fields": ["browser_profile_path"],
+      "browser_profile_root_template": "<repo_root>/.local/browser-profiles/<app_id>/<mcp_instance_id>/",
+      "refuse_profile_outside_root":   true
+    },
+    "memory_artifact": {
+      "tier_ceiling": "T3",
+      "required_fields": ["memory_namespace"],
+      "memory_namespace_must_start_with_app_id": true
+    },
+    "http_remote": {
+      "tier_ceiling": "T1",
+      "required_fields": ["base_url", "allowed_paths_regex"],
+      "base_url_must_be_https": true,
+      "allowed_paths_regex_must_be_anchored": true
+    },
+    "unknown": {
+      "tier_ceiling": "T0",
+      "required_fields": [],
+      "validation_profile_action": {
+        "strict":   "refuse",
+        "standard": "warn",
+        "lenient":  "allow"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "meta_sync_reconcile",
+  "reconciled_at": "2026-05-28T05:43:14Z",
+  "pending_emitted_at": "2026-05-28T05:21:37Z",
+  "pending_payload_hash": "711a6d461e4b37b334c285bde524bd8525f00b1293d5644c62d0c21b65866113",
+  "checks": [
+    {
+      "name": "integrity",
+      "ok": true,
+      "output": "k.md: OK\n./docs/security/validation.md: OK\n./docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md: OK\n./docs/UNGATED_PRODUCT_BACKLOG.md: OK\n./docs/UX_SYSTEM.md: OK\n./notes/README.md: OK\nIntegrity check passed!\n"
+    },
+    {
+      "name": "host_settings_baseline",
+      "ok": true,
+      "output": "host_settings_baseline_ok active=7 passing=7 planned=0\n"
+    },
+    {
+      "name": "system_awareness",
+      "ok": true,
+      "output": "system_awareness_ok\n"
+    },
+    {
+      "name": "host_adapter_alignment",
+      "ok": true,
+      "output": "host_adapter_alignment_ok\n"
+    },
+    {
+      "name": "instruction_layer",
+      "ok": true,
+      "output": "instruction_layer_ok\n"
+    },
+    {
+      "name": "host_settings_apply",
+      "ok": true,
+      "output": "apply_host_settings_ok created=0 merged=1 unchanged=6 skipped=0\n"
+    }
+  ],
+  "context_relevance": {
+    "checked": true,
+    "hit": true,
+    "overlapping_paths": [
+      "_system/context/AGENT_SHARED_MEMORY.md",
+      "bootstrap/system-doctor.sh",
+      "bootstrap/validate-system.sh",
+      "_system/VALIDATION_GATES.md",
+      "AGENTS.md",
+      "AIAST_CHANGELOG.md"
+    ]
+  },
+  "failures": 0,
+  "forced_through_failures": false,
+  "blocked": false,
+  "where_left_off_appended": true
+}

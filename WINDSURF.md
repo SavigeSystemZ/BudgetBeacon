@@ -54,3 +54,4 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - If the operating picture looks inconsistent, run `bootstrap/system-doctor.sh`.
 - Record exact files changed, commands run, and blockers for the next tool.
 - Be aware that `.windsurfrules` is the paired Windsurf rules surface and that other primary adapters also exist.
+- Before appending non-trivial tool-memory content, invoke `bootstrap/stamp-tool-memory.sh --adapter windsurf --file _system/tool-memory/<tool>-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

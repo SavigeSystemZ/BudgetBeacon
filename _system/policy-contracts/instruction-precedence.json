@@ -1,0 +1,26 @@
+{
+  "name": "instruction-precedence",
+  "version": 1,
+  "description": "The canonical instruction-precedence order is the backbone of agent determinism. Drift (AGENTS.md no longer #1, or the precedence contract losing its ordered anchor list) silently changes how every downstream agent resolves conflicting instructions. This contract pins the non-negotiable head of the order.",
+  "targets": [
+    {
+      "id": "precedence-contract",
+      "file": "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
+      "format": "text",
+      "assertions": {
+        "agents-md-is-first": { "regex_present": "(?m)^1\\.\\s+`?AGENTS\\.md`?" },
+        "project-profile-second": { "regex_present": "(?m)^2\\.\\s+`?_system/PROJECT_PROFILE\\.md`?" },
+        "names-master-system-prompt": { "regex_present": "MASTER_SYSTEM_PROMPT\\.md" },
+        "names-repo-operating-profile": { "regex_present": "REPO_OPERATING_PROFILE\\.md" }
+      }
+    },
+    {
+      "id": "agents-surface",
+      "file": "AGENTS.md",
+      "format": "text",
+      "assertions": {
+        "references-precedence-contract": { "regex_present": "INSTRUCTION_PRECEDENCE_CONTRACT" }
+      }
+    }
+  ]
+}

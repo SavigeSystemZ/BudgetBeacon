@@ -1,0 +1,50 @@
+{
+  "version": "1.1.0",
+  "expected_weight_sum": 100,
+  "required_weight_keys": [
+    "instruction_precedence_contract",
+    "workspace_authority_contract",
+    "scaffold_profile_matrix",
+    "archetype_routing_matrix",
+    "validate_system_script",
+    "fleet_readiness_script",
+    "security_hardening_contract",
+    "network_bindings_script",
+    "runtime_foundations_script",
+    "delivery_gates_doc"
+  ],
+  "weights": {
+    "instruction_precedence_contract": 10,
+    "workspace_authority_contract": 10,
+    "scaffold_profile_matrix": 10,
+    "archetype_routing_matrix": 10,
+    "validate_system_script": 15,
+    "fleet_readiness_script": 10,
+    "security_hardening_contract": 10,
+    "network_bindings_script": 10,
+    "runtime_foundations_script": 10,
+    "delivery_gates_doc": 5
+  },
+  "labels": [
+    {
+      "name": "world_class",
+      "min_score": 95
+    },
+    {
+      "name": "strong",
+      "min_score": 85
+    },
+    {
+      "name": "usable_hardening_needed",
+      "min_score": 70
+    },
+    {
+      "name": "risky_incomplete",
+      "min_score": 50
+    },
+    {
+      "name": "not_ready",
+      "min_score": 0
+    }
+  ]
+}

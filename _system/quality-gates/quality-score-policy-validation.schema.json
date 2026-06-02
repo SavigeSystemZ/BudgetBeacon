@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Quality Score Policy Validation Result",
+  "type": "object",
+  "required": [
+    "status",
+    "policy_version",
+    "supported_version",
+    "weight_sum",
+    "required_weight_count",
+    "label_count"
+  ],
+  "properties": {
+    "status": { "type": "string", "enum": ["pass"] },
+    "policy_version": { "type": "string" },
+    "supported_version": { "type": "boolean" },
+    "semantic_version": {
+      "type": "object",
+      "required": ["major", "minor", "patch"],
+      "properties": {
+        "major": { "type": "integer", "minimum": 0 },
+        "minor": { "type": "integer", "minimum": 0 },
+        "patch": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "weight_sum": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "required_weight_count": { "type": "integer", "minimum": 1 },
+    "label_count": { "type": "integer", "minimum": 1 }
+  },
+  "additionalProperties": false
+}

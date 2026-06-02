@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "profiles": [
+    { "id": "minimal", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "smallest baseline" },
+    { "id": "standard", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "default baseline" },
+    { "id": "advanced", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "extended contracts" },
+    { "id": "super", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "max installable surface" },
+    { "id": "security-heavy", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "security-focused defaults" },
+    { "id": "ai-heavy", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "AI-focused defaults" },
+    { "id": "mobile-apk", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "mobile and apk focus" },
+    { "id": "desktop", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "desktop focus" },
+    { "id": "web-saas", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "web and saas focus" },
+    { "id": "fullstack", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "full-stack default" },
+    { "id": "homelab", "installable": true, "maintainer_only": false, "downstream_mutable": true, "notes": "homelab deployment defaults" },
+    { "id": "meta-system-development", "installable": true, "maintainer_only": true, "downstream_mutable": false, "notes": "template evolution lane" }
+  ]
+}

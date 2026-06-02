@@ -13,3 +13,5 @@ For canonical authority and startup order, load:
 Copilot's generated adapter surface is `.github/copilot-instructions.md`.
 
 This file is a compatibility placeholder so cross-agent scaffolds can rely on a stable `COPILOT.md` filename without duplicating policy.
+
+Tool-memory writes go through `bootstrap/stamp-tool-memory.sh` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

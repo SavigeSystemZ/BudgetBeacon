@@ -1,0 +1,161 @@
+{
+  "version": "1.0.0",
+  "archetypes": [
+    {
+      "id": "web-app",
+      "doc": "_system/archetypes/web-app.md",
+      "required_docs": ["PRD", "UX", "API", "Data", "Security", "Runbook"],
+      "required_gates": ["ui-states", "auth", "api-tests", "accessibility"]
+    },
+    {
+      "id": "desktop-app",
+      "doc": "_system/archetypes/desktop-app.md",
+      "required_docs": ["PRD", "UX", "Packaging", "Installer", "Security"],
+      "required_gates": ["installer-smoke", "desktop-launcher", "filesystem-permissions"]
+    },
+    {
+      "id": "android-apk",
+      "doc": "_system/archetypes/android-apk.md",
+      "required_docs": ["MobileGuide", "UX", "Privacy", "Signing"],
+      "required_gates": ["emulator-test", "apk-build", "permissions-review"]
+    },
+    {
+      "id": "cybersecurity-lab-app",
+      "doc": "_system/archetypes/cybersecurity-lab-app.md",
+      "required_docs": ["ScopeAuthorization", "ThreatModel", "AuditPlan"],
+      "required_gates": ["allowlist-check", "sandbox-check", "scope-log-check"]
+    },
+    {
+      "id": "universal-app-platform",
+      "doc": "_system/archetypes/universal-app-platform.md",
+      "required_docs": ["PRD", "UX", "API", "Packaging", "Security"],
+      "required_gates": ["cross-platform-smoke", "integration-tests", "release-readiness"]
+    },
+    {
+      "id": "ai-app",
+      "doc": "_system/archetypes/ai-app.md",
+      "required_docs": ["AIProviderMap", "PromptSafety", "FallbackPolicy"],
+      "required_gates": ["prompt-redaction-check", "model-failure-handling", "no-secrets-in-prompts"]
+    },
+    {
+      "id": "homelab-tool",
+      "doc": "_system/archetypes/homelab-tool.md",
+      "required_docs": ["InstallGuide", "RepairGuide", "PortPolicy"],
+      "required_gates": ["loopback-defaults", "port-collision-check", "service-smoke"]
+    },
+    {
+      "id": "cli-tool",
+      "doc": "_system/archetypes/cli-tool.md",
+      "required_docs": ["CommandSpec", "InstallGuide", "UsageExamples"],
+      "required_gates": ["help-output", "dry-run", "exit-code-contract"]
+    },
+    {
+      "id": "data-platform",
+      "doc": "_system/archetypes/data-platform.md",
+      "required_docs": ["DataModel", "Lineage", "RetentionPolicy"],
+      "required_gates": ["data-quality-check", "backup-restore", "schema-compatibility"]
+    },
+    {
+      "id": "marketplace",
+      "doc": "_system/archetypes/marketplace.md",
+      "required_docs": ["Roles", "TrustPolicy", "PaymentsPolicy"],
+      "required_gates": ["authz-check", "abuse-controls", "transaction-integrity"]
+    },
+    {
+      "id": "financial-app",
+      "doc": "_system/archetypes/financial-app.md",
+      "required_docs": ["DataPrecisionPolicy", "AuditPolicy", "RetentionPolicy"],
+      "required_gates": ["precision-tests", "access-control", "backup-restore"]
+    },
+    {
+      "id": "health-tracker",
+      "doc": "_system/archetypes/health-tracker.md",
+      "required_docs": ["PrivacyPolicy", "ClaimsPolicy", "DataLifecycle"],
+      "required_gates": ["privacy-check", "reviewable-output", "export-delete"]
+    },
+    {
+      "id": "background-check-intel-app",
+      "doc": "_system/archetypes/background-check-intel-app.md",
+      "required_docs": ["LegalScope", "AuthorizationModel", "AuditPolicy"],
+      "required_gates": ["scope-approval-check", "audit-trace", "access-control"]
+    },
+    {
+      "id": "agent-system-app",
+      "doc": "_system/archetypes/agent-system-app.md",
+      "required_docs": ["RoleMatrix", "LeasePolicy", "ContinuityModel"],
+      "required_gates": ["lease-integrity", "checkpoint-freshness", "multi-agent-orchestration"]
+    },
+    {
+      "id": "web-saas",
+      "doc": "_system/archetypes/web-saas.md",
+      "required_docs": ["PRODUCT_BRIEF", "UX", "API", "Security", "Runbook"],
+      "required_gates": ["authz-check", "api-tests", "release-readiness"]
+    },
+    {
+      "id": "local-first-desktop",
+      "doc": "_system/archetypes/local-first-desktop.md",
+      "required_docs": ["Installer", "RecoveryGuide", "UX"],
+      "required_gates": ["desktop-launcher", "installer-smoke", "local-data-protection"]
+    },
+    {
+      "id": "mobile-apk",
+      "doc": "_system/archetypes/mobile-apk.md",
+      "required_docs": ["MobileGuide", "PermissionPolicy", "ReleaseSigning"],
+      "required_gates": ["apk-build", "emulator-test", "permissions-review"]
+    },
+    {
+      "id": "fullstack-marketplace",
+      "doc": "_system/archetypes/fullstack-marketplace.md",
+      "required_docs": ["Roles", "TrustPolicy", "TransactionPolicy"],
+      "required_gates": ["transaction-integrity", "abuse-controls", "integration-tests"]
+    },
+    {
+      "id": "ai-agent-app",
+      "doc": "_system/archetypes/ai-agent-app.md",
+      "required_docs": ["ModelPolicy", "PromptSafety", "FallbackPolicy"],
+      "required_gates": ["no-secrets-in-prompts", "model-failure-handling", "tool-scope-check"]
+    },
+    {
+      "id": "data-dashboard",
+      "doc": "_system/archetypes/data-dashboard.md",
+      "required_docs": ["DataModel", "MetricsCatalog", "RetentionPolicy"],
+      "required_gates": ["data-quality-check", "render-smoke", "access-control"]
+    },
+    {
+      "id": "cybersecurity-tool",
+      "doc": "_system/archetypes/cybersecurity-tool.md",
+      "required_docs": ["LegalScope", "AuthorizationModel", "AuditPolicy"],
+      "required_gates": ["scope-approval-check", "audit-trace", "sandbox-check"]
+    },
+    {
+      "id": "evidence-reporting-app",
+      "doc": "_system/archetypes/evidence-reporting-app.md",
+      "required_docs": ["EvidencePolicy", "ReportSchema", "RetentionPolicy"],
+      "required_gates": ["schema-validation", "evidence-integrity", "report-smoke"]
+    },
+    {
+      "id": "background-check-or-osint-app",
+      "doc": "_system/archetypes/background-check-or-osint-app.md",
+      "required_docs": ["LegalScope", "AuthorizationWorkflow", "DataUsePolicy"],
+      "required_gates": ["scope-approval-check", "provenance-log", "access-control"]
+    },
+    {
+      "id": "finance-budgeting-app",
+      "doc": "_system/archetypes/finance-budgeting-app.md",
+      "required_docs": ["PrecisionPolicy", "AuditPolicy", "RecoveryPolicy"],
+      "required_gates": ["precision-tests", "reconciliation-tests", "backup-restore"]
+    },
+    {
+      "id": "home-property-management-app",
+      "doc": "_system/archetypes/home-property-management-app.md",
+      "required_docs": ["DataPolicy", "NotificationPolicy", "BackupPlan"],
+      "required_gates": ["schedule-integrity", "notification-smoke", "access-control"]
+    },
+    {
+      "id": "metasystem-reviewer-app",
+      "doc": "_system/archetypes/metasystem-reviewer-app.md",
+      "required_docs": ["ReviewProtocol", "ScoringModel", "PromotionGates"],
+      "required_gates": ["score-reproducibility", "contract-validation", "evidence-traceability"]
+    }
+  ]
+}

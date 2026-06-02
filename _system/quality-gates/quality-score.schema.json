@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Quality Score Result",
+  "type": "object",
+  "required": ["score", "label"],
+  "properties": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "label": {
+      "type": "string",
+      "enum": ["world_class", "strong", "usable_hardening_needed", "risky_incomplete", "not_ready"]
+    },
+    "policy_version": { "type": "string" },
+    "checks_passed": { "type": "integer", "minimum": 0 },
+    "checks_failed": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": false
+}

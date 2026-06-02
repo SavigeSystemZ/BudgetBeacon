@@ -195,3 +195,14 @@ Only after that should style or optional polish be discussed.
 ## Failure rule
 
 If validation fails, either fix the failure or record it clearly before handoff. Do not mark the work complete by omission.
+
+
+## Tool-memory writes
+
+Before appending non-trivial content to any `_system/tool-memory/*.md` file, invoke:
+
+```
+bash bootstrap/stamp-tool-memory.sh --adapter <host> --file <path> --agent-id <agent-id>
+```
+
+This prepends (or augments) the per-host isolation stamp required by `_system/TOOL_MEMORY_ISOLATION_STAMP.md`. The validator `bootstrap/check-tool-memory-isolation.sh` enforces the same contract after the fact.

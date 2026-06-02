@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Check Agent Locks Result",
+  "type": "object",
+  "required": ["lock_files", "strict"],
+  "properties": {
+    "lock_files": { "type": "integer", "minimum": 0 },
+    "strict": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

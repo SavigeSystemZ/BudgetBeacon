@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "description": "MCP server type → isolation capability matrix. Machine form of _system/mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md.",
+  "tiers": {
+    "T0": "Documentation + naming convention only.",
+    "T1": "Static configuration boundary (allowed_repos[], allowed_paths_regex, etc.).",
+    "T2": "Process / scaffold contract (working directory, scaffold gate).",
+    "T3": "Runtime per-instance separation (per-instance credentials, namespaced cache, per-instance profile dir, realpath-checked roots)."
+  },
+  "unknown_handling": {
+    "strict":   "refuse",
+    "standard": "warn",
+    "lenient":  "allow"
+  },
+  "server_types": [
+    {
+      "type": "filesystem",
+      "supports_allowed_roots": true,
+      "supports_per_instance_credentials": false,
+      "supports_namespaced_cache": false,
+      "tier_ceiling": "T3",
+      "required_fields": ["allowed_roots", "denied_roots"]
+    },
+    {
+      "type": "github",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": true,
+      "supports_namespaced_cache": false,
+      "tier_ceiling": "T3",
+      "required_fields": ["credentials_scope", "allowed_repos"]
+    },
+    {
+      "type": "postgres",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": true,
+      "supports_namespaced_cache": true,
+      "tier_ceiling": "T3",
+      "required_fields": ["db_schema_or_prefix"]
+    },
+    {
+      "type": "redis",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": true,
+      "supports_namespaced_cache": true,
+      "tier_ceiling": "T3",
+      "required_fields": ["db_index", "cache_namespace"]
+    },
+    {
+      "type": "browser",
+      "supports_allowed_roots": true,
+      "supports_per_instance_credentials": false,
+      "supports_namespaced_cache": true,
+      "tier_ceiling": "T3",
+      "required_fields": ["browser_profile_path"]
+    },
+    {
+      "type": "memory_artifact",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": false,
+      "supports_namespaced_cache": true,
+      "tier_ceiling": "T3",
+      "required_fields": ["memory_namespace"]
+    },
+    {
+      "type": "http_remote",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": true,
+      "supports_namespaced_cache": false,
+      "tier_ceiling": "T1",
+      "required_fields": ["base_url", "allowed_paths_regex"]
+    },
+    {
+      "type": "unknown",
+      "supports_allowed_roots": false,
+      "supports_per_instance_credentials": false,
+      "supports_namespaced_cache": false,
+      "tier_ceiling": "T0",
+      "required_fields": []
+    }
+  ]
+}

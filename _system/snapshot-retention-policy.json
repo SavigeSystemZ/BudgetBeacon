@@ -1,0 +1,25 @@
+{
+  "classes": {
+    "checkpoint": {
+      "retention_days": 14,
+      "immutable": false
+    },
+    "milestone": {
+      "retention_days": 90,
+      "immutable": false
+    },
+    "release": {
+      "retention_days": 3650,
+      "immutable": true
+    }
+  },
+  "compression": {
+    "codec": "zstd",
+    "level": 19,
+    "long_window": 31
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "require_manifest": true
+  }
+}

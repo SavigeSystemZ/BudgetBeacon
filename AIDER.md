@@ -13,3 +13,5 @@ For canonical authority and startup order, load:
 Aider's generated adapter surface is `.aider.conf.yml`.
 
 This file is a compatibility placeholder so cross-agent scaffolds can rely on a stable `AIDER.md` filename without duplicating policy.
+
+Tool-memory writes go through `bootstrap/stamp-tool-memory.sh` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

@@ -1,0 +1,40 @@
+{
+  "name": "mcp-isolation",
+  "version": 1,
+  "description": "Closes the S16 fleet-outage class: absolute-path placeholders (e.g. /ABSOLUTE/PATH/TO/PROJECT) leaking into MCP example/config surfaces silently broke MCP project-isolation fleet-wide. The modern convention is the __AIAST_PROJECT_ROOT__ token. This contract asserts no absolute-path placeholder survives in any MCP example/config surface, and that the project-isolation policy doc still states the isolation requirement.",
+  "targets": [
+    {
+      "id": "mcp-config",
+      "file": "_system/MCP_CONFIG.md",
+      "format": "text",
+      "assertions": {
+        "no-absolute-path-placeholder": { "regex_absent": "ABSOLUTE/PATH/TO" }
+      }
+    },
+    {
+      "id": "servers-cursor-example",
+      "file": "_system/mcp/servers.cursor.example.json",
+      "format": "text",
+      "assertions": {
+        "no-absolute-path-placeholder": { "regex_absent": "ABSOLUTE/PATH/TO" }
+      }
+    },
+    {
+      "id": "servers-codex-example",
+      "file": "_system/mcp/servers.codex.example.toml",
+      "format": "text",
+      "assertions": {
+        "no-absolute-path-placeholder": { "regex_absent": "ABSOLUTE/PATH/TO" },
+        "uses-project-root-token": { "regex_present": "__AIAST_PROJECT_ROOT__" }
+      }
+    },
+    {
+      "id": "isolation-policy",
+      "file": "_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md",
+      "format": "text",
+      "assertions": {
+        "states-isolation-requirement": { "regex_present": "(?i)project[- ]isolat" }
+      }
+    }
+  ]
+}

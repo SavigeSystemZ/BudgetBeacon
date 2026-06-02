@@ -55,4 +55,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - Run validation after material changes.
 - If repo state or docs appear inconsistent, run `bootstrap/system-doctor.sh`.
 - Keep `.cursor/` rules, commands, and skills aligned with `AGENTS.md` and `_system/HOST_ADAPTER_POLICY.md`.
-- Be aware that `CLAUDE.md`, `GEMINI.md`, `CODEX.md`, `WINDSURF.md`, `.windsurfrules`, and `.github/copilot-instructions.md` may be used by other tools.
+- Be aware that `CLAUDE.md`, `GEMINI.md`, `CODEX.md`, `WINDSURF.md`, `.windsurfrules`, `.github/copilot-instructions.md`, and `ANTIGRAVITY.md` may be used by other tools.
+- Before appending non-trivial content to `_system/tool-memory/cursor-memory.md`, invoke `bootstrap/stamp-tool-memory.sh --adapter cursor --file _system/tool-memory/cursor-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

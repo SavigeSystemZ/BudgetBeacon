@@ -1,0 +1,14 @@
+{
+  "policy": {
+    "allow_unencrypted_publish": false,
+    "require_private_remote": true
+  },
+  "targets": [
+    {
+      "name": "primary-private-remote",
+      "type": "filesystem-or-mounted-remote",
+      "path_template": "/secure/private/snapshots/<AppName>",
+      "enabled": false
+    }
+  ]
+}

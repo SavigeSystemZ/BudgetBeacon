@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Meta Health Dashboard",
+  "type": "object",
+  "required": ["ok", "generated_at", "governance_summary", "quality_trend"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "generated_at": { "type": "string", "minLength": 1 },
+    "governance_summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "quality_trend": {
+      "type": "object",
+      "required": ["samples", "latest_score", "average_score", "delta"],
+      "properties": {
+        "samples": { "type": "integer", "minimum": 0 },
+        "latest_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "average_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "delta": { "type": "number" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

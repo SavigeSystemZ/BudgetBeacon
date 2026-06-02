@@ -1,0 +1,107 @@
+{
+  "name": "host-launch",
+  "version": 2,
+  "description": "S21\u2192S22c: launch-governing safety policy each host's meta-managed (.aiaast.*) file MUST carry. Migrated into the generic policy-contract subsystem. A regression emptying Codex require_approval_for, eroding the Claude/Windsurf deny lists, or dropping the universal meta-sync integrity gate would pass every other smoke but silently disable fleet-wide guardrails.",
+  "targets": [
+    {
+      "id": "codex",
+      "file": ".codex/config.aiaast.toml",
+      "format": "toml",
+      "assertions": {
+        "approval.default_mode": {
+          "equals": "auto-suggest"
+        },
+        "approval.require_approval_for": {
+          "superset": [
+            "shell.write",
+            "shell.exec.network",
+            "fs.delete",
+            "git.push",
+            "git.reset"
+          ]
+        },
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        }
+      }
+    },
+    {
+      "id": "claude",
+      "file": ".claude/settings.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "permissions.deny": {
+          "superset": [
+            "Bash(rm -rf /:*)",
+            "Bash(sudo:*)",
+            "Bash(git push --force:*)",
+            "Bash(git push -f:*)",
+            "Bash(git reset --hard:*)",
+            "Bash(git clean -fd:*)",
+            "Bash(curl:* | sh)",
+            "Bash(curl:* | bash)",
+            "Bash(wget:* | sh)",
+            "Bash(wget:* | bash)"
+          ]
+        }
+      }
+    },
+    {
+      "id": "windsurf",
+      "file": ".windsurf/settings.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "cascade.denyShellPatterns": {
+          "superset": [
+            "rm -rf /",
+            "sudo *",
+            "git push --force*",
+            "git reset --hard*"
+          ]
+        },
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        }
+      }
+    },
+    {
+      "id": "gemini",
+      "file": ".gemini/settings.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        },
+        "instructions.context_files": {
+          "contains": "AGENTS.md"
+        }
+      }
+    },
+    {
+      "id": "cursor",
+      "file": ".cursor/settings.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        },
+        "instructions.context_files": {
+          "contains": "AGENTS.md"
+        }
+      }
+    },
+    {
+      "id": "copilot",
+      "file": ".github/copilot-config.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        },
+        "instructions.files": {
+          "contains": "AGENTS.md"
+        }
+      }
+    }
+  ]
+}

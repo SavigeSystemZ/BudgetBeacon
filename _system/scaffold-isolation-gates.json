@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Ordered gate list executed by bootstrap/check-scaffold-isolation-gate.sh. Each entry binds a gate id to a validator command and an expected exit code. See _system/SCAFFOLD_ISOLATION_COMPLETION_GATE.md.",
+  "default_mode": "best-effort",
+  "modes": ["strict", "best-effort", "report-only"],
+  "gates": [
+    {
+      "id": "app-local-namespace",
+      "title": "App-local namespace contract",
+      "command": "bootstrap/check-app-local-namespace.sh",
+      "args": [],
+      "expected_rc": 0,
+      "severity_on_fail": "high",
+      "blocks_subsequent": true,
+      "policy_ref": "_system/APP_LOCAL_NAMESPACE_CONTRACT.md"
+    },
+    {
+      "id": "agent-instance-isolation",
+      "title": "Agent instance isolation invariants",
+      "command": "bootstrap/check-agent-instance-isolation.sh",
+      "args": [],
+      "expected_rc": 0,
+      "severity_on_fail": "high",
+      "blocks_subsequent": false,
+      "policy_ref": "_system/AGENT_INSTANCE_ISOLATION_POLICY.md"
+    },
+    {
+      "id": "mcp-project-isolation-strict",
+      "title": "MCP project isolation (strict profile)",
+      "command": "bootstrap/check-mcp-project-isolation.sh",
+      "args": ["--profile", "strict", "--emit-bleed-events"],
+      "expected_rc": 0,
+      "severity_on_fail": "high",
+      "blocks_subsequent": false,
+      "policy_ref": "_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md"
+    },
+    {
+      "id": "mcp-bleed",
+      "title": "MCP cross-boundary bleed scan",
+      "command": "bootstrap/check-mcp-bleed.sh",
+      "args": ["--emit-bleed-events"],
+      "expected_rc": 0,
+      "severity_on_fail": "high",
+      "blocks_subsequent": false,
+      "policy_ref": "_system/mcp/MCP_INSTANCE_REGISTRY_PROTOCOL.md"
+    },
+    {
+      "id": "mcp-provenance-strict",
+      "title": "MCP provenance drift (strict)",
+      "command": "bootstrap/verify-mcp-provenance.sh",
+      "args": ["--strict", "--emit-bleed-events"],
+      "expected_rc": 0,
+      "severity_on_fail": "medium",
+      "blocks_subsequent": false,
+      "policy_ref": "_system/BLEED_EVENT_AND_INCIDENT_RESPONSE.md"
+    },
+    {
+      "id": "tool-memory-isolation",
+      "title": "Per-host adapter tool-memory isolation stamp",
+      "command": "bootstrap/check-tool-memory-isolation.sh",
+      "args": [],
+      "expected_rc": 0,
+      "severity_on_fail": "medium",
+      "blocks_subsequent": false,
+      "policy_ref": "_system/TOOL_MEMORY_ISOLATION_STAMP.md"
+    }
+  ]
+}

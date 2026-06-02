@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaast.invalid/schemas/app-local-namespace.schema.json",
+  "title": "AIAST App-Local Namespace",
+  "description": "Per-downstream-app identity and namespace record. Owned by the app repo. Authoritative for cross-cutting boundaries (MCP, agents, tool memory, ports, browser profile, DB schema). See _system/APP_LOCAL_NAMESPACE_CONTRACT.md.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "app_id",
+    "app_slug",
+    "app_uuid",
+    "app_name",
+    "repo_root",
+    "repo_root_realpath",
+    "aiast_template_version",
+    "created_at",
+    "allowed_repo_root",
+    "namespaces",
+    "lifecycle"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version of this record."
+    },
+    "app_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}-[0-9a-f]{8}$",
+      "description": "Composite identity: <app_slug>-<first 8 hex of app_uuid>. Immutable after creation."
+    },
+    "app_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}$",
+      "description": "Lower-kebab human handle. Renamable; new slug propagates through app_id only on explicit reset."
+    },
+    "app_uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Globally unique. UUIDv7 preferred (time-sortable). Immutable."
+    },
+    "app_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human display name. Free-form, renamable."
+    },
+    "repo_root": {
+      "type": "string",
+      "pattern": "^/.*",
+      "description": "Absolute path to repo root at generation time."
+    },
+    "repo_root_realpath": {
+      "type": "string",
+      "pattern": "^/.*",
+      "description": "realpath(repo_root) — defeats symlink confusion attacks."
+    },
+    "host_fingerprint_id": {
+      "type": "string",
+      "pattern": "^fp_[0-9a-f]{12}$",
+      "description": "Stable per-host identifier. Optional in v1; set by M5/S7."
+    },
+    "aiast_install_id": {
+      "type": "string",
+      "description": "Existing AIAST install UUID; cross-link to .template-install.json."
+    },
+    "aiast_template_version": {
+      "type": "string",
+      "description": "AIAST template version present when the namespace was generated."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "operator@host marker; informational only."
+    },
+    "allowed_repo_root": {
+      "type": "string",
+      "pattern": "^/.*",
+      "description": "Canonical write boundary. MUST equal repo_root_realpath in v1."
+    },
+    "forbidden_roots": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^/.*" },
+      "description": "Resolved-at-generation list of paths that MUST never be opened for write by this app's MCP servers or agents (parent template, sibling apps, etc.)."
+    },
+    "namespaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mcp",
+        "agents",
+        "tool_memory",
+        "ports",
+        "db",
+        "cache_keys",
+        "browser_profile_dir"
+      ],
+      "properties": {
+        "mcp":                 { "type": "string" },
+        "agents":              { "type": "string" },
+        "tool_memory":         { "type": "string" },
+        "ports":               { "type": "string" },
+        "db":                  { "type": "string", "description": "DB schema or table prefix; trailing underscore convention." },
+        "cache_keys":          { "type": "string", "description": "Redis/cache key prefix; trailing colon convention." },
+        "browser_profile_dir": { "type": "string", "pattern": "^/.*" }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["immutable_fields", "rename_allowed_fields", "reset_requires"],
+      "properties": {
+        "immutable_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rename_allowed_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reset_requires": {
+          "type": "string",
+          "enum": ["explicit-operator-flag"]
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["ts", "kind"],
+            "properties": {
+              "ts":      { "type": "string", "format": "date-time" },
+              "kind":    { "type": "string", "enum": ["created", "renamed", "relocated", "reset", "migrated"] },
+              "details": { "type": "object" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

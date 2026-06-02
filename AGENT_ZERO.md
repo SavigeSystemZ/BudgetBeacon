@@ -13,3 +13,5 @@ For canonical authority and startup order, load:
 If a dedicated Agent Zero host adapter is later generated, this file remains a compatibility pointer surface.
 
 This file is intentionally lightweight to avoid policy divergence.
+
+Tool-memory writes go through `bootstrap/stamp-tool-memory.sh` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

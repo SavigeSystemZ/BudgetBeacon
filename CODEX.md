@@ -53,4 +53,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - If repo state or confidence feels suspicious, run `bootstrap/system-doctor.sh`.
 - Update handoff files before ending the turn.
 - Keep `_system/` and runtime code clearly separated.
-- Assume the next tool may be `CLAUDE.md`, `GEMINI.md`, `WINDSURF.md`, `.cursorrules`, `.windsurfrules`, or `.github/copilot-instructions.md` and leave repo-based continuity accordingly.
+- Assume the next tool may be `CLAUDE.md`, `GEMINI.md`, `WINDSURF.md`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`, or `ANTIGRAVITY.md` and leave repo-based continuity accordingly.
+- Before appending non-trivial content to `_system/tool-memory/codex-memory.md`, invoke `bootstrap/stamp-tool-memory.sh --adapter codex --file _system/tool-memory/codex-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

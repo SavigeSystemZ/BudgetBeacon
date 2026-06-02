@@ -1,0 +1,216 @@
+#!/usr/bin/env bash
+# aiast — single operator CLI front-door (S20 Item 10).
+#
+# One discoverable entrypoint over the bootstrap/ script surface. Operators
+# and downstream agents type `bootstrap/aiast <command> [args...]` instead of
+# memorizing individual script names. Curated, intent-named verbs are grouped
+# by operator concern; `aiast all` still exposes the full raw script surface
+# for power users.
+#
+# Resolves every target relative to THIS file's directory, so it works
+# identically in the TEMPLATE source and in every scaffolded downstream repo
+# (where bootstrap/ is installed verbatim).
+#
+# Usage:
+#   aiast                      Grouped command catalog (same as `aiast help`)
+#   aiast help                 Grouped command catalog
+#   aiast list [--json]        Machine-readable curated command manifest
+#   aiast all                  List every bootstrap/*.sh script (raw surface)
+#   aiast version              Print the installed template version
+#   aiast status [TARGET]      Quick posture: version + meta-sync gate + doctor
+#   aiast <verb> [args...]     Dispatch to the mapped script; args pass through
+#
+# Exit codes:
+#   0 — builtin succeeded, or dispatched command succeeded
+#   2 — usage error / unknown command
+#   *  — for dispatched commands, the child script's own exit code
+#
+# Result tokens (builtins): aiast_cli_ok / aiast_cli_error
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
+# shellcheck source=bootstrap/lib/aiaast-lib.sh
+source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
+
+# --- curated registry ------------------------------------------------------
+# Order is presentation order. Each entry: verb|group|script|summary
+# script == "@builtin" for verbs handled in-process.
+REGISTRY=(
+  "doctor|Health & validation|system-doctor.sh|Structural + integrity + awareness checks (--strict --heal --report --record)"
+  "validate|Health & validation|validate-system.sh|Full system validation (--strict --mode auto|template|installed)"
+  "env|Health & validation|check-environment.sh|Environment + toolchain report (--json)"
+  "status|Health & validation|@builtin|Quick posture: template version + meta-sync gate + doctor"
+  "meta-sync-gate|Meta-sync|check-pending-meta-sync.sh|Startup gate: is a meta-sync reconcile pending? (--strict --json)"
+  "reconcile|Meta-sync|reconcile-meta-sync.sh|Consume PENDING.json, run reconcile pipeline, hand off (--force --json)"
+  "update|Meta-sync|update-template.sh|Sync this repo from the template source (--source --profile)"
+  "host-settings|Host settings|apply-host-settings.sh|Deep-merge the per-host settings baseline (--target --json)"
+  "host-settings-check|Host settings|check-host-settings-baseline.sh|Lint the per-host settings baseline"
+  "git|GitHub mirror|gitops.sh|Git/GitHub helper: status, sync, mirror, checkpoint, release"
+  "orchestration|Agent coordination|check-agent-orchestration.sh|Validate agent orchestration / lock posture"
+  "lock|Agent coordination|agent-lock.sh|Acquire an agent work lock"
+  "unlock|Agent coordination|agent-unlock.sh|Release an agent work lock"
+  "heartbeat|Agent coordination|agent-heartbeat.sh|Emit an agent liveness heartbeat"
+  "install|Lifecycle|install-aiast.sh|Install / repair AIAST into a repo (--options)"
+  "scaffold|Lifecycle|scaffold-system.sh|Scaffold the system into a target repo (--app-name --profile)"
+  "tidy|Health & validation|operator-hygiene-advisor.sh|Advise (dry-run) on operator-territory hygiene; --apply for the safe subset"
+  "audit|Health & validation|system-doctor.sh|Repo-local health audit + diagnostic report (pass --report --record)"
+  "version|Lifecycle|@builtin|Print the installed template version"
+  "help|Meta|@builtin|Show this grouped command catalog"
+  "list|Meta|@builtin|Machine-readable curated command manifest (--json)"
+  "all|Meta|@builtin|List every bootstrap/*.sh script (raw surface)"
+)
+
+reg_field() { # verb field-index(2=group,3=script,4=summary)
+  local verb="$1" idx="$2" row
+  for row in "${REGISTRY[@]}"; do
+    IFS='|' read -r v g s d <<<"${row}"
+    if [[ "${v}" == "${verb}" ]]; then
+      case "${idx}" in
+        2) printf '%s\n' "${g}" ;;
+        3) printf '%s\n' "${s}" ;;
+        4) printf '%s\n' "${d}" ;;
+      esac
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Status/catalog output goes through _emit so a consumer that truncates our
+# stdout (e.g. `aiast list | head`) can never crash the dispatcher with a
+# fatal SIGPIPE. Ignoring SIGPIPE turns the broken-pipe write into an EPIPE
+# exit code, which `|| true` then neutralizes under `set -e`.
+trap '' PIPE
+_emit() { printf '%s\n' "$*" 2>/dev/null || true; }
+
+# `version` is a pure value command — emit ONLY the version string so
+# `aiast version`, `$(aiast version)`, and `aiast version | head` are all
+# clean and scriptable. No status token (that is what `list`/`help` are for).
+cli_version() {
+  printf '%s\n' "$(aiaast_template_version "${REPO_ROOT}")" 2>/dev/null || true
+}
+
+cli_help() {
+  local title group last_group="" row v g s d
+  printf '%saiast%s — AIAST operator front-door  (template %s)\n\n' \
+    "$(_aiaast_bold)" "$(_aiaast_reset)" "$(aiaast_template_version "${REPO_ROOT}")"
+  printf 'Usage: %saiast%s <command> [args...]\n' "$(_aiaast_bold)" "$(_aiaast_reset)"
+  for row in "${REGISTRY[@]}"; do
+    IFS='|' read -r v g s d <<<"${row}"
+    if [[ "${g}" != "${last_group}" ]]; then
+      printf '\n%s%s%s\n' "$(_aiaast_cyan)" "${g}" "$(_aiaast_reset)"
+      last_group="${g}"
+    fi
+    printf '  %s%-20s%s %s\n' "$(_aiaast_bold)" "${v}" "$(_aiaast_reset)" "${d}"
+  done
+  printf '\nArgs after the command pass straight through to the underlying script.\n'
+  printf 'Run `aiast all` for the full raw bootstrap/ script surface.\n'
+  _emit "aiast_cli_ok command=help"
+}
+
+cli_list() {
+  local row v g s d
+  if [[ "${1:-}" == "--json" ]]; then
+    printf '{"ok":true,"result":"aiast_cli_ok","command":"list","template_version":%s,"commands":[' \
+      "$(printf '%s' "$(aiaast_template_version "${REPO_ROOT}")" | python3 -c 'import json,sys;print(json.dumps(sys.stdin.read()))')"
+    local first=1
+    for row in "${REGISTRY[@]}"; do
+      IFS='|' read -r v g s d <<<"${row}"
+      [[ ${first} -eq 0 ]] && printf ','
+      first=0
+      python3 - "$v" "$g" "$s" "$d" <<'PY'
+import json,sys
+print(json.dumps({"verb":sys.argv[1],"group":sys.argv[2],
+                  "script":sys.argv[3],"summary":sys.argv[4]}),end="")
+PY
+    done
+    printf ']}\n'
+  else
+    for row in "${REGISTRY[@]}"; do
+      IFS='|' read -r v g s d <<<"${row}"
+      printf '%-20s %-22s %s\n' "${v}" "${s}" "${g}"
+    done
+    _emit "aiast_cli_ok command=list"
+  fi
+}
+
+cli_all() {
+  local f
+  for f in "${SCRIPT_DIR}"/*.sh; do
+    [[ -e "${f}" ]] || continue
+    printf '%s\n' "$(basename "${f}")"
+  done | sort
+  local count
+  count="$(find "${SCRIPT_DIR}" -maxdepth 1 -name '*.sh' | wc -l | tr -d ' ')"
+  _emit "aiast_cli_ok command=all count=${count}"
+}
+
+cli_status() {
+  local target="${1:-${REPO_ROOT}}"
+  printf '%stemplate_version%s %s\n' "$(_aiaast_bold)" "$(_aiaast_reset)" \
+    "$(aiaast_template_version "${target}")"
+  printf '%smeta_sync_gate%s ' "$(_aiaast_bold)" "$(_aiaast_reset)"
+  if bash "${SCRIPT_DIR}/check-pending-meta-sync.sh" "${target}" >/dev/null 2>&1; then
+    printf 'clear\n'
+  else
+    printf 'PENDING (run: aiast reconcile)\n'
+  fi
+  printf '%sdoctor%s ' "$(_aiaast_bold)" "$(_aiaast_reset)"
+  if bash "${SCRIPT_DIR}/system-doctor.sh" "${target}" >/dev/null 2>&1; then
+    printf 'ok\n'
+  else
+    printf 'attention (run: aiast doctor)\n'
+  fi
+  _emit "aiast_cli_ok command=status"
+}
+
+did_you_mean() {
+  local want="$1" row v rest
+  for row in "${REGISTRY[@]}"; do
+    IFS='|' read -r v rest <<<"${row}"
+    case "${v}" in
+      *"${want}"*|"${want}"*) printf '  %s\n' "${v}" ;;
+    esac
+  done
+}
+
+main() {
+  local cmd="${1:-help}"
+  [[ $# -gt 0 ]] && shift || true
+
+  case "${cmd}" in
+    -h|--help|help) cli_help ;;
+    version|--version) cli_version ;;
+    list)   cli_list "$@" ;;
+    all)    cli_all ;;
+    status) cli_status "$@" ;;
+    *)
+      local script
+      if ! script="$(reg_field "${cmd}" 3)"; then
+        printf 'aiast: unknown command: %s\n' "${cmd}" >&2
+        local suggest
+        suggest="$(did_you_mean "${cmd}")"
+        if [[ -n "${suggest}" ]]; then
+          printf 'Did you mean:\n%s\n' "${suggest}" >&2
+        fi
+        printf 'Run `aiast help` for the command catalog.\n' >&2
+        _emit "aiast_cli_error reason=unknown_command command=${cmd}" >&2
+        exit 2
+      fi
+      local target="${SCRIPT_DIR}/${script}"
+      if [[ ! -x "${target}" && ! -f "${target}" ]]; then
+        printf 'aiast: registered script missing: %s\n' "${script}" >&2
+        _emit "aiast_cli_error reason=script_missing command=${cmd}" >&2
+        exit 2
+      fi
+      # Restore default SIGPIPE so the dispatched child behaves exactly as if
+      # invoked directly (our trap '' PIPE must not leak into it).
+      trap - PIPE
+      exec bash "${target}" "$@"
+      ;;
+  esac
+}
+
+main "$@"

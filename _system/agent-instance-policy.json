@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "naming": {
+    "regex": "^(cursor|codex|claude|gemini|copilot|windsurf|aider|agentzero|local-model)-[0-9]{2,3}$",
+    "allowed_agent_types": [
+      "cursor",
+      "codex",
+      "claude",
+      "gemini",
+      "copilot",
+      "windsurf",
+      "aider",
+      "agentzero",
+      "local-model"
+    ]
+  },
+  "leases": {
+    "ttl_seconds": 300,
+    "heartbeat_interval_seconds": 30,
+    "grace_cycles": 1,
+    "expired_action": "quarantine"
+  },
+  "fencing": {
+    "enabled": true,
+    "counter_path": "_system/agent-state/.fencing-counter",
+    "monotonic": true,
+    "stale_token_action": "reject"
+  },
+  "concurrency_caps": {
+    "cursor": 5,
+    "codex": 3,
+    "claude": 3,
+    "gemini": 3,
+    "copilot": 2,
+    "windsurf": 2,
+    "aider": 2,
+    "agentzero": 2,
+    "local-model": 2
+  },
+  "state_layout": {
+    "locks_dir":           "_system/agent-state/locks",
+    "leases_dir":          "_system/agent-state/leases",
+    "heartbeats_dir":      "_system/agent-state/heartbeats",
+    "lanes_dir":           "_system/agent-state/lanes",
+    "conflicts_dir":       "_system/agent-state/conflicts",
+    "active_agents_index": "_system/agent-state/active-agents.json",
+    "audit_dir":           "_system/agent-state/audit",
+    "quarantine_dir":      "_system/agent-state/quarantine"
+  },
+  "multi_host": {
+    "require_host_fingerprint": false,
+    "on_host_clash": "warn"
+  }
+}

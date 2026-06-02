@@ -51,5 +51,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - Treat host-level orchestration as context, not repo-local truth; the repo-local files named in `AGENTS.md` and `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` remain authoritative.
 - Produce focused, minimal diffs with explicit validation evidence.
 - Leave a high-signal handoff packet in repo files.
-- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Continue.dev, Cline, and local models.
+- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Continue.dev, Cline, local models, and Antigravity.
 - If context appears contradictory, run `bootstrap/system-doctor.sh`.

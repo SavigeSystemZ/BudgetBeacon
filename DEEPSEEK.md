@@ -52,5 +52,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - Produce focused, minimal diffs with explicit validation evidence.
 - Leave a high-signal handoff packet in repo files.
 - If context capacity is limited, follow the fast-path in `_system/LOAD_ORDER.md` and reference `_system/CONTEXT_BUDGET_STRATEGY.md` for tiered loading.
-- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, Aider, Continue.dev, Cline, PearAI, and local models.
+- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, Aider, Continue.dev, Cline, PearAI, local models, and Antigravity.
 - If context appears contradictory, run `bootstrap/system-doctor.sh`.

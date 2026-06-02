@@ -12,6 +12,7 @@
     "host_ingestion_validation": true,
     "host_prompt_emitter": true,
     "host_safe_prompt_emission": true,
+    "local_model_abliteration_plugin": true,
     "install_metadata_app_identity": true,
     "instruction_conflict_detection": true,
     "instruction_precedence_contract": true,
@@ -52,6 +53,9 @@
     "host_bundle_validator": "bootstrap/check-host-bundle.sh",
     "host_prompt_emitter": "bootstrap/emit-host-prompt.sh",
     "host_prompt_validator": "bootstrap/check-host-ingestion.sh",
+    "local_model_abliteration_plugin": "_system/plugins/heretic-abliteration/plugin.json",
+    "local_model_abliteration_protocol": "_system/HERETIC_ABLITERATION_PROTOCOL.md",
+    "local_model_abliteration_wrapper": "_system/plugins/heretic-abliteration/decensor.sh",
     "human_version": "AIAST_VERSION.md",
     "install_metadata": "_system/.template-install.json",
     "installed_version": "_system/.template-version",
@@ -71,5 +75,5 @@
   },
   "schema_version": "1.0.0",
   "template_name": "AIAST",
-  "template_version": "1.23.0"
+  "template_version": "1.24.0"
 }

@@ -52,5 +52,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - Use autocomplete and chat within the boundaries of `_system/PROJECT_RULES.md`.
 - Leave a high-signal handoff packet in repo files for the next agent.
 - If context capacity is limited, follow the fast-path in `_system/LOAD_ORDER.md`.
-- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Cline, PearAI, and local models.
+- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Cline, PearAI, local models, and Antigravity.
 - If context appears contradictory, run `bootstrap/system-doctor.sh`.

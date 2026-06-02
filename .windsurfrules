@@ -54,3 +54,4 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - If repo state or docs appear inconsistent, run `bootstrap/system-doctor.sh`.
 - Update handoff files before stopping.
 - Other agent-specific entry files exist and share the same core contract.
+- Before appending non-trivial tool-memory content, invoke `bootstrap/stamp-tool-memory.sh --adapter windsurf --file _system/tool-memory/<tool>-memory.md --agent-id <agent-id>` per `_system/TOOL_MEMORY_ISOLATION_STAMP.md`.

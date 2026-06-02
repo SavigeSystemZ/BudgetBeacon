@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Check Template MOS Boundary Result",
+  "type": "object",
+  "required": ["status", "context"],
+  "properties": {
+    "status": { "type": "string", "enum": ["pass"] },
+    "context": { "type": "string", "enum": ["template-root", "downstream"] }
+  },
+  "additionalProperties": false
+}

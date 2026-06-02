@@ -4,7 +4,7 @@ This document defines how autonomous agents should treat Git when working inside
 
 ## Goals
 
-- Keep local working trees aligned with the canonical remote when work is shared.
+- Keep GitHub aligned as a faithful full mirror of the local authoritative repo.
 - Prefer **SSH** remotes for GitHub (or your host) when that is the operator standard.
 - Recover from **lost local state** by pulling from remote, and recover from **unpushed work** by committing and pushing when policy allows.
 - Surface **SSH or credential failures** early and escalate to the operator when human auth is required.
@@ -13,8 +13,8 @@ This document defines how autonomous agents should treat Git when working inside
 
 **Treat Git sync as blocking work, not optional housekeeping.** If the goal is progress that survives across machines, sessions, or agents, unfinished Git is unfinished work.
 
-- **Session start (when a remote exists):** `git fetch` for the current branch’s upstream before large edits, so you are not building on a stale base.
-- **Session end (after substantive edits):** `git status` → commit with a clear message → `git push`. Leaving **only** local commits or dirty trees when shared progress was intended is a **handoff failure**.
+- **Session start (when a remote exists):** `git fetch origin main` before large edits, so you know whether the mirror has commits from another machine.
+- **Session end (after substantive edits):** `git status` -> commit with a clear message -> validate -> `git push origin main`. Leaving **only** local commits or dirty trees when shared progress was intended is a **handoff failure**.
 - **Ownership / elevation:** run all Git and SSH as the operator UNIX user (**`whyte`** here, never `root`). If a tool ran as root and Git reports `Permission denied` on `.git/index`, repair with `sudo chown -R whyte:whyte .git` (or the repo root) and **retry**; do not stop with a broken index.
 - **Hooks / CI noise:** prefer fixing hooks or the underlying issue. Use `git commit --no-verify` or `git push --no-verify` **only** when the operator has explicitly allowed that escape hatch for the repo; otherwise document the blocker and still leave the working tree committable.
 - **Blocked push or auth:** spend real effort on SSH agent, remotes, and keys; if still blocked, **prompt the operator with the exact error**—do not silently abandon the Git outcome.
@@ -30,6 +30,32 @@ Use these placeholders in new repos unless the operator has pinned a concrete pr
 | SSH remote for app `my-app` | — | `git@github.com:GITHUB_APPS_ORG/my-app.git` |
 
 **Convention:** New application repositories are created under `GITHUB_APPS_ORG` with repository name equal to the app slug (e.g. app `test` → `GITHUB_APPS_ORG/test`).
+
+## GitHub mirror model (default)
+
+For this AIAST single-developer workflow, GitHub is deliberately simple:
+
+- One local app repo maps to one GitHub repo.
+- The GitHub repo is a **full tracked-file copy** of the local repo, not a
+  separate planning surface, not a partial export, and not a branch farm.
+- The remote name is `origin`; the default branch is `main`.
+- The GitHub repo name matches the local folder name exactly unless the
+  operator explicitly chooses a different slug.
+- Push validated local `main` directly to `origin/main`.
+- Do not create feature/fix/chore branches by default. Use a branch only for
+  operator-approved experiments, emergency recovery, or true collaboration;
+  merge or abandon it quickly, then delete it.
+- Do not require PRs, protected-status checks, or remote CI as a gate for
+  solo work. Local validation is the gate; GitHub mirrors the result.
+- Keep GitHub private by default. Disable Wiki, Projects, and Issues unless
+  the operator wants GitHub to become an active collaboration surface.
+- Annotated tags are allowed for release milestones. Tags are not alternate
+  development streams.
+
+The only meaningful concern with this model is cross-machine concurrency:
+if the operator edits from another machine, `git fetch origin main` before
+work and reconcile before pushing. That is still a mirror workflow, not a
+reason to introduce standing branch stacks.
 
 ### Operator profile (SavigeSystemZ / MyAppZ workspace)
 
@@ -99,6 +125,17 @@ After substantive edits:
 3. Commit with a **clear message**; follow project conventions if present.
 4. `git push` to the tracked upstream branch.
 
+## End-of-prompt closure requirement
+
+For any substantive session, git closure is mandatory before claiming completion:
+
+1. run `git status` and confirm scope;
+2. commit coherent completed work when changes are intended to persist;
+3. push when policy and auth allow;
+4. if blocked, record exact error, attempted remediation, and next action in handoff/context files.
+
+A session that skips this closure without a documented blocker is incomplete.
+
 If **local files were lost** but commits exist on the remote: recover with `git fetch` and `git checkout` / `git reset` / `git restore` as appropriate to match `origin/<branch>` after confirming you are not discarding unpushed work (`git log origin/HEAD..HEAD`).
 
 If **unpushed local commits or uncommitted work** should not be lost: commit and push (when policy allows) so the remote holds the latest state.
@@ -113,25 +150,44 @@ When a local app repo has no configured remote or the GitHub repo does not exist
 2. Enforce one-word naming for new repos: no spaces or path separators. If the local directory contains spaces, stop and ask the operator for the canonical one-word slug.
 3. Create the repo in the org namespace as `SavigeSystemZ/<app_slug>` (not personal namespace) using SSH transport.
 4. Add/set `origin` to `git@github.com:SavigeSystemZ/<app_slug>.git`.
-5. Push the current default branch with upstream tracking (`git push -u origin <branch>`).
+5. Push `main` with upstream tracking (`git push -u origin main`). If the
+   repo is still on `master`, rename locally to `main` first only when the
+   operator agrees; otherwise push the current default and record the
+   exception.
 6. Verify with `git remote -v` and `git status -sb`.
 
 Recommended command (run as `whyte`):
 
 ```bash
 app_slug="$(basename "$PWD")"
-gh repo view "SavigeSystemZ/${app_slug}" >/dev/null 2>&1 || gh repo create "SavigeSystemZ/${app_slug}" --private
+gh repo view "SavigeSystemZ/${app_slug}" >/dev/null 2>&1 || \
+  gh repo create "SavigeSystemZ/${app_slug}" --private --disable-issues --disable-wiki
 git remote get-url origin >/dev/null 2>&1 \
   && git remote set-url origin "git@github.com:SavigeSystemZ/${app_slug}.git" \
   || git remote add origin "git@github.com:SavigeSystemZ/${app_slug}.git"
-git push -u origin "$(git branch --show-current)"
+git push -u origin main
+gh repo edit "SavigeSystemZ/${app_slug}" \
+  --default-branch main \
+  --enable-projects=false \
+  --enable-wiki=false \
+  --enable-issues=false \
+  --delete-branch-on-merge
+```
+
+Preferred AIAST wrapper:
+
+```bash
+bash bootstrap/gitops.sh mirror --create --push --configure
 ```
 
 If **SSH authentication or network** blocks fetch/push: diagnose (`ssh -T git@github.com`, `git remote -v`, agent/keys). Retry after fixing keys, `ssh-agent`, or `~/.ssh/config`. If the problem requires passphrase entry, new key enrollment, or org permissions, **stop and prompt the operator** with the exact error text and remote URL.
 
 ## Branching
 
-Default to the branch the repo already uses (`main`, `master`, or project default). Do not rename the default branch without explicit operator approval.
+Default to `main` and keep it as the normal working branch. Do not create
+topic branches by default for solo work, and do not rename the default
+branch without explicit operator approval. Short branches are exception
+tools, not the standard workflow.
 
 ## Release tags (AIAST source template repository)
 

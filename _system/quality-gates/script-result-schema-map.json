@@ -1,0 +1,18 @@
+{
+  "check-agent-locks.sh": "_system/quality-gates/check-agent-locks-result.schema.json",
+  "emit-fleet-status.sh": "_system/quality-gates/emit-fleet-status-result.schema.json",
+  "check-fleet-readiness.sh": "_system/quality-gates/check-fleet-readiness-result.schema.json",
+  "run-validation-autopilot.sh": "_system/quality-gates/run-validation-autopilot-result.schema.json",
+  "validate-scaffold-profiles.sh": "_system/quality-gates/simple-status-result.schema.json",
+  "validate-archetype-packs.sh": "_system/quality-gates/simple-status-result.schema.json",
+  "check-master-map-completeness.sh": "_system/quality-gates/simple-status-result.schema.json",
+  "validate-scaffold-profile.sh": "_system/quality-gates/validate-scaffold-profile-result.schema.json",
+  "check-context-freshness.sh": "_system/quality-gates/check-context-freshness-result.schema.json",
+  "check-tool-memory-alignment.sh": "_system/quality-gates/simple-status-result.schema.json",
+  "check-template-mos-boundary.sh": "_system/quality-gates/check-template-mos-boundary-result.schema.json",
+  "check-cross-file-integration.sh": "_system/quality-gates/simple-status-result.schema.json",
+  "score-quality-gates.sh": "_system/quality-gates/quality-score.schema.json",
+  "validate-quality-score-policy.sh": "_system/quality-gates/quality-score-policy-validation.schema.json",
+  "discover-validation-commands.sh": "_system/quality-gates/validation-discovery.schema.json",
+  "emit-status-report.sh": "_system/quality-gates/status-report.schema.json"
+}

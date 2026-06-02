@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0.0",
+  "app_id": "__APP_SLUG__-__APP_UUID_PREFIX__",
+  "app_slug": "__APP_SLUG__",
+  "app_uuid": "__APP_UUID__",
+  "app_name": "__APP_NAME__",
+  "repo_root": "__REPO_ROOT__",
+  "repo_root_realpath": "__REPO_ROOT_REALPATH__",
+  "host_fingerprint_id": "fp_000000000000",
+  "aiast_install_id": "__AIAST_INSTALL_ID__",
+  "aiast_template_version": "__AIAST_TEMPLATE_VERSION__",
+  "created_at": "__CREATED_AT__",
+  "created_by": "__CREATED_BY__",
+  "allowed_repo_root": "__REPO_ROOT_REALPATH__",
+  "forbidden_roots": [],
+  "namespaces": {
+    "mcp":                 "__APP_ID__:mcp",
+    "agents":              "__APP_ID__:agents",
+    "tool_memory":         "__APP_ID__:tool-memory",
+    "ports":               "__APP_ID__:ports",
+    "db":                  "__APP_ID_DB__",
+    "cache_keys":          "__APP_ID__:",
+    "browser_profile_dir": "__REPO_ROOT_REALPATH__/.local/browser-profiles/__APP_ID__"
+  },
+  "lifecycle": {
+    "immutable_fields": ["app_uuid", "app_id", "created_at"],
+    "rename_allowed_fields": ["app_name", "app_slug"],
+    "reset_requires": "explicit-operator-flag",
+    "events": [
+      {
+        "ts": "__CREATED_AT__",
+        "kind": "created",
+        "details": { "by": "init-app-namespace.sh", "template_version": "__AIAST_TEMPLATE_VERSION__" }
+      }
+    ]
+  }
+}

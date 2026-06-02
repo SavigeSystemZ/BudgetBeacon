@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIAST Scaffold Profiles",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "properties": {
+    "version": { "type": "string" },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "installable", "maintainer_only", "downstream_mutable"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "installable": { "type": "boolean" },
+          "maintainer_only": { "type": "boolean" },
+          "downstream_mutable": { "type": "boolean" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

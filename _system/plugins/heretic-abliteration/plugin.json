@@ -1,0 +1,11 @@
+{
+  "name": "heretic-abliteration",
+  "version": "1.0.0",
+  "description": "Wrapper for authorized host-local Heretic model abliteration workflows.",
+  "aiast_min_version": "1.24.0",
+  "hooks": ["environment.validate", "validation.report"],
+  "capabilities": ["local-model-abliteration", "local-model-refusal-analysis"],
+  "owned_paths": ["_system/plugins/heretic-abliteration/"],
+  "requires": ["uv"],
+  "enabled": true
+}

@@ -1,0 +1,327 @@
+{
+  "version": "1.1.0",
+  "default_profile": "standard",
+  "base": {
+    "include": [
+      "*",
+      "**/*"
+    ],
+    "exclude": [
+      ".git/**",
+      "**/.git/**",
+      ".env",
+      "**/.env",
+      "**/.env.*",
+      "!**/.env.example",
+      "**/secrets/**",
+      "**/secret/**",
+      "**/node_modules/**",
+      "**/venv/**",
+      "**/.venv/**",
+      "**/__pycache__/**",
+      "**/*.pyc",
+      "MOS_TEMPLATE/**",
+      "_META_AGENT_SYSTEM/**",
+      "_TEMPLATE_FACTORY/**",
+      "_MOS_TEMPLATE_FACTORY/**",
+      "MOS_SOURCE_LIBRARY/**"
+    ],
+    "required_files": [
+      ".installable-product-root",
+      "AGENTS.md",
+      "CODEX.md",
+      "CLAUDE.md",
+      "GEMINI.md",
+      "README.md",
+      "AIAST_VERSION.md",
+      "_system/.template-version",
+      "_system/SCAFFOLD_PROFILE_MATRIX.md",
+      "_system/SCAFFOLD_INCLUDE_EXCLUDE_MANIFEST.md",
+      "_system/scaffold-profiles.json",
+      "_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md",
+      "_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md",
+      "_system/MOS_DOWNSTREAM_EXCLUSION_POLICY.md",
+      "_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md",
+      "_system/APP_ARCHETYPE_ROUTING_MATRIX.md",
+      "_system/APP_ARCHETYPE_PERSONA_CATALOG.md",
+      "_system/INSTALLER_FIRST_GATE.md",
+      "bootstrap/init-project.sh",
+      "bootstrap/update-template.sh",
+      "bootstrap/install-missing-files.sh",
+      "bootstrap/scaffold-system.sh",
+      "bootstrap/render-scaffold-profile.sh",
+      "bootstrap/validate-scaffold-output.sh",
+      "bootstrap/check-scaffold-required-files.sh",
+      "bootstrap/check-mos-downstream-exclusion.sh",
+      "bootstrap/check-mcp-project-isolation.sh",
+      "bootstrap/validate-system.sh",
+      "bootstrap/check-system-awareness.sh"
+    ],
+    "forbidden_downstream_paths": [
+      ".env",
+      "**/.env",
+      "**/secrets/**",
+      "MOS_TEMPLATE/**",
+      "_META_AGENT_SYSTEM/**",
+      "_TEMPLATE_FACTORY/**",
+      "_MOS_TEMPLATE_FACTORY/**",
+      "MOS_SOURCE_LIBRARY/**"
+    ],
+    "generated_files": [
+      "_system/.template-install.json",
+      "_system/KEY.md",
+      "_system/SYSTEM_REGISTRY.json",
+      "_system/INTEGRITY_MANIFEST.sha256",
+      "_system/REPO_OPERATING_PROFILE.md",
+      "_system/repo-operating-profile.json",
+      "_system/SUPER_TEMPLATE_MASTER_MAP.md"
+    ],
+    "required_validators": [
+      "validate-scaffold-output",
+      "check-scaffold-required-files",
+      "check-mos-downstream-exclusion",
+      "check-mcp-project-isolation",
+      "check-system-awareness",
+      "validate-system"
+    ]
+  },
+  "profiles": [
+    {
+      "id": "minimal",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-system-awareness"
+      ],
+      "notes": "Smallest supported app-agent operating layer. Current implementation keeps the full installable AIAST contract until a narrowed minimal profile has its own strict validator."
+    },
+    {
+      "id": "standard",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-mos-downstream-exclusion",
+        "validate-system"
+      ],
+      "notes": "Default downstream app profile. Includes the full installable AIAST product and excludes parent-template, MOS, factory, secret, and transient surfaces."
+    },
+    {
+      "id": "advanced",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md",
+        "_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md",
+        "_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "validate-archetype-packs",
+        "run-validation-autopilot"
+      ],
+      "notes": "Standard profile plus extended governance and diagnostics."
+    },
+    {
+      "id": "super",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md",
+        "bootstrap/run-test-app-benchmark-matrix.sh"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "validate-archetype-packs",
+        "score-quality-gates"
+      ],
+      "notes": "Maximum normal downstream profile without parent-template source layers."
+    },
+    {
+      "id": "security-heavy",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/SECURITY_HARDENING_CONTRACT.md",
+        "_system/AUTHORIZED_SECURITY_RESEARCH_MODE.md",
+        "bootstrap/scan-security.sh",
+        "bootstrap/check-supply-chain.sh"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "scan-security"
+      ],
+      "notes": "Security-first downstream profile with explicit containment and audit gates."
+    },
+    {
+      "id": "ai-heavy",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/CHATBOT_GUIDE.md",
+        "_system/PROMPT_SECURITY_BASELINE.md",
+        "bootstrap/templates/runtime/ai/README.md"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-system-awareness"
+      ],
+      "notes": "AI-oriented app profile with prompt and provider-safety surfaces."
+    },
+    {
+      "id": "mobile-apk",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/MOBILE_GUIDE.md",
+        "_system/archetypes/mobile-apk.md",
+        "bootstrap/templates/runtime/mobile/README.md",
+        "bootstrap/templates/runtime/mobile/flutter/pubspec.yaml"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "validate-archetype-packs"
+      ],
+      "notes": "Android/APK-ready profile with mobile runtime and package guidance."
+    },
+    {
+      "id": "desktop",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/archetypes/local-first-desktop.md",
+        "_system/packaging/node-and-desktop-packaging.md",
+        "bootstrap/templates/runtime/packaging/__AIAST_DESKTOP_ID__.desktop"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-installer-first-gate"
+      ],
+      "notes": "Desktop-first profile with launcher and installer expectations."
+    },
+    {
+      "id": "web-saas",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/archetypes/web-saas.md",
+        "_system/API_DESIGN_STANDARDS.md",
+        "_system/AUTH_AND_ONBOARDING_PATTERNS.md"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-network-bindings"
+      ],
+      "notes": "Web/API/SaaS profile with auth, API, and network governance."
+    },
+    {
+      "id": "fullstack",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/archetypes/fullstack-marketplace.md",
+        "_system/starter-blueprints/NEXT_JS_FULLSTACK.md",
+        "_system/starter-blueprints/DATABASE_MIGRATIONS.md"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-runtime-foundations"
+      ],
+      "notes": "Fullstack app profile with web, API, data, install, and migration safety."
+    },
+    {
+      "id": "homelab",
+      "installable": true,
+      "maintainer_only": false,
+      "downstream_mutable": true,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/systemd/README.md",
+        "bootstrap/generate-systemd-unit.sh",
+        "bootstrap/templates/runtime/ops/compose/compose.yml"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "check-installer-first-gate"
+      ],
+      "notes": "Self-hosted/homelab profile with local service and operations surfaces."
+    },
+    {
+      "id": "meta-system-development",
+      "installable": true,
+      "maintainer_only": true,
+      "downstream_mutable": false,
+      "include": [],
+      "exclude": [],
+      "required_files": [
+        "_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md",
+        "_system/MOS_DOWNSTREAM_EXCLUSION_POLICY.md",
+        "_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md",
+        "_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md"
+      ],
+      "optional_files": [],
+      "required_validators": [
+        "validate-scaffold-output",
+        "check-scaffold-required-files",
+        "validate-system"
+      ],
+      "notes": "AIAST/MOS maintainer profile. It still does not copy parent source-repo layers through app scaffold; use MOS_TEMPLATE bootstrap for MOS installs."
+    }
+  ]
+}

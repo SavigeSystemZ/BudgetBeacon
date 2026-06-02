@@ -1,0 +1,38 @@
+{
+  "name": "self-writing-boundary",
+  "version": 1,
+  "description": "Closes the downstream self-improvement boundary-erosion class: an agent or a careless edit weakening the project-local self-writing boundary so that downstream self-improvement could reach the parent template, sibling repos, global config, or secrets. This contract asserts the boundary contract still states each forbidden-write rule, that the downstream protocol keeps promotion maintainer-gated, and that apply-local-self-improvement.sh still carries the write-scope and role refusal guard.",
+  "targets": [
+    {
+      "id": "boundary-contract",
+      "file": "_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md",
+      "format": "text",
+      "assertions": {
+        "forbids-parent-template-write": { "regex_present": "write the parent AIAST template" },
+        "forbids-sibling-repo-write": { "regex_present": "write sibling app repos" },
+        "forbids-global-tool-memory-write": { "regex_present": "write global / home tool memory" },
+        "forbids-secret-commit": { "regex_present": "commit secrets" },
+        "states-write-scope-rule": { "regex_present": "only inside the current repo root" },
+        "states-rollback-discipline": { "regex_present": "(?i)rollback discipline" }
+      }
+    },
+    {
+      "id": "downstream-protocol",
+      "file": "_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md",
+      "format": "text",
+      "assertions": {
+        "states-in-repo-only": { "regex_present": "only inside this repo" },
+        "promotion-stays-maintainer-gated": { "regex_present": "(?i)promotion stays maintainer-gated" }
+      }
+    },
+    {
+      "id": "apply-guard",
+      "file": "bootstrap/apply-local-self-improvement.sh",
+      "format": "text",
+      "assertions": {
+        "has-parent-template-refusal": { "regex_present": "parent-template" },
+        "has-out-of-repo-refusal": { "regex_present": "outside the repo" }
+      }
+    }
+  ]
+}

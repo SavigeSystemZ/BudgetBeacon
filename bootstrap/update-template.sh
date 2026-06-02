@@ -8,7 +8,8 @@ source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
 
 usage() {
   cat <<'EOF'
-Usage: update-template.sh <target-repo> [--source <template-root>] [--strict] [--dry-run] [--refresh-managed]
+Usage: update-template.sh <target-repo> [--source <template-root>] [--profile NAME]
+                          [--strict] [--dry-run] [--refresh-managed]
 
 Apply additive AIAST updates and optionally refresh drifted template-managed files.
 
@@ -22,6 +23,7 @@ EOF
 
 TARGET_REPO=""
 SOURCE="${DEFAULT_TEMPLATE_ROOT}"
+PROFILE=""
 STRICT=0
 DRY_RUN=0
 REFRESH_MANAGED=0
@@ -32,6 +34,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --source)
       SOURCE="${2:-}"
+      shift 2
+      ;;
+    --profile)
+      PROFILE="${2:-}"
       shift 2
       ;;
     --strict)
@@ -92,7 +98,7 @@ fi
 # rewriting the running script in place mid-execution corrupts the parser
 # (classic symptom: "unexpected EOF while looking for matching quote" past
 # the original line count). Re-execing from a stable tempfile avoids that.
-if [[ "${AIAST_UPDATE_REEXEC:-0}" != "1" && ${DRY_RUN} -eq 0 && ${REFRESH_MANAGED} -eq 1 ]]; then
+if [[ "${AIAST_UPDATE_REEXEC:-0}" != "1" && ${DRY_RUN} -eq 0 ]]; then
   source_self="${RESOLVED_TEMPLATE}/bootstrap/update-template.sh"
   running_self="${BASH_SOURCE[0]}"
   if [[ -f "${source_self}" && -f "${running_self}" ]]; then
@@ -119,21 +125,53 @@ fi
 source_version="$(aiaast_template_version "${RESOLVED_TEMPLATE}")"
 installed_version="$(aiaast_template_version "${RESOLVED_TARGET}")"
 readme_dest="$(aiaast_detect_system_readme_path "${RESOLVED_TARGET}")"
+PROFILE="$(aiaast_resolve_scaffold_profile "${RESOLVED_TARGET}" "${PROFILE}")"
 bash "${RESOLVED_TARGET}/bootstrap/check-working-directory-alignment.sh" "${RESOLVED_TARGET}"
 bash "${RESOLVED_TARGET}/bootstrap/check-project-target-consistency.sh" "${RESOLVED_TARGET}"
 bash "${RESOLVED_TARGET}/bootstrap/emit-session-environment.sh" "${RESOLVED_TARGET}"
 always_refresh_files=(
   "AIAST_VERSION.md"
   "AIAST_CHANGELOG.md"
+  "bootstrap/aiast"
+  "bootstrap/gitops.sh"
   "bootstrap/generate-system-key.sh"
   "bootstrap/generate-host-adapters.sh"
+  "bootstrap/lib/aiaast-lib.sh"
+  "bootstrap/lib/aiaast-core.sh"
+  "bootstrap/lib/aiaast-json.sh"
+  "bootstrap/lib/aiaast-classify.sh"
+  "bootstrap/lib/aiaast-repo.sh"
+  "bootstrap/lib/aiaast-sync.sh"
+  "bootstrap/lib/aiaast-managed.sh"
+  "bootstrap/lib/aiaast-lock.sh"
+  "bootstrap/render-scaffold-profile.sh"
+  "bootstrap/update-template.sh"
+  "bootstrap/validate-scaffold-output.sh"
+  "bootstrap/check-scaffold-required-files.sh"
+  "bootstrap/check-mos-downstream-exclusion.sh"
   "_system/.template-version"
+  "_system/gitops-policy.json"
+  "_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md"
+  "_system/GIT_SIDE_MIRROR_POLICY.md"
+  "_system/SINGLE_FOUNDER_GIT_OPERATING_SYSTEM.md"
   "_system/aiaast-capabilities.json"
   "_system/instruction-precedence.json"
   "_system/host-adapter-manifest.json"
+  "_system/MCP_CONFIG.md"
+  "_system/mcp/MCP_SELECTION_POLICY.md"
+  "_system/mcp/MCP_SERVER_CATALOG.md"
+  "_system/mcp/servers.cursor.example.json"
+  "_system/mcp/servers.codex.example.toml"
+  "_system/HOST_SETTINGS_BASELINE.md"
+  ".claude/settings.aiaast.json"
+  ".github/copilot-config.aiaast.json"
+  ".codex/config.aiaast.toml"
+  ".gemini/settings.aiaast.json"
+  ".windsurf/settings.aiaast.json"
+  ".cursor/settings.aiaast.json"
 )
 
-mapfile -t source_files < <(aiaast_list_files "${RESOLVED_TEMPLATE}")
+mapfile -t source_files < <(bash "${RESOLVED_TEMPLATE}/bootstrap/render-scaffold-profile.sh" "${RESOLVED_TEMPLATE}" --profile "${PROFILE}")
 missing_files=()
 drifted_files=()
 
@@ -173,6 +211,7 @@ echo "Template source:   ${RESOLVED_TEMPLATE}"
 echo "Installed version: ${installed_version}"
 echo "Source version:    ${source_version}"
 echo "System README:     ${readme_dest}"
+echo "Scaffold profile:  ${PROFILE}"
 echo ""
 
 if [[ ${#missing_files[@]} -eq 0 ]]; then
@@ -262,7 +301,8 @@ aiaast_write_install_metadata \
   "${source_version}" \
   "copied-template" \
   "${readme_dest}" \
-  "update-template"
+  "update-template" \
+  "${PROFILE}"
 
 # Manifest and onboarding hooks may refresh immediately before adapter emission.
 # Always re-pin the emitter script to the source template version so renderer
@@ -303,6 +343,21 @@ else
 fi
 
 aiaast_emit_template_sync_notice "${RESOLVED_TARGET}" "update-template" "${REFRESH_MANAGED}"
+
+# S19e — machine-readable meta-sync marker for the next agent's startup gate.
+# Encodes the changeset detected at lines 152+ (missing_files, drifted_files,
+# always_refresh_files) so reconcile-meta-sync.sh can cross-reference relevance.
+missing_csv="$(IFS=,; printf '%s' "${missing_files[*]:-}")"
+drifted_csv="$(IFS=,; printf '%s' "${drifted_files[*]:-}")"
+always_refresh_csv="$(IFS=,; printf '%s' "${always_refresh_files[*]:-}")"
+aiaast_emit_meta_sync_pending \
+  "${RESOLVED_TARGET}" \
+  "${RESOLVED_TEMPLATE}" \
+  "update-template" \
+  "${REFRESH_MANAGED}" \
+  "${missing_csv}" \
+  "${drifted_csv}" \
+  "${always_refresh_csv}"
 
 aiaast_record_validation_success \
   "${RESOLVED_TARGET}" \

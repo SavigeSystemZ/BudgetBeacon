@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIAST Validation Discovery Result",
+  "type": "object",
+  "required": [
+    "format",
+    "lint",
+    "typecheck",
+    "test",
+    "build",
+    "security_audit",
+    "install_smoke",
+    "launch_render"
+  ],
+  "properties": {
+    "format": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "lint": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "typecheck": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "test": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "build": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "security_audit": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "install_smoke": { "type": "string", "enum": ["found", "missing", "not_applicable"] },
+    "launch_render": { "type": "string", "enum": ["found", "missing", "not_applicable"] }
+  },
+  "additionalProperties": false
+}

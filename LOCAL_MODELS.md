@@ -52,5 +52,5 @@ For system-evolution, prompt-authoring, adapter work, or working-file drafting, 
 - If your context window is limited, use the fast-path in `_system/LOAD_ORDER.md` or reference `_system/CONTEXT_BUDGET_STRATEGY.md` for tiered loading appropriate to your model size.
 - Produce focused, minimal diffs and verify with real commands.
 - Update handoff files before ending the session.
-- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Continue.dev, Cline, and PearAI.
+- Be aware that other primary adapter files exist for Claude, Codex, Gemini, Windsurf, Cursor, Copilot, DeepSeek, Aider, Continue.dev, Cline, PearAI, and Antigravity.
 - If context appears contradictory, run `bootstrap/system-doctor.sh`.
