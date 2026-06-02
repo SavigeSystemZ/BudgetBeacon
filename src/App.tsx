@@ -33,6 +33,7 @@ import { SyncToastBridge } from "./components/sync/SyncToastBridge";
 import { DexieErrorToastBridge } from "./components/db/DexieErrorToastBridge";
 import { ToastProvider } from "./components/ui/Toast";
 import { CardSkeleton } from "./components/ui/Skeleton";
+import { StatusBarController } from "./components/native/StatusBarController";
 import { 
   LayoutDashboard, ReceiptText, CreditCard, PiggyBank, Menu, X, 
   FolderLock, Compass, Library, ShieldCheck, Share2, Wallet, 
@@ -67,7 +68,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-[100dvh] w-full bg-transparent text-foreground transition-all duration-700 md:pb-0 font-sans selection:bg-primary/30" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 5rem)' }}>
       {/* Desktop Sidebar */}
-      <nav className="w-72 border-r border-white/10 dark:border-white/5 bg-card/20 dark:bg-card/10 backdrop-blur-3xl p-6 space-y-4 flex-col justify-between hidden md:flex shrink-0 shadow-[40px_0_100px_rgba(0,0,0,0.1)] relative z-50 transition-all duration-500 overflow-y-auto scrollbar-none">
+      <nav className="w-72 border-r border-white/10 dark:border-white/5 bg-card/20 dark:bg-card/10 backdrop-blur-3xl p-6 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] space-y-4 flex-col justify-between hidden md:flex shrink-0 shadow-[40px_0_100px_rgba(0,0,0,0.1)] relative z-50 transition-all duration-500 overflow-y-auto scrollbar-none">
         <div>
           <div className="mb-12 px-2 flex items-center justify-between">
             <div className="flex flex-col">
@@ -108,9 +109,9 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
       </nav>
 
       {/* Main Content */}
-      <main id="beacon-main-content" tabIndex={-1} className="flex-1 relative z-0 md:px-12 px-6 pt-10 overflow-x-hidden w-full">
+      <main id="beacon-main-content" tabIndex={-1} className="flex-1 relative z-0 md:px-12 px-6 pt-0 md:pt-10 overflow-x-hidden w-full">
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl py-4 -mx-6 px-6 border-b border-white/5">
+        <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-4 -mx-6 px-6 border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="font-black text-2xl tracking-tighter italic uppercase text-primary">Beacon</span>
             <SyncStatusBadge compact />
@@ -129,7 +130,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 
       {/* Mobile Full-Screen Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-[100] bg-background/95 backdrop-blur-3xl p-6 flex flex-col animate-in fade-in duration-500 overflow-y-auto">
+        <div className="md:hidden fixed inset-0 z-[100] bg-background/95 backdrop-blur-3xl px-6 pb-6 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] flex flex-col animate-in fade-in duration-500 overflow-y-auto">
           <div className="flex justify-between items-center mb-10">
             <span className="font-black text-3xl tracking-tighter italic uppercase text-primary">Mission Menu</span>
             <button type="button" aria-label="Close navigation menu" onClick={closeMenu} className="p-3 bg-destructive/10 rounded-2xl text-destructive border border-destructive/10">
@@ -214,6 +215,7 @@ function App() {
   if (showOnboarding) {
     return (
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
+        <StatusBarController />
         <ToastProvider>
           <OnboardingWizard onComplete={() => {}} />
         </ToastProvider>
@@ -224,6 +226,7 @@ function App() {
   return (
     <ErrorBoundary scope="root">
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
+        <StatusBarController />
         <ToastProvider>
         <SyncToastBridge />
         <DexieErrorToastBridge />

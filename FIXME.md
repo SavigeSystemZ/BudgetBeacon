@@ -19,6 +19,18 @@ Use this file for unresolved problems that materially affect delivery confidence
 
 ---
 
+## Test flakiness
+
+### syncService.test.ts intermittent fail under parallel run
+- **Severity:** Low (test-only; no runtime impact)
+- **Area:** `src/modules/sync/syncService.test.ts > mirrors Dexie deletes to Yjs`
+- **Problem:** Passes 4/4 in isolation and on most full runs, but intermittently fails `expected true to be false` when the full Vitest suite runs files in parallel — Yjs / fake-indexeddb global state appears to bleed across test files.
+- **Impact:** Occasional red CI run that re-runs green; can mask real regressions if ignored.
+- **Permanent fix:** Isolate sync tests (reset Yjs doc + a fresh fake-indexeddb per test, or run this file with `--no-file-parallelism` / its own pool).
+- **Owner or next step:** Sync/M10 owner. Observed 2026-06-02.
+
+---
+
 ## Mocked / simulated user-facing surfaces (the "trust gap")
 
 ### Mocked AI chatbot
