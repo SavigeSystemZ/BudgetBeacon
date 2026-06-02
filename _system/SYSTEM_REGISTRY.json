@@ -610,7 +610,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "FIXME.md",
-      "size_bytes": 9608
+      "size_bytes": 9797
     },
     {
       "category": "entrypoint",
@@ -646,7 +646,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "PLAN.md",
-      "size_bytes": 9343
+      "size_bytes": 9665
     },
     {
       "category": "working-state",
@@ -664,7 +664,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "RELEASE_NOTES.md",
-      "size_bytes": 4270
+      "size_bytes": 1957
     },
     {
       "category": "working-state",
@@ -676,7 +676,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "RISK_REGISTER.md",
-      "size_bytes": 7105
+      "size_bytes": 7312
     },
     {
       "category": "working-state",
@@ -688,19 +688,19 @@
       "category": "working-state",
       "kind": "file",
       "path": "TEST_STRATEGY.md",
-      "size_bytes": 2714
+      "size_bytes": 3003
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "TODO.md",
-      "size_bytes": 27791
+      "size_bytes": 28185
     },
     {
       "category": "working-state",
       "kind": "file",
       "path": "WHERE_LEFT_OFF.md",
-      "size_bytes": 40790
+      "size_bytes": 44195
     },
     {
       "category": "entrypoint",
@@ -1198,7 +1198,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 94262
+      "size_bytes": 94363
     },
     {
       "category": "system-core",
@@ -1606,7 +1606,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 133533
+      "size_bytes": 133677
     },
     {
       "category": "system-core",
@@ -2410,13 +2410,13 @@
       "category": "system-context",
       "kind": "file",
       "path": "_system/context/CURRENT_STATUS.md",
-      "size_bytes": 1810
+      "size_bytes": 2697
     },
     {
       "category": "system-context",
       "kind": "file",
       "path": "_system/context/DECISIONS.md",
-      "size_bytes": 2411
+      "size_bytes": 3311
     },
     {
       "category": "system-context",
@@ -2633,6 +2633,12 @@
       "kind": "file",
       "path": "_system/host-adapter-manifest.json",
       "size_bytes": 24950
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/improvement-candidates.jsonl",
+      "size_bytes": 397
     },
     {
       "category": "system-core",
@@ -5353,7 +5359,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 892,
+  "managed_file_count": 893,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.24.0"

@@ -1,5 +1,7 @@
 # Where Left Off — **active 2026-06-02** (meta-system maintenance; app work paused mid-Final-Hardening)
 
+_Timestamp: 2026-06-02_
+
 ## 2026-06-02 — AIAST meta-system maintenance pass (operating layer only; no runtime app changes)
 
 **What was done.** Adopted the freshly-synced AIAST template **1.24.0** into this repo's own copy, verified it, and tailored it to Budget Beacon:
