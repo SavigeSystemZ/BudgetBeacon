@@ -7,8 +7,9 @@ import { billSchema, debtSchema } from "../modules/pay-path/pay-path.schema";
 import { CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
+import { ResettableInput } from "../components/ui/ResettableInput";
 import { useState } from "react";
 import { Edit2, Trash2, Receipt, CreditCard as CardIcon, Plus } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
@@ -97,6 +98,24 @@ export default function PayPathRoute() {
             </Button>
             <Button variant="outline" size="sm" aria-label="Add debt" onClick={() => { setEditingDebtId(null); debtForm.reset(); setIsDebtModalOpen(true); }} className="gap-2 h-10 border-primary/20 text-primary uppercase font-black italic text-[10px] tracking-widest bg-primary/5">
               <Plus className="h-4 w-4" /> Add Debt
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Wipe all pay path items"
+              onClick={async () => {
+                if (await confirmDelete("all bills and debts", "Wipe Pay Path")) {
+                  const billIds = bills?.map(b => b.id) || [];
+                  const debtIds = debts?.map(d => d.id) || [];
+                  await Promise.all([
+                    db.bills.bulkDelete(billIds),
+                    db.debts.bulkDelete(debtIds)
+                  ]);
+                }
+              }}
+              className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         }
@@ -198,9 +217,9 @@ export default function PayPathRoute() {
       <BeaconModal isOpen={isBillModalOpen} onClose={() => setIsBillModalOpen(false)} title={editingBillId ? "Modify Bill Telemetry" : "Register Bill"}>
         <form onSubmit={billForm.handleSubmit(onBillSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2 col-span-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label><Input {...billForm.register("label")} className="bg-primary/5 border-none font-bold h-12" /></div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Amount</Label><Input type="number" step="0.01" {...billForm.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Due Day</Label><Input type="number" {...billForm.register("dueDay", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2 col-span-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label><ResettableInput label="Label" onResetValue={() => billForm.setValue("label", "")} {...billForm.register("label")} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Amount</Label><ResettableInput label="Amount" type="number" step="0.01" onResetValue={() => billForm.setValue("amount", 0)} {...billForm.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Due Day</Label><ResettableInput label="Due Day" type="number" onResetValue={() => billForm.setValue("dueDay", 1)} {...billForm.register("dueDay", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
           </div>
           <Button type="submit" className="w-full h-12 uppercase font-black italic tracking-widest shadow-xl shadow-primary/20">{editingBillId ? "Update Bill" : "Stock Pay Path"}</Button>
         </form>
@@ -209,9 +228,9 @@ export default function PayPathRoute() {
       <BeaconModal isOpen={isDebtModalOpen} onClose={() => setIsDebtModalOpen(false)} title={editingDebtId ? "Modify Liability" : "Register Debt"}>
         <form onSubmit={debtForm.handleSubmit(onDebtSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2 col-span-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label><Input {...debtForm.register("label")} className="bg-primary/5 border-none font-bold h-12" /></div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Balance</Label><Input type="number" step="0.01" {...debtForm.register("balance", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Min. Payment</Label><Input type="number" step="0.01" {...debtForm.register("minimumPayment", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2 col-span-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label><ResettableInput label="Label" onResetValue={() => debtForm.setValue("label", "")} {...debtForm.register("label")} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Balance</Label><ResettableInput label="Balance" type="number" step="0.01" onResetValue={() => debtForm.setValue("balance", 0)} {...debtForm.register("balance", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Min. Payment</Label><ResettableInput label="Min. Payment" type="number" step="0.01" onResetValue={() => debtForm.setValue("minimumPayment", 0)} {...debtForm.register("minimumPayment", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
           </div>
           <Button type="submit" className="w-full h-12 uppercase font-black italic tracking-widest shadow-xl shadow-primary/20">{editingDebtId ? "Update Debt" : "Stock Pay Path"}</Button>
         </form>

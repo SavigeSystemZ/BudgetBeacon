@@ -8,8 +8,10 @@ import { transactionSchema, type Transaction } from "../modules/ledger/ledger.sc
 import type { z } from "zod";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
 import {
   Edit2, Trash2, Plus, Upload,
   History, ArrowDownCircle, ArrowUpCircle, Database
@@ -33,6 +35,7 @@ export default function LedgerRoute() {
   const confirmDelete = useDeleteConfirm();
   const transactions = useLiveQuery(() => db.transactions.orderBy("date").reverse().toArray(), []);
   const householdId = useLiveQuery(() => db.households.toCollection().first().then(h => h?.id), []);
+  const persons = useLiveQuery(() => db.persons.toArray(), []);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,17 +43,18 @@ export default function LedgerRoute() {
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { payee: "", amount: 0, date: new Date().toISOString().split("T")[0], category: "food", type: "expense" as const },
+    defaultValues: { payee: "", amount: 0, date: new Date().toISOString().split("T")[0], category: "food", type: "expense" as const, personId: "" },
   });
 
   const onSubmit = async (data: LedgerFormValues) => {
     if (!householdId) return;
     const now = new Date().toISOString();
+    const payload = { ...data, personId: data.personId || undefined };
     if (editingId) {
-      await db.transactions.update(editingId, { ...data, updatedAt: now });
+      await db.transactions.update(editingId, { ...payload, updatedAt: now });
       setEditingId(null);
     } else {
-      await db.transactions.add({ ...data, id: createId(), householdId, createdAt: now, updatedAt: now });
+      await db.transactions.add({ ...payload, id: createId(), householdId, createdAt: now, updatedAt: now });
     }
     form.reset();
     setIsModalOpen(false);
@@ -58,7 +62,7 @@ export default function LedgerRoute() {
 
   const handleEdit = (t: Transaction) => {
     setEditingId(t.id);
-    form.reset({ payee: t.payee, amount: t.amount, date: t.date, category: t.category, type: t.type });
+    form.reset({ payee: t.payee, amount: t.amount, date: t.date, category: t.category, type: t.type, personId: t.personId || "" });
     setIsModalOpen(true);
   };
 
@@ -110,6 +114,20 @@ export default function LedgerRoute() {
             )}
             <Button
               size="icon"
+              variant="outline"
+              aria-label="Wipe all ledger transactions"
+              onClick={async () => {
+                if (await confirmDelete("all transactions", "Wipe Ledger")) {
+                  const ids = transactions?.map(t => t.id) || [];
+                  await db.transactions.bulkDelete(ids);
+                }
+              }}
+              className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
               aria-label="Add ledger transaction"
               onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
               className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
@@ -143,7 +161,14 @@ export default function LedgerRoute() {
                         <div className="h-10 w-10 rounded-2xl bg-success/10 flex items-center justify-center text-success border border-success/20 shadow-inner"><ArrowUpCircle className="h-5 w-5" /></div>
                       )}
                       <div>
-                        <div className="font-black italic text-sm truncate max-w-[200px] uppercase tracking-tighter">{t.payee}</div>
+                        <div className="font-black italic text-sm truncate max-w-[200px] uppercase tracking-tighter flex items-center gap-2">
+                          {t.payee}
+                          {t.personId && persons && (
+                            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary/20 text-[8px] font-black text-primary">
+                              {persons.find(p => p.id === t.personId)?.name[0] || "?"}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-[9px] uppercase font-black text-muted-foreground opacity-50 tracking-widest">{t.date}</div>
                       </div>
                     </div>
@@ -248,15 +273,29 @@ export default function LedgerRoute() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 col-span-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Entity / Payee</Label>
-              <Input {...form.register("payee")} placeholder="e.g. Starbucks" className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Payee" onResetValue={() => form.setValue("payee", "")} {...form.register("payee")} placeholder="e.g. Starbucks" className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Loop Value</Label>
-              <Input type="number" step="0.01" {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Loop Value" type="number" step="0.01" onResetValue={() => form.setValue("amount", 0)} {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Timestamp</Label>
-              <Input type="date" {...form.register("date")} className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Timestamp" type="date" onResetValue={() => form.setValue("date", "")} {...form.register("date")} className="bg-primary/5 border-none font-bold h-12" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Owner</Label>
+              <ResettableNativeSelect 
+                label="Owner" 
+                onResetValue={() => form.setValue("personId", "")} 
+                {...form.register("personId")} 
+                className="bg-primary/5 border-none font-bold h-12"
+              >
+                <option value="">Household (Shared)</option>
+                {persons?.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </ResettableNativeSelect>
             </div>
           </div>
           <div className="flex gap-3 pt-4">

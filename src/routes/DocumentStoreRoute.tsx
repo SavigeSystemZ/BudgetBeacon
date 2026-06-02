@@ -6,7 +6,9 @@ import { CardHeader, CardTitle, CardDescription, CardContent } from "../componen
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
+
 import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Plus, Loader2 } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
@@ -162,9 +164,25 @@ export default function DocumentStoreRoute() {
         title="The Vault" 
         subtitle="Secure local document store and scavenging engine."
         actions={
-          <Button size="icon" aria-label="Upload vault document" onClick={() => setIsAddModalOpen(true)} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
-            <Plus className="h-5 w-5" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Wipe all vault documents"
+              onClick={async () => {
+                if (await confirmDelete("all documents", "Wipe Vault")) {
+                  const ids = documents?.map(d => d.id) || [];
+                  await db.documents.bulkDelete(ids);
+                }
+              }}
+              className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button size="icon" aria-label="Upload vault document" onClick={() => setIsAddModalOpen(true)} className="rounded-full shadow-lg shadow-primary/20 h-10 w-10">
+              <Plus className="h-5 w-5" />
+            </Button>
+          </div>
         }
       />
 
@@ -290,17 +308,17 @@ export default function DocumentStoreRoute() {
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label>
-            <Input value={fileLabel} onChange={(e) => setFileLabel(e.target.value)} placeholder="e.g. SSDI Award 2026" className="bg-primary/5 border-none font-bold h-12" />
+            <ResettableInput label="Label" onResetValue={() => setFileLabel("")} value={fileLabel} onChange={(e) => setFileLabel(e.target.value)} placeholder="e.g. SSDI Award 2026" className="bg-primary/5 border-none font-bold h-12" />
           </div>
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Classification</Label>
-            <NativeSelect value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="bg-primary/5 border-none font-bold h-12">
+            <ResettableNativeSelect label="Classification" onResetValue={() => setSelectedCategory("other")} value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="bg-primary/5 border-none font-bold h-12">
               <option value="award-letter">Award Letter</option>
               <option value="tax-form">Tax Form</option>
               <option value="bank-statement">Bank Statement</option>
               <option value="insurance-policy">Insurance Policy</option>
               <option value="other">Other</option>
-            </NativeSelect>
+            </ResettableNativeSelect>
           </div>
           <div className="p-8 rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 flex flex-col items-center justify-center gap-4 relative group hover:border-primary transition-all">
             <Upload className="h-10 w-10 text-primary opacity-20 group-hover:opacity-100 transition-opacity" />

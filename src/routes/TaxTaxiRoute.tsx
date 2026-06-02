@@ -9,7 +9,9 @@ import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
+
 import { TrendingUp, Calculator, ClipboardList, Edit2, Trash2, Plus } from "lucide-react";
 import { TAX_FORMS, findFormDef } from "../modules/tax/formDefs";
 import { TaxFormEditor } from "../components/tax/TaxFormEditor";
@@ -144,14 +146,30 @@ export default function TaxTaxiRoute() {
                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" /> Tax Trajectory
                 </CardTitle>
-                <Button
-                  size="icon"
-                  aria-label="Add tax year record"
-                  onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
-                  className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
-                >
-                  <Plus className="h-5 w-5" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    aria-label="Wipe all tax records"
+                    onClick={async () => {
+                      if (await confirmDelete("all records", "Wipe Tax Records")) {
+                        const ids = taxRecords?.map(r => r.id) || [];
+                        await db.taxRecords.bulkDelete(ids);
+                      }
+                    }}
+                    className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    aria-label="Add tax year record"
+                    onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
+                    className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+                  >
+                    <Plus className="h-5 w-5" />
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
@@ -311,14 +329,14 @@ export default function TaxTaxiRoute() {
       <BeaconModal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingId(null); }} title={editingId ? "Modify Tax Record" : "Register Tax Year"}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Fiscal Year</Label><Input type="number" {...form.register("year", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Fiscal Year</Label><ResettableInput label="Fiscal Year" type="number" onResetValue={() => form.setValue("year", new Date().getFullYear())} {...form.register("year", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
             <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Telemetry Owner</Label>
-              <NativeSelect {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
+              <ResettableNativeSelect label="Owner" onResetValue={() => form.setValue("personId", defaultPersonId)} {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
                 {persons?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Total Owed</Label><Input type="number" step="0.01" {...form.register("estimatedTaxLiability", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
-            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Total Paid</Label><Input type="number" step="0.01" {...form.register("totalWithheld", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12 text-primary" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Total Owed</Label><ResettableInput label="Total Owed" type="number" step="0.01" onResetValue={() => form.setValue("estimatedTaxLiability", 0)} {...form.register("estimatedTaxLiability", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" /></div>
+            <div className="space-y-2"><Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Total Paid</Label><ResettableInput label="Total Paid" type="number" step="0.01" onResetValue={() => form.setValue("totalWithheld", 0)} {...form.register("totalWithheld", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12 text-primary" /></div>
           </div>
           <Button type="submit" className="w-full h-12 uppercase font-black italic tracking-widest shadow-xl shadow-primary/20">{editingId ? "Update telemetry" : "Commit to Tracker"}</Button>
         </form>

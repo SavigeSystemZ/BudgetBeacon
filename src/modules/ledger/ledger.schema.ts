@@ -12,6 +12,7 @@ export const transactionSchema = z.object({
   category: z.string().min(1, "Category is required"),
   type: transactionTypeSchema,
   notes: z.string().optional(),
+  personId: z.string().uuid().optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });

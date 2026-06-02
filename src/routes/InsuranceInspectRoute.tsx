@@ -6,9 +6,11 @@ import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
+
 import { ShieldCheck, Plus, Edit2, Trash2, ShieldAlert } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
@@ -83,14 +85,30 @@ export default function InsuranceInspectRoute() {
         title="Insurance Inspect"
         subtitle="Track active household insurance policies."
         actions={
-          <Button
-            size="icon"
-            aria-label="Add insurance policy"
-            onClick={() => { setEditingId(null); form.reset({ type: "auto", premium: 0, expirationDate: "" }); setIsModalOpen(true); }}
-            className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Wipe all insurance policies"
+              onClick={async () => {
+                if (await confirmDelete("all policies", "Wipe Insurance")) {
+                  const ids = policies?.map(p => p.id) || [];
+                  await db.insuranceRecords.bulkDelete(ids);
+                }
+              }}
+              className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              aria-label="Add insurance policy"
+              onClick={() => { setEditingId(null); form.reset({ type: "auto", premium: 0, expirationDate: "" }); setIsModalOpen(true); }}
+              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+          </div>
         }
       />
 
@@ -187,7 +205,7 @@ export default function InsuranceInspectRoute() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Policy Type</Label>
-            <NativeSelect {...form.register("type")} className="bg-primary/5 border-none font-bold h-12">
+            <ResettableNativeSelect label="Policy Type" onResetValue={() => form.setValue("type", "auto")} {...form.register("type")} className="bg-primary/5 border-none font-bold h-12">
               <option value="auto">Auto</option>
               <option value="home">Home / Renters</option>
               <option value="life">Life</option>
@@ -195,15 +213,15 @@ export default function InsuranceInspectRoute() {
               <option value="dental">Dental / Vision</option>
               <option value="umbrella">Umbrella</option>
               <option value="other">Other</option>
-            </NativeSelect>
+            </ResettableNativeSelect>
           </div>
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Monthly Premium</Label>
-            <Input type="number" step="0.01" {...form.register("premium", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
+            <ResettableInput label="Premium" type="number" step="0.01" onResetValue={() => form.setValue("premium", 0)} {...form.register("premium", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
           </div>
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Expiration / Renewal Date</Label>
-            <Input type="date" {...form.register("expirationDate")} className="bg-primary/5 border-none font-bold h-12" />
+            <ResettableInput label="Expiration Date" type="date" onResetValue={() => form.setValue("expirationDate", "")} {...form.register("expirationDate")} className="bg-primary/5 border-none font-bold h-12" />
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="outline" onClick={() => { setIsModalOpen(false); setEditingId(null); }} className="flex-1 h-12 uppercase font-black italic tracking-widest border-primary/20">Cancel</Button>

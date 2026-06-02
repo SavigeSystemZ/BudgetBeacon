@@ -22,7 +22,7 @@ import { logger } from "../lib/logger";
 import { DemoBadge } from "../components/ui/DemoBadge";
 import { resolveProviderFromConfig } from "../modules/ai/providerFactory";
 import { PayeeRulesPanel } from "../components/import/PayeeRulesPanel";
-import { AuthSyncCard } from "../components/sync/AuthSyncCard";
+
 import {
   Palette, Database, Bell, Shield,
   History, Zap, Sparkles, Bot, Key, Cpu, Wifi, WifiOff, Loader2,
@@ -319,8 +319,6 @@ export default function SettingsRoute() {
           </CardContent>
         </GlassCard>
 
-        {/* Sync & Account (M10 — opt-in) */}
-        <AuthSyncCard />
 
         {/* Payee rules */}
         <div className="md:col-span-2">

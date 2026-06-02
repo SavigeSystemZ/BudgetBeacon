@@ -62,6 +62,19 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         updatedAt: now,
       });
 
+      // Auto-provision device identity and keys
+      const { autoProvision } = await import("../../modules/auth/authService");
+      await autoProvision();
+
+      // Bootstrap sync (local only for now, allows future pairing)
+      const { syncService } = await import("../../modules/sync/syncService");
+      const { getSession } = await import("../../modules/auth/authService");
+      const session = getSession();
+      if (session.currentHouseholdKey) {
+        await syncService.bootstrap(householdId, session.currentHouseholdKey);
+      }
+
+
       // Create persons
       for (const person of persons) {
         await db.persons.add({
@@ -270,11 +283,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <p className="text-sm text-muted-foreground">
                 Your household is ready. Opening Budget Beacon...
               </p>
-              <p className="text-xs text-muted-foreground/80 pt-2 border-t border-border/40">
-                Everything stays on this device by default. Want it on a second device too?
-                Turn on optional end-to-end-encrypted sync anytime in
-                <span className="font-semibold"> Settings → Sync &amp; Account</span>.
-              </p>
+
             </div>
           )}
         </CardContent>

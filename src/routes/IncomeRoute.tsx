@@ -8,9 +8,11 @@ import { toMonthlyEquivalent } from "../modules/budget-engine/frequency";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
 import { useState, useMemo } from "react";
 import { cn } from "../lib/utils";
 import { Edit2, Trash2, Plus, Wallet } from "lucide-react";
@@ -82,6 +84,20 @@ export default function IncomeRoute() {
             </div>
             <Button
               size="icon"
+              variant="outline"
+              aria-label="Wipe all income"
+              onClick={async () => {
+                if (await confirmDelete("all income sources", "Wipe Income Pool")) {
+                  const ids = incomes?.map(i => i.id) || [];
+                  await db.incomeSources.bulkDelete(ids);
+                }
+              }}
+              className="rounded-full h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
               aria-label="Add income source"
               onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }}
               className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
@@ -150,27 +166,27 @@ export default function IncomeRoute() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Label</Label>
-              <Input {...form.register("label")} placeholder="e.g. Salary" className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Label" onResetValue={() => form.setValue("label", "")} {...form.register("label")} placeholder="e.g. Salary" className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Amount</Label>
-              <Input type="number" step="0.01" {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12 text-lg" />
+              <ResettableInput label="Amount" type="number" step="0.01" onResetValue={() => form.setValue("amount", 0)} {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12 text-lg" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Frequency</Label>
-              <NativeSelect {...form.register("frequency")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
+              <ResettableNativeSelect label="Frequency" onResetValue={() => form.setValue("frequency", "monthly")} {...form.register("frequency")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
                 <option value="weekly">Weekly</option>
                 <option value="biweekly">Bi-weekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="annual">Annual</option>
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70">Stream Status</Label>
-              <NativeSelect {...form.register("isActive")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
+              <ResettableNativeSelect label="Stream Status" onResetValue={() => form.setValue("isActive", true)} {...form.register("isActive")} className="bg-primary/5 border-none font-bold h-12 uppercase text-[10px]">
                 <option value="true">Active</option>
                 <option value="false">Paused</option>
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
           </div>
           <div className="flex gap-3 pt-4">

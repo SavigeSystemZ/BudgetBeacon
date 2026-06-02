@@ -28,8 +28,7 @@ import { ModeToggle } from "./components/mode-toggle";
 import { BeaconChatbot } from "./components/BeaconChatbot";
 import { DeleteConfirmProvider } from "./context/DeleteConfirmContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { SyncStatusBadge } from "./components/sync/SyncStatusBadge";
-import { SyncToastBridge } from "./components/sync/SyncToastBridge";
+
 import { DexieErrorToastBridge } from "./components/db/DexieErrorToastBridge";
 import { ToastProvider } from "./components/ui/Toast";
 import { CardSkeleton } from "./components/ui/Skeleton";
@@ -103,7 +102,6 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         <div className="pt-8 border-t border-primary/5">
           <div className="p-4 rounded-3xl bg-primary/5 border border-primary/10 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] text-center italic shadow-inner space-y-2">
             <div>Engine v2.4.0 • Secured</div>
-            <div className="flex justify-center"><SyncStatusBadge /></div>
           </div>
         </div>
       </nav>
@@ -114,7 +112,6 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         <div className="md:hidden flex items-center justify-between mb-8 sticky top-0 z-40 bg-background/80 backdrop-blur-xl pt-[calc(env(safe-area-inset-top,0px)+1rem)] pb-4 -mx-6 px-6 border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="font-black text-2xl tracking-tighter italic uppercase text-primary">Beacon</span>
-            <SyncStatusBadge compact />
           </div>
           <button
             type="button"
@@ -211,6 +208,29 @@ function App() {
     </ErrorBoundary>
   );
 
+  React.useEffect(() => {
+    async function init() {
+      const { restoreSessionPromptIfNeeded, autoProvision, getSession } = await import("./modules/auth/authService");
+      const { syncService } = await import("./modules/sync/syncService");
+      
+      let account = await restoreSessionPromptIfNeeded();
+      
+      // If we bypassed onboarding or don't have an account, generate one now if there are households
+      if (!account && !showOnboarding) {
+        account = await autoProvision();
+      }
+
+      if (account) {
+        const session = getSession();
+        if (session.currentHouseholdKey && households?.[0]?.id) {
+          await syncService.bootstrap(households[0].id, session.currentHouseholdKey);
+        }
+      }
+    }
+    init();
+  }, [showOnboarding, households]);
+
+
   // Show onboarding wizard if no household exists
   if (showOnboarding) {
     return (
@@ -228,7 +248,7 @@ function App() {
       <ThemeProvider defaultTheme="glass" storageKey="budget-beacon-theme">
         <StatusBarController />
         <ToastProvider>
-        <SyncToastBridge />
+
         <DexieErrorToastBridge />
         <HashRouter>
           <DeleteConfirmProvider>

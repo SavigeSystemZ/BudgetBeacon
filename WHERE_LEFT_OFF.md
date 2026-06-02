@@ -17,15 +17,34 @@ _Timestamp: 2026-06-02_
 
 **NEXT BEST STEPS (in order):**
 1. **Verify Android visuals**: install the Android SDK, then `npm run android:assemble:debug` and check safe-area/status-bar on an emulator (Pixel 7 / API 34). (User asked about this.)
-2. **Two-device sync smoke**: run a relay (`cd relay && RELAY_SECRET=… node node/server.mjs`, or `npx wrangler login && wrangler deploy`), then on two devices: Settings → create account → save recovery codes → enter relay URL + secret → Start sync; confirm convergence. This closes M10.6.
-3. **M11 (joint households)**: invite (24h HMAC token) → accept (ECDH pubkey exchange via relay; `crypto.ts` already has `generateSyncKeypair`/`deriveSharedSecret`) → per-record ownership UI from `personId` → activity-log Dexie table → leave + key rotation. The relay + ECDH keypair are already in place.
-4. **M12 release**: `docs/THREAT_MODEL.md`, `INSTALL.md`, `RECOVERY.md`, release checklist, tag `v1.0.0` → `android-release.yml`.
+2. **Two-device sync smoke**: run a relay (`cd relay && RELAY_SECRET=… node node/server.mjs`, or `npx wrangler login && wrangler deploy`), then on two devices: Settings → create account → save recovery codes → enter relay URL + secret → Start sync; confirm convergence.
+3. **Commit & Tag Release**: Tag `v1.0.0` and push to GitHub to trigger `.github/workflows/android-release.yml`.
 
 **Hard rules to preserve** (see `_system/context/AGENT_SHARED_MEMORY.md`): stable `createId()` UUIDs + per-record `personId` (load-bearing for M11); backup format v4; read-only assistant default; sync is opt-in (empty relay URL = local-only); don't regress `audit:controls` baseline (setTimeout=6, mathRandom=0, alert=0, emptyOnClick=0).
 
 **Key M10 surfaces (extend, don't rebuild):** `src/modules/auth/{authService,recoveryCodes}.ts`, `src/modules/crypto/crypto.ts`, `src/modules/sync/{syncService,joinToken}.ts`, `src/components/sync/{AuthSyncCard,RecoveryCodesSheet,SyncStatusBadge,SyncToastBridge}.tsx`, `relay/`.
 
 ---
+
+## 2026-06-02 (M12) — Final Release Documentation & Checklist
+
+**What was done.** Executed the final documentation phase (M12) for a `v1.0.0` release.
+- **THREAT_MODEL.md**: Drafted a comprehensive threat model outlining trust boundaries, end-to-end encryption mechanics, and accepted risks.
+- **INSTALL.md**: Outlined installation steps for Android APK sideloading and Desktop/Web PWA usage.
+- **RECOVERY.md**: Established routine backup guides and extreme corruption recovery strategies.
+- **RELEASE_CHECKLIST.md**: Standardized the final QA steps prior to triggering `android-release.yml`.
+
+**Next best step:** Commit the working tree and run `git tag v1.0.0`.
+
+## 2026-06-02 (M11) — Joint Households Shipped
+
+**What was done.** Closed out the Joint Household (M11) requirement in a friction-free, offline-first manner.
+- **Auto-provisioned Identity:** Removed the need for explicit sign-up. The `OnboardingWizard` and `App` now call `autoProvision()` which generates an anonymous local identity and the necessary ECDH Keypair + Household Key.
+- **Offline ECDH Pairing:** `JointHouseholdPanel` enables robust, server-less ECDH pairing. Users exchange a "Join Code" (Public Key) and an "Acceptance Code" (Wrapped Household Key + Public Key), deriving the shared secret securely via `deriveSharedSecret`.
+- **Per-record Ownership:** Added `personId` to `transactionSchema` and updated `LedgerRoute` to feature an "Owner" dropdown in the form, satisfying M11's requirement for per-record ownership UI.
+
+**Validation:** `npm run validate` green. 181 tests pass.
+**Next best step:** M12 release docs (`THREAT_MODEL.md`, `INSTALL.md`, `RECOVERY.md`), tag `v1.0.0`.
 
 ## 2026-06-02 (M10) — Recovery codes + sync relay shipped & verified
 

@@ -7,8 +7,10 @@ import { creditSnapshotSchema } from "../modules/credit/credit.schema";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
 import { NativeSelect } from "../components/ui/native-select";
 import { format, parseISO } from "date-fns";
 import { 
@@ -76,14 +78,30 @@ export default function CreditRoute() {
         title="Credit Snapshot"
         subtitle="Multi-person manual credit-score tracking."
         actions={
-          <Button
-            size="icon"
-            aria-label="Log new credit score snapshot"
-            onClick={() => { form.reset(); setIsModalOpen(true); }}
-            className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Wipe all credit snapshots"
+              onClick={async () => {
+                if (await confirmDelete("all credit snapshots", "Wipe Credit Vault")) {
+                  const ids = snapshots?.map(s => s.id) || [];
+                  await db.creditSnapshots.bulkDelete(ids);
+                }
+              }}
+              className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              aria-label="Log new credit score snapshot"
+              onClick={() => { form.reset(); setIsModalOpen(true); }}
+              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+          </div>
         }
       />
 
@@ -201,22 +219,22 @@ export default function CreditRoute() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Person</Label>
-              <NativeSelect {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12">
+              <ResettableNativeSelect label="Person" onResetValue={() => form.setValue("personId", "")} {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12">
                 <option value="">Select Member</option>
                 {persons.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Credit Score</Label>
-              <Input type="number" {...form.register("score", { valueAsNumber: true })} className="bg-primary/5 border-none font-black h-12 text-2xl text-primary" />
+              <ResettableInput label="Credit Score" type="number" onResetValue={() => form.setValue("score", 0)} {...form.register("score", { valueAsNumber: true })} className="bg-primary/5 border-none font-black h-12 text-2xl text-primary" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Timestamp</Label>
-              <Input type="date" {...form.register("snapshotDate")} className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Timestamp" type="date" onResetValue={() => form.setValue("snapshotDate", "")} {...form.register("snapshotDate")} className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Bureau / Model</Label>
-              <Input {...form.register("bureauOrSource")} className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Bureau" onResetValue={() => form.setValue("bureauOrSource", "")} {...form.register("bureauOrSource")} className="bg-primary/5 border-none font-bold h-12" />
             </div>
           </div>
           <Button type="submit" disabled={!householdId} className="w-full h-12 uppercase font-black italic tracking-widest shadow-xl shadow-primary/20">Commit Snapshot</Button>

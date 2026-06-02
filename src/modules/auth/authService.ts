@@ -1,4 +1,5 @@
 import { db, type Account } from "../../db/db";
+import { logger } from "../../lib/logger";
 import { createId } from "../../lib/ids/createId";
 import {
   derivePassphraseKey,
@@ -164,5 +165,26 @@ export async function restoreSessionPromptIfNeeded(): Promise<Account | null> {
     return null;
   }
   
+  // Auto-login if it's the auto-provisioned account
+  if (account.email === "local@device.beacon") {
+    return login("local@device.beacon", "local-device-passphrase-beacon-app");
+  }
+
   return account;
+}
+
+export async function autoProvision(): Promise<Account> {
+  const email = "local@device.beacon";
+  const passphrase = "local-device-passphrase-beacon-app";
+  
+  try {
+    const existing = await db.accounts.where("email").equals(email).first();
+    if (existing) {
+      return login(email, passphrase);
+    }
+    return await signUp(email, passphrase);
+  } catch (err) {
+    logger.error("Auto provision failed", err);
+    throw err;
+  }
 }

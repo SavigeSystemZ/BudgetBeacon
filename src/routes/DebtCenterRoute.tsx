@@ -7,8 +7,9 @@ import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
+import { ResettableInput } from "../components/ui/ResettableInput";
 import { AlertCircle, TrendingDown, Edit2, Trash2, Plus, ShieldAlert } from "lucide-react";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, 
@@ -148,9 +149,25 @@ export default function DebtCenterRoute() {
         title="Debt Center" 
         subtitle="Collections and high-pressure liability management."
         actions={
-          <Button aria-label="Add liability" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="gap-2 px-6 bg-destructive text-destructive-foreground hover:bg-destructive/90 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-destructive/20 h-12">
-            <Plus className="h-4 w-4" /> Add Liability
-          </Button>
+          <div className="flex gap-2">
+            <Button aria-label="Add liability" onClick={() => { setEditingId(null); form.reset(); setIsModalOpen(true); }} className="gap-2 px-6 bg-destructive text-destructive-foreground hover:bg-destructive/90 uppercase font-black italic text-xs tracking-widest shadow-xl shadow-destructive/20 h-12">
+              <Plus className="h-4 w-4" /> Add Liability
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="Wipe all liabilities"
+              onClick={async () => {
+                if (await confirmDelete("all liabilities", "Wipe Debt Center")) {
+                  const ids = debts?.map(d => d.id) || [];
+                  await db.debts.bulkDelete(ids);
+                }
+              }}
+              className="h-12 w-12 text-destructive border-destructive/20 hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         }
       />
 
@@ -247,15 +264,15 @@ export default function DebtCenterRoute() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 col-span-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1 text-destructive">Entity Label</Label>
-              <Input {...form.register("label")} placeholder="e.g. Portfolio Recovery" className="bg-destructive/5 border-none font-bold h-12" />
+              <ResettableInput label="Entity Label" onResetValue={() => form.setValue("label", "")} {...form.register("label")} placeholder="e.g. Portfolio Recovery" className="bg-destructive/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1 text-destructive">Total Balance</Label>
-              <Input type="number" step="0.01" {...form.register("balance", { valueAsNumber: true })} className="bg-destructive/5 border-none font-bold h-12" />
+              <ResettableInput label="Total Balance" type="number" step="0.01" onResetValue={() => form.setValue("balance", 0)} {...form.register("balance", { valueAsNumber: true })} className="bg-destructive/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1 text-destructive">Minimum Flow</Label>
-              <Input type="number" step="0.01" {...form.register("minimumPayment", { valueAsNumber: true })} className="bg-destructive/5 border-none font-bold h-12" />
+              <ResettableInput label="Minimum Flow" type="number" step="0.01" onResetValue={() => form.setValue("minimumPayment", 0)} {...form.register("minimumPayment", { valueAsNumber: true })} className="bg-destructive/5 border-none font-bold h-12" />
             </div>
           </div>
           <Button type="submit" className="w-full h-12 bg-destructive text-white uppercase font-black italic tracking-widest shadow-xl shadow-destructive/20">{editingId ? "Update Record" : "Commit to Center"}</Button>

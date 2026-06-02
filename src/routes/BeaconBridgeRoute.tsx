@@ -6,19 +6,17 @@ import { Button } from "../components/ui/button";
 import { Smartphone, Users, ShieldCheck, Download, Upload, Radio, Settings as SettingsIcon } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
-import { DemoBadge } from "../components/ui/DemoBadge";
-import { featureFlags } from "../lib/flags/featureFlags";
 import { BACKUP_FORMAT_HELP_TEXT } from "../modules/reports/exportJson";
+import { JointHouseholdPanel } from "../components/sync/JointHouseholdPanel";
 
 /**
  * Beacon Bridge — household sync.
  *
- * Today's path is manual: export from Settings, transfer the file to the other
- * device, import on that device. Real cross-device sync (login from anywhere,
- * automatic merge) lands in M10; joint households with two linked accounts
- * lands in M11. See docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md.
+ * Manual transport: export from Settings, transfer the file to the other
+ * device, import on that device. Real cross-device sync (M10) via relay is supported by syncService
+ * but disabled in the UI per user preference.
  *
- * No fake P2P handshake, no fabricated `syncLogs` rows.
+ * M11 Joint households uses offline ECDH pairing via JointHouseholdPanel.
  */
 export default function BeaconBridgeRoute() {
   const persons = useLiveQuery(() => db.persons.toArray(), []);
@@ -44,7 +42,7 @@ export default function BeaconBridgeRoute() {
         <GlassCard intensity="high" className="border-info/20 bg-info/5">
           <CardHeader className="border-b border-info/10 bg-info/5 pb-6">
             <CardTitle className="flex items-center gap-2 uppercase italic font-black text-info">
-              <Smartphone className="h-5 w-5" /> Today: Manual Bundle
+              <Smartphone className="h-5 w-5" /> Manual Bundle Sync
             </CardTitle>
             <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-info/70">
               Export → transfer → import
@@ -81,22 +79,7 @@ export default function BeaconBridgeRoute() {
         </GlassCard>
 
         <div className="space-y-6">
-          {!featureFlags.syncBundleExport && (
-            <GlassCard className="border-warning/20 bg-warning/5">
-              <CardHeader className="pb-3 flex flex-row items-center gap-2">
-                <Radio className="h-5 w-5 text-warning" />
-                <CardTitle className="text-[10px] font-black uppercase tracking-widest">Cross-device sync — coming in M10</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <DemoBadge milestone="M10">
-                  Account login + automatic sync across phone ↔ web.
-                </DemoBadge>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  M10 ships an end-to-end-encrypted CRDT (Yjs) over a thin relay so the same login can sync data across all your devices — the server only ever sees ciphertext. M11 adds joint households so two accounts can share one budget with auto-merge. See <code>docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md</code> in the repo. No P2P handshake exists yet; no fake "Scan / Merge" buttons.
-                </p>
-              </CardContent>
-            </GlassCard>
-          )}
+          <JointHouseholdPanel />
 
           <GlassCard intensity="high">
             <CardHeader className="pb-3 border-b border-primary/5 bg-primary/5">
@@ -145,3 +128,4 @@ export default function BeaconBridgeRoute() {
     </div>
   );
 }
+

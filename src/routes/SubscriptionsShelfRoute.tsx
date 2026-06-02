@@ -7,9 +7,11 @@ import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
 import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+
 import { Label } from "../components/ui/label";
-import { NativeSelect } from "../components/ui/native-select";
+import { ResettableInput } from "../components/ui/ResettableInput";
+import { ResettableNativeSelect } from "../components/ui/ResettableNativeSelect";
+
 import { 
   Library, Trash2, Mail, Edit2,
   ShieldAlert, Sparkles, MessageSquare, AlertCircle, Plus 
@@ -121,14 +123,30 @@ export default function SubscriptionsShelfRoute() {
               <div className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Monthly Burn</div>
               <div className="text-xl font-black text-primary italic tracking-tighter">${totalMonthly.toFixed(2)}</div>
             </div>
-            <Button
-              size="icon"
-              aria-label="Add subscription"
-              onClick={() => { setEditingId(null); form.reset(); setIsAddModalOpen(true); }}
-              className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
-            >
-              <Plus className="h-5 w-5" />
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Wipe all subscriptions"
+                onClick={async () => {
+                  if (await confirmDelete("all subscriptions", "Wipe Shelf")) {
+                    const ids = subscriptions?.map(s => s.id) || [];
+                    await db.subscriptions.bulkDelete(ids);
+                  }
+                }}
+                className="h-10 w-10 text-destructive border-destructive/20 hover:bg-destructive/10 bg-primary/5"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                aria-label="Add subscription"
+                onClick={() => { setEditingId(null); form.reset(); setIsAddModalOpen(true); }}
+                className="rounded-full shadow-lg shadow-primary/20 h-10 w-10"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         }
       />
@@ -206,29 +224,29 @@ export default function SubscriptionsShelfRoute() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Service Name</Label>
-              <Input {...form.register("label")} placeholder="e.g. Netflix" className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Service Name" onResetValue={() => form.setValue("label", "")} {...form.register("label")} placeholder="e.g. Netflix" className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Monthly/Total Cost</Label>
-              <Input type="number" step="0.01" {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Cost" type="number" step="0.01" onResetValue={() => form.setValue("amount", 0)} {...form.register("amount", { valueAsNumber: true })} className="bg-primary/5 border-none font-bold h-12" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Billing Loop</Label>
-              <NativeSelect {...form.register("frequency")} className="bg-primary/5 border-none font-bold h-12">
+              <ResettableNativeSelect label="Billing Loop" onResetValue={() => form.setValue("frequency", "monthly")} {...form.register("frequency")} className="bg-primary/5 border-none font-bold h-12">
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="annual">Annual</option>
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Telemetry Owner</Label>
-              <NativeSelect {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12">
+              <ResettableNativeSelect label="Telemetry Owner" onResetValue={() => form.setValue("personId", "")} {...form.register("personId")} className="bg-primary/5 border-none font-bold h-12">
                 {persons?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </NativeSelect>
+              </ResettableNativeSelect>
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label className="text-[10px] uppercase font-black tracking-widest opacity-70 px-1">Support Contact (Email)</Label>
-              <Input {...form.register("supportEmail")} placeholder="support@service.com" className="bg-primary/5 border-none font-bold h-12" />
+              <ResettableInput label="Support Contact" onResetValue={() => form.setValue("supportEmail", "")} {...form.register("supportEmail")} placeholder="support@service.com" className="bg-primary/5 border-none font-bold h-12" />
             </div>
           </div>
           <div className="flex gap-3 pt-4">
