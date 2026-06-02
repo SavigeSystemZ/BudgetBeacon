@@ -1,34 +1,34 @@
 # Current Status
 
+> _Timestamp: 2026-06-02. Scope of this update: meta-system (operating layer). Runtime app state below is carried from the last recorded app session — not re-validated today._
+
 ## Working reality
 
-- Active branch or lane: per-repo (see `WHERE_LEFT_OFF.md` in each clone)
-- Current milestone: AIAST installable baseline **1.22.1** (master source)
-- Current primary objective: publish the proof-backed patch that closes downstream sync drift and integrity-manifest scoping gaps uncovered by the first governance-tranche replay
-- Current plan file or phase: `PLAN.md` (template defaults; replace in product repos)
-- Current release target: **1.22.1** — see `AIAST_CHANGELOG.md`, `RELEASE_NOTES.md`
+- App: **Budget Beacon** — local-first personal budgeting / spending-awareness app (React + Vite + Tailwind + Dexie/IndexedDB). See `_system/PROJECT_PROFILE.md`.
+- Active branch: `chore/aiast-repair-20260505` (being consolidated into `main` this session per the local-first GitHub-mirror policy).
+- Current app objective: **Final Hardening master plan** (locked 2026-05-05) — Phase 2 remainder, then M10 (sync relay + recovery codes), M11 (joint household), M12 (release). Authoritative detail: `_system/context/AGENT_SHARED_MEMORY.md` and `WHERE_LEFT_OFF.md`.
+- Repo layout: **hybrid** — runtime app code at top-level `src/`, `public/`, `tools/`; meta-system under `_system/` + `bootstrap/`. The empty 1.24.0 `app/` scaffold placeholder was intentionally dropped.
 
-## Verified state
+## Verified state (this session — meta-system only)
 
-- Latest known passing validation: bootstrap/update-template.sh /home/whyte/.MyAppZ/BudgetBeacon --source <template-root> -> pass
-- Latest known failing validation: none blocking; `system-doctor` may warn on working-file staleness if placeholders are not committed on a cadence
-- Known degraded modes: none for template product itself
-- Current confidence level: Partial but structurally validated
+- Repo role corrected to **downstream-app** (`_system/.aiast-role.json`); `_system/app-local-namespace.json` generated (slug `budget-beacon`).
+- AIAST meta-system adopted at **template 1.24.0**.
+- `aiast validate .` → **system_ok**; `verify-integrity --check` → **clean**; `check-system-awareness` → **ok**; meta-sync gate → **clear**.
+- Self-improvement ledger intact (1 applied: hybrid-layout + camelCase validator fixes), tagged as a generic maintainer candidate.
+
+## App validation baseline (last recorded — NOT re-run today)
+
+- `npm run validate`: lint + typecheck + **174 Vitest** + prod build (green as of the last app session per `AGENT_SHARED_MEMORY.md`).
+- `npm run audit:controls` baseline: `setTimeout=6 mathRandom=0 alert=0 emptyOnClick=0`.
+- `npm run audit:secrets`: zero hits.
+- Re-run `npm run validate` before claiming app readiness — this session did not exercise the app build.
 
 ## Operational notes
 
-- Required services currently expected: none for template-only work; product repos per `PRODUCT_BRIEF.md`
-- Known environment constraints: Git/SSH as operator user `whyte` on maintainer hosts per `GIT_REMOTE_AND_SYNC_PROTOCOL.md`
-- High-risk areas: instruction drift across prose/JSON/host emission, lifecycle repair confidence, maintainer-to-installable promotion boundaries
-- Runtime surfaces currently in flux: none in the source template; downstream repos choose when to adopt 1.22.1
-
-## Freshness
-
-- Last updated: 2026-05-28T05:21:37Z
-- Updated by: bootstrap lifecycle validation
+- Git: local-first authority; `origin` (`git@github.com:SavigeSystemZ/BudgetBeacon.git`) is a full redundant mirror, not a separate planning surface. Run Git/SSH as `whyte`. See `_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md`.
+- Honesty rule (carried): several advanced surfaces have historically been mocked (chatbot provider, bank/credit fetch, OCR, exports). Do not mark them done without file-level verification — see `FIXME.md` and `TODO.md` re-verify queue.
 
 ## Usage rules
 
-- Keep this file factual and current.
-- Put durable state here, not transient reasoning.
-- In the AIAST source repo, maintainer-only template state belongs in the master-repo-only meta workspace instead of this installable file.
+- Keep this file factual and current; durable state only, not transient reasoning.
+- This is a downstream app repo, not the AIAST template — keep app facts here, keep generic improvements flowing back via the self-improvement candidate loop.

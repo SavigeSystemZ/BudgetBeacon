@@ -1,4 +1,32 @@
-# Where Left Off — **active 2026-05-05** (Final Hardening pass)
+# Where Left Off — **active 2026-06-02** (meta-system maintenance; app work paused mid-Final-Hardening)
+
+## 2026-06-02 — AIAST meta-system maintenance pass (operating layer only; no runtime app changes)
+
+**What was done.** Adopted the freshly-synced AIAST template **1.24.0** into this repo's own copy, verified it, and tailored it to Budget Beacon:
+
+- **Verification/health/integrity (all green):** `aiast validate .` → `system_ok`; `verify-integrity --check` → clean; `check-system-awareness` → ok; meta-sync gate → clear; doctor → green after this pass.
+- **Role corrected:** the sync shipped `_system/.aiast-role.json` as `parent-template` (template default). This is a downstream app — set to `downstream-app` and generated `_system/app-local-namespace.json` (slug `budget-beacon`, 70 sibling/template forbidden write-roots).
+- **Validator self-improvement (guarded, ledgered, tagged generic):** made `check-app-definition-state.sh` recognize the hybrid root layout (was falsely calling Budget Beacon a "blank app" because it only looked at `app/src/`) and made `check-project-target-consistency.sh` split camelCase so "Budget Beacon" ↔ "BudgetBeacon" stop tripping a false name-mismatch warn.
+- **Re-baselined** `_system/SYSTEM_REGISTRY.json` + `_system/INTEGRITY_MANIFEST.sha256` for the tailored copy.
+- **Dropped** the empty 1.24.0 `app/` scaffold placeholder (this repo is hybrid root-layout).
+- **Refreshed continuity files** that the sync had filled with master-template content: `CURRENT_STATUS.md`, `_system/context/DECISIONS.md`, `RELEASE_NOTES.md` now describe Budget Beacon.
+
+**Files changed (commits this session):**
+1. `feat(app)`: phase-2D DocumentStore skeleton + `ops/install` lifecycle helpers (flushed pending app work).
+2. `chore(aiast)`: adopt template 1.24.0 sync (387 files, `_system/`+`bootstrap/`+host adapters).
+3. `chore(aiast)`: correct role → downstream-app + init app-local namespace.
+4. `feat(aiast)`: hybrid-layout & camelCase validator fixes + registry/integrity re-baseline.
+5. `docs`: working-file freshness refresh (this packet + CURRENT_STATUS/DECISIONS/RELEASE_NOTES/PLAN/FIXME/RISK_REGISTER/TEST_STRATEGY/TODO).
+
+**Validation run + outcomes:** `aiast validate .` → `system_ok`; `verify-integrity.sh --check` → exit 0, clean; `check-system-awareness.sh .` → `system_awareness_ok`; `check-app-definition-state.sh .` → `app_defined`; `check-project-target-consistency.sh .` → `target_consistency_ok`; `check-local-self-improvement.sh .` → `self_improvement_ok`. App's `npm run validate` was **not** run this session (no runtime changes).
+
+**Git:** consolidating `chore/aiast-repair-20260505` into `main` (ff-only) and pushing `origin/main` as the redundant mirror, then retiring the topic branch.
+
+**Blockers / risks:** none from this pass. App-side mocked-surface debt remains (see `FIXME.md`, `TODO.md` re-verify queue).
+
+**Next best step (app):** resume Final Hardening **Phase 2 remainder** — apply the per-route skeleton-on-first-load pattern to the ~12 routes still on bare `if (!data) return <Loading…/>` (Income, PayPath, StashMap, DebtCenter, Credit, TaxTaxi, DocumentStore, Subscriptions, Insurance, BeaconBridge, BudgetMissionControl, Settings), then start **M10 closeout**. Run `npm run validate` first to re-establish the app baseline. Optional: run `forge-app-persona` to attach an app-specific persona (`check-app-definition-state` notes none yet).
+
+---
 
 ## 2026-05-05 (late) — Phase 2 per-route skeleton sweep (Dashboard / Ledger / Reports)
 

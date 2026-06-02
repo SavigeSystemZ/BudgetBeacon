@@ -1,5 +1,7 @@
 # Plan
 
+> _Timestamp: 2026-06-02 — meta-system maintenance pass: adopted AIAST template 1.24.0, corrected repo role to downstream-app, fixed app-identity validators, re-baselined integrity/registry. Runtime app code untouched. App execution resumes per `WHERE_LEFT_OFF.md` (Final Hardening Phase 2 remainder → M10/M11/M12)._
+
 > **Truth Reset — 2026-04-25.** The previous version of this file claimed Budget Beacon was "fully delivered." A repo audit performed against `src/routes/`, `src/components/BeaconChatbot.tsx`, `src/db/`, and `package.json` showed multiple advanced features still simulated and several documentation surfaces overstating completion. This plan replaces the prior text with grounded current state and a phased completion roadmap. See `docs/COMPLETION_MASTER_PLAN.md`, `docs/GUI_COMPLETION_MAP.md`, and `docs/INTEGRATIONS_STRATEGY.md`.
 
 ## Objective

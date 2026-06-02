@@ -1,5 +1,7 @@
 # Risk Register
 
+> _Timestamp: 2026-06-02 — reviewed during the AIAST 1.24.0 meta-system maintenance pass. Operating-layer drift risk reduced (role corrected, integrity re-baselined). App-delivery risks below unchanged._
+
 > **Truth Reset — 2026-04-25.** Prior register held generic AIAST template entries. The risks below are concrete to Budget Beacon's current state, with file:line evidence in `FIXME.md` and `docs/GUI_COMPLETION_MAP.md`.
 
 Use this file for active delivery, quality, security, release, and operational risk.

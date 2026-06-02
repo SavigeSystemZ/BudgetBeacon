@@ -1,5 +1,7 @@
 # TODO
 
+> _Timestamp: 2026-06-02 — meta-system maintenance pass complete (AIAST template 1.24.0 adopted; role→downstream-app; app-identity validators fixed; integrity/registry re-baselined; doctor green). No runtime app code changed. **Next app step:** resume Final Hardening Phase 2 remainder (per-route skeleton sweep on the ~12 remaining routes) then M10 closeout — see `WHERE_LEFT_OFF.md`._
+
 > **Truth Reset — 2026-04-25.** Previous TODO marked M3–M8 complete. Audit on 2026-04-25 showed multiple of those surfaces still simulated. Inflated `[x]` items have been moved to "Previously claimed complete (needs re-verification)" below. Real work queue follows.
 
 This is the active execution queue. Keep it tight, factual, and ordered.
@@ -12,7 +14,7 @@ Use priority signals: **CRITICAL**, **HIGH**, **MEDIUM**, **LOW**.
 User locked the scope: M10 + M11 + M12, hardened sideload APK via GitHub Release, emulator (Pixel 7 / API 34) stand-in for M9. Source of truth: `/home/whyte/.claude/plans/ethereal-hatching-bear.md`.
 
 - [x] **Phase 0 (2026-05-05):** Truth-reset & contract refresh — `WHERE_LEFT_OFF.md`, `TODO.md`, `PLAN.md`, `ROADMAP.md`, `_system/VALIDATION_GATES.md`, `docs/M9_ANDROID_QA_CHECKLIST.md`. Doc-only.
-- [ ] **CRITICAL: Phase 1 — APK hardening.**
+- [ ] CRITICAL: **Phase 1 — APK hardening.**
   - [ ] HIGH: Move release keystore password out of `android/app/build.gradle` to env vars (`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); add `*.keystore`/`keystore.properties`/`*.jks` to `.gitignore`; `git rm --cached` any tracked keystore.
   - [ ] HIGH: Enable R8 — `minifyEnabled true` + `shrinkResources true` for `release`; populate `proguard-rules.pro` with Capacitor / Yjs / Dexie keep rules; verify release APK boots in emulator.
   - [ ] HIGH: Manifest hardening — `networkSecurityConfig` (cleartext disabled, localhost allowed in debug), `allowBackup="false"`, `usesCleartextTraffic="false"`. Tighten `file_paths.xml` (drop `path="."`).
@@ -20,7 +22,7 @@ User locked the scope: M10 + M11 + M12, hardened sideload APK via GitHub Release
   - [ ] MEDIUM: Add Capacitor plugins — `@capacitor/filesystem`, `@capacitor/share`, `@capacitor/preferences`, `@capacitor/app`, `@capacitor/splash-screen`. Optional `@capacitor/biometric` behind a setting.
   - [ ] HIGH: `.github/workflows/android-release.yml` (tag `v*`) + `android-emulator-smoke.yml` (PR smoke).
   - [ ] MEDIUM: Distribution doc updates — root `README.md` + `distribution/platforms/android/README.md`.
-- [ ] **CRITICAL: Phase 2 — GUI corner-to-corner polish.**
+- [ ] CRITICAL: **Phase 2 — GUI corner-to-corner polish.**
   - [ ] HIGH: Semantic color tokens (`--color-success/warning/danger/info`) wired through Tailwind; replace ~30 hardcoded `text-green-500 / red-500 / yellow-500 / blue-500` sites.
   - [ ] HIGH: Typography scale — collapse 263 arbitrary tailwind sizes into a small scale.
   - [ ] HIGH: New primitives — `<Skeleton>`, `<CardSkeleton>`, `<TableRowSkeleton>`, `<Toast>` + provider, `<FormField>` (label/error/hint).
@@ -33,19 +35,19 @@ User locked the scope: M10 + M11 + M12, hardened sideload APK via GitHub Release
   - [x] **MEDIUM (2026-05-05):** Route-level `<ErrorBoundary>` UI with "Reset and report". `src/components/ErrorBoundary.tsx` rewritten — semantic Tailwind tokens (replaces inline styles, follows theme), `aria-live="assertive"`, captures `componentStack`, adds **Copy report** button (clipboard `writeText` with `execCommand` textarea fallback for older WebViews) producing a structured report with scope/timestamp/URL/UA/message/stack/component-stack. Already wired root + per-route in `App.tsx` (`scope="root"` and `scope={routeName}`). 174 tests still pass.
   - [x] **MEDIUM (2026-05-05):** Console hygiene — `src/lib/logger.ts` already gates info/log/warn behind DEV / `?debug=1`. Migrated 14 call sites in 8 files (`preferences.ts`, `base64.ts`, `importJson.ts`, `OnboardingWizard.tsx`, `LedgerImportFlow.tsx`, `SettingsRoute.tsx`, `DocumentStoreRoute.tsx`, `ReportsRoute.tsx`) from raw `console.error/warn` to `logger.error/warn`. `ErrorBoundary.tsx` keeps bare `console.error` intentionally — boundary surface must work even if logger fails. `npm run validate` green; 174 tests; `audit:controls setTimeout=6 mathRandom=0 alert=0 emptyOnClick=0`; `audit:secrets` zero hits.
   - [x] **LOW (2026-05-05):** Empty dirs `src/components/empty-states/` and `src/components/forms/` confirmed already absent — nothing to delete.
-- [ ] **CRITICAL: Phase 3 — M10 closeout.**
+- [ ] CRITICAL: **Phase 3 — M10 closeout.**
   - [ ] HIGH: New `relay/` workspace — Cloudflare Worker (~150 LOC) + Durable Objects (one DO per `householdId`) + HMAC join token. Optional Node.js fallback at `relay/node/`. `docs/RELAY_DEPLOY.md`.
   - [ ] HIGH: **M10.5** — `OnboardingWizard` learns local-only vs sign-up branch; on sign-up, migrates existing local Dexie under new `householdId`; "Add this device" QR/code flow.
   - [ ] HIGH: Recovery codes — 10 single-use codes generated on signup, KEK encrypted to each (Argon2id-derived), stored in Dexie. UI: print/save sheet + "I've saved these" gate. Settings → "Show new recovery codes" regenerates and invalidates the prior set. Vitest covers wrap/unwrap with a recovery code.
   - [ ] HIGH: **M10.6** — emulator parity smoke (two Pixel 7 / API 34 instances) signup → seed data → second instance joins → convergence asserted.
-- [ ] **CRITICAL: Phase 4 — M11 joint household.**
+- [ ] CRITICAL: **Phase 4 — M11 joint household.**
   - [ ] HIGH: **M11.1** invite codes — time-limited (24 h) HMAC tokens, single-use, embedded in QR.
   - [ ] HIGH: **M11.2** accept flow — receiver pubkey exchange via relay; sender wraps household key to receiver's pubkey; relay never sees plaintext.
   - [ ] HIGH: **M11.3** per-record ownership — surface existing `personId` in UI ("Created by Alice"), filter chips per member.
   - [ ] HIGH: **M11.4** activity log — append-only Dexie table; one row per CRUD event with author + timestamp.
   - [ ] HIGH: **M11.5** leave / unlink — rotates household key, re-wraps to remaining members, marks leaver's device revoked.
   - [ ] MEDIUM: **M11.6** view-only mode (stretch) — read-only token variant.
-- [ ] **CRITICAL: Phase 5 — M12 release.**
+- [ ] CRITICAL: **Phase 5 — M12 release.**
   - [ ] HIGH: `docs/THREAT_MODEL.md` — STRIDE pass on auth, sync, relay, joint household.
   - [ ] HIGH: `docs/INSTALL.md` — sideload APK + PWA install (one page).
   - [ ] HIGH: `docs/RECOVERY.md` — passphrase loss, lost device, suspicious access.
@@ -165,17 +167,17 @@ See **`docs/UNGATED_PRODUCT_BACKLOG.md`** for Tier A–D enhancement themes (And
 
 - [x] MEDIUM: Beacon Bridge route repointed to M10/M11 with link to architecture doc.
 - [x] MEDIUM: Bundle code-split via React.lazy. Main 1.1 MB → 346 KB (gzip 107 KB); routes 5–35 KB each on demand.
-- [ ] **HIGH (needs physical Android):** Safe-area + APK smoke on real device. Pin Capacitor / Android versions before M10 starts.
-- [ ] **HIGH (needs physical Android):** PWA install flow validated.
+- [ ] HIGH: **(needs physical Android)** Safe-area + APK smoke on real device. Pin Capacitor / Android versions before M10 starts.
+- [ ] HIGH: **(needs physical Android)** PWA install flow validated.
 - [ ] MEDIUM: Accessibility audit (color contrast, focus order, aria-labels on icon-only buttons, keyboard nav).
 
 ## M10 — Auth + Cross-Device Sync (queued — needs architecture sign-off)
 
 > Architecture: `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md`. Recommended option B (E2EE CRDT + thin relay via Yjs). Requires user sign-off on transport choice + passphrase model + relay deployment before M10.1.
 
-- [ ] **CRITICAL gate:** User signs off on transport option (A cloud-backed / B E2EE-CRDT / C peer-only). Default recommendation: B.
-- [ ] **CRITICAL gate:** User accepts passphrase + one-time recovery-code model.
-- [ ] **CRITICAL gate:** User green-lights a tiny relay (Cloudflare Worker or small VPS, $0–5/mo).
+- [ ] CRITICAL: **gate** User signs off on transport option (A cloud-backed / B E2EE-CRDT / C peer-only). Default recommendation: B.
+- [ ] CRITICAL: **gate** User accepts passphrase + one-time recovery-code model.
+- [ ] CRITICAL: **gate** User green-lights a tiny relay (Cloudflare Worker or small VPS, $0–5/mo).
 - [x] MEDIUM: **M10.1:** Auth scaffold — `src/modules/auth/` with signup/login/logout. Argon2id passphrase → key derivation. Account record + keypair generated client-side. Local-only at first.
 - [x] MEDIUM: **M10.2:** Encryption envelope — `src/modules/crypto/` wrapping `crypto.subtle` AES-GCM. Round-trip test.
 - [x] MEDIUM: **M10.3:** CRDT mirror — Yjs document mirroring all 18 Dexie tables. Two-way sync test (no network).

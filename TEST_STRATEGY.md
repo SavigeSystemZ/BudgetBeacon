@@ -1,5 +1,7 @@
 # Test Strategy
 
+> _Timestamp: 2026-06-02 — reviewed during the AIAST 1.24.0 meta-system maintenance pass. Meta-system validation lane verified green: `aiast validate .` → system_ok, integrity check clean, self-improvement ledger intact. App test baseline (174 Vitest, `npm run validate`) unchanged._
+
 Use this file to define the repo's confidence model, validation lanes, and known coverage gaps.
 
 ## Confidence model
