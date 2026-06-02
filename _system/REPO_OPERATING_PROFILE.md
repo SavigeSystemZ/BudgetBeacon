@@ -41,11 +41,11 @@
 ## Validation entrypoints
 - `bootstrap/validate-system.sh <repo>`
 - `bootstrap/check-install-boundary.sh <repo>`
-- `bootstrap/validate-instruction-layer.sh <repo>`
-- `bootstrap/check-host-adapter-alignment.sh <repo>`
+- `bootstrap/aiast-cli check-validate-layer <repo>`
+- `bootstrap/aiast-cli check-alignment <repo>`
 - `bootstrap/check-host-ingestion.sh <repo>`
 - `bootstrap/check-host-bundle.sh <repo>`
-- `bootstrap/check-system-awareness.sh <repo>`
+- `bootstrap/aiast-cli check-awareness <repo>`
 - `bootstrap/check-working-directory-alignment.sh <repo>`
 - `bootstrap/check-project-target-consistency.sh <repo>`
 - `bootstrap/check-global-shim-alignment.sh <repo>`
@@ -79,7 +79,7 @@
 - Session environment report contract: `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
 - Orphan meta snapshot policy: `_system/ORPHAN_META_SNAPSHOT_POLICY.md`
 - Host adapter generator: `bootstrap/generate-host-adapters.sh`
-- Host adapter validator: `bootstrap/check-host-adapter-alignment.sh`
+- Host adapter validator: `bootstrap/aiast-cli check-alignment`
 - Host adapter manifest: `_system/host-adapter-manifest.json`
 - Host prompt emitter: `bootstrap/emit-host-prompt.sh`
 - Host ingestion validator: `bootstrap/check-host-ingestion.sh`

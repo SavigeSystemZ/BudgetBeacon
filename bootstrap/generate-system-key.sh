@@ -332,6 +332,11 @@ exact = {
         "Guide to the role of each working-state file.",
         "Read when deciding where new project truth or progress belongs.",
     ),
+    "_system/AGENT_UPDATE_MERGE_POLICY.md": register_exact(
+        "_system/AGENT_UPDATE_MERGE_POLICY.md",
+        "Policy for handling template update conflicts in a merge-only manner.",
+        "Run when files drift."
+    ),
     "_system/TEMPLATE_NEUTRALITY_POLICY.md": register_exact(
         "_system/TEMPLATE_NEUTRALITY_POLICY.md",
         "Rules that keep the source template reusable across future repos.",
@@ -532,11 +537,6 @@ exact = {
         "Strict structural validator for required files and baseline portability.",
         "Run after meaningful system changes or before trusting an installed repo state.",
     ),
-    "bootstrap/validate-instruction-layer.sh": register_exact(
-        "bootstrap/validate-instruction-layer.sh",
-        "Validator for precedence, operating-profile, and prompt-emission surfaces.",
-        "Run when instruction, adapter, or host-ingestion surfaces change.",
-    ),
     "bootstrap/verify-integrity.sh": register_exact(
         "bootstrap/verify-integrity.sh",
         "Hash generator and verifier for AIAST-managed files.",
@@ -561,11 +561,6 @@ exact = {
         "bootstrap/generate-operating-profile.sh",
         "Generator for the compact repo operating profile.",
         "Run when installable operating-model facts change.",
-    ),
-    "bootstrap/check-system-awareness.sh": register_exact(
-        "bootstrap/check-system-awareness.sh",
-        "Validator for registry coverage and critical path references across core docs.",
-        "Run when file inventories or core doc maps change.",
     ),
     "bootstrap/system-doctor.sh": register_exact(
         "bootstrap/system-doctor.sh",

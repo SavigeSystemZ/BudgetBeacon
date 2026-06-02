@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Enhancement — Phase 1 Evolution Plan (Stabilization):** Implemented native Safe-Sync in `update-template.sh` (which creates an automatic `.update_backups/` snapshot instead of silently overwriting locally modified template files) and added `bootstrap/compact-context.sh` for automated context compaction and LLM token bloat reduction.
 - **Fix — Heretic integration cleanup:** registered the Heretic wrapper as a discoverable plugin with `plugin.json` and `run.sh`, updated capability markers, and made the wrapper resolve `HERETIC_DIR`, the actual maintainer donor path `~/.MyAppZ/_HERETIC_META_SYSTEM_ENHANCMENTS/heretic-master`, and the corrected spelling fallback.
 - **Fix — Antigravity host/MCP cleanup:** corrected Antigravity host-settings metadata to deep-merge project settings, documented the user-local `~/.gemini/config/mcp_config.json` JSON requirement, regenerated `ANTIGRAVITY.md` from the manifest, and added Antigravity to host-launch policy-contract coverage.
 

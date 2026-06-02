@@ -1,46 +1,8 @@
 {
   "_comment": "Per-app preserve-first Windsurf project settings. Customize freely. The meta-managed sibling .windsurf/settings.aiaast.json carries fleet-wide policy and must not be edited here. See _system/HOST_SETTINGS_BASELINE.md.",
   "cascade": {
-    "contextFiles": [
-      "AGENTS.md",
-      "WINDSURF.md",
-      ".windsurfrules",
-      "_system/INSTRUCTION_PRECEDENCE_CONTRACT.md",
-      "_system/REPO_OPERATING_PROFILE.md",
-      "_system/MASTER_SYSTEM_PROMPT.md",
-      "_system/PROJECT_RULES.md",
-      "_system/EXECUTION_PROTOCOL.md",
-      "_system/MULTI_AGENT_COORDINATION.md",
-      "_system/HALLUCINATION_DEFENSE_PROTOCOL.md",
-      "_system/SYSTEM_AWARENESS_PROTOCOL.md",
-      "_system/TOOL_MEMORY_ISOLATION_STAMP.md"
-    ],
-    "memory": {},
-    "rulesFile": ".windsurfrules",
-    "denyShellPatterns": [
-      "rm -rf /",
-      "sudo *",
-      "git push --force*",
-      "git reset --hard*"
-    ]
+    "contextFiles": [],
+    "memory": {}
   },
-  "mcpServers": {},
-  "mcp": {
-    "servers_pointer": "_system/MCP_CONFIG.md"
-  },
-  "tool_memory": {
-    "stamp_helper": "bootstrap/stamp-tool-memory.sh",
-    "stamp_contract": "_system/TOOL_MEMORY_ISOLATION_STAMP.md",
-    "memory_file": "_system/tool-memory/windsurf-memory.md"
-  },
-  "integrity": {
-    "verify_before_handoff": true,
-    "verify_command": "bash bootstrap/verify-integrity.sh --check --target .",
-    "verify_meta_sync_before_handoff": true,
-    "meta_sync_gate_command": "bash bootstrap/check-pending-meta-sync.sh .",
-    "meta_sync_reconcile_command": "bash bootstrap/reconcile-meta-sync.sh ."
-  },
-  "env_hint": {
-    "AIAST_HOST_ADAPTER": "windsurf"
-  }
+  "mcpServers": {}
 }

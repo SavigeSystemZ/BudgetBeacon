@@ -27,7 +27,7 @@
   "host_ingestion": {
     "host_adapter_generator": "bootstrap/generate-host-adapters.sh",
     "host_adapter_manifest": "_system/host-adapter-manifest.json",
-    "host_adapter_validator": "bootstrap/check-host-adapter-alignment.sh",
+    "host_adapter_validator": "bootstrap/aiast-cli check-alignment",
     "host_bundle_contract": "_system/HOST_BUNDLE_CONTRACT.md",
     "host_bundle_emitter": "bootstrap/emit-host-bundle.sh",
     "host_bundle_validator": "bootstrap/check-host-bundle.sh",
@@ -109,11 +109,11 @@
   "validation_commands": [
     "bootstrap/validate-system.sh <repo>",
     "bootstrap/check-install-boundary.sh <repo>",
-    "bootstrap/validate-instruction-layer.sh <repo>",
-    "bootstrap/check-host-adapter-alignment.sh <repo>",
+    "bootstrap/aiast-cli check-validate-layer <repo>",
+    "bootstrap/aiast-cli check-alignment <repo>",
     "bootstrap/check-host-ingestion.sh <repo>",
     "bootstrap/check-host-bundle.sh <repo>",
-    "bootstrap/check-system-awareness.sh <repo>",
+    "bootstrap/aiast-cli check-awareness <repo>",
     "bootstrap/check-working-directory-alignment.sh <repo>",
     "bootstrap/check-project-target-consistency.sh <repo>",
     "bootstrap/check-global-shim-alignment.sh <repo>",

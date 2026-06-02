@@ -36,9 +36,9 @@ if [[ "${MODE}" == "--write" ]]; then
   run_step "verify-integrity-generate" bash "${SCRIPT_DIR}/verify-integrity.sh" --generate --target "${TARGET_REPO}"
 fi
 
-run_step "check-host-adapter-alignment" bash "${SCRIPT_DIR}/check-host-adapter-alignment.sh" "${TARGET_REPO}"
-run_step "check-agent-surface-integrity" bash "${SCRIPT_DIR}/check-agent-surface-integrity.sh" "${TARGET_REPO}"
-run_step "validate-instruction-layer" bash "${SCRIPT_DIR}/validate-instruction-layer.sh" "${TARGET_REPO}"
-run_step "check-system-awareness" bash "${SCRIPT_DIR}/check-system-awareness.sh" "${TARGET_REPO}"
+run_step "check-host-adapter-alignment" "${SCRIPT_DIR}/aiast-cli" check-alignment "${TARGET_REPO}"
+run_step "check-agent-surface-integrity" "${SCRIPT_DIR}/aiast-cli" check-integrity "${TARGET_REPO}"
+run_step "validate-instruction-layer" "${SCRIPT_DIR}/aiast-cli" check-validate-layer "${TARGET_REPO}"
+run_step "check-system-awareness" "${SCRIPT_DIR}/aiast-cli" check-awareness "${TARGET_REPO}"
 
 echo "metasystem_contract_sync_ok mode=${MODE/--/}"

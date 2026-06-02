@@ -69,22 +69,45 @@ fi
 
 # downstream-app (or role file missing -> treated as downstream-app).
 #
-# "Defined" is judged ONLY by real source under app/src/. PRODUCT_BRIEF.md
-# is unreliable for this: init-project pre-fills every field with guidance
-# prose ("define the app promise in one clear sentence...", etc.), so a
-# blank scaffold has a fully "non-empty" brief. Concrete app source is the
-# one unambiguous signal. Erring toward "undefined" until code exists is
-# the safe, intended behavior for an identity gate — the directive simply
-# keeps showing until the app is genuinely under construction.
-src_dir="${TARGET}/app/src"
-app_has_source=0
-if [[ -d "${src_dir}" ]]; then
-  # Real source = any file under app/src that is not README.md/.gitkeep.
-  if find "${src_dir}" -type f ! -name 'README.md' ! -name '.gitkeep' \
-       -print -quit 2>/dev/null | grep -q .; then
-    app_has_source=1
+# "Defined" is judged by real source in the repo's declared runtime roots.
+# PRODUCT_BRIEF.md is unreliable for this: init-project pre-fills every field
+# with guidance prose ("define the app promise in one clear sentence...",
+# etc.), so a blank scaffold has a fully "non-empty" brief. Concrete app
+# source is the one unambiguous signal. Erring toward "undefined" until code
+# exists is the safe, intended behavior for an identity gate.
+#
+# Source roots: the isolated-layout default is app/src/, but hybrid-layout
+# repos keep app code at top-level roots declared in PROJECT_PROFILE.md
+# ("- Runtime code roots: src/, public/"). Check the declared roots too so a
+# defined hybrid app is not falsely reported blank. See
+# _system/HYBRID_APP_REPO_LAYOUT_CONTRACT.md.
+declare -a source_roots=()
+profile="${TARGET}/_system/PROJECT_PROFILE.md"
+if [[ -f "${profile}" ]]; then
+  roots_line="$(grep -m1 -E '^- Runtime code roots:' "${profile}" \
+    | sed -E 's/^- Runtime code roots:[[:space:]]*//')"
+  if [[ -n "${roots_line}" ]]; then
+    IFS=',' read -ra _raw_roots <<< "${roots_line}"
+    for _r in "${_raw_roots[@]}"; do
+      _r="$(printf '%s' "${_r}" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s#/+$##')"
+      [[ -n "${_r}" && "${_r}" != "."* && "${_r}" != /* ]] && source_roots+=("${_r}")
+    done
   fi
 fi
+# Always also consider the isolated-layout default.
+source_roots+=("app/src")
+
+app_has_source=0
+for _rel in "${source_roots[@]}"; do
+  _dir="${TARGET}/${_rel}"
+  [[ -d "${_dir}" ]] || continue
+  # Real source = any file that is not README.md / .gitkeep / .gitignore.
+  if find "${_dir}" -type f ! -name 'README.md' ! -name '.gitkeep' \
+       ! -name '.gitignore' -print -quit 2>/dev/null | grep -q .; then
+    app_has_source=1
+    break
+  fi
+done
 
 if [[ "${app_has_source}" == "1" ]]; then
   if [[ -f "${TARGET}/_system/personas/APP_PERSONA.md" ]]; then

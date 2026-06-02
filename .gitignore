@@ -1,3 +1,8 @@
+# AIAST fleet/template-update backups + meta tooling that must not pollute the app
+.update_backups/
+_system_pre_*_update_backup/
+/src/aiast-cli/
+
 # Logs
 logs
 *.log

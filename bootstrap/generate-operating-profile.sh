@@ -149,11 +149,11 @@ tool_adapters_present = {name: path for name, path in tool_adapters.items() if (
 validation_commands = [
     "bootstrap/validate-system.sh <repo>",
     "bootstrap/check-install-boundary.sh <repo>",
-    "bootstrap/validate-instruction-layer.sh <repo>",
-    "bootstrap/check-host-adapter-alignment.sh <repo>",
+    "bootstrap/aiast-cli check-validate-layer <repo>",
+    "bootstrap/aiast-cli check-alignment <repo>",
     "bootstrap/check-host-ingestion.sh <repo>",
     "bootstrap/check-host-bundle.sh <repo>",
-    "bootstrap/check-system-awareness.sh <repo>",
+    "bootstrap/aiast-cli check-awareness <repo>",
     "bootstrap/check-working-directory-alignment.sh <repo>",
     "bootstrap/check-project-target-consistency.sh <repo>",
     "bootstrap/check-global-shim-alignment.sh <repo>",
@@ -238,7 +238,7 @@ payload = {
     "orphan_meta_snapshot_policy_path": "_system/ORPHAN_META_SNAPSHOT_POLICY.md" if (repo / "_system" / "ORPHAN_META_SNAPSHOT_POLICY.md").exists() else "",
     "host_ingestion": {
         "host_adapter_generator": "bootstrap/generate-host-adapters.sh" if (repo / "bootstrap" / "generate-host-adapters.sh").exists() else "",
-        "host_adapter_validator": "bootstrap/check-host-adapter-alignment.sh" if (repo / "bootstrap" / "check-host-adapter-alignment.sh").exists() else "",
+        "host_adapter_validator": "bootstrap/aiast-cli check-alignment" if (repo / "bootstrap" / "aiast-cli").exists() else "",
         "host_adapter_manifest": "_system/host-adapter-manifest.json" if (repo / "_system" / "host-adapter-manifest.json").exists() else "",
         "prompt_emitter": "bootstrap/emit-host-prompt.sh" if (repo / "bootstrap" / "emit-host-prompt.sh").exists() else "",
         "prompt_validator": "bootstrap/check-host-ingestion.sh" if (repo / "bootstrap" / "check-host-ingestion.sh").exists() else "",

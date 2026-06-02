@@ -55,7 +55,7 @@ def ensure_after(path: Path, anchor: str, line: str) -> None:
 
 ensure_after(
     repo / "AGENTS.md",
-    "- Use `_system/HOST_ADAPTER_POLICY.md`, `bootstrap/generate-host-adapters.sh`, and `bootstrap/check-host-adapter-alignment.sh` when tool-entry or adapter-load surfaces change.",
+    "- Use `_system/HOST_ADAPTER_POLICY.md`, `bootstrap/generate-host-adapters.sh`, and `bootstrap/aiast-cli check-alignment` when tool-entry or adapter-load surfaces change.",
     "- Use `_system/AGENT_SURFACE_TAXONOMY.md` for canonical adapter file classes, naming, and placeholder rules.",
 )
 ensure_after(
@@ -65,7 +65,7 @@ ensure_after(
 )
 ensure_after(
     repo / "_system" / "AGENT_DISCOVERY_MATRIX.md",
-    "Tool-entry files and shared load-context overlays are governed by `_system/HOST_ADAPTER_POLICY.md` and may be regenerated via `bootstrap/generate-host-adapters.sh`. Validate them with `bootstrap/check-host-adapter-alignment.sh`.",
+    "Tool-entry files and shared load-context overlays are governed by `_system/HOST_ADAPTER_POLICY.md` and may be regenerated via `bootstrap/generate-host-adapters.sh`. Validate them with `bootstrap/aiast-cli check-alignment`.",
     "Canonical adapter classes, naming rules, and placeholder boundaries are defined in `_system/AGENT_SURFACE_TAXONOMY.md`. External initialization pattern ingestion is defined in `_system/AGENT_INIT_CONVERGENCE.md`.",
 )
 

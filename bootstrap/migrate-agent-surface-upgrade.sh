@@ -81,10 +81,10 @@ else
   run_step "patch-agent-surface-contracts-check" bash "${SCRIPT_DIR}/patch-agent-surface-contracts.sh" "${TARGET_REPO}" --check
 fi
 
-run_step "check-host-adapter-alignment" bash "${SCRIPT_DIR}/check-host-adapter-alignment.sh" "${TARGET_REPO}"
-run_step "check-agent-surface-integrity" bash "${SCRIPT_DIR}/check-agent-surface-integrity.sh" "${TARGET_REPO}"
-run_step "validate-instruction-layer" bash "${SCRIPT_DIR}/validate-instruction-layer.sh" "${TARGET_REPO}"
-run_step "check-system-awareness" bash "${SCRIPT_DIR}/check-system-awareness.sh" "${TARGET_REPO}"
+run_step "check-host-adapter-alignment" "${SCRIPT_DIR}/aiast-cli" check-alignment "${TARGET_REPO}"
+run_step "check-agent-surface-integrity" "${SCRIPT_DIR}/aiast-cli" check-integrity "${TARGET_REPO}"
+run_step "validate-instruction-layer" "${SCRIPT_DIR}/aiast-cli" check-validate-layer "${TARGET_REPO}"
+run_step "check-system-awareness" "${SCRIPT_DIR}/aiast-cli" check-awareness "${TARGET_REPO}"
 
 if command -v git >/dev/null 2>&1 && [[ -d "${TARGET_REPO}/.git" ]]; then
   printf '\n[migrate] changed-files-report\n'

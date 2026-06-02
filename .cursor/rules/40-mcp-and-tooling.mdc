@@ -7,4 +7,6 @@ alwaysApply: true
 
 - Use read-only or discovery-first MCP servers by default.
 - Keep project-scoped MCP config separate from user-level config.
+- Scope filesystem, browser, memory, database, cache, and GitHub MCP access to the current app only.
+- Do not mount sibling app directories, the parent template repo, home directories, or global mutable stores by default.
 - If an MCP fails, note it once and continue with repo context unless the task truly depends on it.

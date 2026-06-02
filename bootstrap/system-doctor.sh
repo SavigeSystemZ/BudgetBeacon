@@ -118,11 +118,11 @@ warning_labels=()
 run_check "validate-system" bash "${SCRIPT_DIR}/validate-system.sh" "${TARGET_REPO}" "${strict_flag[@]}" "${mode_flag[@]}" || failed=1
 run_check "check-install-boundary" bash "${SCRIPT_DIR}/check-install-boundary.sh" "${TARGET_REPO}" || failed=1
 run_check "verify-integrity" bash "${SCRIPT_DIR}/verify-integrity.sh" --check --target "${TARGET_REPO}" || failed=1
-run_check "validate-instruction-layer" bash "${SCRIPT_DIR}/validate-instruction-layer.sh" "${TARGET_REPO}" || failed=1
-run_check "check-host-adapter-alignment" bash "${SCRIPT_DIR}/check-host-adapter-alignment.sh" "${TARGET_REPO}" || failed=1
+run_check "validate-instruction-layer" "${SCRIPT_DIR}/aiast-cli" check-validate-layer "${TARGET_REPO}" || failed=1
+run_check "check-host-adapter-alignment" "${SCRIPT_DIR}/aiast-cli" check-alignment "${TARGET_REPO}" || failed=1
 run_check "check-host-ingestion" bash "${SCRIPT_DIR}/check-host-ingestion.sh" "${TARGET_REPO}" || failed=1
 run_check "check-host-bundle" bash "${SCRIPT_DIR}/check-host-bundle.sh" "${TARGET_REPO}" || failed=1
-run_check "check-system-awareness" bash "${SCRIPT_DIR}/check-system-awareness.sh" "${TARGET_REPO}" || failed=1
+run_check "check-system-awareness" "${SCRIPT_DIR}/aiast-cli" check-awareness "${TARGET_REPO}" || failed=1
 if run_check "check-swarm-fleet" bash "${SCRIPT_DIR}/check-swarm-fleet.sh" "${TARGET_REPO}"; then
   # After swarm fleet is verified, also show plugin capabilities if matrix exists
   matrix_file="${TARGET_REPO}/_system/CAPABILITY_MATRIX.json"

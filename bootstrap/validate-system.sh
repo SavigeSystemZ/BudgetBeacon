@@ -77,9 +77,9 @@ else
   VALIDATOR_ROOT="$(cd -- "${VALIDATOR_ROOT}" && pwd)"
 fi
 
-for rel in "bootstrap/validate-instruction-layer.sh" "bootstrap/check-system-awareness.sh"; do
+for rel in "bootstrap/aiast-cli"; do
   if [[ ! -f "${VALIDATOR_ROOT}/${rel}" ]]; then
-    echo "Validator root is missing required validation script: ${rel}" >&2
+    echo "Validator root is missing required validation binary: ${rel}" >&2
     exit 1
   fi
 done
@@ -307,7 +307,7 @@ require_files \
   "bootstrap/validate-system.sh" \
   "bootstrap/validate-mcp-health.sh" \
   "bootstrap/check-mcp-project-isolation.sh" \
-  "bootstrap/validate-instruction-layer.sh" \
+  "bootstrap/aiast-cli" \
   "bootstrap/verify-integrity.sh" \
   "bootstrap/generate-system-key.sh" \
   "bootstrap/generate-system-registry.sh" \
@@ -315,11 +315,9 @@ require_files \
   "bootstrap/generate-host-adapters.sh" \
   "bootstrap/detect-instruction-conflicts.sh" \
   "bootstrap/check-repo-permissions.sh" \
-  "bootstrap/check-system-awareness.sh" \
   "bootstrap/check-hallucination.sh" \
   "bootstrap/check-install-boundary.sh" \
   "bootstrap/check-delivery-gate-alignment.sh" \
-  "bootstrap/check-host-adapter-alignment.sh" \
   "bootstrap/system-doctor.sh" \
   "bootstrap/heal-system.sh" \
   "bootstrap/repair-system.sh" \
@@ -655,11 +653,11 @@ _run_aiaast_subvalidator() {
 }
 
 _run_aiaast_subvalidator "validate-instruction-layer" \
-  bash "${VALIDATOR_ROOT}/bootstrap/validate-instruction-layer.sh" "${TARGET}" --validator-root "${VALIDATOR_ROOT}"
+  "${VALIDATOR_ROOT}/bootstrap/aiast-cli" check-validate-layer "${TARGET}" --validator-root "${VALIDATOR_ROOT}"
 _run_aiaast_subvalidator "check-instruction-domain-alignment" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-instruction-domain-alignment.sh" "${TARGET}" --validate-manifest
 _run_aiaast_subvalidator "check-system-awareness" \
-  bash "${VALIDATOR_ROOT}/bootstrap/check-system-awareness.sh" "${TARGET}"
+  "${VALIDATOR_ROOT}/bootstrap/aiast-cli" check-awareness "${TARGET}"
 _run_aiaast_subvalidator "validate-scaffold-output" \
   bash "${VALIDATOR_ROOT}/bootstrap/validate-scaffold-output.sh" "${TARGET}" --profile standard --dry-run
 _run_aiaast_subvalidator "check-scaffold-required-files" \

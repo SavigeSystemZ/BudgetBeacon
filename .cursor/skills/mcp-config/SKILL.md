@@ -9,13 +9,15 @@ description: Generate or review least-privilege MCP configs for this project.
 
 1. `_system/MCP_CONFIG.md`
 2. `_system/mcp/MCP_SELECTION_POLICY.md`
-3. `_system/mcp/MCP_FAILURE_FALLBACKS.md`
-4. `_system/mcp/MCP_SERVER_CATALOG.md`
+3. `_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md`
+4. `_system/mcp/MCP_FAILURE_FALLBACKS.md`
+5. `_system/mcp/MCP_SERVER_CATALOG.md`
 
 ## Rules
 
 - Prefer read-only or discovery-first servers by default.
 - Scope filesystem access to the project root — never grant home-directory or root access.
+- Keep browser profiles, memory stores, caches, databases, and GitHub tokens app-scoped.
 - Keep secrets outside repo files. Use environment variables or secret managers.
 - Document what each server is for and why it is needed.
 - Do not add a server unless it provides a concrete capability the project currently uses.
@@ -30,7 +32,7 @@ description: Generate or review least-privilege MCP configs for this project.
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-filesystem", "/path/to/project"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
       "env": {}
     }
   }
@@ -40,9 +42,9 @@ description: Generate or review least-privilege MCP configs for this project.
 ### Codex (`_system/mcp/servers.codex.example.toml`)
 
 ```toml
-[servers.filesystem]
+[mcp_servers.project_filesystem]
 command = "npx"
-args = ["-y", "@anthropic/mcp-filesystem", "/path/to/project"]
+args = ["-y", "@modelcontextprotocol/server-filesystem", "."]
 ```
 
 ## Review checklist
@@ -53,6 +55,7 @@ args = ["-y", "@anthropic/mcp-filesystem", "/path/to/project"]
 4. Servers that require elevated access (write, database, deploy) are marked and justified.
 5. Config parses without errors (`jq -e .` for JSON, `python3 -c "import tomllib; ..."` for TOML).
 6. Failure fallback exists for each server (what command replaces it if MCP is unavailable).
+7. `bash bootstrap/check-mcp-project-isolation.sh .` passes.
 
 ## Deliverables
 

@@ -1,3 +1,5 @@
+<<<<<<< HEAD (Project Tailored)
+<<<<<<< HEAD (Project Tailored)
 {
   "schema_version": "1",
   "kind": "handoff",
@@ -27,3 +29,61 @@
   },
   "notes": []
 }
+=======
+{
+  "schema_version": "1",
+  "kind": "handoff",
+  "created_at": "2026-06-02T13:39:12Z",
+  "agent": "Antigravity",
+  "session_id": "",
+  "repo": "/home/whyte/.MyAppZ/_AI_AGENT_SYSTEM_TEMPLATE/TEMPLATE",
+  "branch": "unknown",
+  "template_version": "1.24.0",
+  "phase": "Phase 2 Validation Porting",
+  "objective": "",
+  "completed_steps": [],
+  "in_progress_step": "",
+  "next_actions": [
+    "Port validate-instruction-layer.sh to Go"
+  ],
+  "blockers": [],
+  "resume_files": [],
+  "resume_command": "",
+  "confidence": "medium",
+  "validation_state": {
+    "last_command": "",
+    "last_result": "",
+    "last_run_at": ""
+  },
+  "notes": []
+}
+>>>>>>> TEMPLATE (New Features)
+=======
+{
+  "schema_version": "1",
+  "kind": "handoff",
+  "created_at": "2026-06-02T13:39:12Z",
+  "agent": "Antigravity",
+  "session_id": "",
+  "repo": "/home/whyte/.MyAppZ/_AI_AGENT_SYSTEM_TEMPLATE/TEMPLATE",
+  "branch": "unknown",
+  "template_version": "1.24.0",
+  "phase": "Phase 2 Validation Porting",
+  "objective": "",
+  "completed_steps": [],
+  "in_progress_step": "",
+  "next_actions": [
+    "Port validate-instruction-layer.sh to Go"
+  ],
+  "blockers": [],
+  "resume_files": [],
+  "resume_command": "",
+  "confidence": "medium",
+  "validation_state": {
+    "last_command": "",
+    "last_result": "",
+    "last_run_at": ""
+  },
+  "notes": []
+}
+>>>>>>> TEMPLATE (New Features)

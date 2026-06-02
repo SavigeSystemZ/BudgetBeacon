@@ -178,9 +178,9 @@ export RMS_WLO_BOOTSTRAP_CREATED="${WLO_BOOTSTRAP_CREATED}"
 failures=0
 run_check integrity "${TARGET}/bootstrap/verify-integrity.sh"          --check --target "${TARGET}" || failures=$((failures+1))
 run_check host_settings_baseline "${TARGET}/bootstrap/check-host-settings-baseline.sh" "${TARGET}" || failures=$((failures+1))
-run_check system_awareness "${TARGET}/bootstrap/check-system-awareness.sh" "${TARGET}" || failures=$((failures+1))
-run_check host_adapter_alignment "${TARGET}/bootstrap/check-host-adapter-alignment.sh" "${TARGET}" || failures=$((failures+1))
-run_check instruction_layer "${TARGET}/bootstrap/validate-instruction-layer.sh" "${TARGET}" || failures=$((failures+1))
+run_check system_awareness "${TARGET}/bootstrap/aiast-cli" check-awareness "${TARGET}" || failures=$((failures+1))
+run_check host_adapter_alignment "${TARGET}/bootstrap/aiast-cli" check-alignment "${TARGET}" || failures=$((failures+1))
+run_check instruction_layer "${TARGET}/bootstrap/aiast-cli" check-validate-layer "${TARGET}" || failures=$((failures+1))
 run_check host_settings_apply "${TARGET}/bootstrap/apply-host-settings.sh" --target "${TARGET}" || failures=$((failures+1))
 
 export RMS_TARGET="${TARGET}"

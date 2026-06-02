@@ -712,7 +712,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/.aiast-role.json",
-      "size_bytes": 492
+      "size_bytes": 491
     },
     {
       "category": "system-core",
@@ -742,7 +742,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/AGENT_DISCOVERY_MATRIX.md",
-      "size_bytes": 9322
+      "size_bytes": 28098
     },
     {
       "category": "system-core",
@@ -791,6 +791,12 @@
       "kind": "file",
       "path": "_system/AGENT_SURFACE_TAXONOMY.md",
       "size_bytes": 5203
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/AGENT_UPDATE_MERGE_POLICY.md",
+      "size_bytes": 1463
     },
     {
       "category": "system-core",
@@ -1150,7 +1156,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/HOST_ADAPTER_POLICY.md",
-      "size_bytes": 4872
+      "size_bytes": 14736
     },
     {
       "category": "system-core",
@@ -1210,13 +1216,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 87082
+      "size_bytes": 95762
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/KEY.md",
-      "size_bytes": 153348
+      "size_bytes": 153890
     },
     {
       "category": "system-core",
@@ -1474,7 +1480,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/REPO_OPERATING_PROFILE.md",
-      "size_bytes": 5048
+      "size_bytes": 5062
     },
     {
       "category": "system-core",
@@ -1618,7 +1624,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 133956
+      "size_bytes": 135623
     },
     {
       "category": "system-core",
@@ -2302,13 +2308,13 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/checkpoints/LATEST.json",
-      "size_bytes": 743
+      "size_bytes": 2175
     },
     {
       "category": "system-core",
       "kind": "file",
       "path": "_system/checkpoints/LATEST.md",
-      "size_bytes": 747
+      "size_bytes": 2203
     },
     {
       "category": "system-core",
@@ -2351,6 +2357,18 @@
       "kind": "file",
       "path": "_system/checkpoints/history/20260602T131944Z-handoff.json",
       "size_bytes": 743
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260602T133620Z-handoff.json",
+      "size_bytes": 697
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/checkpoints/history/20260602T133912Z-handoff.json",
+      "size_bytes": 644
     },
     {
       "category": "ci",
@@ -3238,7 +3256,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/repo-operating-profile.json",
-      "size_bytes": 5551
+      "size_bytes": 5607
     },
     {
       "category": "review-playbook",
@@ -3316,7 +3334,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/scaffold-profiles.json",
-      "size_bytes": 10777
+      "size_bytes": 32429
     },
     {
       "category": "system-core",
@@ -3598,7 +3616,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/README.md",
-      "size_bytes": 19536
+      "size_bytes": 58742
     },
     {
       "category": "bootstrap",
@@ -3640,7 +3658,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/aiast-cli",
-      "size_bytes": 3378851
+      "size_bytes": 4367684
     },
     {
       "category": "bootstrap",
@@ -3706,7 +3724,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-agent-orchestration.sh",
-      "size_bytes": 3221
+      "size_bytes": 195
     },
     {
       "category": "bootstrap",
@@ -3718,7 +3736,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-app-definition-state.sh",
-      "size_bytes": 4735
+      "size_bytes": 5689
     },
     {
       "category": "bootstrap",
@@ -3730,7 +3748,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-bootstrap-permissions.sh",
-      "size_bytes": 2267
+      "size_bytes": 197
     },
     {
       "category": "bootstrap",
@@ -3766,7 +3784,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-evidence-quality.sh",
-      "size_bytes": 4646
+      "size_bytes": 192
     },
     {
       "category": "bootstrap",
@@ -3826,7 +3844,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-install-boundary.sh",
-      "size_bytes": 1122
+      "size_bytes": 192
     },
     {
       "category": "bootstrap",
@@ -3898,13 +3916,13 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-project-target-consistency.sh",
-      "size_bytes": 3075
+      "size_bytes": 3385
     },
     {
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-repo-permissions.sh",
-      "size_bytes": 3232
+      "size_bytes": 192
     },
     {
       "category": "bootstrap",
@@ -4102,7 +4120,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-operating-profile.sh",
-      "size_bytes": 16713
+      "size_bytes": 16680
     },
     {
       "category": "bootstrap",
@@ -4132,7 +4150,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/generate-system-key.sh",
-      "size_bytes": 39520
+      "size_bytes": 39199
     },
     {
       "category": "bootstrap",
@@ -4276,7 +4294,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/migrate-agent-surface-upgrade.sh",
-      "size_bytes": 3662
+      "size_bytes": 3630
     },
     {
       "category": "bootstrap",
@@ -4288,7 +4306,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/patch-agent-surface-contracts.sh",
-      "size_bytes": 2851
+      "size_bytes": 2839
     },
     {
       "category": "bootstrap",
@@ -4330,7 +4348,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/reconcile-meta-sync.sh",
-      "size_bytes": 20592
+      "size_bytes": 20587
     },
     {
       "category": "bootstrap",
@@ -4408,7 +4426,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/run-autonomous-guardrails.sh",
-      "size_bytes": 4681
+      "size_bytes": 4672
     },
     {
       "category": "bootstrap",
@@ -4420,7 +4438,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/run-test-app-benchmark-matrix.sh",
-      "size_bytes": 15018
+      "size_bytes": 15013
     },
     {
       "category": "bootstrap",
@@ -4432,7 +4450,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/run-validation-autopilot.sh",
-      "size_bytes": 1519
+      "size_bytes": 1514
     },
     {
       "category": "bootstrap",
@@ -4522,13 +4540,13 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/sync-metasystem-contracts.sh",
-      "size_bytes": 1676
+      "size_bytes": 1644
     },
     {
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/system-doctor.sh",
-      "size_bytes": 9481
+      "size_bytes": 9461
     },
     {
       "category": "bootstrap",
@@ -4870,7 +4888,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/update-template.sh",
-      "size_bytes": 13146
+      "size_bytes": 14009
     },
     {
       "category": "bootstrap",
@@ -4954,7 +4972,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/validate-system.sh",
-      "size_bytes": 29301
+      "size_bytes": 29124
     },
     {
       "category": "bootstrap",
@@ -5413,7 +5431,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 902,
+  "managed_file_count": 905,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.24.0"

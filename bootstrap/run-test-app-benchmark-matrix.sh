@@ -327,7 +327,7 @@ PY
             g6="$(advisory_warn_gate "$g6" "system_doctor_warn")"
           fi
         else
-          g5="$(run_gate "check_system_awareness" bash "${cell_repo}/bootstrap/check-system-awareness.sh" "${cell_repo}")"
+          g5="$(run_gate "check_system_awareness" "${cell_repo}/bootstrap/aiast-cli" check-awareness "${cell_repo}")"
           g6="$(run_gate "score_quality_gates" bash "${cell_repo}/bootstrap/score-quality-gates.sh" "${cell_repo}" --json)"
         fi
       else

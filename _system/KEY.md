@@ -2,7 +2,7 @@
 
 This file is the exhaustive agent-facing key for the installable AIAST surface.
 
-It covers 902 managed files and is generated from the canonical managed-file inventory.
+It covers 905 managed files and is generated from the canonical managed-file inventory.
 
 ## How To Use This File
 
@@ -122,7 +122,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/check-scaffold-required-files.sh` - Bootstrap command for Check Scaffold Required Files. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-supply-chain.sh` - Runs language-specific dependency audit tools (npm, pip, cargo, go) and license checks. Run when auditing supply chain security.
 - `bootstrap/check-swarm-fleet.sh` - Bootstrap command for Check Swarm Fleet. Run when performing the named install, repair, validation, emission, or generation task.
-- `bootstrap/check-system-awareness.sh` - Validator for registry coverage and critical path references across core docs. Run when file inventories or core doc maps change.
+- `bootstrap/check-system-awareness.sh` - Bootstrap command for Check System Awareness. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-template-mos-boundary.sh` - Bootstrap command for Check Template Mos Boundary. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-tool-memory-alignment.sh` - Bootstrap command for Check Tool Memory Alignment. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-tool-memory-isolation.sh` - Bootstrap command for Check Tool Memory Isolation. Run when performing the named install, repair, validation, emission, or generation task.
@@ -282,7 +282,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/validate-app-context-files.sh` - Bootstrap command for Validate App Context Files. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/validate-archetype-packs.sh` - Bootstrap command for Validate Archetype Packs. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/validate-benchmark-report.sh` - Bootstrap command for Validate Benchmark Report. Run when performing the named install, repair, validation, emission, or generation task.
-- `bootstrap/validate-instruction-layer.sh` - Validator for precedence, operating-profile, and prompt-emission surfaces. Run when instruction, adapter, or host-ingestion surfaces change.
+- `bootstrap/validate-instruction-layer.sh` - Bootstrap command for Validate Instruction Layer. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/validate-mcp-health.sh` - Bootstrap command for Validate MCP Health. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/validate-plugin.sh` - Validates a plugin manifest against the PLUGIN_CONTRACT schema and allowed hook points. Run when creating or verifying a plugin.
 - `bootstrap/validate-quality-score-policy.sh` - Bootstrap command for Validate Quality Score Policy. Run when performing the named install, repair, validation, emission, or generation task.
@@ -315,6 +315,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/AGENT_PERFORMANCE_GUIDE.md` - Model capability dimensions, task-to-model mapping, and multi-agent delegation guidance. Read when choosing which model to use for a specific task type.
 - `_system/AGENT_ROLE_CATALOG.md` - Canonical role catalog and ownership model for delegated work. Read when selecting or defining agent roles.
 - `_system/AGENT_SURFACE_TAXONOMY.md` - Core operating-system reference for Agent Surface Taxonomy. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/AGENT_UPDATE_MERGE_POLICY.md` - Policy for handling template update conflicts in a merge-only manner. Run when files drift.
 - `_system/AIAST_CLI.md` - Core operating-system reference for Aiast CLI. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AI_RULES.md` - Core operating-system reference for AI Rules. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/API_DESIGN_STANDARDS.md` - Core operating-system reference for API Design Standards. Load when the task touches that named contract, policy, guide, or manifest.
@@ -575,6 +576,8 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/checkpoints/history/20260503T173624Z-mid-task.json` - Core operating-system reference for 20260503t173624z Mid Task. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/checkpoints/history/20260503T174245Z-mid-task.json` - Core operating-system reference for 20260503t174245z Mid Task. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/checkpoints/history/20260602T131944Z-handoff.json` - Core operating-system reference for 20260602t131944z Handoff. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/checkpoints/history/20260602T133620Z-handoff.json` - Core operating-system reference for 20260602t133620z Handoff. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/checkpoints/history/20260602T133912Z-handoff.json` - Core operating-system reference for 20260602t133912z Handoff. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/context-budget-profiles.json` - Machine-readable tier assignments for 21 model families with context token counts. Use when emit-tiered-context.sh needs to resolve a model to a tier.
 - `_system/context-compaction/README.md` - Core operating-system reference for Readme. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/design-system/THEME_GOVERNANCE.md` - Core operating-system reference for Theme Governance. Load when the task touches that named contract, policy, guide, or manifest.

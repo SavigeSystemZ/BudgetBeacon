@@ -100,10 +100,10 @@ if [[ "${MODE}" == "quick" ]]; then
   if ! bash "${SCRIPT_DIR}/verify-integrity.sh" --check --target "${TARGET_REPO}"; then
     quick_failed=1
   fi
-  if ! bash "${SCRIPT_DIR}/validate-instruction-layer.sh" "${TARGET_REPO}"; then
+  if ! "${SCRIPT_DIR}/aiast-cli" check-validate-layer "${TARGET_REPO}"; then
     quick_failed=1
   fi
-  if ! bash "${SCRIPT_DIR}/check-system-awareness.sh" "${TARGET_REPO}"; then
+  if ! "${SCRIPT_DIR}/aiast-cli" check-awareness "${TARGET_REPO}"; then
     quick_failed=1
   fi
   if ! bash "${SCRIPT_DIR}/check-hallucination.sh" "${TARGET_REPO}"; then

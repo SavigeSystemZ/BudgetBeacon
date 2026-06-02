@@ -24,7 +24,7 @@ install_smoke="$(has_file "${repo}/bootstrap/check-runtime-foundations.sh")"
 launch_render="not_applicable"
 
 payload="$(cat <<EOF
-{"format":"$format","lint":"$lint","typecheck":"$typecheck","test":"$test","build":"$build","security_audit":"$security","install_smoke":"$install_smoke","launch_render":"$launch_render","commands":["validate-system.sh --strict","check-system-awareness.sh","check-runtime-foundations.sh","check-network-bindings.sh"]}
+{"format":"$format","lint":"$lint","typecheck":"$typecheck","test":"$test","build":"$build","security_audit":"$security","install_smoke":"$install_smoke","launch_render":"$launch_render","commands":["validate-system.sh --strict","aiast-cli check-awareness","check-runtime-foundations.sh","check-network-bindings.sh"]}
 EOF
 )"
 

@@ -30,14 +30,14 @@ run_check() {
 failed=0
 results="["
 for cmd in \
-  "check-system-awareness.sh" \
+  "aiast-cli check-awareness" \
   "validate-system.sh --strict"
 do
   script_name="${cmd%% *}"
   if [[ -x "${repo}/bootstrap/${script_name}" ]]; then
     # shellcheck disable=SC2206
     args=( $cmd )
-    out="$(run_check "$cmd" bash "${repo}/bootstrap/${args[0]}" "${repo}" "${args[@]:1}")" || failed=1
+    out="$(run_check "$cmd" "${repo}/bootstrap/${args[0]}" "${repo}" "${args[@]:1}")" || failed=1
     [[ "$results" != "[" ]] && results+=","
     results+="$out"
   fi

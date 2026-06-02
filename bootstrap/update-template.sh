@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="${AIAST_UPDATE_SCRIPT_DIR:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)}"
 DEFAULT_TEMPLATE_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 # shellcheck source=bootstrap/lib/aiaast-lib.sh
 source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
@@ -108,6 +108,7 @@ if [[ "${AIAST_UPDATE_REEXEC:-0}" != "1" && ${DRY_RUN} -eq 0 ]]; then
       chmod +x "${reexec_tmp}" 2>/dev/null || true
       export AIAST_UPDATE_REEXEC=1
       export AIAST_UPDATE_REEXEC_TMP="${reexec_tmp}"
+      export AIAST_UPDATE_SCRIPT_DIR="${SCRIPT_DIR}"
       echo "AIAST update: re-executing from stable copy of source update-template.sh at ${reexec_tmp}"
       if [[ ${#AIAST_UPDATE_ORIGINAL_ARGS[@]} -gt 0 ]]; then
         exec bash "${reexec_tmp}" "${AIAST_UPDATE_ORIGINAL_ARGS[@]}"
@@ -280,7 +281,26 @@ for rel in "${source_files[@]}"; do
     echo "Diff saved to: \`${backup_name}.diff\`" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
     echo "" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
 
-    aiaast_copy_rel_file "${RESOLVED_TEMPLATE}" "${rel}" "${RESOLVED_TARGET}" "${dest_rel}"
+    if [[ "${dest_rel}" == *.sh || "${dest_rel}" == */aiast-cli ]]; then
+      # Executable scripts cannot contain conflict markers without breaking.
+      # Since it's a script, just overwrite it from the template cleanly.
+      cp -p "${RESOLVED_TEMPLATE}/${rel}" "${RESOLVED_TARGET}/${dest_rel}"
+    else
+      # Expert Merge-Only Injection
+      # Inject standard conflict markers to prevent taking anything away.
+      cat <<EOF > "${RESOLVED_TARGET}/${dest_rel}.tmp"
+<<<<<<< HEAD (Project Tailored)
+EOF
+      cat "${RESOLVED_TARGET}/${dest_rel}" >> "${RESOLVED_TARGET}/${dest_rel}.tmp"
+      cat <<EOF >> "${RESOLVED_TARGET}/${dest_rel}.tmp"
+=======
+EOF
+      cat "${RESOLVED_TEMPLATE}/${rel}" >> "${RESOLVED_TARGET}/${dest_rel}.tmp"
+      cat <<EOF >> "${RESOLVED_TARGET}/${dest_rel}.tmp"
+>>>>>>> TEMPLATE (New Features)
+EOF
+      mv "${RESOLVED_TARGET}/${dest_rel}.tmp" "${RESOLVED_TARGET}/${dest_rel}"
+    fi
   fi
 done
 
@@ -340,7 +360,7 @@ else
 
   set +e
   canonical_validation_output="$(
-    bash "${RESOLVED_TEMPLATE}/bootstrap/validate-instruction-layer.sh" "${RESOLVED_TARGET}" --validator-root "${RESOLVED_TEMPLATE}" 2>&1
+    "${RESOLVED_TEMPLATE}/bootstrap/aiast-cli" check-validate-layer "${RESOLVED_TARGET}" 2>&1
   )"
   canonical_validation_status=$?
   set -e
