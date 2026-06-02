@@ -146,7 +146,14 @@ export default function DocumentStoreRoute() {
   };
 
 
-  if (!documents) return <div className="p-4 text-muted-foreground animate-pulse">Accessing The Vault...</div>;
+  if (!documents) {
+    return (
+      <div className="space-y-6 pb-20 px-4 md:px-0" role="status" aria-label="Accessing the Vault">
+        <CardSkeleton rows={1} />
+        <CardSkeleton rows={4} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
