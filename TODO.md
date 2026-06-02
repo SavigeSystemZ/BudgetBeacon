@@ -1,6 +1,6 @@
 # TODO
 
-> _Timestamp: 2026-06-02 — meta-system maintenance pass complete (AIAST template 1.24.0 adopted; role→downstream-app; app-identity validators fixed; integrity/registry re-baselined; doctor green). No runtime app code changed. **Next app step:** resume Final Hardening Phase 2 remainder (per-route skeleton sweep on the ~12 remaining routes) then M10 closeout — see `WHERE_LEFT_OFF.md`._
+> _Timestamp: 2026-06-02 — Shipped: security (0 vulns), per-route loading skeletons, 2 Android UI passes, and **M10 E2EE sync** (recovery codes + relay + HMAC token; 181 tests green). **Next:** M10 remainder (QR add-device, two-emulator smoke, deploy a relay) → M11 joint households → M12 release docs/tag. See `WHERE_LEFT_OFF.md`._
 
 > **Truth Reset — 2026-04-25.** Previous TODO marked M3–M8 complete. Audit on 2026-04-25 showed multiple of those surfaces still simulated. Inflated `[x]` items have been moved to "Previously claimed complete (needs re-verification)" below. Real work queue follows.
 
@@ -36,9 +36,9 @@ User locked the scope: M10 + M11 + M12, hardened sideload APK via GitHub Release
   - [x] **MEDIUM (2026-05-05):** Console hygiene — `src/lib/logger.ts` already gates info/log/warn behind DEV / `?debug=1`. Migrated 14 call sites in 8 files (`preferences.ts`, `base64.ts`, `importJson.ts`, `OnboardingWizard.tsx`, `LedgerImportFlow.tsx`, `SettingsRoute.tsx`, `DocumentStoreRoute.tsx`, `ReportsRoute.tsx`) from raw `console.error/warn` to `logger.error/warn`. `ErrorBoundary.tsx` keeps bare `console.error` intentionally — boundary surface must work even if logger fails. `npm run validate` green; 174 tests; `audit:controls setTimeout=6 mathRandom=0 alert=0 emptyOnClick=0`; `audit:secrets` zero hits.
   - [x] **LOW (2026-05-05):** Empty dirs `src/components/empty-states/` and `src/components/forms/` confirmed already absent — nothing to delete.
 - [ ] CRITICAL: **Phase 3 — M10 closeout.**
-  - [ ] HIGH: New `relay/` workspace — Cloudflare Worker (~150 LOC) + Durable Objects (one DO per `householdId`) + HMAC join token. Optional Node.js fallback at `relay/node/`. `docs/RELAY_DEPLOY.md`.
-  - [ ] HIGH: **M10.5** — `OnboardingWizard` learns local-only vs sign-up branch; on sign-up, migrates existing local Dexie under new `householdId`; "Add this device" QR/code flow.
-  - [ ] HIGH: Recovery codes — 10 single-use codes generated on signup, KEK encrypted to each (Argon2id-derived), stored in Dexie. UI: print/save sheet + "I've saved these" gate. Settings → "Show new recovery codes" regenerates and invalidates the prior set. Vitest covers wrap/unwrap with a recovery code.
+  - [x] **HIGH (2026-06-02):** New `relay/` workspace — Cloudflare Worker + SQLite Durable Object + HMAC join token, plus Node.js fallback at `relay/node/`, `docs/RELAY_DEPLOY.md`, wrangler installed. Node relay verified two-peer end-to-end. Worker is deploy-ready (validate on first `wrangler deploy`).
+  - [~] **HIGH (2026-06-02, partial):** **M10.5** — OnboardingWizard stays local-first and now surfaces optional sync (Settings pointer); recovery-code "add device" works. **Still open:** QR add-device pairing and local-Dexie→householdId migration on first sign-up.
+  - [x] **HIGH (2026-06-02):** Recovery codes — 10 single-use codes on signup, household key KEK-wrapped (PBKDF2 600k via derivePassphraseKey), stored as hashes in Dexie. UI: copy/download sheet + "I've saved these" gate; Settings regenerate (invalidates prior set); "Recover" login mode. 7 Vitest cases incl. decrypt round-trip + single-use.
   - [ ] HIGH: **M10.6** — emulator parity smoke (two Pixel 7 / API 34 instances) signup → seed data → second instance joins → convergence asserted.
 - [ ] CRITICAL: **Phase 4 — M11 joint household.**
   - [ ] HIGH: **M11.1** invite codes — time-limited (24 h) HMAC tokens, single-use, embedded in QR.

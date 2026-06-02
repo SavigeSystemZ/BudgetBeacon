@@ -16,9 +16,11 @@
 - `aiast validate .` → **system_ok**; `verify-integrity --check` → **clean**; `check-system-awareness` → **ok**; meta-sync gate → **clear**.
 - Self-improvement ledger intact (1 applied: hybrid-layout + camelCase validator fixes), tagged as a generic maintainer candidate.
 
-## App validation baseline (last recorded — NOT re-run today)
+## App validation baseline (verified 2026-06-02)
 
-- `npm run validate`: lint + typecheck + **174 Vitest** + prod build (green as of the last app session per `AGENT_SHARED_MEMORY.md`).
+- `npm run validate`: lint + typecheck + **181 Vitest** (174 + 7 recovery-code) + prod build + PWA — **green**.
+- `npm audit`: **0 vulnerabilities** (npm + GitHub Dependabot).
+- M10 sync relay: two-peer end-to-end **verified** via the Node relay.
 - `npm run audit:controls` baseline: `setTimeout=6 mathRandom=0 alert=0 emptyOnClick=0`.
 - `npm run audit:secrets`: zero hits.
 - Re-run `npm run validate` before claiming app readiness — this session did not exercise the app build.

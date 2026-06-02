@@ -1,6 +1,27 @@
-# Where Left Off — **active 2026-06-02** (security + UI buildout + Android passes)
+# Where Left Off — **active 2026-06-02** (M10 E2EE sync closeout)
 
 _Timestamp: 2026-06-02_
+
+## 2026-06-02 (M10) — Recovery codes + sync relay shipped & verified
+
+**What was done.** Closed out the bulk of Final-Hardening Phase 3 (M10 E2EE sync):
+
+- **Recovery codes** (single-use account recovery). DB v7 `recoveryCodes` table; `modules/auth/recoveryCodes.ts` generates 10 codes (98-bit, rejection-sampled, ambiguity-free), each wrapping the household key under a PBKDF2 KEK derived from the code (reuses `derivePassphraseKey`). Plaintext shown once; only SHA-256 hash stored. `authService.recoverAccount()` sets a new passphrase after redemption (mints a fresh sync keypair; preserves the household data key). **7 Vitest cases.**
+- **Recovery UI:** `RecoveryCodesSheet` (copy/download + "I saved these" gate) shown after signup; "Recovery codes" regenerate button; new "Recover" login mode (email + code + new passphrase).
+- **Sync relay (`relay/`):** `node/server.mjs` (self-contained Node relay — **verified two-peer end-to-end**: peer B received peer A's update through the live relay) and `src/worker.ts` (Cloudflare Worker + SQLite Durable Object, server-side Y.Doc for offline catch-up — deploy-ready). HMAC join-token gating (`src/modules/sync/joinToken.ts`). `docs/RELAY_DEPLOY.md`. Installed **wrangler 4.96** in `relay/`.
+- **Wiring:** `syncService.bootstrap()` takes a join token; `AuthSyncCard` mints it from a configured relay secret. `featureFlags.syncE2eeCrdt = true`. OnboardingWizard stays local-first and points to Settings → Sync for optional sync.
+
+**Validation:** `npm run validate` green — lint + typecheck + **181 tests** (174 + 7 recovery) + prod build + PWA. Relay two-peer sync verified via a y-protocols harness.
+
+**Still open in M10/M11/M12:**
+- **M10.5 QR add-device** — not built (recovery-code add-device works; QR pairing deferred).
+- **M10.6 two-emulator parity smoke** — needs an Android emulator/SDK (not installed here).
+- **Cloudflare Worker relay** — code-complete but validate on your first `wrangler deploy` (needs your Cloudflare login). The Node relay is the proven path today.
+- **M11 joint households** and **M12 release docs** (THREAT_MODEL/INSTALL/RECOVERY, tag v1.0.0) — next.
+
+**Next best step:** deploy a relay (Node or `cd relay && npx wrangler login && wrangler deploy`), then run the two-device smoke (Settings → create account → save recovery codes → enter relay URL+secret → Start sync; repeat on device 2). Then start M11 (invite/accept via the existing ECDH keypair + relay).
+
+---
 
 ## 2026-06-02 (later) — Security fix + full UI loading-state sweep + 2 Android UI passes
 
