@@ -1,0 +1,22 @@
+{
+  "name": "budget-beacon-relay",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "End-to-end-encrypted-ciphertext sync relay for Budget Beacon (Cloudflare Worker + Durable Objects, with a Node.js fallback). The relay never sees plaintext or the household key.",
+  "scripts": {
+    "start": "node node/server.mjs",
+    "dev:worker": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "lib0": "^0.2.99",
+    "ws": "^8.18.0",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.30"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241106.0",
+    "wrangler": "^4.0.0"
+  }
+}
