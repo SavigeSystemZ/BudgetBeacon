@@ -288,3 +288,32 @@
     display: none !important;
   }
 }
+
+/* ===== Native / mobile (Android Capacitor) hardening =====
+   The Android build runs inside a Capacitor WebView. These rules give it a
+   native feel and close touch-only interaction gaps. All are safe no-ops on
+   desktop/web. */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%; /* stop Android font auto-inflation */
+}
+
+body {
+  -webkit-tap-highlight-color: transparent; /* no grey flash on tap */
+  overscroll-behavior-y: none; /* no rubber-band / accidental pull-to-refresh */
+}
+
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* drop the legacy 300ms tap delay */
+}
+
+/* Touch devices can't hover: reveal card/row action controls (edit, delete)
+   that are hover-gated on pointer devices so they stay reachable on Android.
+   Mirrors the `opacity-0 group-hover:opacity-100` pattern used across routes. */
+@media (hover: none) {
+  .group .group-hover\:opacity-100 {
+    opacity: 1 !important;
+  }
+}
