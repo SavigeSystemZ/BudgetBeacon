@@ -5,8 +5,9 @@
 ## Working reality
 
 - App: **Budget Beacon** — local-first personal budgeting / spending-awareness app (React + Vite + Tailwind + Dexie/IndexedDB). See `_system/PROJECT_PROFILE.md`.
-- Active branch: `chore/aiast-repair-20260505` (being consolidated into `main` this session per the local-first GitHub-mirror policy).
-- Current app objective: **Final Hardening master plan** (locked 2026-05-05) — Phase 2 remainder, then M10 (sync relay + recovery codes), M11 (joint household), M12 (release). Authoritative detail: `_system/context/AGENT_SHARED_MEMORY.md` and `WHERE_LEFT_OFF.md`.
+- Active branch: **`main`** (== `origin/main` @ `0bc716f`, working tree clean). Local-first; GitHub is the redundant mirror.
+- Current app objective: **Final Hardening** — Phase 2 ✅, **M10 E2EE sync ✅ (shipped & verified)**; next: M10.6 two-device smoke, M11 (joint household), M12 (release). Authoritative detail: `_system/context/AGENT_SHARED_MEMORY.md` and `WHERE_LEFT_OFF.md` (handoff packet at top).
+- Meta caveat: fleet 1.24.0 update kept + downstream tailoring re-applied (`0bc716f`). `aiast doctor` has 4 fleet-tooling fails (Go `aiast-cli` regressions) — not app/code; fleet-maintainer territory.
 - Repo layout: **hybrid** — runtime app code at top-level `src/`, `public/`, `tools/`; meta-system under `_system/` + `bootstrap/`. The empty 1.24.0 `app/` scaffold placeholder was intentionally dropped.
 
 ## Verified state (this session — meta-system only)

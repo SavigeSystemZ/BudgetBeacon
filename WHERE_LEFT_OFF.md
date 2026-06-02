@@ -1,6 +1,31 @@
-# Where Left Off — **active 2026-06-02** (M10 E2EE sync closeout)
+# Where Left Off — **active 2026-06-02** (M10 done; handoff to next agent)
 
 _Timestamp: 2026-06-02_
+
+## 2026-06-02 — HANDOFF PACKET (read this first)
+
+**State:** `main` == `origin/main` (`0bc716f`), working tree clean, everything pushed.
+
+**App is green and shippable-as-far-as-built:**
+- `npm run validate` → lint + typecheck + **181 tests** + prod build + PWA, all pass.
+- `npm audit` → **0 vulnerabilities** (npm + GitHub Dependabot).
+- Security, full per-route loading skeletons, 2 Android UI passes, and **M10 E2EE sync** all shipped this session.
+
+**M10 (E2EE sync) — DONE & verified:** recovery codes (7 tests), sync relay (`relay/`: Node path **verified two-peer end-to-end**; Cloudflare Worker deploy-ready; wrangler 4.96 installed), HMAC join tokens, `syncE2eeCrdt` flag on, onboarding points to optional sync. See the detailed M10 section below.
+
+**⚠️ Meta-system caveat (NOT app):** a concurrent automated **fleet/stress-test agent** committed `2f55733 [AIAST Fleet Update to 1.24.0]` mid-session. Per operator decision it was kept and the downstream tailoring re-applied in `0bc716f` (role→downstream-app, hybrid + camelCase validators, dropped `app/` + `src/aiast-cli/`, `.gitignore` guards). **`aiast doctor` still reports 4 fails — all fleet-tooling regressions, not app/code:** the fleet migrated checks to a compiled Go `bootstrap/aiast-cli` that panics on a `(?=` regex lookahead and changed date parsing. These are fleet-maintainer territory; do **not** fight them with local edits (the fleet agent overwrites bootstrap/). App doctor signals (build/tests/audit) are green.
+
+**NEXT BEST STEPS (in order):**
+1. **Verify Android visuals**: install the Android SDK, then `npm run android:assemble:debug` and check safe-area/status-bar on an emulator (Pixel 7 / API 34). (User asked about this.)
+2. **Two-device sync smoke**: run a relay (`cd relay && RELAY_SECRET=… node node/server.mjs`, or `npx wrangler login && wrangler deploy`), then on two devices: Settings → create account → save recovery codes → enter relay URL + secret → Start sync; confirm convergence. This closes M10.6.
+3. **M11 (joint households)**: invite (24h HMAC token) → accept (ECDH pubkey exchange via relay; `crypto.ts` already has `generateSyncKeypair`/`deriveSharedSecret`) → per-record ownership UI from `personId` → activity-log Dexie table → leave + key rotation. The relay + ECDH keypair are already in place.
+4. **M12 release**: `docs/THREAT_MODEL.md`, `INSTALL.md`, `RECOVERY.md`, release checklist, tag `v1.0.0` → `android-release.yml`.
+
+**Hard rules to preserve** (see `_system/context/AGENT_SHARED_MEMORY.md`): stable `createId()` UUIDs + per-record `personId` (load-bearing for M11); backup format v4; read-only assistant default; sync is opt-in (empty relay URL = local-only); don't regress `audit:controls` baseline (setTimeout=6, mathRandom=0, alert=0, emptyOnClick=0).
+
+**Key M10 surfaces (extend, don't rebuild):** `src/modules/auth/{authService,recoveryCodes}.ts`, `src/modules/crypto/crypto.ts`, `src/modules/sync/{syncService,joinToken}.ts`, `src/components/sync/{AuthSyncCard,RecoveryCodesSheet,SyncStatusBadge,SyncToastBridge}.tsx`, `relay/`.
+
+---
 
 ## 2026-06-02 (M10) — Recovery codes + sync relay shipped & verified
 
