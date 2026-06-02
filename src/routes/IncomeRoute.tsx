@@ -6,6 +6,7 @@ import { createId } from "../lib/ids/createId";
 import { incomeSourceSchema } from "../modules/income/income.schema";
 import { toMonthlyEquivalent } from "../modules/budget-engine/frequency";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -66,7 +67,7 @@ export default function IncomeRoute() {
     setIsModalOpen(true);
   };
 
-  if (!incomes) return <div className="p-4 text-muted-foreground animate-pulse">Scanning Capital Streams...</div>;
+  if (!incomes) return <RouteSkeleton cards={3} label="Scanning income streams" />;
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">

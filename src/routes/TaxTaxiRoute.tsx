@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -106,7 +107,7 @@ export default function TaxTaxiRoute() {
     Withheld: r.totalWithheld
   })).sort((a, b) => parseInt(a.year) - parseInt(b.year)) || [];
 
-  if (!taxRecords) return <div className="p-4 text-muted-foreground animate-pulse font-black italic uppercase text-center mt-20">Summoning Tax Taxi...</div>;
+  if (!taxRecords) return <RouteSkeleton cards={2} metrics={2} label="Loading tax forms" />;
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">

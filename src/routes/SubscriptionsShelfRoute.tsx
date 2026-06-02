@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -107,7 +108,7 @@ export default function SubscriptionsShelfRoute() {
     setActiveTemplate({ type, sub, content: templates[type] });
   };
 
-  if (!subscriptions) return <div className="p-4 text-muted-foreground animate-pulse">Dusting the Shelf...</div>;
+  if (!subscriptions) return <RouteSkeleton cards={4} label="Loading subscriptions" />;
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">

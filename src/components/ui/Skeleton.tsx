@@ -85,3 +85,55 @@ export function MetricSkeleton() {
     </div>
   );
 }
+
+/**
+ * Full-page first-load placeholder for a standard route: a PageHeader-shaped
+ * header (title + subtitle + action chip), an optional metric row, and a
+ * responsive grid of cards. Mirrors the common route chrome so there is no
+ * layout shift between the loading state and the ready state. The whole block
+ * is a single `role="status"` region so screen readers announce one "Loading…"
+ * instead of N shimmer blocks.
+ */
+export function RouteSkeleton({
+  cards = 6,
+  metrics = 0,
+  rows = 3,
+  label = "Loading",
+}: {
+  cards?: number;
+  metrics?: number;
+  rows?: number;
+  label?: string;
+}) {
+  return (
+    <div
+      role="status"
+      aria-label={label}
+      className="space-y-8 pb-20 animate-in fade-in duration-300"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-56 max-w-[60vw]" />
+          <Skeleton className="h-3 w-72 max-w-[80vw]" />
+        </div>
+        <Skeleton className="h-12 w-44 max-w-[45vw] rounded-2xl" />
+      </div>
+
+      {metrics > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: metrics }).map((_, i) => (
+            <MetricSkeleton key={i} />
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: cards }).map((_, i) => (
+          <CardSkeleton key={i} rows={rows} />
+        ))}
+      </div>
+
+      <ScreenReaderLoading label={label} />
+    </div>
+  );
+}

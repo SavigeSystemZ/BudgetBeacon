@@ -5,6 +5,7 @@ import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { creditSnapshotSchema } from "../modules/credit/credit.schema";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -55,7 +56,7 @@ export default function CreditRoute() {
     setIsModalOpen(false);
   };
 
-  if (!snapshots || !persons) return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic">Opening Credit Vault...</div>;
+  if (!snapshots || !persons) return <RouteSkeleton cards={3} label="Opening credit vault" />;
 
   const filteredSnapshots = selectedPersonId ? snapshots.filter(s => s.personId === selectedPersonId) : snapshots;
   const chartData = filteredSnapshots.slice().reverse().map(s => {

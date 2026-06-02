@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -131,7 +132,7 @@ export default function DebtCenterRoute() {
     return { month: monthStr, balance: totalAtMonth };
   });
 
-  if (!debts) return <div className="p-4 text-muted-foreground animate-pulse font-black italic uppercase">Opening Debt Center...</div>;
+  if (!debts) return <RouteSkeleton cards={3} metrics={3} label="Opening debt center" />;
 
   const simDebts: SimDebt[] = debts.map((d) => ({
     id: d.id,

@@ -3,6 +3,7 @@ import { db } from "../db/db";
 import { calculateBudgetSummary } from "../modules/budget-engine/calculateBudgetSummary";
 import { calculateStabilityIndex, stabilityBand } from "../modules/budget-engine/stabilityIndex";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Progress } from "../components/ui/progress";
 import { Target, Rocket, Zap, Shield, TrendingUp, Compass, Flag } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
@@ -34,7 +35,7 @@ export default function BudgetMissionControlRoute() {
   const insurance = useLiveQuery(() => db.insuranceRecords.toArray(), []);
 
   if (!incomes || !bills || !debts || !goals || !transactions || !subscriptions || !insurance) {
-    return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic text-center mt-20">Synchronizing Strategic Data...</div>;
+    return <RouteSkeleton cards={2} metrics={4} label="Synchronizing strategic data" />;
   }
 
   const summary = calculateBudgetSummary(incomes, bills, debts, goals, transactions, subscriptions, insurance);

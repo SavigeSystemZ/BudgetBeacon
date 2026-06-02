@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { db } from "../db/db";
 import { createId } from "../lib/ids/createId";
 import { CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { RouteSkeleton } from "../components/ui/Skeleton";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -71,7 +72,7 @@ export default function InsuranceInspectRoute() {
   };
 
   if (!policies) {
-    return <div className="p-4 text-muted-foreground animate-pulse font-black uppercase italic">Loading policies...</div>;
+    return <RouteSkeleton cards={3} label="Loading policies" />;
   }
 
   const totalMonthly = policies.reduce((sum, p) => sum + (p.premium || 0), 0);
