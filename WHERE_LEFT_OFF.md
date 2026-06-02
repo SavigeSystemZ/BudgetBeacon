@@ -1,6 +1,24 @@
-# Where Left Off — **active 2026-06-02** (meta-system maintenance; app work paused mid-Final-Hardening)
+# Where Left Off — **active 2026-06-02** (security + UI buildout + Android passes)
 
 _Timestamp: 2026-06-02_
+
+## 2026-06-02 (later) — Security fix + full UI loading-state sweep + 2 Android UI passes
+
+**What was done.**
+
+- **Security:** `npm audit` was 5 high + 3 moderate, all in dev/build-chain transitive deps. Resolved to **0 vulnerabilities** via scoped npm `overrides` (tmp 0.2.7, fast-uri 3.1.2, serialize-javascript 7.0.5, axios 1.16.1, @babel/plugin-transform-modules-systemjs 7.29.7, brace-expansion 5.0.6 scoped under minimatch@10). Added `.npmrc` (`legacy-peer-deps=true`) so install/`npm ci` are reproducible (Vite 8 vs vite-plugin-pwa peer range).
+- **UI loading states (desktop/web):** added reusable `RouteSkeleton` and replaced bare text spinners with layout-matching skeletons on the 9 remaining routes (Income, Credit, DebtCenter, PayPath, StashMap, Subscriptions, TaxTaxi, Insurance, MissionControl). All 15 routes now have skeleton-on-first-load (Dashboard/Ledger/Reports/Documents were already done). BeaconBridge/Settings render chrome immediately (no skeleton needed). Fixed a latent `CardSkeleton` missing-import in DocumentStore (tsc TS2304).
+- **Android pass 1:** `env(safe-area-inset-top)` padding on the mobile header, mobile menu overlay, and desktop sidebar (StatusBar overlays the WebView, top chrome was under the notch). Added `StatusBarController` + `lib/native/statusBar.ts` — initializes the previously-uninitialized `@capacitor/status-bar` plugin and sets icon style from the resolved theme background luminance, re-syncing on theme change. No-op on web/desktop.
+- **Android pass 2:** one `@media (hover: none)` rule reveals all 12 hover-gated card/row controls (edit/delete were invisible on touch) across 10 routes; native WebView CSS — tap-highlight transparent, text-size-adjust 100%, overscroll-behavior-y none, touch-action manipulation.
+- **Capacitor:** `npx cap sync android` succeeded; status-bar plugin registered; web assets copied into the Android project.
+
+**Validation:** `npm run validate` green (lint + typecheck + **174 tests** + prod build + PWA). `npm audit` → 0. `audit:controls` baseline held (setTimeout=6, mathRandom=0, alert=0, emptyOnClick=0); `audit:secrets` 0 hits.
+
+**Known issue:** `syncService.test.ts` is intermittently flaky under parallel run (passes in isolation / on clean full runs) — logged in `FIXME.md`, not from this work.
+
+**Next best step:** the genuinely-incomplete features are backend efforts gated behind feature flags and honestly labeled with `DemoBadge` (M10 E2EE sync, M11 joint households) or intentionally provider-less (credit-bureau fetch, insurance scrape, bank aggregator). The UI front-end is built out for all shippable features. Next is the M10 closeout (relay + recovery codes) per the Final Hardening plan — a backend slice, not UI. Physical-device APK smoke is still pending. For verified Android visuals, build a debug APK (`npm run android:assemble:debug`, needs Android SDK) and check the safe-area/status-bar on a device or emulator.
+
+---
 
 ## 2026-06-02 — AIAST meta-system maintenance pass (operating layer only; no runtime app changes)
 
