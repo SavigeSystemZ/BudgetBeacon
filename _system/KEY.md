@@ -2,7 +2,7 @@
 
 This file is the exhaustive agent-facing key for the installable AIAST surface.
 
-It covers 891 managed files and is generated from the canonical managed-file inventory.
+It covers 902 managed files and is generated from the canonical managed-file inventory.
 
 ## How To Use This File
 
@@ -72,6 +72,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/agent-reclaim-lock.sh` - Bootstrap command for Agent Reclaim Lock. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/agent-unlock.sh` - Bootstrap command for Agent Unlock. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/aiast` - Managed AIAST surface for Aiast. Use it when the task clearly touches the surface named by this file.
+- `bootstrap/aiast-cli` - Managed AIAST surface for Aiast CLI. Use it when the task clearly touches the surface named by this file.
 - `bootstrap/allocate-workspace-service-port.sh` - Bootstrap command for Allocate Workspace Service Port. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/append-build-log.sh` - Bootstrap command for Append Build Log. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/append-global-app-report.sh` - Bootstrap command for Append Global App Report. Run when performing the named install, repair, validation, emission, or generation task.
@@ -88,12 +89,14 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/check-app-local-namespace.sh` - Bootstrap command for Check App Local Namespace. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-bootstrap-permissions.sh` - Bootstrap command for Check Bootstrap Permissions. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-context-freshness.sh` - Bootstrap command for Check Context Freshness. Run when performing the named install, repair, validation, emission, or generation task.
+- `bootstrap/check-context-isolation.sh` - Bootstrap command for Check Context Isolation. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-cross-file-integration.sh` - Bootstrap command for Check Cross File Integration. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-delivery-gate-alignment.sh` - Bootstrap command for Check Delivery Gate Alignment. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-environment.sh` - Validates runtime prerequisites: CLI tools, ports, disk space, env files. Run when diagnosing environment issues or after changing project profile.
 - `bootstrap/check-evidence-quality.sh` - Bootstrap command for Check Evidence Quality. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-evidence-retention.sh` - Bootstrap command for Check Evidence Retention. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-fleet-readiness.sh` - Bootstrap command for Check Fleet Readiness. Run when performing the named install, repair, validation, emission, or generation task.
+- `bootstrap/check-git-discipline.sh` - Bootstrap command for Check Git Discipline. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-global-shim-alignment.sh` - Bootstrap command for Check Global Shim Alignment. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-hallucination.sh` - Bootstrap command for Check Hallucination. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-host-adapter-alignment.sh` - Bootstrap command for Check Host Adapter Alignment. Run when performing the named install, repair, validation, emission, or generation task.
@@ -126,6 +129,7 @@ These files install, update, repair, validate, and generate the AIAST operating 
 - `bootstrap/check-working-directory-alignment.sh` - Bootstrap command for Check Working Directory Alignment. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/check-working-file-staleness.sh` - Bootstrap command for Check Working File Staleness. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/clear-template-sync-notice.sh` - Resets `_system/TEMPLATE_SYNC_NOTICE.md` to CLEARED after the post-sync health checklist. Run after `system-doctor` / `validate-system` review when the notice shows PENDING_HEALTH_CHECK.
+- `bootstrap/compact-context.sh` - Bootstrap command for Compact Context. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/compress-context-file.sh` - Bootstrap command for Compress Context File. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/configure-project-profile.sh` - Bootstrap command for Configure Project Profile. Run when performing the named install, repair, validation, emission, or generation task.
 - `bootstrap/create-test-app-campaign.sh` - Bootstrap command for Create Test App Campaign. Run when performing the named install, repair, validation, emission, or generation task.
@@ -301,6 +305,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/.template-install.json` - Core operating-system reference for Template Install. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/.template-version` - Core operating-system reference for Template Version. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/ACCESSIBILITY_STANDARDS.md` - Core operating-system reference for Accessibility Standards. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/AGENT_CONTEXT_CONTAINMENT_CONTRACT.md` - Core operating-system reference for Agent Context Containment Contract. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AGENT_DISCOVERY_MATRIX.md` - Matrix of which tools and hosts load which repo surfaces. Use when checking host coverage or adapter expectations.
 - `_system/AGENT_ELEVATION_AND_AUTH_POLICY.md` - Core operating-system reference for Agent Elevation And Auth Policy. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/AGENT_INIT_CONVERGENCE.md` - Core operating-system reference for Agent Init Convergence. Load when the task touches that named contract, policy, guide, or manifest.
@@ -349,6 +354,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/DEBUG_REPAIR_PLAYBOOK.md` - Core operating-system reference for Debug Repair Playbook. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/DELIVERY_GATES.md` - Core operating-system reference for Delivery Gates. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/DEPENDENCY_GOVERNANCE.md` - Core operating-system reference for Dependency Governance. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/DEPLOYMENT_BOUNDARY_PROTOCOL.md` - Core operating-system reference for Deployment Boundary Protocol. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/DESIGN_EXCELLENCE_FRAMEWORK.md` - Core operating-system reference for Design Excellence Framework. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/DOWNSTREAM_APPLY_ROLLBACK_DRILL_PROTOCOL.md` - Core operating-system reference for Downstream Apply Rollback Drill Protocol. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` - Core operating-system reference for Downstream Preservation And Sync Notice Policy. Load when the task touches that named contract, policy, guide, or manifest.
@@ -527,6 +533,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/app-context/templates/archetype/web-saas/AUTH_AND_TENANCY_CONTEXT.md` - Core operating-system reference for Auth And Tenancy Context. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/app-context/templates/archetype/web-saas/SAAS_DATA_LIFECYCLE.md` - Core operating-system reference for Saas Data Lifecycle. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/app-context/templates/archetype/web-saas/WEB_SAAS_CONTEXT.md` - Core operating-system reference for Web Saas Context. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/app-local-namespace.json` - Core operating-system reference for App Local Namespace. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/app-local-namespace.template.json` - Core operating-system reference for App Local Namespace Template. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/archetypes/README.md` - Core operating-system reference for Readme. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/archetypes/agent-system-app.md` - Core operating-system reference for Agent System App. Load when the task touches that named contract, policy, guide, or manifest.
@@ -567,6 +574,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/checkpoints/history/20260503T165610Z-mid-task.json` - Core operating-system reference for 20260503t165610z Mid Task. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/checkpoints/history/20260503T173624Z-mid-task.json` - Core operating-system reference for 20260503t173624z Mid Task. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/checkpoints/history/20260503T174245Z-mid-task.json` - Core operating-system reference for 20260503t174245z Mid Task. Load when the task touches that named contract, policy, guide, or manifest.
+- `_system/checkpoints/history/20260602T131944Z-handoff.json` - Core operating-system reference for 20260602t131944z Handoff. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/context-budget-profiles.json` - Machine-readable tier assignments for 21 model families with context token counts. Use when emit-tiered-context.sh needs to resolve a model to a tier.
 - `_system/context-compaction/README.md` - Core operating-system reference for Readme. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/design-system/THEME_GOVERNANCE.md` - Core operating-system reference for Theme Governance. Load when the task touches that named contract, policy, guide, or manifest.
@@ -594,6 +602,7 @@ These files define the installable operating-system contracts, policies, guides,
 - `_system/golden-examples/working-files/WHERE_LEFT_OFF_EXAMPLE.md` - Quality-bar working-file example for Where Left Off Example. Use when shaping the corresponding repo-local working file.
 - `_system/health-history.json` - Append-only log of system-doctor results for trend tracking (50-entry rotation). Read by report-health-trends.sh; written by system-doctor.sh --record.
 - `_system/host-adapter-manifest.json` - Canonical machine-readable source for generated host adapters. Edit only when adapter inputs change, then regenerate the adapters.
+- `_system/improvement-candidates.jsonl` - Core operating-system reference for Improvement Candidates Jsonl. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/instruction-precedence.json` - Machine-readable instruction-precedence manifest. Use when validating or exporting precedence behavior programmatically.
 - `_system/integration-maps/README.md` - Core operating-system reference for Readme. Load when the task touches that named contract, policy, guide, or manifest.
 - `_system/llm_config.yaml.example` - Core operating-system reference for LLM Config. Load when the task touches that named contract, policy, guide, or manifest.
@@ -661,6 +670,7 @@ These files define the installable operating-system contracts, policies, guides,
 These files hold long-lived project memory and integration state.
 
 - `_system/context/AGENT_SHARED_MEMORY.md` - Durable context record for Agent Shared Memory. Read during resume and update when the underlying project truth changes.
+- `_system/context/AIAST_EVOLUTION_PLAN.md` - Durable context record for Aiast Evolution Plan. Read during resume and update when the underlying project truth changes.
 - `_system/context/ARCHITECTURAL_INVARIANTS.md` - Durable context record for Architectural Invariants. Read during resume and update when the underlying project truth changes.
 - `_system/context/ASSUMPTIONS.md` - Durable context record for Assumptions. Read during resume and update when the underlying project truth changes.
 - `_system/context/BUILD_LOG.md` - Durable context record for Build Log. Read during resume and update when the underlying project truth changes.
@@ -949,6 +959,7 @@ These files are managed but do not currently fit a more specific category.
 - `docs/NFR.md` - Managed AIAST surface for Nfr. Use it when the task clearly touches the surface named by this file.
 - `docs/PRD.md` - Managed AIAST surface for Prd. Use it when the task clearly touches the surface named by this file.
 - `docs/README.md` - Managed AIAST surface for Readme. Use it when the task clearly touches the surface named by this file.
+- `docs/RELAY_DEPLOY.md` - Managed AIAST surface for Relay Deploy. Use it when the task clearly touches the surface named by this file.
 - `docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md` - Managed AIAST surface for Sync And Dual Account Architecture. Use it when the task clearly touches the surface named by this file.
 - `docs/UNGATED_PRODUCT_BACKLOG.md` - Managed AIAST surface for Ungated Product Backlog. Use it when the task clearly touches the surface named by this file.
 - `docs/UX_SYSTEM.md` - Managed AIAST surface for UX System. Use it when the task clearly touches the surface named by this file.

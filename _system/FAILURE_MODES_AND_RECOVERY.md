@@ -57,3 +57,15 @@ Use this to recover from operating-system failures without guessing.
   overwritten
 - keep user-directed behavior unless the repo’s own rules explicitly require
   removal
+
+## Auto-correction triage matrix
+
+Use this sequence for all recoverable failures: **detect -> classify -> bounded fix -> revalidate -> escalate**.
+
+| Failure class | Auto-fix policy | Revalidation requirement | Escalation trigger |
+| --- | --- | --- | --- |
+| Missing generated artifacts or stale registries | safe auto-fix allowed | run relevant generation + validation scripts | generation still fails after second attempt |
+| Contract/reference drift in docs/manifests | guarded auto-fix (smallest coherent update) | run instruction-layer and awareness checks | conflicting source-of-truth or unresolved contradiction |
+| Validation gate command failure | guarded repair only for known root cause | rerun failing gate + one broader doctor check | same gate fails twice or cause is unknown |
+| Security/containment violation | no automatic bypass | run containment and security checks after manual fix | any request to bypass boundary without approval |
+| Ambiguous state or missing evidence | no speculative auto-fix | update continuity/evidence files first | claims remain unverifiable |

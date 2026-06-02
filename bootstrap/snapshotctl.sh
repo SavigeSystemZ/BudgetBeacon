@@ -419,7 +419,10 @@ restore_dry_run() {
 }
 
 restore_snapshot() {
-  local id="$1" dest="${2:-${APP_ROOT}/snapshots/restore-sandbox/${id}}"
+  # S22a WS7: split declaration — never reference a var being set in the same
+  # `local` statement (fragile under `set -u`; the documented WS2 footgun).
+  local id="$1"
+  local dest="${2:-${APP_ROOT}/snapshots/restore-sandbox/${id}}"
   verify_snapshot "${id}"
   mkdir -p "${dest}"
   local decompress

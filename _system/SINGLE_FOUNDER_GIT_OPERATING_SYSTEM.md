@@ -18,13 +18,19 @@ with clear commits and tags when releases matter.
 
 ## Branch policy
 
-- `main`: ordinary development, always locally validated before push.
+- `main`: ordinary development, always locally validated before push. This is the ONLY standing branch.
 - Short topic or recovery branch: allowed only when the operator explicitly
   wants isolation, an experiment, a PR, or emergency recovery.
 - Long-lived infrastructure target branch: allowed only when the operator
   deliberately maintains a parallel build target such as `apk`, `windows`,
   `ios`, or `cli`; it must keep the same meta-system and shared app code as
   `main`.
+
+**Legacy Branch Remediation (Established Applications):**
+If an agent encounters an already established application that has a different GitHub policy with multiple standing branches:
+- Do your best to merge all branches into `main` so no code is lost.
+- Alternatively, if there is no difference from the local repository to the remote besides the extra branches (i.e., we don't lose any code), wipe out the remote branches and do a fresh commit and push from the local `main` repository.
+- The goal is to strictly establish the single `main` branch GitHub policy without losing any code.
 
 Do not create `feat/*`, `fix/*`, `chore/*`, or `hotfix/*` branches by
 default. If one is used, merge or abandon it quickly and delete it locally

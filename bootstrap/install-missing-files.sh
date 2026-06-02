@@ -8,7 +8,8 @@ source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
 
 usage() {
   cat <<'EOF'
-Usage: install-missing-files.sh <target-repo> [--source <template-root>] [--strict] [--dry-run] [--skip-onboarding-seeds]
+Usage: install-missing-files.sh <target-repo> [--source <template-root>] [--profile NAME]
+                                [--strict] [--dry-run] [--skip-onboarding-seeds]
 
 After copying missing template files, the onboarding refresh normally runs
 suggest/seed scripts. Pass --skip-onboarding-seeds when you must preserve
@@ -24,6 +25,7 @@ fi
 
 TARGET_REPO=""
 SOURCE=""
+PROFILE=""
 STRICT=0
 DRY_RUN=0
 SKIP_ONBOARDING_SEEDS=0
@@ -33,6 +35,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --source)
       SOURCE="${2:-}"
+      shift 2
+      ;;
+    --profile)
+      PROFILE="${2:-}"
       shift 2
       ;;
     --strict)
@@ -82,6 +88,7 @@ aiaast_assert_template_root "${TEMPLATE_ROOT}"
 
 RESOLVED_TEMPLATE="$(cd -- "${TEMPLATE_ROOT}" && pwd)"
 RESOLVED_TARGET="$(cd -- "${TARGET_REPO}" && pwd)"
+PROFILE="$(aiaast_resolve_scaffold_profile "${RESOLVED_TARGET}" "${PROFILE}")"
 
 if [[ "${RESOLVED_TEMPLATE}" == "${RESOLVED_TARGET}" ]]; then
   echo "Source and target resolve to the same directory: ${RESOLVED_TEMPLATE}" >&2
@@ -95,7 +102,7 @@ bash "${RESOLVED_TARGET}/bootstrap/check-working-directory-alignment.sh" "${RESO
 bash "${RESOLVED_TARGET}/bootstrap/check-project-target-consistency.sh" "${RESOLVED_TARGET}"
 bash "${RESOLVED_TARGET}/bootstrap/emit-session-environment.sh" "${RESOLVED_TARGET}"
 
-mapfile -t SOURCE_FILES < <(aiaast_list_files "${TEMPLATE_ROOT}")
+mapfile -t SOURCE_FILES < <(bash "${RESOLVED_TEMPLATE}/bootstrap/render-scaffold-profile.sh" "${RESOLVED_TEMPLATE}" --profile "${PROFILE}")
 MISSING_FILES=()
 
 for rel in "${SOURCE_FILES[@]}"; do
@@ -117,6 +124,7 @@ fi
 
 if [[ ${DRY_RUN} -eq 1 ]]; then
   echo "Dry run: would install missing files into ${TARGET_REPO}"
+  echo "Dry run: scaffold profile ${PROFILE} selects ${#SOURCE_FILES[@]} files"
   if [[ ${SKIP_ONBOARDING_SEEDS} -eq 1 ]]; then
     echo "Dry run: would skip onboarding re-seeds (--skip-onboarding-seeds)"
   fi
@@ -124,15 +132,19 @@ if [[ ${DRY_RUN} -eq 1 ]]; then
   exit 0
 fi
 
-if [[ "${README_DEST}" == "README.md" ]]; then
-  rsync -a --ignore-existing "${TEMPLATE_ROOT}/" "${TARGET_REPO}/"
-else
-  rsync -a --ignore-existing --exclude '/README.md' "${TEMPLATE_ROOT}/" "${TARGET_REPO}/"
-  if [[ ! -e "${TARGET_REPO}/${README_DEST}" ]]; then
-    cp -p "${TEMPLATE_ROOT}/README.md" "${TARGET_REPO}/${README_DEST}"
+for rel in "${SOURCE_FILES[@]}"; do
+  dest_rel="${rel}"
+  if [[ "${rel}" == "README.md" ]]; then
+    dest_rel="${README_DEST}"
+  fi
+  if [[ -e "${TARGET_REPO}/${dest_rel}" ]]; then
+    continue
+  fi
+  aiaast_copy_rel_file "${RESOLVED_TEMPLATE}" "${rel}" "${TARGET_REPO}" "${dest_rel}"
+  if [[ "${rel}" == "README.md" && "${README_DEST}" != "README.md" ]]; then
     echo "Installed template README as ${README_DEST} to avoid clobbering the app README"
   fi
-fi
+done
 
 (
   if [[ ${SKIP_ONBOARDING_SEEDS} -eq 1 ]]; then
@@ -147,7 +159,8 @@ aiaast_write_install_metadata \
   "$(aiaast_template_version "${RESOLVED_TEMPLATE}")" \
   "copied-template" \
   "${README_DEST}" \
-  "install-missing-files"
+  "install-missing-files" \
+  "${PROFILE}"
 bash "${RESOLVED_TARGET}/bootstrap/generate-host-adapters.sh" "${RESOLVED_TARGET}" --write
 bash "${RESOLVED_TARGET}/bootstrap/generate-system-key.sh" "${RESOLVED_TARGET}" --write
 bash "${RESOLVED_TARGET}/bootstrap/generate-system-registry.sh" "${RESOLVED_TARGET}" --write

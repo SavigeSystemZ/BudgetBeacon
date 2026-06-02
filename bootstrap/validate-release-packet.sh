@@ -134,8 +134,20 @@ def check(node, sch, where="$"):
 
 check(packet, sch_p, "$packet")
 
+# Packets historically recorded absolute dev-machine paths for their sibling
+# artifacts/checksums files, which break on any other host (CI runners,
+# fresh clones, downstreams). Resolve portably: honor the recorded path if
+# it exists, else fall back to the same basename next to the packet itself
+# (where these siblings are always emitted and committed together).
+packet_dir = os.path.dirname(os.path.abspath(packet_path))
+def resolve_sibling(recorded):
+    if not recorded or os.path.isfile(recorded):
+        return recorded
+    alt = os.path.join(packet_dir, os.path.basename(recorded))
+    return alt if os.path.isfile(alt) else recorded
+
 # Validate artifact index
-ai_path = packet.get("artifact_index")
+ai_path = resolve_sibling(packet.get("artifact_index"))
 ai_doc = None
 if ai_path and os.path.isfile(ai_path):
     with open(ai_path, "r", encoding="utf-8") as fh:
@@ -165,12 +177,14 @@ else:
     err(f"artifact_index file not found at {ai_path}")
 
 # Verify checksums file if present
-csum_path = packet.get("checksums")
+csum_path = resolve_sibling(packet.get("checksums"))
 checksum_check = "skipped"
 if csum_path and not skip_csum and os.path.isfile(csum_path):
     try:
-        # Checksum file paths are relative to source_root.
-        cwd = packet.get("source_root") or os.path.dirname(csum_path)
+        # Checksum file paths are relative to source_root; fall back to the
+        # packet dir when the recorded (often absolute, foreign) root is absent.
+        src_root = packet.get("source_root")
+        cwd = src_root if (src_root and os.path.isdir(src_root)) else packet_dir
         rc = subprocess.run(["sha256sum", "-c", csum_path],
                             cwd=cwd, capture_output=True, text=True)
         if rc.returncode != 0:

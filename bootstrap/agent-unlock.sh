@@ -9,7 +9,8 @@ if [[ $# -lt 3 ]]; then
 fi
 repo="$1"; agent="$2"; scope="$3"
 scope_key="$(aiaast_sanitize_scope_key "$scope")"
-lock="${repo}/_system/agent-state/locks/${scope_key}.lock.json"
+locks_dir="${repo}/_system/agent-state/locks"
+lock="${locks_dir}/${scope_key}.lock.json"
 [[ -f "$lock" ]] || { echo "missing lock: $lock"; exit 1; }
 if ! python3 - "$lock" "$agent" <<'PY'
 import json,sys
@@ -22,6 +23,7 @@ then
   echo "owner mismatch for lock: $lock"
   exit 1
 fi
-rm -f "$lock"
+# Release both the legacy metadata file and the atomic guard dir (S22a WS2).
+aiaast_lock_release "$locks_dir" "$scope_key"
 echo "unlocked: $scope"
 

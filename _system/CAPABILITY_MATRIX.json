@@ -1,11 +1,16 @@
 {
-  "generated_at": "1775115446.4580119",
   "capabilities": {
     "ci-reporter": [
       "_system/plugins/ci-integration/run.sh"
     ],
     "scaffold-generator": [
       "_system/plugins/ci-integration/run.sh"
+    ],
+    "local-model-abliteration": [
+      "_system/plugins/heretic-abliteration/run.sh"
+    ],
+    "local-model-refusal-analysis": [
+      "_system/plugins/heretic-abliteration/run.sh"
     ],
     "metrics-collector": [
       "_system/plugins/observability-setup/run.sh"

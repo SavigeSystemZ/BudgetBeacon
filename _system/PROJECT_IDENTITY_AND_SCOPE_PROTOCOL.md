@@ -22,6 +22,8 @@ This protocol prevents unintended writes by checking that requested target ident
 - If mismatch is high-risk (cross-project or wrong repo target), fail closed and block writes.
 - If mismatch is informational (missing profile field), emit warning and continue read-only planning.
 - Before any cross-project action, require explicit operator confirmation.
+- If requested write target is outside `~/.MyAppZ/`, deny by default until explicit operator request + approval + authorization are present.
+- If requested write target is another `~/.MyAppZ/<ProjectName>/` sibling, deny by default until explicit operator request + approval + authorization are present.
 
 ## Script interface expectations
 

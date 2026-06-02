@@ -6,6 +6,9 @@ off in-flight work to whoever resumes next. It is optimized for the hostile
 cases: rate-limit interruptions, crashes, mid-task context compactions, and
 cold starts by a fresh agent that has zero prior session memory.
 
+For continuous event logging and freshness gates, also follow
+`_system/CONTINUOUS_CONTEXT_RECORDING_PROTOCOL.md`.
+
 Checkpoints live on disk under `_system/checkpoints/` and are written and
 read by these two agent-neutral scripts:
 

@@ -26,3 +26,7 @@ RELEASE_PACKET_*.json
 RELEASE_PACKET_*.md
 RELEASE_PACKET_*.artifacts.json
 RELEASE_PACKET_*.sha256
+
+# Bleed-event audit log — append-only, retained indefinitely per
+# _system/BLEED_EVENT_AND_INCIDENT_RESPONSE.md.
+_system/agent-state/audit/*.jsonl

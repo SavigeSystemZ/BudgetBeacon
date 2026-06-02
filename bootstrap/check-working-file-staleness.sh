@@ -116,10 +116,10 @@ def has_uncommitted_changes(path: Path) -> bool:
 def extract_timestamp(text: str) -> datetime | None:
     """Try to extract a date from common handoff patterns."""
     patterns = [
+        r"Template baseline reviewed:\s*(\d{4}-\d{2}-\d{2})",
         r"Timestamp:\s*(\d{4}-\d{2}-\d{2})",
         r"Last updated:\s*(\d{4}-\d{2}-\d{2})",
         r"Date:\s*(\d{4}-\d{2}-\d{2})",
-        r"\((\d{4}-\d{2}-\d{2})\)",
     ]
     for pat in patterns:
         match = re.search(pat, text)

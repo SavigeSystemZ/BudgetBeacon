@@ -152,6 +152,12 @@ else
 fi
 run_check "emit-session-environment" bash "${SCRIPT_DIR}/emit-session-environment.sh" "${TARGET_REPO}" || failed=1
 
+# Advisory identity/onboarding gate (never fails the doctor): on a blank
+# downstream-app repo this prints the "define the app first" directive so an
+# agent does not mistake it for the meta-system template. No-op on
+# parent-template. Non-strict, so exit stays 0.
+run_check "check-app-definition-state" bash "${SCRIPT_DIR}/check-app-definition-state.sh" "${TARGET_REPO}" || true
+
 if run_check "check-placeholders" bash "${SCRIPT_DIR}/check-placeholders.sh" "${TARGET_REPO}" --summary "${mode_flag[@]}"; then
   true
 else
@@ -214,6 +220,28 @@ if run_check "check-working-file-staleness" bash "${SCRIPT_DIR}/check-working-fi
 else
   warned=1
   warning_labels+=("working-file-staleness")
+fi
+
+if run_check "check-local-self-improvement" bash "${SCRIPT_DIR}/check-local-self-improvement.sh" "${TARGET_REPO}"; then
+  true
+else
+  if [[ ${STRICT} -eq 1 ]]; then
+    failed=1
+  else
+    warned=1
+    warning_labels+=("local-self-improvement")
+  fi
+fi
+
+if run_check "validate-app-context-files" bash "${SCRIPT_DIR}/validate-app-context-files.sh" "${TARGET_REPO}" "${strict_flag[@]}"; then
+  true
+else
+  if [[ ${STRICT} -eq 1 ]]; then
+    failed=1
+  else
+    warned=1
+    warning_labels+=("app-context-files")
+  fi
 fi
 
 resolved_source="$(cd -- "${SOURCE}" && pwd)"

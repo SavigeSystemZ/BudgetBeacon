@@ -37,3 +37,12 @@ This operating system should evolve without collapsing into duplication or drift
 - if external host-emission or bundle surfaces changed, run `bootstrap/check-host-ingestion.sh` and `bootstrap/check-host-bundle.sh` before declaring the change done
 - if current framework, package, installer, platform, or API behavior influences
   the design, follow `VERSION_SENSITIVE_RESEARCH_PROTOCOL.md`
+
+## Downstream-local evolution
+
+This policy governs evolution of the **parent template**. A scaffolded
+downstream repo may also evolve its **own local copy** under
+`PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md` and
+`SELF_WRITING_BOUNDARY_AND_ROLLBACK.md`. Downstream-local evolution never
+changes the parent template; generic improvements found downstream return here
+only through the maintainer promotion loop (`SELF_IMPROVEMENT_PROTOCOL.md`).

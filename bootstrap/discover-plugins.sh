@@ -97,9 +97,12 @@ for plugin_json in sorted(plugins_dir.glob("*/plugin.json")):
             "path": str(plugin_json.parent.relative_to(plugins_dir.parent.parent)),
         })
 
-# Write the capability matrix
+# Write the capability matrix. Deterministic by design: the file is tracked in
+# git AND covered by the integrity manifest, so any timestamp would cause false
+# drift each time discover-plugins runs. The previous "generated_at" field used
+# /dev/null mtime as a stand-in but still drifted across reboots and was never
+# consumed by any reader.
 matrix_data = {
-    "generated_at": str(Path("/dev/null").stat().st_mtime), # Placeholder, actual timestamp handled by shell if needed or just use current
     "capabilities": capability_matrix
 }
 matrix_file.write_text(json.dumps(matrix_data, indent=2) + "\n")

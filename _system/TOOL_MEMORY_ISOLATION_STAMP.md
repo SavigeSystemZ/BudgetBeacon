@@ -35,7 +35,7 @@ after the H1 title. It is parsed line-by-line — order is fixed.
 app_id: <slug>:<uuidv7>
 agent_id: <agent_type>-NN
 set_at: 2026-05-13T18:42:00Z
-set_by: <writing-agent-host>     # e.g. cursor, claude-code, codex, aider, copilot
+set_by: <writing-agent-host>     # e.g. cursor, claude-code, codex, aider, copilot, antigravity
 -->
 
 ... actual memory content ...

@@ -27,6 +27,12 @@ with open(path, "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, sort_keys=True)
     f.write("\n")
 PY
+# Keep the atomic guard dir consistent with the reclaimed lease (S22a WS2):
+# ensure it exists (covers legacy json-only locks) and refresh its mtime so
+# the new lease window is honoured by mtime-fallback staleness too.
+guard="$(aiaast_lock_guarddir "${repo}/_system/agent-state/locks" "${scope_key}")"
+mkdir -p "$guard"
+touch "$guard" 2>/dev/null || true
 ts="$(date -u +"%Y%m%dT%H%M%SZ")"
 mkdir -p "${repo}/_system/agent-state/conflicts"
 printf "reclaimed lock for scope=%s by=%s reason=%s\n" "$scope" "$agent" "$reason" > "${repo}/_system/agent-state/conflicts/${ts}-reclaim.md"

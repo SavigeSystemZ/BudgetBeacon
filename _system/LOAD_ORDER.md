@@ -104,9 +104,22 @@ If you are new to the repo, onboarding multiple roles, or need a **single map** 
 43b. `bootstrap/write-checkpoint.sh` — agent-neutral checkpoint writer
 43c. `bootstrap/resume-from-checkpoint.sh` — resume briefing reader
 44. `_system/REPO_BOUNDARY_AND_BACKUP.md`
-45. `_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md` — remotes, SSH, fetch/pull/push when sharing work
+45. `_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md` — GitHub as a private full mirror, SSH, `gh`, fetch/push when preserving work
+45a. `_system/SINGLE_FOUNDER_GIT_OPERATING_SYSTEM.md` — solo-founder local-main/GitHub-mirror/recovery operating model
+45b. `_system/HYBRID_APP_REPO_LAYOUT_CONTRACT.md` — app-runtime/app-meta/snapshot/ops boundary contract
+45c. `_system/SNAPSHOT_VERSIONING_AND_RETENTION_SPEC.md` — tar.zst snapshot naming, classes, encryption, retention
+45d. `_system/OBSERVABILITY_AND_RECOVERY_LEDGER_PROTOCOL.md` — operation logging and notes/ledger protocol
+45e. `_system/gitops-policy.json` — machine-readable main-only GitHub mirror policy inputs for `bootstrap/gitops.sh`
+45f. `_system/git-gate-matrix.json` — machine-readable gate matrix for commit/push/merge policy
+45g. `_system/snapshot-retention-policy.json` — snapshot classes/retention/compression machine policy
+45h. `_system/snapshot-remote-targets.json` — snapshot remote/encryption publication policy
 46. `_system/HOOK_AND_ORCHESTRATION_INDEX.md` — hooks, tool adapters, CI/GitHub, plugins, MCP companions
 47. `_system/MCP_CONFIG.md`
+47a. `_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md`
+47b. `_system/mcp/MCP_INSTANCE_REGISTRY_PROTOCOL.md`
+47c. `_system/mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md`
+47d. `_system/mcp-instance-policy.json` — machine-form policy (validated against `schemas/mcp-instance-policy.schema.json`)
+47e. `_system/mcp-server-capability-matrix.json` — machine-form catalog (validated against `schemas/mcp-server-capability-matrix.schema.json`)
 48. `_system/SECURITY_REDACTION_AND_AUDIT.md`
 49. `_system/PROVENANCE_AND_EVIDENCE.md`
 50. `_system/DESIGN_EXCELLENCE_FRAMEWORK.md`
@@ -158,6 +171,10 @@ If you are new to the repo, onboarding multiple roles, or need a **single map** 
 93. `bootstrap/check-bootstrap-permissions.sh`
 94. `bootstrap/run-autonomous-guardrails.sh`
 95. `bootstrap/install-autonomous-guardrails.sh`
+95a. `bootstrap/gitops.sh`
+95a1. `bootstrap/hybrid-git-sync.sh`
+95b. `bootstrap/snapshotctl.sh`
+95c. `bootstrap/generate-ops-notes.sh`
 96. `.cursor/` rules, commands, skills, and agents if using Cursor (include Composer-oriented rules when using Composer)
 
 ## Targeted optional load
@@ -172,6 +189,7 @@ When the task is greenfield bootstrap, system evolution, prompt-authoring, skill
 102. `_system/design-system/THEME_GOVERNANCE.md` when changing global theme tokens or doing a visual overhaul
 103. `_system/ports/PORT_POLICY.md` when adding Docker Compose, host publishes, or systemd socket ports
 104. `_system/AUTH_AND_ONBOARDING_PATTERNS.md` when adding login, registration, guest mode, or dev-only seed admins
+104a. **App persona overlay — load if present:** `_system/personas/APP_PERSONA.md`. In downstream app repos, after the app is defined, this is the app-specific world-class persona that bolts onto the meta-system (`_system/APP_PERSONA_CONTRACT.md`); load it after the archetype catalog to sharpen domain/stack craft. Absent in the parent template; never a hard dependency; cannot override precedence, security, or validation contracts.
 
 ## Onboarding (load on demand)
 
@@ -193,6 +211,8 @@ tooling work, also load:
 110. `_system/READ_BUNDLES.md`
 111. `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md`
 112. `_system/SELF_HEALING_BOUNDARY.md`
+112a. `_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md` — downstream-local self-improvement loop (detect/propose/apply/validate/record/tag)
+112b. `_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md` — allowed/guarded/forbidden self-writes; in-repo-only scope; rollback
 113. `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md`
 114. `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md`
 115. `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md`
@@ -201,3 +221,42 @@ tooling work, also load:
 118. `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md`
 119. `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
 120. `_system/ORPHAN_META_SNAPSHOT_POLICY.md`
+121. `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md`
+122. `_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md`
+123. `_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md`
+124. `_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md`
+125. `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md`
+126. `_system/SUPER_TEMPLATE_MASTER_MAP.md`
+127. `_system/CONCURRENT_AGENT_FLEET_PROTOCOL.md`
+128. `_system/AGENT_LOCKING_AND_LEASES.md`
+129. `_system/CONTINUOUS_CONTEXT_RECORDING_PROTOCOL.md`
+130. `_system/CONTEXT_COMPACTION_AND_REHYDRATION.md`
+131. `_system/SCAFFOLD_PROFILE_MATRIX.md`
+131a. `_system/SCAFFOLD_PROFILE_AUTHORING_STANDARD.md`
+132. `_system/APP_ARCHETYPE_ROUTING_MATRIX.md`
+132b. `_system/APP_ARCHETYPE_PERSONA_CATALOG.md`
+132a. `_system/APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md`
+132c. `_system/PROJECT_SPECIFIC_PLACEHOLDER_FILE_STANDARD.md`
+132d. `_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md` — how to author app-specific context files
+132e. `_system/APP_CONTEXT_FILE_MATRIX.md` — universal + per-archetype app-context file matrix
+133. `_system/TOOL_MEMORY_REDIRECTION_PROTOCOL.md`
+134. `_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md`
+134a. `_system/APP_LOCAL_NAMESPACE_CONTRACT.md`
+134b. `_system/AGENT_INSTANCE_ISOLATION_POLICY.md`
+135. `_system/AUTHORIZED_SECURITY_RESEARCH_MODE.md`
+136. `_system/APP_DELIVERY_AUTOPILOT_PROTOCOL.md`
+137. `_system/SAFE_PERMISSION_AND_SETUP_REPAIR_PROTOCOL.md`
+137a. `_system/AGENT_ELEVATION_AND_AUTH_POLICY.md`
+137b. `_system/SCAFFOLD_ISOLATION_COMPLETION_GATE.md`
+137c. `_system/scaffold-isolation-gates.json` — machine form (validated against `schemas/scaffold-isolation-gates.schema.json`)
+138. `_system/VALIDATION_COMMAND_DISCOVERY_PROTOCOL.md`
+139. `_system/WORKSPACE_SERVICE_REGISTRY_PROTOCOL.md`
+140. `_system/FLEET_CONTROL_TOWER_PROTOCOL.md`
+141. `_system/QUALITY_SCORE_AND_STATUS_REPORT_PROTOCOL.md`
+141a. `_system/QUALITY_SCORE_POLICY.json`
+142. `_system/GLOBAL_APP_REPORT_SINK_POLICY.md`
+143. `_system/EXTERNAL_AGENT_SURFACE_HARVEST_PROTOCOL.md`
+144. `_system/TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md`
+144a. `_system/EVIDENCE_RETENTION_AND_ROTATION_POLICY.md`
+144b. `_system/EVIDENCE_RETENTION_PROTECTED_ALLOWLIST.txt`
+145. `_system/HERETIC_ABLITERATION_PROTOCOL.md`

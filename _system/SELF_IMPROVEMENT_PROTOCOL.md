@@ -38,6 +38,16 @@ An improvement is a candidate if it:
 3. Logic that depends on project-specific third-party libraries.
 4. "Flavor" changes that deviate from the core AIAST design philosophy.
 
+## Downstream-local loop (companion)
+
+The loop above is the **maintainer** loop: it harvests *generic* improvements
+out of the fleet and promotes them into the parent template. Its downstream
+companion is `PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md` — how an agent
+improves its **own project-local AIAST copy** in place while building an app,
+within `SELF_WRITING_BOUNDARY_AND_ROLLBACK.md`, never touching the parent
+template. Generic improvements found that way feed back into this loop via
+`tag-improvement-candidate.sh`; app-specific improvements stay local.
+
 ---
 **Authority:** AIAST Promotion Policy (Maintainer-only)
 **Downstream Tool:** `bootstrap/tag-improvement-candidate.sh`

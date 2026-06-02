@@ -36,6 +36,8 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `repair-myappz-root-ownership.sh` — audit or repair root-owned paths in a broader MyAppZ workspace while excluding `_backups` by default
 - `generate-system-key.sh` — rebuild the exhaustive agent-facing key for all AIAST-managed files
 - `generate-system-registry.sh` — rebuild the machine-readable registry of AIAST-managed files
+- `generate-super-template-master-map.sh` — build the operator-grade super template master map
+- `check-master-map-completeness.sh` — verify master-map coverage against system registry
 - `generate-host-adapters.sh` — regenerate managed tool-entry and load-context adapter files from the host-adapter manifest
 - `generate-operating-profile.sh` — rebuild the compact host-ingestion profile
 - `detect-instruction-conflicts.sh` — scan adapters, prompt surfaces, and manifests for overlap or contradiction
@@ -57,6 +59,37 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `print-agent-map.sh` — print the agent discovery matrix
 - `check-placeholders.sh` — find unresolved actionable blanks in repo-owned operating files while ignoring entry-format and entry-template example sections
 - `check-agent-orchestration.sh` — verify role-catalog, prompt-pack, and Cursor role-overlay alignment
+- `agent-lock.sh` — claim a write-scope lease
+- `agent-unlock.sh` — release a write-scope lease
+- `agent-heartbeat.sh` — record agent heartbeat for active leases
+- `agent-reclaim-lock.sh` — reclaim expired lock ownership with reason logging
+- `check-agent-locks.sh` — validate lock and lease file health
+- `record-agent-event.sh` — append event timeline and jsonl continuity records
+- `append-build-log.sh` — append build or validation outcomes to build log
+- `check-context-freshness.sh` — verify required context/event/checkpoint surfaces are fresh
+- `emit-archetype-pack.sh` — emit selected archetype routing artifact and refresh generated registry/integrity state after write-mode changes
+- `validate-scaffold-profile.sh` — validate declared scaffold profile id
+- `validate-scaffold-profiles.sh` — validate scaffold profile matrix contract coverage
+- `validate-archetype-packs.sh` — validate archetype pack coverage and section requirements
+- `check-tool-memory-alignment.sh` — verify repo-local tool memory surfaces
+- `check-template-mos-boundary.sh` — assert template/mos boundary containment
+- `check-cross-file-integration.sh` — verify required super-upgrade contracts exist together
+- `run-app-delivery-autopilot.sh` — orchestrate delivery checks, scoring, and status reporting
+- `repair-safe-permission-drift.sh` — bounded in-repo permission/setup drift repair
+- `discover-validation-commands.sh` — discover available validation commands and gaps
+- `run-validation-autopilot.sh` — run deterministic validation autopilot from discovered commands
+- `allocate-workspace-service-port.sh` — allocate governed workspace service port with dry-run/apply modes
+- `emit-fleet-status.sh` — emit fleet status summary from lock/heartbeat surfaces
+- `check-fleet-readiness.sh` — fail when fleet lock/readiness conditions are unhealthy
+- `validate-quality-score-policy.sh` — validate semantic version, required weight keys, weight sum, and label thresholds for the quality policy
+- `score-quality-gates.sh` — compute quality score and label from governed categories and the versioned quality score policy
+- `emit-status-report.sh` — emit status report artifact into context evidence surface
+- `append-global-app-report.sh` — append global app report sink entry with explicit external-write approval
+- `harvest-agent-surfaces.sh` — read-only donor surface harvest and evidence emission
+- `create-test-app-campaign.sh` — create/dry-run benchmark test-app campaign scaffolds
+- `run-test-app-benchmark-matrix.sh` — plan or execute isolated benchmark matrix cells across scaffold profiles, archetypes, and fast/strict modes
+- `check-evidence-retention.sh` — report or prune stale maintainer evidence with protected allowlist support
+- `generate-release-packet.sh` — generate dry-run or local release packet manifests, artifact indexes, checksums, and signature metadata
 - `check-packaging-targets.sh` — validate packaging manifests, shared desktop launchers, and generated systemd units
 - `check-host-ingestion.sh` — validate prompt-emission surfaces and the canonical host-prompt emitter
 - `check-host-bundle.sh` — validate the self-contained external host-bundle contract and emitter
@@ -65,6 +98,10 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 - `emit-host-bundle.sh` — export a self-contained host bundle for external consumers that cannot read repo-local paths directly
 - `emit-auxiliary-brief.sh` — emit a markdown brief for optional parallel host CLI / IDE workers (`_system/SUB_AGENT_HOST_DELEGATION.md`)
 - `generate-runtime-foundations.sh` — generate project-owned packaging, install, mobile, logging, and AI scaffolds in a cloned repo
+- `gitops.sh` — single-founder Git/GitHub mirror helper with status, sync, `mirror`, checkpoint, release, and exception-only branch commands
+- `hybrid-git-sync.sh` — fetch/rebase `app-runtime` and `app-meta` together under hybrid `APP_ROOT` (Git policy lookups match bootstrap/gitops.sh; optional install location is `_system/gitops-policy.json`; does not run per-shard `validate-system.sh`)
+- `snapshotctl.sh` — tar.zst snapshot creation, verification, encryption, publish, and restore command suite
+- `generate-ops-notes.sh` — build session notes and recovery ledger markdown outputs from operations JSONL logs
 
 ## Recommended flow
 
@@ -101,6 +138,32 @@ Use this directory to install, upgrade, verify, repair, and remove AIAST in a ta
 27. Monitor `_system/automation/` artifacts (see `_system/automation/README.md`) and escalate repeated warnings/failures before release claims
 28. Use `update-template.sh <target-repo> --source <template-root> --dry-run` when a newer AIAST release is available
 29. Use `repair-system.sh <target-repo> --source <template-root> --dry-run` or `heal-system.sh <target-repo> --source <template-root>` when integrity, awareness, or drift checks fail
+
+## JSON Envelope Contract (Governance Scripts)
+
+For scripts that support `--json`, stdout must emit a single JSON object and no
+extra lines. Human-readable diagnostics should go to stderr.
+
+- Success envelope:
+  - `ok: true`
+  - `script: <script-name>`
+  - `timestamp: <UTC ISO8601>`
+  - `mode: <validation|emit|default>`
+  - `result: { ... }`
+- Error envelope:
+  - `ok: false`
+  - `script: <script-name>`
+  - `timestamp: <UTC ISO8601>`
+  - `mode: <validation|emit|default>`
+  - `error.code`
+  - `error.message`
+  - optional `error.details`
+
+Exit semantics:
+
+- `0`: success
+- `1`: validation/business failure
+- `2`: usage/argument error
 
 Mutating lifecycle and generation commands should be run as the intended repo owner, not as `root`. If repo ownership already drifted, fix that first and then rerun the lifecycle command normally.
 

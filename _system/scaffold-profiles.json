@@ -45,6 +45,10 @@
       "_system/APP_ARCHETYPE_ROUTING_MATRIX.md",
       "_system/APP_ARCHETYPE_PERSONA_CATALOG.md",
       "_system/INSTALLER_FIRST_GATE.md",
+      "_system/APP_REPO_IDENTITY.md",
+      "_system/APP_PERSONA_CONTRACT.md",
+      "_system/personas/README.md",
+      "app/README.md",
       "bootstrap/init-project.sh",
       "bootstrap/update-template.sh",
       "bootstrap/install-missing-files.sh",
@@ -55,7 +59,13 @@
       "bootstrap/check-mos-downstream-exclusion.sh",
       "bootstrap/check-mcp-project-isolation.sh",
       "bootstrap/validate-system.sh",
-      "bootstrap/check-system-awareness.sh"
+      "bootstrap/check-system-awareness.sh",
+      "_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md",
+      "_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md",
+      "_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md",
+      "_system/APP_CONTEXT_FILE_MATRIX.md",
+      "_system/self-improvement/README.md",
+      "_system/app-context/README.md"
     ],
     "forbidden_downstream_paths": [
       ".env",

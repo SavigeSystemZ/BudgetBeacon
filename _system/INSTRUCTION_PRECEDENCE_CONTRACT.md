@@ -56,6 +56,9 @@ same precedence structure plus the current template release marker, so patch
 releases must update the prose contract and the JSON manifest together even when
 the precedence order itself does not change.
 
+For AIAST 1.24.0, the JSON companion's release marker was advanced with no
+precedence-order change; this paragraph is the matching prose contract touch.
+
 A mid-session **resume checkpoint** written under `_system/checkpoints/` via
 `bootstrap/write-checkpoint.sh` is a continuity surface, not an authority
 surface: it reports what the previous agent was doing and what should happen

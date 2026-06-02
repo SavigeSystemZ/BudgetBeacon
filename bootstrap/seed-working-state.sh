@@ -98,7 +98,8 @@ updates = {
         ),
     },
     root / "PLAN.md": {
-        "- Current target outcome: set this to the active repo milestone": f"- Current target outcome: Establish a clean, validated baseline for {app_name}",
+        "- Current target outcome: set this to the active repo milestone": f"- Current target outcome: Establish a clean onboarding baseline for {app_name}",
+        "- Current target outcome: deliver the next milestone aligned with `PRODUCT_BRIEF.md` and `ROADMAP.md` (when present).": f"- Current target outcome: Establish a clean onboarding baseline for {app_name}",
         "- Why it matters now: record why this work matters to the repo, user, or release": "- Why it matters now: The repo needs a truthful operating picture before deeper feature work begins.",
         "- Deadline or forcing function: record if one exists": "- Deadline or forcing function: Complete onboarding before the first substantial implementation pass.",
         "- User or operator outcome:": "- User or operator outcome: A new agent can enter the repo and immediately see how to build, validate, and continue safely.",

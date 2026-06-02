@@ -50,6 +50,15 @@ Tool-specific agents and host orchestration may wrap these roles, but they must 
   - record decisions, blockers, and next steps
   - keep continuity factual rather than chat-like
 
+### Abliteration Specialist
+
+- Purpose: manage authorized host-local model refusal/alignment behavior work using the Heretic protocol
+- Default write scope: AI model configuration, local cache directories, and inference adapters
+- Must do:
+  - follow `HERETIC_ABLITERATION_PROTOCOL.md` strictly
+  - explicitly log user authorization, model identity, artifact paths, and rollback state
+  - ensure model-abliteration work is isolated from runtime application code and `_system/`
+
 ### Specialist Reviewers
 
 - Purpose: provide bounded expert review without taking over broad implementation
@@ -94,6 +103,28 @@ When operating as part of a Swarm Fleet, agents adopt one of these specialized o
 3. Parallel workers may run only when their write scopes do not overlap.
 4. Validators and reviewers should run after or alongside implementation, not compete with the active writer for the same files.
 5. If ownership becomes ambiguous, reduce scope and restabilize before continuing.
+
+## Deterministic role-routing matrix
+
+Use this matrix before assigning work so routing is repeatable across tools.
+
+| Task signal | Primary role | Secondary role(s) | Default write scope | Escalate when |
+| --- | --- | --- | --- | --- |
+| New feature or refactor touching runtime behavior | Implementation Worker | Validator, Context Curator | runtime code + directly related tests/docs | scope expands beyond assigned subsystem |
+| Multi-file architecture or contract design | Orchestrator / Planner | Specialist reviewer (architecture), Context Curator | planning + architecture docs until implementation starts | proposed change crosses security or install boundaries |
+| Security-sensitive change (auth, crypto, privilege, secrets) | Specialist reviewer (security) + Implementation Worker | Validator, Orchestrator / Planner | smallest affected security/runtime surface | any uncertainty on threat model or privilege escalation |
+| CI, release, merge readiness, remote sync | GitHub / CI steward | Validator, Context Curator | workflow/config/release docs + handoff state | branch divergence, failed checks, or credential block |
+| Validation, regression investigation, release proof | Validator | Implementation Worker (repair only), Context Curator | read-only by default; repair scope only when assigned | failed gate cannot be reproduced or confidence drops |
+| Continuity-only pass, takeover, or handoff stabilization | Context Curator | Orchestrator / Planner | `TODO.md`, `FIXME.md`, `WHERE_LEFT_OFF.md`, `_system/context/` | contradictions remain after one repair pass |
+| Domain mismatch or wrong-app prompt suspected | Orchestrator / Planner | Context Curator, security reviewer when needed | no runtime writes until confirmed | user intent conflicts with domain manifest/protocol |
+| Authorized local-model refusal/alignment behavior work | Abliteration Specialist | Orchestrator / Planner, Context Curator | local cache, LLM config, adapter weights | wrapper cannot resolve Heretic, outputs are not reproducible, or rollback path is unclear |
+
+### Escalation triggers (mandatory)
+
+- **Confidence drop:** if confidence falls below medium, reassign a Validator before further writes.
+- **Validation failure:** if a required gate fails twice, pause feature expansion and enter repair mode.
+- **Security risk:** if a change increases privilege, network exposure, or secret handling scope, route through security review first.
+- **Scope conflict:** if two writers need overlapping files, halt parallel work and restore single-writer ownership.
 
 ## Handoff minimum
 

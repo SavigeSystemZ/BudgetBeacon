@@ -2,9 +2,9 @@
 
 **Agent gate:** PENDING_HEALTH_CHECK
 
-**When (UTC):** 2026-05-28T05:21:37Z
+**When (UTC):** 2026-06-02T13:29:20Z
 **Event:** update-template
-**Refresh-managed from source:** no
+**Refresh-managed from source:** yes
 **Installed template version marker (`_system/.template-version`):** 1.24.0
 
 ## What happened
@@ -36,5 +36,5 @@ unintended edits before committing.
 - `_system/UPGRADE_AND_DRIFT_POLICY.md`
 - `_system/AGENT_INIT_CONVERGENCE.md`
 
-<!-- machine_json: {"agent_gate":"PENDING_HEALTH_CHECK","ts":"2026-05-28T05:21:37Z","event":"update-template","refresh_managed":false,"installed_template_version":"1.24.0"} -->
+<!-- machine_json: {"agent_gate":"PENDING_HEALTH_CHECK","ts":"2026-06-02T13:29:20Z","event":"update-template","refresh_managed":true,"installed_template_version":"1.24.0"} -->
 

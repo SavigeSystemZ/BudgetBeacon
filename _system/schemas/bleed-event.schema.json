@@ -26,6 +26,9 @@
         "provenance-drift",
         "template-app-confusion",
         "remediation",
+        "meta-sync-blocked",
+        "meta-sync-forced",
+        "integrity-signature-mismatch",
         "unknown"
       ]
     },

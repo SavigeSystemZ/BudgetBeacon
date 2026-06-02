@@ -8,7 +8,9 @@ source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
 
 usage() {
   cat <<'EOF'
-Usage: scaffold-system.sh [target-repo] [--app-name NAME] [--source <template-root>] [--strict] [--dry-run] [--refresh-managed]
+Usage: scaffold-system.sh [target-repo] [--app-name NAME] [--profile NAME]
+                          [--source <template-root>] [--strict] [--dry-run]
+                          [--refresh-managed]
 
 Smart AIAST lifecycle entrypoint:
   - first install into a repo that does not have AIAST yet
@@ -19,6 +21,7 @@ EOF
 
 TARGET_REPO=""
 APP_NAME=""
+PROFILE=""
 SOURCE=""
 STRICT=0
 DRY_RUN=0
@@ -28,6 +31,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --app-name)
       APP_NAME="${2:-}"
+      shift 2
+      ;;
+    --profile)
+      PROFILE="${2:-}"
       shift 2
       ;;
     --source)
@@ -113,6 +120,9 @@ if [[ ${IS_INSTALLED} -eq 0 ]]; then
   if [[ -n "${APP_NAME}" ]]; then
     cmd+=(--app-name "${APP_NAME}")
   fi
+  if [[ -n "${PROFILE}" ]]; then
+    cmd+=(--profile "${PROFILE}")
+  fi
   if [[ ${STRICT} -eq 1 ]]; then
     cmd+=(--strict)
   fi
@@ -131,6 +141,9 @@ if [[ -z "${CANONICAL_SOURCE}" || "${CANONICAL_SOURCE}" == "${TARGET_REPO}" ]]; 
 fi
 
 cmd=(bash "${CANONICAL_SOURCE}/bootstrap/update-template.sh" "${TARGET_REPO}" --source "${CANONICAL_SOURCE}")
+if [[ -n "${PROFILE}" ]]; then
+  cmd+=(--profile "${PROFILE}")
+fi
 if [[ ${STRICT} -eq 1 ]]; then
   cmd+=(--strict)
 fi

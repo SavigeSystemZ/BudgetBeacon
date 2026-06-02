@@ -76,3 +76,19 @@ Every app should provide:
 - A `readiness` endpoint for health checks.
 - A `validate-security.sh` script that proves loopback-only binds and proper header configuration.
 - An installation or repair command that can recreate missing env files, service units, and app-owned directories without overwriting user data.
+
+## 10. Agent containment deny/approval matrix
+
+- **Allowed without extra approval**
+  - Local repo contract/doc updates.
+  - Validation commands and non-destructive diagnostics.
+- **Guarded (require explicit task scope and evidence)**
+  - Bootstrap/install script changes.
+  - Network/service binding changes.
+  - Auth/session/security policy changes.
+- **Denied by default (require explicit operator approval)**
+  - Cross-repo writes outside declared scope.
+  - Secret material insertion, storage, or exposure in repo surfaces.
+  - Destructive cleanup that can remove unknown data or shared dependencies.
+
+For guarded or denied classes, include a before/after risk note in handoff surfaces.

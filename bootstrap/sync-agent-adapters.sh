@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+# Requires zsh; do not invoke as `bash <script>`. Uses zsh-only syntax and
+# will syntax-error under bash. Run via `./sync-agent-adapters.sh ...`
+# or `zsh sync-agent-adapters.sh ...`.
 
 # AIAST Swarm Fleet: Agent Adapter Synchronization Script
 # Generates IDE-specific "thin adapter" rules to synchronize all agents with the SSoT.

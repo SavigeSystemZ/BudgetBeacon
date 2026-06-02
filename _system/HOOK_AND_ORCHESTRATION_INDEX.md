@@ -88,7 +88,10 @@ MCP servers are **optional accelerators** with policy in `_system/MCP_CONFIG.md`
 Adding or changing MCP usage should:
 
 - Stay least-privilege (tokens scoped, read-only where possible).
+- Stay app-scoped; no sibling app, parent-template, home-directory, shared
+  memory/cache, or global browser-profile access by default.
 - Cross-reference `MCP_SURVIVAL_PLAYBOOK.md` for failures.
+- Run `bootstrap/check-mcp-project-isolation.sh` after config or example changes.
 - Not become a hard dependency for core build/test (see `MCP_CONFIG.md`).
 
 ## 7. Meta-system (MOS / master repo) note

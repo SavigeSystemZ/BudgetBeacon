@@ -18,7 +18,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-MYAPPZ_ROOT="$(cd -- "${MYAPPZ_ROOT}" && pwd)"
+# No global install root (CI runners, fresh clones, fresh downstreams) means
+# there is no global shim to align — that is a valid, aligned state. Only
+# canonicalize when the root actually exists; never hard-error on its absence.
+if [[ -d "${MYAPPZ_ROOT}" ]]; then
+  MYAPPZ_ROOT="$(cd -- "${MYAPPZ_ROOT}" && pwd)"
+fi
 status="global_shim_alignment_ok"
 issues=()
 shim="${MYAPPZ_ROOT}/AGENTS.md"

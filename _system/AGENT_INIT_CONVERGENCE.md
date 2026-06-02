@@ -17,6 +17,7 @@ This contract maps external initialization workspaces (for example `AgentInits`)
 | `PROJECT_CONTEXT.md` workspace boundary | `_system/PROJECT_PROFILE.md` + `_system/TEMPLATE_NEUTRALITY_POLICY.md` | adopted |
 | `INITIALIZATION_GUIDE.md` onboarding flow | `_system/LOAD_ORDER.md` + `_system/AGENT_DISCOVERY_MATRIX.md` + this file | adopted |
 | `AGENT_INIT_LOG.md` handoff ledger | `WHERE_LEFT_OFF.md` + `TODO.md` + `_system/checkpoints/` | adapted |
+| tool-local memory caches | `_system/context/AGENT_SHARED_MEMORY.md` + pointer-only local cache notes | adopted |
 | `AGENT_TEMPLATE.md` new-agent scaffold | `_system/host-adapter-manifest.json` + placeholder adapter set | adopted |
 | conflict-safe additive sectioning (`Additions - Agent - Date`) | `_system/MULTI_AGENT_COORDINATION.md` additive follow-up policy | adopted |
 | workspace/target identity gates | `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` + `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` + bootstrap consistency checks | adopted |
@@ -29,12 +30,14 @@ This contract maps external initialization workspaces (for example `AgentInits`)
 - Shared-vs-adapter ownership boundaries.
 - Additive merge preference for cross-agent continuity docs.
 - Placeholder compatibility files for common external agents.
+- Repo-local shared execution memory (`_system/context/AGENT_SHARED_MEMORY.md`) as the cross-agent source of truth.
 
 ### Maintainer-Only (do not auto-install into app repos)
 
 - Historical multi-agent init transcripts.
 - Maintainer planning logs and curation notes.
 - Source-repo-only evidence and rollout bookkeeping under `_META_AGENT_SYSTEM/`.
+- Rich tool-local memory content that is not mirrored into repo-local memory surfaces.
 
 ## Required Adapter Names for Cross-Agent Comparability
 

@@ -4,6 +4,14 @@ AIAST self-healing is conservative repair of known-safe mechanical drift. It is
 not permission to erase uncertainty, overwrite repo-owned truth, or silently
 "fix" user-directed behavior.
 
+## Self-healing vs self-writing
+
+Self-healing is *mechanical repair* of known drift (this document). *Additive
+improvement* of a downstream repo's local operating layer is a different
+activity, bounded separately by `SELF_WRITING_BOUNDARY_AND_ROLLBACK.md` and
+`PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md`. Neither may cross a repo boundary
+or overwrite repo-owned truth.
+
 ## Safe automatic repairs
 
 - regenerate managed host adapters from canonical manifests
@@ -40,3 +48,13 @@ not permission to erase uncertainty, overwrite repo-owned truth, or silently
 If a requested or inferred repair crosses from mechanical drift into repo-owned
 truth, stop treating it as self-healing and move into explicit review or
 migration work.
+
+## Bounded auto-correction loop
+
+When a fix is eligible for self-healing, enforce this loop:
+
+1. Detect and classify the failure.
+2. Apply only the smallest safe mechanical repair.
+3. Re-run targeted validation immediately.
+4. Record command/result evidence.
+5. Escalate to explicit human-reviewed repair if uncertainty remains after two attempts.

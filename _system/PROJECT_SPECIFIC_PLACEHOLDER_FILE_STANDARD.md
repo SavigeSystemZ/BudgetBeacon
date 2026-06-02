@@ -29,6 +29,7 @@ Do not write secrets here.
 - quality score history
 - fleet status history
 - external report config
+- app-specific context files (see `APP_CONTEXT_FILE_MATRIX.md`)
 
 ## Enforcement Rules
 

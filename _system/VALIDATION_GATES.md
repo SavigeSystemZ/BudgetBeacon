@@ -71,6 +71,7 @@ For the **recommended bootstrap script order** (instruction layer, strict system
   those surfaces; run `bootstrap/check-delivery-gate-alignment.sh . --strict`
   (also part of `validate-system.sh --strict`)
 - self-awareness or recovery change: run `bootstrap/check-system-awareness.sh` and `bootstrap/check-hallucination.sh`
+- app-context or downstream self-improvement change: run `bootstrap/validate-app-context-files.sh` and `bootstrap/check-local-self-improvement.sh` (both also surfaced by `bootstrap/system-doctor.sh`)
 
 ## Failure policy
 

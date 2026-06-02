@@ -70,6 +70,7 @@ After **adding, renaming, or removing** managed files under `_system/`, `bootstr
 - **Optional long prose compression for input (opt-in):** `.cursor/skills/compress-context-input/SKILL.md`, `.cursor/commands/compress-context.md`, and `bootstrap/compress-context-file.sh` — for human-edited markdown under `docs/` / `notes/` only; tiered loading stays primary; see `CONTEXT_BUDGET_STRATEGY.md`.
 - **Runtime and cost discipline:** `PERFORMANCE_BUDGET.md`, `AGENT_PERFORMANCE_GUIDE.md`.
 - **Prompt quality over time:** `PROMPT_EFFECTIVENESS_TRACKING.md`.
+- **Execution closure discipline:** `EXECUTION_PROTOCOL.md`, `HANDOFF_PROTOCOL.md`, and `GIT_REMOTE_AND_SYNC_PROTOCOL.md` define mandatory context + git closure before completion claims.
 
 ## Conflict and ambiguity
 
@@ -81,6 +82,7 @@ After **adding, renaming, or removing** managed files under `_system/`, `bootstr
 ## Multi-agent and continuity
 
 - **Turn-taking and ownership:** `MULTI_AGENT_COORDINATION.md`, `AGENT_ROLE_CATALOG.md`.
+- **Deterministic routing:** route by task signal and escalation triggers using `AGENT_ROLE_CATALOG.md`.
 - **Checkpoints:** `CHECKPOINT_PROTOCOL.md`.
 - **Resume:** `WHERE_LEFT_OFF.md` (primary), `HANDOFF_PROTOCOL.md`.
 

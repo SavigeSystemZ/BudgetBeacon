@@ -24,8 +24,8 @@ Each JSONL event should include:
 
 ## Required event classes
 
-- Git events: `status`, `sync`, `start-branch`, `merge-safe`, `release-cut`,
-  `recover`.
+- Git events: `status`, `sync`, `mirror`, `start-branch`, `merge-safe`,
+  `release-cut`, `recover`.
 - Snapshot events: `create`, `verify`, `encrypt`, `publish`, `catalog`,
   `restore-dry-run`, `restore`.
 - Gate events: pre-commit and pre-push validation outcomes.

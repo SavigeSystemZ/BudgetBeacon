@@ -30,12 +30,17 @@ in addition to this file.
   `_system/SYSTEM_REGISTRY.json`, `_system/KEY.md`,
   `_system/repo-operating-profile.json`, and
   `_system/INTEGRITY_MANIFEST.sha256`.
+- Never use maintainer-only source-repo layers (for example `_META_AGENT_SYSTEM/`,
+  `_TEMPLATE_FACTORY/`, `MOS_SOURCE_LIBRARY/`) as lifecycle copy sources for app
+  installs; install/update flows must run from the installable product root only.
 
 ## Smart entrypoint
 
 `bootstrap/scaffold-system.sh` is the preferred human-facing lifecycle command.
 It should choose between first install, additive backfill, or update based on
 the target state and the available canonical template source.
+Its source resolution must preserve installable-layer separation so downstream
+repos only receive product files intended for app consumption.
 
 ## Required post-action checks
 

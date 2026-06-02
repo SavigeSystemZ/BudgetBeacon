@@ -41,10 +41,12 @@ if ! rg -F --quiet -- "\`${profile}\`" "$matrix"; then
   fi
   exit 1
 fi
-manifest="${repo}/_system/runtime-profiles/scaffold-profiles.json"
-schema="${repo}/_system/runtime-profiles/scaffold-profiles.schema.json"
+manifest="$(aiaast_scaffold_profile_manifest_path "${repo}")" || {
+  [[ "$json_mode" -eq 1 ]] && aiaast_json_error "missing_file" "missing scaffold profile manifest" "validate-scaffold-profile.sh" "validation"
+  [[ "$json_mode" -eq 0 ]] && echo "missing scaffold profile manifest"
+  exit 1
+}
 aiaast_require_file "$manifest"
-aiaast_require_file "$schema"
 python3 - "$manifest" "$profile" <<'PY'
 import json, sys
 manifest, profile = sys.argv[1:]
@@ -54,8 +56,14 @@ profiles = data.get("profiles", [])
 required_root = {"version", "profiles"}
 if not required_root.issubset(set(data.keys())):
     raise SystemExit(1)
-known = {p.get("id") for p in profiles}
-raise SystemExit(0 if profile in known else 1)
+for item in profiles:
+    if item.get("id") != profile:
+        continue
+    required = {"id", "installable", "maintainer_only", "downstream_mutable"}
+    if not required.issubset(item):
+        raise SystemExit(1)
+    raise SystemExit(0)
+raise SystemExit(1)
 PY
 if [[ "$json_mode" -eq 1 ]]; then
   aiaast_json_ok "$(python3 - "$profile" <<'PY'
@@ -66,4 +74,3 @@ PY
 else
   echo "scaffold profile validation: PASS ($profile)"
 fi
-

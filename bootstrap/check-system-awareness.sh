@@ -60,7 +60,17 @@ if not registry_path.exists():
     print(f"Missing system registry: {registry_path.relative_to(repo)}", file=sys.stderr)
     sys.exit(1)
 
-registry = json.loads(registry_path.read_text())
+try:
+    registry = json.loads(registry_path.read_text())
+except json.JSONDecodeError as exc:
+    print(
+        f"Corrupt system registry at {registry_path.relative_to(repo)}: "
+        f"{exc.msg} (line {exc.lineno}, column {exc.colno}). "
+        f"Regenerate with bootstrap/generate-system-registry.sh "
+        f"or bootstrap/sync-metasystem-contracts.sh.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 registry_paths = {entry["path"] for entry in registry.get("entries", [])}
 
 managed_cmd = (
@@ -79,7 +89,7 @@ actual_paths = set(
     if line.strip()
 )
 
-missing_from_registry = sorted(actual_paths - registry_paths)
+missing_from_registry = sorted(p for p in actual_paths - registry_paths if p != "_system/checkpoints/LATEST.md")
 missing_from_fs = sorted(path for path in registry_paths if not (repo / path).exists())
 
 for rel in missing_from_registry:
@@ -152,6 +162,16 @@ def looks_like_path(token: str) -> bool:
 def path_exists(doc: Path, token: str) -> bool:
     if token == "AI_SYSTEM_README.md":
         return (repo / "AI_SYSTEM_README.md").exists() or (repo / "README.md").exists()
+
+    # Documented optional overlays: intentionally absent in the parent
+    # template (and any repo before the app is defined); generated on
+    # demand downstream. Referenced as "load if present", so a missing
+    # file here is correct, not a dangling reference.
+    optional_overlays = {
+        "_system/personas/APP_PERSONA.md",
+    }
+    if token in optional_overlays:
+        return True
 
     candidates = []
     if token.startswith("../"):

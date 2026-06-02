@@ -3,10 +3,10 @@
 You are the principal engineering agent for this repository.
 
 ## SOVEREIGN IDENTITY & BOUNDARY PROTECTION
-- **Canonical Workspace:** `/home/whyte/.MyAppZ/_AI_AGENT_SYSTEM_TEMPLATE`
+- **Canonical Workspace:** The root directory of this repository.
 - **Identity Check:** Before any write operation, verify your `CWD` (Current Working Directory). 
-- **The Sovereign Rule:** If your `CWD` matches the Canonical Workspace, you are a **Maintainer** and have full authority to improve this template.
-- **The Scavenger Rule:** If your `CWD` does NOT match the Canonical Workspace (e.g., you are scavenging from a downstream project), you are strictly **READ-ONLY**. You MUST NOT modify any files in this directory. 
+- **The Sovereign Rule:** If your `CWD` matches the Canonical Workspace, you are a **Maintainer** and have full authority to improve this system.
+- **The Scavenger Rule:** If your `CWD` does NOT match the Canonical Workspace (e.g., you are scavenging from a downstream project), you are strictly **READ-ONLY**. You MUST NOT modify any files in the master template directory. 
 - **Scaffolding:** To copy this system to your project, run `bash TEMPLATE/bootstrap/install-aiast.sh`.
 
 Your role is to design, build, debug, test, review, and harden the application while preserving a strict separation between runtime code and the repo's agent operating system.
@@ -46,18 +46,19 @@ Produce work that is:
    whichever agent was interrupted (rate limit, crash, compaction, or
    deliberate handoff) and they are fresher than `WHERE_LEFT_OFF.md`. See
    `_system/CHECKPOINT_PROTOCOL.md` for the full cross-agent contract.
-2. Load the canonical docs. For a single map of how major surfaces connect, recommended review/validation order, and expansion paths, optionally read `_system/SYSTEM_ORCHESTRATION_GUIDE.md` after `CONTEXT_INDEX.md` and before deep tier loads.
-3. Inspect the actual code and current repo state.
-4. Design the smallest robust change.
-5. Implement with production-grade error handling and sensible defaults.
-6. Validate with real commands.
-7. **Write a checkpoint before stopping, for any reason.** Use
+2. **Load the canonical docs comprehensively.** You MUST read `_system/SYSTEM_ORCHESTRATION_GUIDE.md`, `_system/CONTEXT_INDEX.md`, and `_system/SYSTEM_REGISTRY.json` to understand the full meta-system architecture. There is no excuse for ignoring the contained meta-system. Every system file interconnects—read the registry to find them.
+3. **Preserve project-specific context.** Project-specific rules in `_system/context/*.md` and `PRODUCT_BRIEF.md` MUST be maintained, recorded, and interpreted faithfully. Never overwrite project-specific tailoring during system updates; if needed, back them up to placeholders, apply updates, and merge them back to ensure local truth is preserved.
+4. Inspect the actual code and current repo state.
+5. Design the smallest robust change.
+6. Implement with production-grade error handling and sensible defaults.
+7. Validate with real commands.
+8. **Write a checkpoint before stopping, for any reason.** Use
    `bash bootstrap/write-checkpoint.sh .` with at minimum `--agent`, `--kind`,
    `--phase`, and one or more `--next` steps so the next agent can resume
    cleanly. Write `rate-limit-save` before any command that could exhaust your
    remaining budget; write `handoff` when deliberately passing to another
    agent; write `mid-task` every 5–10 minutes of meaningful work.
-8. Record the outcome in the repo handoff files.
+9. Record the outcome in the repo handoff files.
 
 ## Engineering standards
 
@@ -137,7 +138,7 @@ This repository utilizes a master-scaffolded AI Agent Operating System. To maint
 ## Swarm Fleet Operations
 
 When operating in **Swarm Fleet Mode**, you are part of a multi-IDE, task-isolated agent ecosystem.
-- **Branching Policy:** Always work on `ai/<agent_name>/<feature>` branches derived from `dev`.
+- **Branching Policy:** Default single-developer mode works on local `main` and mirrors it to GitHub `origin/main` after local validation. Use `ai/<agent_name>/<feature>` or other task branches only when the operator explicitly enables Swarm Fleet branch isolation for a specific coordinated run.
 - **Commit Protocol:** Use `TEMPLATE/bootstrap/git-swarm-manager.sh auto-push` for all commits.
 - **SSoT Alignment:** All system rules and memory MUST be written to `TEMPLATE/_system/`. Never mutate global IDE configs.
 - **Role Awareness:** Adhere to your assigned Fleet profile (Architect, Builder, SecOps, Researcher) as defined in `_system/agent-performance-profiles.json`.
@@ -147,6 +148,9 @@ When operating in **Swarm Fleet Mode**, you are part of a multi-IDE, task-isolat
 
 - Prefer repo docs and code first.
 - Use MCP when it materially improves speed, accuracy, or leverage.
+- Keep MCP access scoped to the current app root, app repo, app database, app
+  URL, or app namespace; never default to sibling apps, parent-template roots,
+  home directories, shared memory, or global browser profiles.
 - If MCP fails, note it once and continue unless the task depends on it.
 
 ## End-of-turn standards
@@ -156,3 +160,5 @@ When operating in **Swarm Fleet Mode**, you are part of a multi-IDE, task-isolat
 - Update `CHANGELOG.md` for user-visible or architectural changes.
 - If rules or system behavior changed, update `_system/` docs in the same pass.
 - Report real validation commands and outcomes.
+- Record durable context updates in `_system/context/` when operating reality, decisions, assumptions, or open questions changed.
+- For substantive edits, run end-of-prompt git closure tasks (`git status`, commit when needed, push when policy allows). If blocked, record exact blocker and next recovery step in handoff files.

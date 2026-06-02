@@ -61,6 +61,7 @@ When operating with Tier S capacity (e.g., Gemini 2.5 Pro):
 - For install, launch, packaging, migration, or operator-facing change, validate the real runtime path.
 - After **large** implementation or refactor sessions, re-check that the app **launches and renders** (or API health) per `AGENT_INSTALLER_AND_HOST_VALIDATION_PROTOCOL.md` unless the change is purely non-runtime.
 - Record command, scope, and result for meaningful verification.
+- If permission or ownership issues block execution, repair them immediately (least-privilege fix), then rerun the blocked command and record both the failure and remediation evidence.
 
 ## Stage 5: Record and hand off
 
@@ -74,6 +75,7 @@ Follow the requirements in `_system/HANDOFF_PROTOCOL.md`. At minimum:
 - Update `CHANGELOG.md` and `RELEASE_NOTES.md` for user-visible or architectural changes.
 - Update `_system/context/` when durable state shifted.
 - Verify handoff quality: run `bootstrap/check-evidence-quality.sh` to confirm claims are grounded.
+- Complete git closure for substantive edits: `git status`, commit scoped changes with clear message, push when policy allows, or record exact blocker and retry path.
 
 ## Decision rules
 
@@ -81,6 +83,10 @@ Follow the requirements in `_system/HANDOFF_PROTOCOL.md`. At minimum:
 - When blocked, reduce scope before escalating.
 - When a task is too large, split into explicit step parts with clear validation.
 - Do not confuse a plan with proof. Claims require evidence.
+- In a downstream app repo, when the local AIAST operating layer itself has a
+  concrete gap, use the project-local self-improvement loop
+  (`_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md`) rather than editing it
+  ad hoc.
 - When using **separate host terminals or tools** as auxiliaries, follow
   `_system/SUB_AGENT_HOST_DELEGATION.md` (disjoint write scopes, ≤2 concurrent auxiliaries preferred,
   primary owns merge and takeover if an auxiliary fails).

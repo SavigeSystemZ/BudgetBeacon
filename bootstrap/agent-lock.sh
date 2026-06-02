@@ -24,10 +24,15 @@ scope_key="$(aiaast_sanitize_scope_key "$scope")"
 lock="${dir}/${scope_key}.lock.json"
 now="$(aiaast_iso_utc_now)"
 exp="$(date -u -d "+${ttl} minutes" +"%Y-%m-%dT%H:%M:%SZ")"
-if [[ -f "$lock" ]]; then
+# Atomic acquire (S22a WS2): exactly one of N racing acquirers wins the
+# guard dir, eliminating the legacy check-then-create TOCTOU window. The
+# fallback TTL (seconds) mirrors the lease so a guard cannot outlive it.
+if ! aiaast_lock_acquire "$dir" "$scope_key" "$(( ttl * 60 ))"; then
   echo "lock exists: $lock"
   exit 1
 fi
+# Guard is held: if metadata write fails, release so we never leak a lock.
+trap 'aiaast_lock_release "$dir" "$scope_key"' ERR
 python3 - "$lock" "$scope" "$agent" "$role" "$now" "$exp" "$notes" <<'PY'
 import json, sys
 path, scope, agent, role, start, exp, notes = sys.argv[1:]
@@ -42,5 +47,6 @@ with open(path, "w", encoding="utf-8") as f:
     }, f, indent=2, sort_keys=True)
     f.write("\n")
 PY
+trap - ERR
 echo "locked: $scope"
 

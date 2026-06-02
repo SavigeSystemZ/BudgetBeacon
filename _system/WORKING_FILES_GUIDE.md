@@ -37,6 +37,16 @@ In the AIAST source repo, maintainer-only planning, research, handoff, and futur
 - `context/OPEN_QUESTIONS.md` — unresolved decisions that materially affect work
 - `context/QUALITY_DEBT.md` — known quality gaps that are real but not currently blocking
 
+## App-specific context files
+
+`_system/app-context/` holds the **app-specific context** layer — durable
+app-definition truth (identity, domain model, runtime surfaces, security and
+privacy posture, validation profile, and archetype-specific context). It is
+generated and filled after the app is defined; see
+`_system/APP_CONTEXT_FILE_MATRIX.md` and
+`_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md`. Unlike `context/*` (live
+session state), app-context is stable definition state.
+
 ## Update guidance
 
 - Update the smallest set of working files needed to leave a truthful operating picture.

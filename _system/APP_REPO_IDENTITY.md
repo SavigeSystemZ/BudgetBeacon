@@ -33,11 +33,13 @@ Your job, in order:
    adapters) to design and grow the application **into `app/`** (see
    `app/README.md`). The meta-system is the tool; the app in `app/` is the
    product.
-4. **Forge the app's world-class persona.** Once the app is defined and
-   dev has started, run the cross-agent `forge-app-persona` command to
-   evaluate this app and bolt a tailored world-class persona onto the
-   meta-system at `_system/personas/APP_PERSONA.md` (see
-   `_system/APP_PERSONA_CONTRACT.md`). Re-run it as the app evolves.
+4. **Forge the app's persona and fill its context.** Once the app is
+   defined and dev has started, run the cross-agent `forge-app-persona`
+   command (a tailored world-class persona at
+   `_system/personas/APP_PERSONA.md`, see `_system/APP_PERSONA_CONTRACT.md`)
+   and the `fill-app-context` command (app-specific context files under
+   `_system/app-context/`, see `_system/APP_CONTEXT_FILE_MATRIX.md`). Both
+   bolt onto the meta-system; re-run them as the app evolves.
 5. **Keep the boundary.** Application code stays in `app/`, independent of
    `_system/` and `bootstrap/` (see `AGENTS.md`).
 

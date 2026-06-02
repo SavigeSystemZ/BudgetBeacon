@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+# Requires zsh; do not invoke as `bash <script>`. Uses zsh-only constructs
+# (e.g. zsh-style here-strings, parameter expansion) and will syntax-error
+# under bash. Run via `./git-swarm-manager.sh ...` or `zsh git-swarm-manager.sh ...`.
 
 # AIAST Swarm Mode Git Manager
 # Enables collision-free execution for solo developers using multiple AI agents.

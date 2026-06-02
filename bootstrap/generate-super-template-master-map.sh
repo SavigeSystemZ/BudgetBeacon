@@ -27,6 +27,14 @@ if registry.is_file():
     except Exception:
         pass
 
+version = str(data.get("version") or data.get("template_version") or "").strip()
+if not version:
+    version_file = target / "_system/.template-version"
+    if version_file.is_file():
+        version = version_file.read_text(encoding="utf-8").strip()
+if not version:
+    version = "unknown"
+
 managed_entries = []
 if isinstance(data.get("entries"), list):
     for item in data["entries"]:
@@ -103,7 +111,7 @@ print("")
 print("## Generated Snapshot")
 print("")
 print(f"- Product: {data.get('product', 'AIAST')}")
-print(f"- Version: {data.get('version', 'unknown')}")
+print(f"- Version: {version}")
 print(f"- Managed file count: {len(managed)}")
 print(f"- Bootstrap script count: {len(bootstrap)}")
 print(f"- Validation script count: {len(validators)}")
@@ -183,4 +191,3 @@ else
   cat "$tmp"
   rm -f "$tmp"
 fi
-

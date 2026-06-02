@@ -48,6 +48,7 @@ These are generated from `_system/host-adapter-manifest.json` and must not be ha
 - `DEEPSEEK.md`
 - `PEARAI.md`
 - `LOCAL_MODELS.md`
+- `ANTIGRAVITY.md`
 - `.cursorrules`
 - `.windsurfrules`
 - `.github/copilot-instructions.md`
@@ -56,7 +57,9 @@ These are generated from `_system/host-adapter-manifest.json` and must not be ha
 - `.clinerules`
 - `.cursor/commands/load-context.md`
 - `.cursor/commands/session-start.md`
+- `.cursor/commands/environment.md`
 - `.cursor/skills/load-context/SKILL.md`
+- `.cursor/skills/environment-report/SKILL.md`
 - `.cursor/rules/00-context-load.mdc`
 
 ### Class D: Optional Placeholder Adapters (human-authored)
@@ -67,6 +70,7 @@ These are intentionally lightweight compatibility placeholders. They must point 
 - `COPILOT.md`
 - `AIDER.md`
 - `AGENT_ZERO.md`
+- `ANTIGRAVITY.md`
 - `CASCADE.md` (optional if the host is in active use)
 
 ### Class E: Deprecated or Alias Surfaces
@@ -80,6 +84,15 @@ Current canonical aliases and compatibility mappings are tracked in `_system/hos
 - Preferred naming for top-level adapter docs: uppercase snake-like labels with `.md` suffix (`CODEX.md`, `AGENT_ZERO.md`).
 - Dot-rule files (`.cursorrules`, `.windsurfrules`, `.continuerules`, `.clinerules`) remain exact because tools require them.
 - Generated adapters must be represented in the manifest using stable ids; paths are treated as API-like contract surfaces.
+
+### `_system/*.json` naming convention
+
+Two cases are intentionally in use; both are valid. Pick by file role:
+
+- **`SCREAMING_SNAKE_CASE.json`** — durable contracts and registries that the rest of the system treats as authority surfaces. They are usually generated or curated, change slowly, and appear by exact name in protocol docs and validators. Examples: `SYSTEM_REGISTRY.json`, `QUALITY_SCORE_POLICY.json`, `PROJECT_DOMAIN_MANIFEST.json`, `CAPABILITY_MATRIX.json`.
+- **`kebab-case.json`** — operational config, runtime state, or policy data tables that load by deterministic path lookup. They evolve with feature work and are referenced by code rather than by prose. Examples: `host-adapter-manifest.json`, `repo-operating-profile.json`, `instruction-precedence.json`, `gitops-policy.json`, `aiaast-capabilities.json`, `agent-performance-profiles.json`, `context-budget-profiles.json`, `git-gate-matrix.json`, `health-history.json`, `snapshot-remote-targets.json`, `snapshot-retention-policy.json`.
+
+When adding a new `_system/*.json` file, choose the case that matches its role above. Renaming an existing file requires updating every reference in scripts, contracts, and downstream-installed repos and is therefore avoided unless its role has actually changed.
 
 ## Conflict and Merge Rules
 

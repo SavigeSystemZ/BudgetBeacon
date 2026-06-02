@@ -6,10 +6,10 @@ Do not hand-edit generated sections.
 ## Generated Snapshot
 
 - Product: AIAST
-- Version: unknown
-- Managed file count: 633
-- Bootstrap script count: 135
-- Validation script count: 43
+- Version: 1.24.0
+- Managed file count: 807
+- Bootstrap script count: 185
+- Validation script count: 59
 - Archetype pack count: 27
 
 ## Ownership and Mutability Model
@@ -28,7 +28,7 @@ Do not hand-edit generated sections.
   - `_system/SUPER_TEMPLATE_MASTER_MAP.md`
   - `_system/SYSTEM_REGISTRY.json`
   - `_system/repo-operating-profile.json`
-- Hand-authored managed file count: 627
+- Hand-authored managed file count: 801
 
 ## App-Builder Lane Map
 - `_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md`
@@ -39,6 +39,7 @@ Do not hand-edit generated sections.
 - `_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md`
 
 ## MOS and Meta Lane Map
+- `_system/MOS_DOWNSTREAM_EXCLUSION_POLICY.md`
 - `_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md`
 
 ## Fleet Orchestration Lane Map
@@ -46,13 +47,6 @@ Do not hand-edit generated sections.
 - `_system/CONCURRENT_AGENT_FLEET_PROTOCOL.md`
 - `_system/FLEET_CONTROL_TOWER_PROTOCOL.md`
 - `_system/MULTI_AGENT_COORDINATION.md`
-- `_system/agent-state/README.md`
-- `_system/agent-state/active-agents.json`
-- `_system/agent-state/conflicts/.gitkeep`
-- `_system/agent-state/heartbeats/.gitkeep`
-- `_system/agent-state/lanes/.gitkeep`
-- `_system/agent-state/leases/.gitkeep`
-- `_system/agent-state/locks/.gitkeep`
 - `_system/golden-examples/patterns/MULTI_AGENT_AND_MCP.md`
 - `_system/prompt-packs/M9_MULTI_AGENT_CONTINUITY.md`
 
@@ -61,7 +55,10 @@ Do not hand-edit generated sections.
 - `_system/CROSS_PLATFORM_DISTRIBUTION_AND_INSTALLER_STANDARD.md`
 - `_system/INSTALLATION_GUIDE.md`
 - `_system/INSTALLER_AND_UPGRADE_CONTRACT.md`
+- `_system/INSTALLER_FIRST_GATE.md`
 - `_system/UPGRADE_AND_DRIFT_POLICY.md`
+- `_system/app-context/INSTALLER_AND_DEPLOYMENT_PROFILE.md`
+- `_system/app-context/templates/archetype/local-first-desktop/DESKTOP_INSTALLER_CONTEXT.md`
 - `_system/prompt-packs/M6_INSTALL_AND_DISTRIBUTION.md`
 - `bootstrap/README.md`
 - `bootstrap/agent-heartbeat.sh`
@@ -69,13 +66,21 @@ Do not hand-edit generated sections.
 - `bootstrap/agent-lock.sh`
 - `bootstrap/agent-reclaim-lock.sh`
 - `bootstrap/agent-unlock.sh`
+- `bootstrap/aiast`
 - `bootstrap/allocate-workspace-service-port.sh`
 - `bootstrap/append-build-log.sh`
 - `bootstrap/append-global-app-report.sh`
+- `bootstrap/apply-host-settings.sh`
+- `bootstrap/apply-local-self-improvement.sh`
 - `bootstrap/apply-starter-blueprint.sh`
+- `bootstrap/audit-bleed-events.sh`
+- `bootstrap/check-adapter-surface-stamps-protocol.sh`
+- `bootstrap/check-agent-instance-isolation.sh`
 - `bootstrap/check-agent-locks.sh`
 - `bootstrap/check-agent-orchestration.sh`
 - `bootstrap/check-agent-surface-integrity.sh`
+- `bootstrap/check-app-definition-state.sh`
+- `bootstrap/check-app-local-namespace.sh`
 - `bootstrap/check-bootstrap-permissions.sh`
 - `bootstrap/check-context-freshness.sh`
 - `bootstrap/check-cross-file-integration.sh`
@@ -89,20 +94,30 @@ Do not hand-edit generated sections.
 - `bootstrap/check-host-adapter-alignment.sh`
 - `bootstrap/check-host-bundle.sh`
 - `bootstrap/check-host-ingestion.sh`
+- `bootstrap/check-host-settings-baseline.sh`
 - `bootstrap/check-install-boundary.sh`
+- `bootstrap/check-installer-first-gate.sh`
 - `bootstrap/check-instruction-domain-alignment.sh`
+- `bootstrap/check-local-self-improvement.sh`
 - `bootstrap/check-master-map-completeness.sh`
+- `bootstrap/check-mcp-bleed.sh`
+- `bootstrap/check-mcp-project-isolation.sh`
+- `bootstrap/check-mos-downstream-exclusion.sh`
 - `bootstrap/check-network-bindings.sh`
 - `bootstrap/check-packaging-targets.sh`
+- `bootstrap/check-pending-meta-sync.sh`
 - `bootstrap/check-placeholders.sh`
 - `bootstrap/check-project-target-consistency.sh`
 - `bootstrap/check-repo-permissions.sh`
 - `bootstrap/check-runtime-foundations.sh`
+- `bootstrap/check-scaffold-isolation-gate.sh`
+- `bootstrap/check-scaffold-required-files.sh`
 - `bootstrap/check-supply-chain.sh`
 - `bootstrap/check-swarm-fleet.sh`
 - `bootstrap/check-system-awareness.sh`
 - `bootstrap/check-template-mos-boundary.sh`
 - `bootstrap/check-tool-memory-alignment.sh`
+- `bootstrap/check-tool-memory-isolation.sh`
 - `bootstrap/check-working-directory-alignment.sh`
 - `bootstrap/check-working-file-staleness.sh`
 - `bootstrap/clear-template-sync-notice.sh`
@@ -115,12 +130,14 @@ Do not hand-edit generated sections.
 - `bootstrap/discover-validation-commands.sh`
 - `bootstrap/emit-archetype-pack.sh`
 - `bootstrap/emit-auxiliary-brief.sh`
+- `bootstrap/emit-bleed-event.sh`
 - `bootstrap/emit-fleet-status.sh`
 - `bootstrap/emit-host-bundle.sh`
 - `bootstrap/emit-host-prompt.sh`
 - `bootstrap/emit-session-environment.sh`
 - `bootstrap/emit-status-report.sh`
 - `bootstrap/emit-tiered-context.sh`
+- `bootstrap/generate-app-context-pack.sh`
 - `bootstrap/generate-diagnostic-report.sh`
 - `bootstrap/generate-host-adapters.sh`
 - `bootstrap/generate-operating-profile.sh`
@@ -136,18 +153,37 @@ Do not hand-edit generated sections.
 - `bootstrap/harvest-agent-surfaces.sh`
 - `bootstrap/heal-system.sh`
 - `bootstrap/hybrid-git-sync.sh`
+- `bootstrap/init-agent-instance.sh`
+- `bootstrap/init-app-namespace.sh`
 - `bootstrap/init-project.sh`
 - `bootstrap/install-aiast.sh`
 - `bootstrap/install-autonomous-guardrails.sh`
 - `bootstrap/install-missing-files.sh`
 - `bootstrap/install-root-redirect-shims.sh`
 - `bootstrap/install-tool-global-redirects.sh`
+- `bootstrap/lib/aiaast-classify.sh`
+- `bootstrap/lib/aiaast-core.sh`
+- `bootstrap/lib/aiaast-json.sh`
 - `bootstrap/lib/aiaast-lib.sh`
+- `bootstrap/lib/aiaast-lock.sh`
+- `bootstrap/lib/aiaast-managed.sh`
+- `bootstrap/lib/aiaast-repo.sh`
+- `bootstrap/lib/aiaast-sync.sh`
 - `bootstrap/migrate-agent-surface-upgrade.sh`
+- `bootstrap/operator-hygiene-advisor.sh`
 - `bootstrap/patch-agent-surface-contracts.sh`
 - `bootstrap/print-agent-map.sh`
+- `bootstrap/propose-local-self-improvement.sh`
+- `bootstrap/quarantine-agent.sh`
+- `bootstrap/quarantine-mcp-instance.sh`
+- `bootstrap/reap-stale-leases.sh`
 - `bootstrap/recommend-starter-blueprint.sh`
+- `bootstrap/reconcile-meta-sync.sh`
 - `bootstrap/record-agent-event.sh`
+- `bootstrap/register-mcp-instance.sh`
+- `bootstrap/release-agent.sh`
+- `bootstrap/release-mcp-instance.sh`
+- `bootstrap/render-scaffold-profile.sh`
 - `bootstrap/repair-myappz-root-ownership.sh`
 - `bootstrap/repair-safe-permission-drift.sh`
 - `bootstrap/repair-swarm-integrity.sh`
@@ -158,6 +194,7 @@ Do not hand-edit generated sections.
 - `bootstrap/run-autonomous-guardrails.sh`
 - `bootstrap/run-sast.sh`
 - `bootstrap/run-test-app-benchmark-matrix.sh`
+- `bootstrap/run-test-app-campaign.sh`
 - `bootstrap/run-validation-autopilot.sh`
 - `bootstrap/scaffold-system.sh`
 - `bootstrap/scan-container.sh`
@@ -169,6 +206,7 @@ Do not hand-edit generated sections.
 - `bootstrap/seed-working-state.sh`
 - `bootstrap/snapshot-meta-to-orphan-branch.sh`
 - `bootstrap/snapshotctl.sh`
+- `bootstrap/stamp-tool-memory.sh`
 - `bootstrap/suggest-project-profile.sh`
 - `bootstrap/summarize-benchmark-trend.sh`
 - `bootstrap/sync-agent-adapters.sh`
@@ -200,11 +238,18 @@ Do not hand-edit generated sections.
 - `bootstrap/templates/runtime/ops/compose/compose.yml`
 - `bootstrap/templates/runtime/ops/env/.env.example`
 - `bootstrap/templates/runtime/ops/install/README.md`
+- `bootstrap/templates/runtime/ops/install/doctor.sh`
 - `bootstrap/templates/runtime/ops/install/install.sh`
 - `bootstrap/templates/runtime/ops/install/lib/port_allocator.py`
 - `bootstrap/templates/runtime/ops/install/lib/runtime-foundation.sh`
+- `bootstrap/templates/runtime/ops/install/logs.sh`
+- `bootstrap/templates/runtime/ops/install/open.sh`
 - `bootstrap/templates/runtime/ops/install/purge.sh`
 - `bootstrap/templates/runtime/ops/install/repair.sh`
+- `bootstrap/templates/runtime/ops/install/restart.sh`
+- `bootstrap/templates/runtime/ops/install/start.sh`
+- `bootstrap/templates/runtime/ops/install/status.sh`
+- `bootstrap/templates/runtime/ops/install/stop.sh`
 - `bootstrap/templates/runtime/ops/install/uninstall.sh`
 - `bootstrap/templates/runtime/ops/logging/README.md`
 - `bootstrap/templates/runtime/packaging/README.md`
@@ -225,6 +270,7 @@ Do not hand-edit generated sections.
 - `bootstrap/uninstall-system.sh`
 - `bootstrap/update-template.sh`
 - `bootstrap/upgrade-assistant.sh`
+- `bootstrap/validate-app-context-files.sh`
 - `bootstrap/validate-archetype-packs.sh`
 - `bootstrap/validate-benchmark-report.sh`
 - `bootstrap/validate-instruction-layer.sh`
@@ -233,10 +279,12 @@ Do not hand-edit generated sections.
 - `bootstrap/validate-quality-score-policy.sh`
 - `bootstrap/validate-quality-score-reproducibility.sh`
 - `bootstrap/validate-release-packet.sh`
+- `bootstrap/validate-scaffold-output.sh`
 - `bootstrap/validate-scaffold-profile.sh`
 - `bootstrap/validate-scaffold-profiles.sh`
 - `bootstrap/validate-system.sh`
 - `bootstrap/verify-integrity.sh`
+- `bootstrap/verify-mcp-provenance.sh`
 - `bootstrap/wizard.sh`
 - `bootstrap/write-checkpoint.sh`
 
@@ -244,16 +292,72 @@ Do not hand-edit generated sections.
 - `_system/GLOBAL_APP_REPORT_SINK_POLICY.md`
 - `_system/QUALITY_SCORE_AND_STATUS_REPORT_PROTOCOL.md`
 - `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/EXPORT_AND_REDACTION_CONTEXT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/REPORT_TEMPLATE_CONTEXT.md`
+- `_system/app-context/templates/archetype/finance-budgeting-app/PRIVACY_AND_EXPORT_CONTEXT.md`
+- `_system/app-context/templates/archetype/home-property-management-app/HANDOFF_EXPORT_CONTEXT.md`
 - `_system/ports/PORT_POLICY.md`
 - `_system/ports/default_port_matrix.yaml`
 - `_system/ports/templates/README.md`
 - `_system/ports/templates/compose-loopback-snippet.yml`
 
 ## Continuous Context Lane Map
+- `_system/APP_CONTEXT_FILE_MATRIX.md`
+- `_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md`
 - `_system/CONTEXT_BUDGET_STRATEGY.md`
 - `_system/CONTEXT_COMPACTION_AND_REHYDRATION.md`
 - `_system/CONTEXT_INDEX.md`
 - `_system/CONTINUOUS_CONTEXT_RECORDING_PROTOCOL.md`
+- `_system/app-context/SECURITY_AND_PRIVACY_CONTEXT.md`
+- `_system/app-context/templates/archetype/ai-agent-app/AI_AGENT_CONTEXT.md`
+- `_system/app-context/templates/archetype/ai-agent-app/AI_FAILURE_MODE_CONTEXT.md`
+- `_system/app-context/templates/archetype/ai-agent-app/MODEL_PROVIDER_CONTEXT.md`
+- `_system/app-context/templates/archetype/ai-agent-app/PROMPT_AND_MEMORY_CONTEXT.md`
+- `_system/app-context/templates/archetype/background-check-or-osint-app/AUTHORIZED_SCOPE_CONTEXT.md`
+- `_system/app-context/templates/archetype/background-check-or-osint-app/OSINT_APP_CONTEXT.md`
+- `_system/app-context/templates/archetype/background-check-or-osint-app/PRIVACY_AND_COMPLIANCE_CONTEXT.md`
+- `_system/app-context/templates/archetype/background-check-or-osint-app/SOURCE_AND_PROVENANCE_CONTEXT.md`
+- `_system/app-context/templates/archetype/cli-tool/CLI_DISTRIBUTION_CONTEXT.md`
+- `_system/app-context/templates/archetype/cli-tool/CLI_TOOL_CONTEXT.md`
+- `_system/app-context/templates/archetype/cli-tool/COMMAND_SURFACE_CONTEXT.md`
+- `_system/app-context/templates/archetype/cybersecurity-tool/AUTHORIZED_SCOPE_CONTEXT.md`
+- `_system/app-context/templates/archetype/cybersecurity-tool/CYBERSECURITY_TOOL_CONTEXT.md`
+- `_system/app-context/templates/archetype/cybersecurity-tool/EVIDENCE_AND_AUDIT_CONTEXT.md`
+- `_system/app-context/templates/archetype/cybersecurity-tool/LAB_SANDBOX_CONTEXT.md`
+- `_system/app-context/templates/archetype/data-dashboard/DATA_DASHBOARD_CONTEXT.md`
+- `_system/app-context/templates/archetype/data-dashboard/DATA_SOURCE_CONTEXT.md`
+- `_system/app-context/templates/archetype/data-dashboard/METRIC_AND_QUERY_CONTEXT.md`
+- `_system/app-context/templates/archetype/data-dashboard/VISUALIZATION_CONTEXT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/CHAIN_OF_CUSTODY_CONTEXT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/EVIDENCE_REPORTING_CONTEXT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/EXPORT_AND_REDACTION_CONTEXT.md`
+- `_system/app-context/templates/archetype/evidence-reporting-app/REPORT_TEMPLATE_CONTEXT.md`
+- `_system/app-context/templates/archetype/finance-budgeting-app/FINANCE_BUDGETING_CONTEXT.md`
+- `_system/app-context/templates/archetype/finance-budgeting-app/PRECISION_AND_RECONCILIATION_CONTEXT.md`
+- `_system/app-context/templates/archetype/finance-budgeting-app/PRIVACY_AND_EXPORT_CONTEXT.md`
+- `_system/app-context/templates/archetype/finance-budgeting-app/TRANSACTION_DATA_CONTEXT.md`
+- `_system/app-context/templates/archetype/fullstack-marketplace/MARKETPLACE_ACTORS_CONTEXT.md`
+- `_system/app-context/templates/archetype/fullstack-marketplace/MARKETPLACE_CONTEXT.md`
+- `_system/app-context/templates/archetype/fullstack-marketplace/TRANSACTION_AND_TRUST_CONTEXT.md`
+- `_system/app-context/templates/archetype/home-property-management-app/ASSET_AND_DOCUMENT_CONTEXT.md`
+- `_system/app-context/templates/archetype/home-property-management-app/HANDOFF_EXPORT_CONTEXT.md`
+- `_system/app-context/templates/archetype/home-property-management-app/HOME_PROPERTY_CONTEXT.md`
+- `_system/app-context/templates/archetype/home-property-management-app/PROJECT_AND_TASK_CONTEXT.md`
+- `_system/app-context/templates/archetype/local-first-desktop/DESKTOP_APP_CONTEXT.md`
+- `_system/app-context/templates/archetype/local-first-desktop/DESKTOP_INSTALLER_CONTEXT.md`
+- `_system/app-context/templates/archetype/local-first-desktop/LOCAL_DATA_STORAGE_CONTEXT.md`
+- `_system/app-context/templates/archetype/local-first-desktop/OFFLINE_SYNC_CONTEXT.md`
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/METASYSTEM_REVIEWER_CONTEXT.md`
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/RECOMMENDATION_ENGINE_CONTEXT.md`
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/REPORTING_CONTEXT.md`
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/SCORING_RUBRIC_CONTEXT.md`
+- `_system/app-context/templates/archetype/mobile-apk/ANDROID_PERMISSION_CONTEXT.md`
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_APK_CONTEXT.md`
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_PRIVACY_CONTEXT.md`
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_RELEASE_CONTEXT.md`
+- `_system/app-context/templates/archetype/web-saas/API_SURFACE_CONTEXT.md`
+- `_system/app-context/templates/archetype/web-saas/AUTH_AND_TENANCY_CONTEXT.md`
+- `_system/app-context/templates/archetype/web-saas/WEB_SAAS_CONTEXT.md`
 - `_system/context/AGENT_SHARED_MEMORY.md`
 - `_system/context/ARCHITECTURAL_INVARIANTS.md`
 - `_system/context/ASSUMPTIONS.md`
@@ -310,6 +414,7 @@ Do not hand-edit generated sections.
 - `_system/tool-memory/README.md`
 - `_system/tool-memory/agent-zero-memory.md`
 - `_system/tool-memory/aider-memory.md`
+- `_system/tool-memory/antigravity-memory.md`
 - `_system/tool-memory/claude-memory.md`
 - `_system/tool-memory/codex-memory.md`
 - `_system/tool-memory/copilot-memory.md`
@@ -319,9 +424,13 @@ Do not hand-edit generated sections.
 
 ## Validators by Major Lane
 
+- `bootstrap/check-adapter-surface-stamps-protocol.sh`
+- `bootstrap/check-agent-instance-isolation.sh`
 - `bootstrap/check-agent-locks.sh`
 - `bootstrap/check-agent-orchestration.sh`
 - `bootstrap/check-agent-surface-integrity.sh`
+- `bootstrap/check-app-definition-state.sh`
+- `bootstrap/check-app-local-namespace.sh`
 - `bootstrap/check-bootstrap-permissions.sh`
 - `bootstrap/check-context-freshness.sh`
 - `bootstrap/check-cross-file-integration.sh`
@@ -335,22 +444,33 @@ Do not hand-edit generated sections.
 - `bootstrap/check-host-adapter-alignment.sh`
 - `bootstrap/check-host-bundle.sh`
 - `bootstrap/check-host-ingestion.sh`
+- `bootstrap/check-host-settings-baseline.sh`
 - `bootstrap/check-install-boundary.sh`
+- `bootstrap/check-installer-first-gate.sh`
 - `bootstrap/check-instruction-domain-alignment.sh`
+- `bootstrap/check-local-self-improvement.sh`
 - `bootstrap/check-master-map-completeness.sh`
+- `bootstrap/check-mcp-bleed.sh`
+- `bootstrap/check-mcp-project-isolation.sh`
+- `bootstrap/check-mos-downstream-exclusion.sh`
 - `bootstrap/check-network-bindings.sh`
 - `bootstrap/check-packaging-targets.sh`
+- `bootstrap/check-pending-meta-sync.sh`
 - `bootstrap/check-placeholders.sh`
 - `bootstrap/check-project-target-consistency.sh`
 - `bootstrap/check-repo-permissions.sh`
 - `bootstrap/check-runtime-foundations.sh`
+- `bootstrap/check-scaffold-isolation-gate.sh`
+- `bootstrap/check-scaffold-required-files.sh`
 - `bootstrap/check-supply-chain.sh`
 - `bootstrap/check-swarm-fleet.sh`
 - `bootstrap/check-system-awareness.sh`
 - `bootstrap/check-template-mos-boundary.sh`
 - `bootstrap/check-tool-memory-alignment.sh`
+- `bootstrap/check-tool-memory-isolation.sh`
 - `bootstrap/check-working-directory-alignment.sh`
 - `bootstrap/check-working-file-staleness.sh`
+- `bootstrap/validate-app-context-files.sh`
 - `bootstrap/validate-archetype-packs.sh`
 - `bootstrap/validate-benchmark-report.sh`
 - `bootstrap/validate-instruction-layer.sh`
@@ -359,6 +479,7 @@ Do not hand-edit generated sections.
 - `bootstrap/validate-quality-score-policy.sh`
 - `bootstrap/validate-quality-score-reproducibility.sh`
 - `bootstrap/validate-release-packet.sh`
+- `bootstrap/validate-scaffold-output.sh`
 - `bootstrap/validate-scaffold-profile.sh`
 - `bootstrap/validate-scaffold-profiles.sh`
 - `bootstrap/validate-system.sh`
@@ -366,8 +487,14 @@ Do not hand-edit generated sections.
 ## Managed File Anchors
 
 - `.aider.conf.yml` (category: `entrypoint`, kind: `file`, size_bytes: `1538`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `.clinerules` (category: `entrypoint`, kind: `file`, size_bytes: `2097`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `.continuerules` (category: `entrypoint`, kind: `file`, size_bytes: `2127`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `.antigravitycli/settings.aiaast.json` (category: `unclassified`, kind: `file`, size_bytes: `1595`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.antigravitycli/settings.json` (category: `unclassified`, kind: `file`, size_bytes: `406`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.claude/settings.aiaast.json` (category: `host-settings-meta`, kind: `file`, size_bytes: `2650`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.claude/settings.json` (category: `host-settings-app`, kind: `file`, size_bytes: `392`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.clinerules` (category: `entrypoint`, kind: `file`, size_bytes: `2110`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `.codex/config.aiaast.toml` (category: `host-settings-meta`, kind: `file`, size_bytes: `1724`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.codex/config.toml` (category: `host-settings-app`, kind: `file`, size_bytes: `455`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.continuerules` (category: `entrypoint`, kind: `file`, size_bytes: `2140`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `.cursor/README.md` (category: `cursor-overlay`, kind: `file`, size_bytes: `1340`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/agents/README.md` (category: `cursor-agent`, kind: `file`, size_bytes: `555`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/agents/architecture.md` (category: `cursor-agent`, kind: `file`, size_bytes: `1808`, origin: `hand-authored`, mutability: `downstream-mutable`)
@@ -392,6 +519,8 @@ Do not hand-edit generated sections.
 - `.cursor/commands/dependency-review.md` (category: `cursor-command`, kind: `file`, size_bytes: `522`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/commands/design-review.md` (category: `cursor-command`, kind: `file`, size_bytes: `1250`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/commands/environment.md` (category: `cursor-command`, kind: `file`, size_bytes: `551`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/commands/fill-app-context.md` (category: `cursor-command`, kind: `file`, size_bytes: `2089`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/commands/forge-app-persona.md` (category: `cursor-command`, kind: `file`, size_bytes: `2443`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/commands/github-session.md` (category: `cursor-command`, kind: `file`, size_bytes: `679`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/commands/load-context.md` (category: `cursor-command`, kind: `file`, size_bytes: `1662`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/commands/performance-review.md` (category: `cursor-command`, kind: `file`, size_bytes: `565`, origin: `hand-authored`, mutability: `downstream-mutable`)
@@ -404,10 +533,12 @@ Do not hand-edit generated sections.
 - `.cursor/rules/10-project-boundaries.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `338`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/rules/20-multi-agent-awareness.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `439`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/rules/30-validation-gate.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `382`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `.cursor/rules/40-mcp-and-tooling.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `359`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/rules/40-mcp-and-tooling.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `581`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/rules/50-working-files.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `622`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/rules/60-composer-orchestration.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `1357`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/rules/IDE_HOST_CURSOR_WINDSURF.mdc` (category: `cursor-rule`, kind: `file`, size_bytes: `677`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/settings.aiaast.json` (category: `cursor-overlay`, kind: `file`, size_bytes: `1744`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/settings.json` (category: `cursor-overlay`, kind: `file`, size_bytes: `357`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/accessibility-review/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `1066`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/architecture-review/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `2964`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/checkpoint-handoff/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `564`, origin: `hand-authored`, mutability: `downstream-mutable`)
@@ -420,67 +551,83 @@ Do not hand-edit generated sections.
 - `.cursor/skills/design-review/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `4317`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/environment-report/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `1878`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/load-context/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `1826`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `.cursor/skills/mcp-config/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `1841`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.cursor/skills/mcp-config/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `2050`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/performance-review/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `1052`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/prompt-pack-generator/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `575`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/release-readiness/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `2268`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.cursor/skills/verify-gate/SKILL.md` (category: `cursor-skill`, kind: `file`, size_bytes: `464`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `.cursorrules` (category: `entrypoint`, kind: `file`, size_bytes: `2238`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `.cursorrules` (category: `entrypoint`, kind: `file`, size_bytes: `2507`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `.gemini/settings.aiaast.json` (category: `host-settings-meta`, kind: `file`, size_bytes: `1567`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.gemini/settings.json` (category: `host-settings-app`, kind: `file`, size_bytes: `388`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.github/ISSUE_TEMPLATE/bug_report.md` (category: `copilot-overlay`, kind: `file`, size_bytes: `293`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.github/ISSUE_TEMPLATE/config.yml` (category: `copilot-overlay`, kind: `file`, size_bytes: `27`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.github/ISSUE_TEMPLATE/feature_request.md` (category: `copilot-overlay`, kind: `file`, size_bytes: `212`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `.github/copilot-instructions.md` (category: `entrypoint`, kind: `file`, size_bytes: `2241`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.github/copilot-config.aiaast.json` (category: `host-settings-meta`, kind: `file`, size_bytes: `1694`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.github/copilot-config.json` (category: `host-settings-app`, kind: `file`, size_bytes: `331`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.github/copilot-instructions.md` (category: `entrypoint`, kind: `file`, size_bytes: `2495`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `.github/pull_request_template.md` (category: `copilot-overlay`, kind: `file`, size_bytes: `824`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `.windsurfrules` (category: `entrypoint`, kind: `file`, size_bytes: `1859`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `AGENTS.md` (category: `entrypoint`, kind: `file`, size_bytes: `13913`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `AGENT_ZERO.md` (category: `entrypoint`, kind: `file`, size_bytes: `475`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `AIAST_CHANGELOG.md` (category: `system-metadata`, kind: `file`, size_bytes: `57724`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.windsurf/settings.aiaast.json` (category: `host-settings-meta`, kind: `file`, size_bytes: `1564`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.windsurf/settings.json` (category: `host-settings-app`, kind: `file`, size_bytes: `319`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `.windsurfrules` (category: `entrypoint`, kind: `file`, size_bytes: `2082`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `AGENTS.md` (category: `entrypoint`, kind: `file`, size_bytes: `17205`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `AGENT_ZERO.md` (category: `entrypoint`, kind: `file`, size_bytes: `585`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `AIAST_CHANGELOG.md` (category: `system-metadata`, kind: `file`, size_bytes: `91025`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `AIAST_VERSION.md` (category: `system-metadata`, kind: `file`, size_bytes: `848`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `AIDER.md` (category: `entrypoint`, kind: `file`, size_bytes: `484`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `AIDER.md` (category: `entrypoint`, kind: `file`, size_bytes: `594`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `ANTIGRAVITY.md` (category: `unclassified`, kind: `file`, size_bytes: `2666`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `ARCHITECTURE_NOTES.md` (category: `working-state`, kind: `file`, size_bytes: `870`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `CHANGELOG.md` (category: `working-state`, kind: `file`, size_bytes: `4907`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `CLAUDE.md` (category: `entrypoint`, kind: `file`, size_bytes: `1985`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `CODEX.md` (category: `entrypoint`, kind: `file`, size_bytes: `2082`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `COPILOT.md` (category: `entrypoint`, kind: `file`, size_bytes: `506`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `CURSOR.md` (category: `entrypoint`, kind: `file`, size_bytes: `502`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `DEEPSEEK.md` (category: `entrypoint`, kind: `file`, size_bytes: `2158`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `CHANGELOG.md` (category: `working-state`, kind: `file`, size_bytes: `5433`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `CLAUDE.md` (category: `entrypoint`, kind: `file`, size_bytes: `2257`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `CODEX.md` (category: `entrypoint`, kind: `file`, size_bytes: `2348`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `COPILOT.md` (category: `entrypoint`, kind: `file`, size_bytes: `616`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `CURSOR.md` (category: `entrypoint`, kind: `file`, size_bytes: `612`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `DEEPSEEK.md` (category: `entrypoint`, kind: `file`, size_bytes: `2171`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `DESIGN_NOTES.md` (category: `working-state`, kind: `file`, size_bytes: `767`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `FIXME.md` (category: `working-state`, kind: `file`, size_bytes: `817`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `GEMINI.md` (category: `entrypoint`, kind: `file`, size_bytes: `2347`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `LOCAL_MODELS.md` (category: `entrypoint`, kind: `file`, size_bytes: `2249`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `PEARAI.md` (category: `entrypoint`, kind: `file`, size_bytes: `2003`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `FIXME.md` (category: `working-state`, kind: `file`, size_bytes: `1309`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `GEMINI.md` (category: `entrypoint`, kind: `file`, size_bytes: `2616`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `LOCAL_MODELS.md` (category: `entrypoint`, kind: `file`, size_bytes: `2262`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `PEARAI.md` (category: `entrypoint`, kind: `file`, size_bytes: `2016`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `PLAN.md` (category: `working-state`, kind: `file`, size_bytes: `1424`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `PRODUCT_BRIEF.md` (category: `working-state`, kind: `file`, size_bytes: `1127`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `README.md` (category: `system-metadata`, kind: `file`, size_bytes: `8756`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `RELEASE_NOTES.md` (category: `working-state`, kind: `file`, size_bytes: `11107`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `RELEASE_NOTES.md` (category: `working-state`, kind: `file`, size_bytes: `11602`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `RESEARCH_NOTES.md` (category: `working-state`, kind: `file`, size_bytes: `578`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `RISK_REGISTER.md` (category: `working-state`, kind: `file`, size_bytes: `462`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `ROADMAP.md` (category: `working-state`, kind: `file`, size_bytes: `583`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `TEST_STRATEGY.md` (category: `working-state`, kind: `file`, size_bytes: `1802`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `TODO.md` (category: `working-state`, kind: `file`, size_bytes: `2851`, origin: `hand-authored`, mutability: `downstream-mutable`)
+- `TODO.md` (category: `working-state`, kind: `file`, size_bytes: `3437`, origin: `hand-authored`, mutability: `downstream-mutable`)
 - `WHERE_LEFT_OFF.md` (category: `working-state`, kind: `file`, size_bytes: `2876`, origin: `hand-authored`, mutability: `downstream-mutable`)
-- `WINDSURF.md` (category: `entrypoint`, kind: `file`, size_bytes: `2021`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `WINDSURF.md` (category: `entrypoint`, kind: `file`, size_bytes: `2244`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/.aiast-role.json` (category: `system-core`, kind: `file`, size_bytes: `492`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/.template-install.json` (category: `system-core`, kind: `file`, size_bytes: `280`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/.template-version` (category: `system-core`, kind: `file`, size_bytes: `7`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ACCESSIBILITY_STANDARDS.md` (category: `system-core`, kind: `file`, size_bytes: `5400`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AGENT_DISCOVERY_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `9322`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AGENT_ELEVATION_AND_AUTH_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `6260`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AGENT_INIT_CONVERGENCE.md` (category: `system-core`, kind: `file`, size_bytes: `5633`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AGENT_INSTALLER_AND_HOST_VALIDATION_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `6277`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/AGENT_LOCKING_AND_LEASES.md` (category: `system-core`, kind: `file`, size_bytes: `893`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AGENT_INSTANCE_ISOLATION_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `11597`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AGENT_LOCKING_AND_LEASES.md` (category: `system-core`, kind: `file`, size_bytes: `4517`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AGENT_PERFORMANCE_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `3843`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/AGENT_ROLE_CATALOG.md` (category: `system-core`, kind: `file`, size_bytes: `7400`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/AGENT_SURFACE_TAXONOMY.md` (category: `system-core`, kind: `file`, size_bytes: `3890`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AGENT_ROLE_CATALOG.md` (category: `system-core`, kind: `file`, size_bytes: `8140`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AGENT_SURFACE_TAXONOMY.md` (category: `system-core`, kind: `file`, size_bytes: `5203`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/AIAST_CLI.md` (category: `system-core`, kind: `file`, size_bytes: `2950`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AI_RULES.md` (category: `system-core`, kind: `file`, size_bytes: `1564`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/API_DESIGN_STANDARDS.md` (category: `system-core`, kind: `file`, size_bytes: `5953`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `823`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/APP_ARCHETYPE_PERSONA_CATALOG.md` (category: `system-core`, kind: `file`, size_bytes: `1609`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/APP_ARCHETYPE_ROUTING_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `1636`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `980`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_ARCHETYPE_PERSONA_CATALOG.md` (category: `system-core`, kind: `file`, size_bytes: `2741`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_ARCHETYPE_ROUTING_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `1734`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md` (category: `system-core`, kind: `file`, size_bytes: `2197`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md` (category: `system-core`, kind: `file`, size_bytes: `3214`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2359`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `2019`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2714`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_BUILDER_RELEASE_READINESS_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `2193`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `2474`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_CONTEXT_FILE_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `5392`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/APP_DELIVERY_AUTOPILOT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `570`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_LOCAL_NAMESPACE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `8541`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_PERSONA_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `3352`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_REPO_IDENTITY.md` (category: `system-core`, kind: `file`, size_bytes: `2917`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `4127`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/APP_SURFACE_COMPLETION_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `280`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ARCHITECTURE_DIAGRAM.md` (category: `system-core`, kind: `file`, size_bytes: `5703`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AUTHORIZED_SECURITY_RESEARCH_MODE.md` (category: `system-core`, kind: `file`, size_bytes: `548`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -488,14 +635,15 @@ Do not hand-edit generated sections.
 - `_system/AUTH_RECOVERY_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1970`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/AUTONOMOUS_GUARDRAILS_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `3695`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/BEAUTIFUL_APP_QUALITY_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `311`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/CAPABILITY_MATRIX.json` (category: `system-core`, kind: `file`, size_bytes: `543`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/BLEED_EVENT_AND_INCIDENT_RESPONSE.md` (category: `system-core`, kind: `file`, size_bytes: `7193`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/CAPABILITY_MATRIX.json` (category: `system-core`, kind: `file`, size_bytes: `693`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CHATBOT_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `796`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CHECKPOINT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `9824`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CODING_STANDARDS.md` (category: `system-core`, kind: `file`, size_bytes: `5345`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/CONCURRENT_AGENT_FLEET_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1090`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/CONCURRENT_AGENT_FLEET_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2110`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CONTEXT_BUDGET_STRATEGY.md` (category: `system-core`, kind: `file`, size_bytes: `7445`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CONTEXT_COMPACTION_AND_REHYDRATION.md` (category: `system-core`, kind: `file`, size_bytes: `669`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/CONTEXT_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `21111`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/CONTEXT_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `24455`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CONTINUOUS_CONTEXT_RECORDING_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `868`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CROSS_PLATFORM_DISTRIBUTION_AND_INSTALLER_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `5889`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/CURSOR_AND_MULTI_HOST.md` (category: `system-core`, kind: `file`, size_bytes: `1468`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -507,40 +655,46 @@ Do not hand-edit generated sections.
 - `_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `4942`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ENVIRONMENT_VALIDATION_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `2063`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/EVIDENCE_RETENTION_AND_ROTATION_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `719`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/EVIDENCE_RETENTION_PROTECTED_ALLOWLIST.txt` (category: `system-core`, kind: `file`, size_bytes: `242`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/EXECUTION_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `5042`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/EVIDENCE_RETENTION_PROTECTED_ALLOWLIST.txt` (category: `system-core`, kind: `file`, size_bytes: `1070`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/EXECUTION_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `5270`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/EXTERNAL_AGENT_SURFACE_HARVEST_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `312`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/FAILURE_MODES_AND_RECOVERY.md` (category: `system-core`, kind: `file`, size_bytes: `2808`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/FLEET_CONTROL_TOWER_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `435`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `10243`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/FLEET_CONTROL_TOWER_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `606`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/GIT_REMOTE_AND_SYNC_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `12187`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/GIT_SIDE_MIRROR_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `5005`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/GLOBAL_APP_REPORT_SINK_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `312`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/GLOBAL_REDIRECT_SHIM_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `1067`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/GOLDEN_EXAMPLES_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `1937`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/HALLUCINATION_DEFENSE_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1494`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/HANDOFF_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `5589`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/HOOK_AND_ORCHESTRATION_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `6598`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/HOST_ADAPTER_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `3539`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/HERETIC_ABLITERATION_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2164`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/HOOK_AND_ORCHESTRATION_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `6816`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/HOST_ADAPTER_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `4872`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/HOST_BUNDLE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `2821`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/HOST_SETTINGS_BASELINE.md` (category: `system-core`, kind: `file`, size_bytes: `8080`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/HYBRID_APP_REPO_LAYOUT_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `1712`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/INSTALLATION_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `1113`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/INSTALLER_AND_UPGRADE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `2474`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/INSTALLER_FIRST_GATE.md` (category: `system-core`, kind: `file`, size_bytes: `1092`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/INSTRUCTION_CONFLICT_PLAYBOOK.md` (category: `system-core`, kind: `file`, size_bytes: `2376`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2979`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `6495`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/INTEGRITY_MANIFEST.sha256` (category: `system-core`, kind: `file`, size_bytes: `64897`, origin: `generated`, mutability: `template-authoritative`)
-- `_system/KEY.md` (category: `system-core`, kind: `file`, size_bytes: `112669`, origin: `generated`, mutability: `template-authoritative`)
-- `_system/LOAD_ORDER.md` (category: `system-core`, kind: `file`, size_bytes: `11159`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/MASTER_SYSTEM_PROMPT.md` (category: `system-core`, kind: `file`, size_bytes: `11199`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/MCP_CONFIG.md` (category: `system-core`, kind: `file`, size_bytes: `2013`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `6649`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/INTEGRITY_MANIFEST.sha256` (category: `system-core`, kind: `file`, size_bytes: `86124`, origin: `generated`, mutability: `template-authoritative`)
+- `_system/KEY.md` (category: `system-core`, kind: `file`, size_bytes: `144852`, origin: `generated`, mutability: `template-authoritative`)
+- `_system/LOAD_ORDER.md` (category: `system-core`, kind: `file`, size_bytes: `12942`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/MASTER_SYSTEM_PROMPT.md` (category: `system-core`, kind: `file`, size_bytes: `11620`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/MCP_CONFIG.md` (category: `system-core`, kind: `file`, size_bytes: `5399`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/MEMORY_RULES.md` (category: `system-core`, kind: `file`, size_bytes: `700`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/META_SYNC_RECONCILE_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `8358`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/MIGRATION_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `3524`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/MOBILE_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `944`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/MODERN_UI_PATTERNS.md` (category: `system-core`, kind: `file`, size_bytes: `8667`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/MOS_DOWNSTREAM_EXCLUSION_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `1119`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/MULTI_AGENT_COORDINATION.md` (category: `system-core`, kind: `file`, size_bytes: `7908`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/OBSERVABILITY_AND_RECOVERY_LEDGER_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1339`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/OBSERVABILITY_AND_RECOVERY_LEDGER_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1349`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/OBSERVABILITY_STANDARDS.md` (category: `system-core`, kind: `file`, size_bytes: `1257`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/OPERATOR_PROMPTING_PLAYBOOK.md` (category: `system-core`, kind: `file`, size_bytes: `3190`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/ORPHAN_META_SNAPSHOT_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `1242`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/ORPHAN_META_SNAPSHOT_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `6175`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PACKAGING_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `848`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PERFORMANCE_BUDGET.md` (category: `system-core`, kind: `file`, size_bytes: `4471`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PLUGGABLE_EXTENSION_ARCHITECTURE.md` (category: `system-core`, kind: `file`, size_bytes: `399`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -549,9 +703,10 @@ Do not hand-edit generated sections.
 - `_system/PROJECT_DOMAIN_MANIFEST.template.json` (category: `system-core`, kind: `file`, size_bytes: `680`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2081`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROJECT_LOCALITY_AND_COPY_FROM_TEMPLATE_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `340`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/PROJECT_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `4406`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `5575`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/PROJECT_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `4452`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROJECT_RULES.md` (category: `system-core`, kind: `file`, size_bytes: `4475`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/PROJECT_SPECIFIC_PLACEHOLDER_FILE_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `1052`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/PROJECT_SPECIFIC_PLACEHOLDER_FILE_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `1116`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROMPTS_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `3734`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROMPT_BACKEND_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `591`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/PROMPT_DOCKER_NETWORK_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `673`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -564,56 +719,116 @@ Do not hand-edit generated sections.
 - `_system/QUALITY_SCORE_POLICY.json` (category: `system-core`, kind: `file`, size_bytes: `1140`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/QUICKSTART.md` (category: `system-core`, kind: `file`, size_bytes: `3993`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/README.md` (category: `system-core`, kind: `file`, size_bytes: `3150`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/READ_BUNDLES.md` (category: `system-core`, kind: `file`, size_bytes: `5102`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/RELEASE_READINESS_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `939`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/READ_BUNDLES.md` (category: `system-core`, kind: `file`, size_bytes: `5675`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/RELEASE_READINESS_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1183`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/REPO_BOUNDARY_AND_BACKUP.md` (category: `system-core`, kind: `file`, size_bytes: `1281`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/REPO_CONVENTIONS.md` (category: `system-core`, kind: `file`, size_bytes: `1364`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/REPO_OPERATING_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `5048`, origin: `generated`, mutability: `template-authoritative`)
 - `_system/REQUEST_ALIGNMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1430`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SAFE_PERMISSION_AND_SETUP_REPAIR_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `569`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SAFE_PERMISSION_AND_SETUP_REPAIR_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `817`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SCAFFOLD_INCLUDE_EXCLUDE_MANIFEST.md` (category: `system-core`, kind: `file`, size_bytes: `2208`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SCAFFOLD_ISOLATION_COMPLETION_GATE.md` (category: `system-core`, kind: `file`, size_bytes: `5214`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SCAFFOLD_PROFILE_AUTHORING_STANDARD.md` (category: `system-core`, kind: `file`, size_bytes: `1144`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SCAFFOLD_PROFILE_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `9482`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SCAFFOLD_PROFILE_MATRIX.md` (category: `system-core`, kind: `file`, size_bytes: `10242`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SCAVENGE_AND_DISCOVERY_AUTHORIZATION.md` (category: `system-core`, kind: `file`, size_bytes: `947`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SECURITY_BASELINE.md` (category: `system-core`, kind: `file`, size_bytes: `1750`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SECURITY_HARDENING_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `5342`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SECURITY_REDACTION_AND_AUDIT.md` (category: `system-core`, kind: `file`, size_bytes: `4804`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SELF_HEALING_BOUNDARY.md` (category: `system-core`, kind: `file`, size_bytes: `2019`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SELF_IMPROVEMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2160`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SELF_HEALING_BOUNDARY.md` (category: `system-core`, kind: `file`, size_bytes: `2391`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SELF_IMPROVEMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2725`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md` (category: `system-core`, kind: `file`, size_bytes: `4305`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md` (category: `system-core`, kind: `file`, size_bytes: `962`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SINGLE_FOUNDER_GIT_OPERATING_SYSTEM.md` (category: `system-core`, kind: `file`, size_bytes: `1937`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SINGLE_FOUNDER_GIT_OPERATING_SYSTEM.md` (category: `system-core`, kind: `file`, size_bytes: `4067`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SKILLS_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `3253`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SNAPSHOT_VERSIONING_AND_RETENTION_SPEC.md` (category: `system-core`, kind: `file`, size_bytes: `1544`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/STANDARDS_CONFLICT_RESOLUTION.md` (category: `system-core`, kind: `file`, size_bytes: `4064`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SUB_AGENT_HOST_DELEGATION.md` (category: `system-core`, kind: `file`, size_bytes: `6021`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SUPER_TEMPLATE_MASTER_MAP.md` (category: `system-core`, kind: `file`, size_bytes: `118714`, origin: `generated`, mutability: `template-authoritative`)
+- `_system/SUPER_TEMPLATE_MASTER_MAP.md` (category: `system-core`, kind: `file`, size_bytes: `158063`, origin: `generated`, mutability: `template-authoritative`)
 - `_system/SYSTEM_AWARENESS_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `2627`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SYSTEM_EVOLUTION_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `2254`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/SYSTEM_EVOLUTION_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `2697`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/SYSTEM_ORCHESTRATION_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `7700`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/SYSTEM_REGISTRY.json` (category: `system-core`, kind: `file`, size_bytes: `93548`, origin: `generated`, mutability: `template-authoritative`)
+- `_system/SYSTEM_REGISTRY.json` (category: `system-core`, kind: `file`, size_bytes: `122147`, origin: `generated`, mutability: `template-authoritative`)
 - `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `2573`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md` (category: `system-core`, kind: `file`, size_bytes: `523`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/TEMPLATE_NEUTRALITY_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `2744`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/TEMPLATE_SYNC_NOTICE.md` (category: `system-core`, kind: `file`, size_bytes: `530`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1121`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1554`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/THREAT_MODEL_TEMPLATE.md` (category: `system-core`, kind: `file`, size_bytes: `935`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/TOOL_MEMORY_ISOLATION_STAMP.md` (category: `system-core`, kind: `file`, size_bytes: `4543`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/TOOL_MEMORY_REDIRECTION_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `323`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/TROUBLESHOOTING.md` (category: `system-core`, kind: `file`, size_bytes: `10471`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/UPGRADE_AND_DRIFT_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `3887`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/VALIDATION_COMMAND_DISCOVERY_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `376`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/VALIDATION_GATES.md` (category: `system-core`, kind: `file`, size_bytes: `4526`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/VALIDATION_COMMAND_DISCOVERY_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `747`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/VALIDATION_GATES.md` (category: `system-core`, kind: `file`, size_bytes: `4726`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `1330`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/WORKING_FILES_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `4357`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/WORKING_FILES_GUIDE.md` (category: `system-core`, kind: `file`, size_bytes: `4845`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `3537`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/WORKSPACE_SERVICE_REGISTRY_PROTOCOL.md` (category: `system-core`, kind: `file`, size_bytes: `346`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/agent-instance-policy.json` (category: `system-core`, kind: `file`, size_bytes: `1419`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/agent-performance-profiles.json` (category: `system-core`, kind: `file`, size_bytes: `6103`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/README.md` (category: `system-core`, kind: `file`, size_bytes: `189`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/active-agents.json` (category: `system-core`, kind: `file`, size_bytes: `26`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/conflicts/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `1`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/heartbeats/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `1`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/lanes/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `1`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/leases/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `1`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/agent-state/locks/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `1`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/aiaast-capabilities.json` (category: `system-core`, kind: `file`, size_bytes: `3576`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/aiaast-capabilities.json` (category: `system-core`, kind: `file`, size_bytes: `3889`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/APP_IDENTITY.md` (category: `system-core`, kind: `file`, size_bytes: `1070`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/DOMAIN_MODEL.md` (category: `system-core`, kind: `file`, size_bytes: `1028`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/INSTALLER_AND_DEPLOYMENT_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `1074`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/MCP_AND_AGENT_ISOLATION_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `1107`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/QUALITY_TARGETS.md` (category: `system-core`, kind: `file`, size_bytes: `1055`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/README.md` (category: `system-core`, kind: `file`, size_bytes: `1378`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/RUNTIME_SURFACES.md` (category: `system-core`, kind: `file`, size_bytes: `1057`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/SECURITY_AND_PRIVACY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1111`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/VALIDATION_PROFILE.md` (category: `system-core`, kind: `file`, size_bytes: `1088`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/archetype/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `0`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/ai-agent-app/AI_AGENT_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1054`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/ai-agent-app/AI_FAILURE_MODE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1083`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/ai-agent-app/MODEL_PROVIDER_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1048`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/ai-agent-app/PROMPT_AND_MEMORY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1074`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/background-check-or-osint-app/AUTHORIZED_SCOPE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1166`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/background-check-or-osint-app/OSINT_APP_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1152`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/background-check-or-osint-app/PRIVACY_AND_COMPLIANCE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1127`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/background-check-or-osint-app/SOURCE_AND_PROVENANCE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1149`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cli-tool/CLI_DISTRIBUTION_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1070`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cli-tool/CLI_TOOL_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1014`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cli-tool/COMMAND_SURFACE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1053`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cybersecurity-tool/AUTHORIZED_SCOPE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1105`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cybersecurity-tool/CYBERSECURITY_TOOL_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1151`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cybersecurity-tool/EVIDENCE_AND_AUDIT_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1074`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/cybersecurity-tool/LAB_SANDBOX_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1068`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/data-dashboard/DATA_DASHBOARD_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1051`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/data-dashboard/DATA_SOURCE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1064`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/data-dashboard/METRIC_AND_QUERY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1059`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/data-dashboard/VISUALIZATION_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1048`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/evidence-reporting-app/CHAIN_OF_CUSTODY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1067`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/evidence-reporting-app/EVIDENCE_REPORTING_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1110`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/evidence-reporting-app/EXPORT_AND_REDACTION_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1100`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/evidence-reporting-app/REPORT_TEMPLATE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1074`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/finance-budgeting-app/FINANCE_BUDGETING_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1105`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/finance-budgeting-app/PRECISION_AND_RECONCILIATION_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1161`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/finance-budgeting-app/PRIVACY_AND_EXPORT_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1104`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/finance-budgeting-app/TRANSACTION_DATA_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1082`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/fullstack-marketplace/MARKETPLACE_ACTORS_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1093`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/fullstack-marketplace/MARKETPLACE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1106`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/fullstack-marketplace/MARKETPLACE_DATA_LIFECYCLE.md` (category: `system-core`, kind: `file`, size_bytes: `1087`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/fullstack-marketplace/TRANSACTION_AND_TRUST_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1071`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/home-property-management-app/ASSET_AND_DOCUMENT_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1124`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/home-property-management-app/HANDOFF_EXPORT_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1130`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/home-property-management-app/HOME_PROPERTY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1077`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/home-property-management-app/PROJECT_AND_TASK_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1077`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/local-first-desktop/DESKTOP_APP_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1116`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/local-first-desktop/DESKTOP_INSTALLER_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1086`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/local-first-desktop/LOCAL_DATA_STORAGE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1108`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/local-first-desktop/OFFLINE_SYNC_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1075`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/METASYSTEM_REVIEWER_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1081`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/RECOMMENDATION_ENGINE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1119`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/REPORTING_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1047`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/metasystem-reviewer-app/SCORING_RUBRIC_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1071`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/mobile-apk/ANDROID_PERMISSION_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1085`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_APK_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1056`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_PRIVACY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1060`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/mobile-apk/MOBILE_RELEASE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1044`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/web-saas/API_SURFACE_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1085`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/web-saas/AUTH_AND_TENANCY_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1058`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/web-saas/SAAS_DATA_LIFECYCLE.md` (category: `system-core`, kind: `file`, size_bytes: `1049`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-context/templates/archetype/web-saas/WEB_SAAS_CONTEXT.md` (category: `system-core`, kind: `file`, size_bytes: `1104`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/app-local-namespace.template.json` (category: `system-core`, kind: `file`, size_bytes: `1318`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/archetypes/README.md` (category: `system-core`, kind: `file`, size_bytes: `89`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/archetypes/agent-system-app.md` (category: `system-core`, kind: `file`, size_bytes: `107`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/archetypes/ai-agent-app.md` (category: `system-core`, kind: `file`, size_bytes: `1073`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -659,8 +874,8 @@ Do not hand-edit generated sections.
 - `_system/context/ARCHITECTURAL_INVARIANTS.md` (category: `system-context`, kind: `file`, size_bytes: `1448`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/context/ASSUMPTIONS.md` (category: `system-context`, kind: `file`, size_bytes: `234`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/context/BUILD_LOG.md` (category: `system-context`, kind: `file`, size_bytes: `89`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/context/CURRENT_STATUS.md` (category: `system-context`, kind: `file`, size_bytes: `2288`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/context/DECISIONS.md` (category: `system-context`, kind: `file`, size_bytes: `3465`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/context/CURRENT_STATUS.md` (category: `system-context`, kind: `file`, size_bytes: `2686`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/context/DECISIONS.md` (category: `system-context`, kind: `file`, size_bytes: `6610`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/context/DECISION_LEDGER.md` (category: `system-context`, kind: `file`, size_bytes: `97`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/context/EVENT_TIMELINE.md` (category: `system-context`, kind: `file`, size_bytes: `129`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/context/INTEGRATION_SURFACES.md` (category: `system-context`, kind: `file`, size_bytes: `2098`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -674,7 +889,7 @@ Do not hand-edit generated sections.
 - `_system/design-system/THEME_GOVERNANCE.md` (category: `system-core`, kind: `file`, size_bytes: `1488`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/extensions/README.md` (category: `system-core`, kind: `file`, size_bytes: `74`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/git-gate-matrix.json` (category: `system-core`, kind: `file`, size_bytes: `275`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/gitops-policy.json` (category: `system-core`, kind: `file`, size_bytes: `266`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/gitops-policy.json` (category: `system-core`, kind: `file`, size_bytes: `837`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/PATTERN_INDEX.md` (category: `system-core`, kind: `file`, size_bytes: `2350`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/README.md` (category: `system-core`, kind: `file`, size_bytes: `654`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/golden-example-manifest.json` (category: `system-core`, kind: `file`, size_bytes: `5193`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -692,21 +907,30 @@ Do not hand-edit generated sections.
 - `_system/golden-examples/patterns/TESTING_PATTERNS.md` (category: `system-core`, kind: `file`, size_bytes: `1768`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/patterns/VALIDATION_AND_RELEASE.md` (category: `system-core`, kind: `file`, size_bytes: `1065`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/working-files/PLAN_EXAMPLE.md` (category: `system-core`, kind: `file`, size_bytes: `1519`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/golden-examples/working-files/PROJECT_PROFILE_EXAMPLE.md` (category: `system-core`, kind: `file`, size_bytes: `6442`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/golden-examples/working-files/PROJECT_PROFILE_EXAMPLE.md` (category: `system-core`, kind: `file`, size_bytes: `6599`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/golden-examples/working-files/WHERE_LEFT_OFF_EXAMPLE.md` (category: `system-core`, kind: `file`, size_bytes: `1505`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/health-history.json` (category: `system-core`, kind: `file`, size_bytes: `3`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/host-adapter-manifest.json` (category: `system-core`, kind: `file`, size_bytes: `18961`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/host-adapter-manifest.json` (category: `system-core`, kind: `file`, size_bytes: `24950`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/instruction-precedence.json` (category: `system-core`, kind: `file`, size_bytes: `3683`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/integration-maps/README.md` (category: `system-core`, kind: `file`, size_bytes: `68`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/llm_config.yaml.example` (category: `system-core`, kind: `file`, size_bytes: `871`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/MCP_FAILURE_FALLBACKS.md` (category: `mcp`, kind: `file`, size_bytes: `559`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/MCP_SELECTION_POLICY.md` (category: `mcp`, kind: `file`, size_bytes: `465`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/MCP_SERVER_CATALOG.md` (category: `mcp`, kind: `file`, size_bytes: `2597`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/MCP_SERVER_CATALOG_TEMPLATE.md` (category: `mcp`, kind: `file`, size_bytes: `408`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/MCP_SURVIVAL_PLAYBOOK.md` (category: `mcp`, kind: `file`, size_bytes: `2541`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/README.md` (category: `mcp`, kind: `file`, size_bytes: `358`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/servers.codex.example.toml` (category: `mcp`, kind: `file`, size_bytes: `199`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `_system/mcp/servers.cursor.example.json` (category: `mcp`, kind: `file`, size_bytes: `209`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp-instance-policy.json` (category: `system-core`, kind: `file`, size_bytes: `2813`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp-server-capability-matrix.json` (category: `system-core`, kind: `file`, size_bytes: `2664`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_FAILURE_FALLBACKS.md` (category: `mcp`, kind: `file`, size_bytes: `874`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_INSTANCE_REGISTRY_PROTOCOL.md` (category: `mcp`, kind: `file`, size_bytes: `8690`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md` (category: `mcp`, kind: `file`, size_bytes: `5659`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_SELECTION_POLICY.md` (category: `mcp`, kind: `file`, size_bytes: `1916`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md` (category: `mcp`, kind: `file`, size_bytes: `7323`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_SERVER_CATALOG.md` (category: `mcp`, kind: `file`, size_bytes: `6904`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_SERVER_CATALOG_TEMPLATE.md` (category: `mcp`, kind: `file`, size_bytes: `628`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/MCP_SURVIVAL_PLAYBOOK.md` (category: `mcp`, kind: `file`, size_bytes: `2671`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/README.md` (category: `mcp`, kind: `file`, size_bytes: `551`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/instances/.gitkeep` (category: `mcp`, kind: `file`, size_bytes: `0`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/local-overrides/.gitignore` (category: `mcp`, kind: `file`, size_bytes: `25`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/local-overrides/README.md` (category: `mcp`, kind: `file`, size_bytes: `1530`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/runtime/.gitkeep` (category: `mcp`, kind: `file`, size_bytes: `0`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/servers.codex.example.toml` (category: `mcp`, kind: `file`, size_bytes: `308`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/mcp/servers.cursor.example.json` (category: `mcp`, kind: `file`, size_bytes: `185`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/packaging/README.md` (category: `packaging`, kind: `file`, size_bytes: `1206`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/packaging/node-and-desktop-packaging.md` (category: `packaging`, kind: `file`, size_bytes: `334`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/packaging/python-packaging.md` (category: `packaging`, kind: `file`, size_bytes: `303`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -716,16 +940,26 @@ Do not hand-edit generated sections.
 - `_system/packaging/templates/flatpak-manifest.json.example` (category: `packaging`, kind: `file`, size_bytes: `558`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/packaging/templates/flatpak.yaml.example` (category: `packaging`, kind: `file`, size_bytes: `317`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/packaging/templates/snapcraft.yaml.example` (category: `packaging`, kind: `file`, size_bytes: `271`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/personas/.gitkeep` (category: `system-core`, kind: `file`, size_bytes: `0`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/personas/README.md` (category: `system-core`, kind: `file`, size_bytes: `982`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/README.md` (category: `plugin`, kind: `file`, size_bytes: `260`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/ci-integration/README.md` (category: `plugin`, kind: `file`, size_bytes: `660`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/ci-integration/plugin.json` (category: `plugin`, kind: `file`, size_bytes: `371`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/ci-integration/run.sh` (category: `plugin`, kind: `file`, size_bytes: `982`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/plugins/heretic-abliteration/README.md` (category: `plugin`, kind: `file`, size_bytes: `1087`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/plugins/heretic-abliteration/decensor.sh` (category: `plugin`, kind: `file`, size_bytes: `1516`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/plugins/heretic-abliteration/plugin.json` (category: `plugin`, kind: `file`, size_bytes: `423`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/plugins/heretic-abliteration/run.sh` (category: `plugin`, kind: `file`, size_bytes: `142`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/observability-setup/README.md` (category: `plugin`, kind: `file`, size_bytes: `726`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/observability-setup/plugin.json` (category: `plugin`, kind: `file`, size_bytes: `407`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/observability-setup/run.sh` (category: `plugin`, kind: `file`, size_bytes: `1180`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/security-scan/README.md` (category: `plugin`, kind: `file`, size_bytes: `642`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/security-scan/plugin.json` (category: `plugin`, kind: `file`, size_bytes: `395`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/plugins/security-scan/run.sh` (category: `plugin`, kind: `file`, size_bytes: `1752`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/policy-contracts/host-launch.json` (category: `system-core`, kind: `file`, size_bytes: `3493`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/policy-contracts/instruction-precedence.json` (category: `system-core`, kind: `file`, size_bytes: `1150`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/policy-contracts/mcp-isolation.json` (category: `system-core`, kind: `file`, size_bytes: `1524`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/policy-contracts/self-writing-boundary.json` (category: `system-core`, kind: `file`, size_bytes: `1941`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ports/PORT_POLICY.md` (category: `system-core`, kind: `file`, size_bytes: `3179`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ports/default_port_matrix.yaml` (category: `system-core`, kind: `file`, size_bytes: `690`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/ports/templates/README.md` (category: `system-core`, kind: `file`, size_bytes: `480`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -784,10 +1018,19 @@ Do not hand-edit generated sections.
 - `_system/runtime-profiles/README.md` (category: `system-core`, kind: `file`, size_bytes: `81`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/runtime-profiles/scaffold-profiles.json` (category: `system-core`, kind: `file`, size_bytes: `1668`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/runtime-profiles/scaffold-profiles.schema.json` (category: `system-core`, kind: `file`, size_bytes: `777`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/scaffold-isolation-gates.json` (category: `system-core`, kind: `file`, size_bytes: `2469`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/scaffold-profiles.json` (category: `system-core`, kind: `file`, size_bytes: `10777`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/agent-instance-policy.schema.json` (category: `system-core`, kind: `file`, size_bytes: `3587`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/app-local-namespace.schema.json` (category: `system-core`, kind: `file`, size_bytes: `4944`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/schemas/benchmark-matrix-report.schema.json` (category: `system-core`, kind: `file`, size_bytes: `4160`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/bleed-event.schema.json` (category: `system-core`, kind: `file`, size_bytes: `2634`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/mcp-instance-policy.schema.json` (category: `system-core`, kind: `file`, size_bytes: `8077`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/mcp-server-capability-matrix.schema.json` (category: `system-core`, kind: `file`, size_bytes: `2987`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/schemas/project-domain-manifest.schema.json` (category: `system-core`, kind: `file`, size_bytes: `1313`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/schemas/release-packet-artifacts.schema.json` (category: `system-core`, kind: `file`, size_bytes: `671`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/schemas/release-packet.schema.json` (category: `system-core`, kind: `file`, size_bytes: `1997`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/schemas/scaffold-isolation-gates.schema.json` (category: `system-core`, kind: `file`, size_bytes: `1835`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/self-improvement/README.md` (category: `system-core`, kind: `file`, size_bytes: `1370`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/snapshot-remote-targets.json` (category: `system-core`, kind: `file`, size_bytes: `300`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/snapshot-retention-policy.json` (category: `system-core`, kind: `file`, size_bytes: `421`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/starter-blueprints/BACKGROUND_WORKER.md` (category: `starter-blueprint`, kind: `file`, size_bytes: `778`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -813,25 +1056,34 @@ Do not hand-edit generated sections.
 - `_system/tool-memory/README.md` (category: `system-core`, kind: `file`, size_bytes: `95`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/agent-zero-memory.md` (category: `system-core`, kind: `file`, size_bytes: `20`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/aider-memory.md` (category: `system-core`, kind: `file`, size_bytes: `15`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `_system/tool-memory/antigravity-memory.md` (category: `system-core`, kind: `file`, size_bytes: `21`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/claude-memory.md` (category: `system-core`, kind: `file`, size_bytes: `16`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/codex-memory.md` (category: `system-core`, kind: `file`, size_bytes: `15`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/copilot-memory.md` (category: `system-core`, kind: `file`, size_bytes: `17`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/cursor-memory.md` (category: `system-core`, kind: `file`, size_bytes: `16`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/gemini-memory.md` (category: `system-core`, kind: `file`, size_bytes: `16`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `_system/tool-memory/local-model-memory.md` (category: `system-core`, kind: `file`, size_bytes: `21`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/README.md` (category: `bootstrap`, kind: `file`, size_bytes: `19503`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/README.md` (category: `bootstrap`, kind: `file`, size_bytes: `19536`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/agent-heartbeat.sh` (category: `bootstrap`, kind: `file`, size_bytes: `483`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/agent-isolation.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1754`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/agent-lock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1422`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/agent-reclaim-lock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1457`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/agent-unlock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `797`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/agent-lock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1820`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/agent-reclaim-lock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1813`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/agent-unlock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `931`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/aiast` (category: `bootstrap`, kind: `file`, size_bytes: `9048`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/allocate-workspace-service-port.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1358`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/append-build-log.sh` (category: `bootstrap`, kind: `file`, size_bytes: `268`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/append-global-app-report.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1616`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/apply-host-settings.sh` (category: `bootstrap`, kind: `file`, size_bytes: `12192`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/apply-local-self-improvement.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7326`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/apply-starter-blueprint.sh` (category: `bootstrap`, kind: `file`, size_bytes: `38263`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/audit-bleed-events.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4619`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-adapter-surface-stamps-protocol.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4212`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-agent-instance-isolation.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7766`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-agent-locks.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2946`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-agent-orchestration.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3221`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-agent-surface-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2228`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-agent-surface-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2966`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-app-definition-state.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4735`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-app-local-namespace.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6807`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-bootstrap-permissions.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2267`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-context-freshness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1368`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-cross-file-integration.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1400`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -840,96 +1092,129 @@ Do not hand-edit generated sections.
 - `bootstrap/check-evidence-quality.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4646`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-evidence-retention.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2285`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-fleet-readiness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `910`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-global-shim-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1440`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-global-shim-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1712`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-hallucination.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4139`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-host-adapter-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8045`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-host-bundle.sh` (category: `bootstrap`, kind: `file`, size_bytes: `9595`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-host-ingestion.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6446`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-host-settings-baseline.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7380`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-install-boundary.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1122`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-installer-first-gate.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1801`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-instruction-domain-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2947`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-local-self-improvement.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3249`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-master-map-completeness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3005`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-network-bindings.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6853`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-mcp-bleed.sh` (category: `bootstrap`, kind: `file`, size_bytes: `9764`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-mcp-project-isolation.sh` (category: `bootstrap`, kind: `file`, size_bytes: `18668`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-mos-downstream-exclusion.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2088`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-network-bindings.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7290`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-packaging-targets.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7929`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-pending-meta-sync.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4300`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-placeholders.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3813`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-project-target-consistency.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3075`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-repo-permissions.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3232`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-runtime-foundations.sh` (category: `bootstrap`, kind: `file`, size_bytes: `14528`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-scaffold-isolation-gate.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8716`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-scaffold-required-files.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2412`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-supply-chain.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4806`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-swarm-fleet.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2401`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-system-awareness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7832`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-swarm-fleet.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2512`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-system-awareness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8590`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-template-mos-boundary.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1439`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-tool-memory-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1423`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-tool-memory-isolation.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8077`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/check-working-directory-alignment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2210`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/check-working-file-staleness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7620`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/check-working-file-staleness.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7646`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/clear-template-sync-notice.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1825`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/compress-context-file.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4315`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/configure-project-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2459`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/create-test-app-campaign.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1497`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/detect-drift.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6255`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/detect-instruction-conflicts.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7838`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/discover-plugins.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4014`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/discover-plugins.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4189`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/discover-validation-commands.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1288`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-archetype-pack.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3279`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-auxiliary-brief.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2534`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/emit-bleed-event.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7487`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-fleet-status.sh` (category: `bootstrap`, kind: `file`, size_bytes: `869`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-host-bundle.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6012`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-host-prompt.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4009`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-session-environment.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2251`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-status-report.sh` (category: `bootstrap`, kind: `file`, size_bytes: `763`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/emit-tiered-context.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4294`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/generate-app-context-pack.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4065`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-diagnostic-report.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3221`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-host-adapters.sh` (category: `bootstrap`, kind: `file`, size_bytes: `10014`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-operating-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `16713`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-ops-notes.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2376`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-release-packet.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7682`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-runtime-foundations.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4431`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/generate-super-template-master-map.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5800`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/generate-super-template-master-map.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6068`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-system-key.sh` (category: `bootstrap`, kind: `file`, size_bytes: `39520`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-system-registry.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3039`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/generate-systemd-unit.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3344`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/git-swarm-manager.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4471`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/gitops.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6180`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/git-swarm-manager.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4707`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/gitops.sh` (category: `bootstrap`, kind: `file`, size_bytes: `11820`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/harvest-agent-surfaces.sh` (category: `bootstrap`, kind: `file`, size_bytes: `856`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/heal-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `160`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/hybrid-git-sync.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4312`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/init-project.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6355`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/init-agent-instance.sh` (category: `bootstrap`, kind: `file`, size_bytes: `11969`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/init-app-namespace.sh` (category: `bootstrap`, kind: `file`, size_bytes: `10524`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/init-project.sh` (category: `bootstrap`, kind: `file`, size_bytes: `12119`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/install-aiast.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6312`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/install-autonomous-guardrails.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5264`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/install-missing-files.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5144`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/install-missing-files.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5544`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/install-root-redirect-shims.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1207`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/install-tool-global-redirects.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1106`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/lib/aiaast-lib.sh` (category: `bootstrap`, kind: `file`, size_bytes: `24496`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-classify.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4718`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-core.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2297`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-json.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1737`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-lib.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1201`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-lock.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3324`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-managed.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4880`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-repo.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4951`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/lib/aiaast-sync.sh` (category: `bootstrap`, kind: `file`, size_bytes: `13075`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/migrate-agent-surface-upgrade.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3662`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/operator-hygiene-advisor.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4065`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/patch-agent-surface-contracts.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2851`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/print-agent-map.sh` (category: `bootstrap`, kind: `file`, size_bytes: `203`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/propose-local-self-improvement.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4222`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/quarantine-agent.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4199`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/quarantine-mcp-instance.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3918`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/reap-stale-leases.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6936`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/recommend-starter-blueprint.sh` (category: `bootstrap`, kind: `file`, size_bytes: `21970`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/reconcile-meta-sync.sh` (category: `bootstrap`, kind: `file`, size_bytes: `20592`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/record-agent-event.sh` (category: `bootstrap`, kind: `file`, size_bytes: `662`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/register-mcp-instance.sh` (category: `bootstrap`, kind: `file`, size_bytes: `13301`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/release-agent.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4647`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/release-mcp-instance.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5191`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/render-scaffold-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4116`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/repair-myappz-root-ownership.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3294`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/repair-safe-permission-drift.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1411`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/repair-swarm-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2679`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/repair-swarm-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2870`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/repair-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1182`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/report-health-trends.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2388`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/resume-from-checkpoint.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7113`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/run-app-delivery-autopilot.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1719`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/run-autonomous-guardrails.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4681`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/run-sast.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5026`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/run-test-app-benchmark-matrix.sh` (category: `bootstrap`, kind: `file`, size_bytes: `14901`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/run-test-app-benchmark-matrix.sh` (category: `bootstrap`, kind: `file`, size_bytes: `15018`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/run-test-app-campaign.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1022`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/run-validation-autopilot.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1519`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/scaffold-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3931`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/scaffold-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4210`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/scan-container.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6472`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/scan-security.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4318`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/score-quality-gates.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4696`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/seed-product-brief.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5234`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/seed-risk-register.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5934`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/seed-test-strategy.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4395`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/seed-working-state.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8728`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/snapshot-meta-to-orphan-branch.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1669`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/snapshotctl.sh` (category: `bootstrap`, kind: `file`, size_bytes: `15693`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/seed-working-state.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8940`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/snapshot-meta-to-orphan-branch.sh` (category: `bootstrap`, kind: `file`, size_bytes: `12873`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/snapshotctl.sh` (category: `bootstrap`, kind: `file`, size_bytes: `15857`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/stamp-tool-memory.sh` (category: `bootstrap`, kind: `file`, size_bytes: `9897`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/suggest-project-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `32851`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/summarize-benchmark-trend.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8261`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/sync-agent-adapters.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3861`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/sync-agent-adapters.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4046`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/sync-metasystem-contracts.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1676`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/system-doctor.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8581`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/system-doctor.sh` (category: `bootstrap`, kind: `file`, size_bytes: `9481`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/tag-improvement-candidate.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1087`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/.credits-hidden` (category: `bootstrap`, kind: `file`, size_bytes: `121`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/LICENSE` (category: `bootstrap`, kind: `file`, size_bytes: `194`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -956,11 +1241,18 @@ Do not hand-edit generated sections.
 - `bootstrap/templates/runtime/ops/compose/compose.yml` (category: `bootstrap`, kind: `file`, size_bytes: `1485`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/env/.env.example` (category: `bootstrap`, kind: `file`, size_bytes: `1189`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/README.md` (category: `bootstrap`, kind: `file`, size_bytes: `1151`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/doctor.sh` (category: `bootstrap`, kind: `file`, size_bytes: `338`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/install.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3028`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/lib/port_allocator.py` (category: `bootstrap`, kind: `file`, size_bytes: `8975`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/lib/runtime-foundation.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7619`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/logs.sh` (category: `bootstrap`, kind: `file`, size_bytes: `278`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/open.sh` (category: `bootstrap`, kind: `file`, size_bytes: `272`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/purge.sh` (category: `bootstrap`, kind: `file`, size_bytes: `177`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/repair.sh` (category: `bootstrap`, kind: `file`, size_bytes: `147`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/restart.sh` (category: `bootstrap`, kind: `file`, size_bytes: `164`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/start.sh` (category: `bootstrap`, kind: `file`, size_bytes: `369`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/status.sh` (category: `bootstrap`, kind: `file`, size_bytes: `286`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/templates/runtime/ops/install/stop.sh` (category: `bootstrap`, kind: `file`, size_bytes: `366`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/install/uninstall.sh` (category: `bootstrap`, kind: `file`, size_bytes: `1883`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/ops/logging/README.md` (category: `bootstrap`, kind: `file`, size_bytes: `449`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/templates/runtime/packaging/README.md` (category: `bootstrap`, kind: `file`, size_bytes: `1046`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -979,8 +1271,9 @@ Do not hand-edit generated sections.
 - `bootstrap/templates/runtime/tools/security-preflight.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2932`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/track-semantic-changes.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6571`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/uninstall-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3961`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/update-template.sh` (category: `bootstrap`, kind: `file`, size_bytes: `10225`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/update-template.sh` (category: `bootstrap`, kind: `file`, size_bytes: `12269`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/upgrade-assistant.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6004`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-app-context-files.sh` (category: `bootstrap`, kind: `file`, size_bytes: `4380`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/validate-archetype-packs.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3709`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/validate-benchmark-report.sh` (category: `bootstrap`, kind: `file`, size_bytes: `7009`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/validate-instruction-layer.sh` (category: `bootstrap`, kind: `file`, size_bytes: `10190`, origin: `hand-authored`, mutability: `template-authoritative`)
@@ -988,11 +1281,13 @@ Do not hand-edit generated sections.
 - `bootstrap/validate-plugin.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3423`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/validate-quality-score-policy.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5289`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/validate-quality-score-reproducibility.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2134`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/validate-release-packet.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8505`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/validate-scaffold-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2105`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/validate-scaffold-profiles.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3005`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/validate-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `26250`, origin: `hand-authored`, mutability: `template-authoritative`)
-- `bootstrap/verify-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2537`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-release-packet.sh` (category: `bootstrap`, kind: `file`, size_bytes: `9339`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-scaffold-output.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3814`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-scaffold-profile.sh` (category: `bootstrap`, kind: `file`, size_bytes: `2399`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-scaffold-profiles.sh` (category: `bootstrap`, kind: `file`, size_bytes: `3275`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/validate-system.sh` (category: `bootstrap`, kind: `file`, size_bytes: `29186`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/verify-integrity.sh` (category: `bootstrap`, kind: `file`, size_bytes: `5251`, origin: `hand-authored`, mutability: `template-authoritative`)
+- `bootstrap/verify-mcp-provenance.sh` (category: `bootstrap`, kind: `file`, size_bytes: `6914`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/wizard.sh` (category: `bootstrap`, kind: `file`, size_bytes: `8122`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `bootstrap/write-checkpoint.sh` (category: `bootstrap`, kind: `file`, size_bytes: `15015`, origin: `hand-authored`, mutability: `template-authoritative`)
 - `docs/CONTEXT_COMPRESS_PILOT.md` (category: `unclassified`, kind: `file`, size_bytes: `1841`, origin: `hand-authored`, mutability: `downstream-mutable`)

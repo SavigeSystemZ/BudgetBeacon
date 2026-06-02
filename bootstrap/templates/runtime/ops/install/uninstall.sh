@@ -58,7 +58,13 @@ if command_exists systemctl; then
   if [[ "${MODE}" == "system" ]]; then
     run_step systemctl disable --now "${APP_SLUG}.service" || true
   else
-    run_step systemctl --user disable --now "${APP_SLUG}.service" || true
+    if systemctl --user show-environment >/dev/null 2>&1; then
+      run_step systemctl --user disable --now "${APP_SLUG}.service" || true
+    else
+      if [[ "${AIAST_QUIET_WARNINGS:-0}" != "1" ]]; then
+        warn "systemctl --user session unavailable; skipping user service disable"
+      fi
+    fi
   fi
 fi
 

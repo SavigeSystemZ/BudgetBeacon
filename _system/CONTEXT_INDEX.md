@@ -12,9 +12,13 @@ This file is the map of the local agent operating system.
 - `AGENT_INSTALLER_AND_HOST_VALIDATION_PROTOCOL.md` — agent rules: early installer scaffolds, prod-like host testing, desktop integration, robust install/repair/uninstall, governed ports, dependency/DB setup, periodic launch/render verification after large work
 - `SUB_AGENT_HOST_DELEGATION.md` — optional parallel host CLI / auxiliary sessions, scope rules, and primary takeover when auxiliaries fail; pair with `bootstrap/emit-auxiliary-brief.sh` for standardized briefs
 - `KEY.md` — exhaustive file-by-file key with when-to-use guidance
+- `SUPER_TEMPLATE_MASTER_MAP.md` — operator-grade execution map linking ownership, integration, and validators
 - `HOST_ADAPTER_POLICY.md` — policy for generated tool-entry and adapter-load surfaces
 - `AGENT_SURFACE_TAXONOMY.md` — canonical adapter classes, naming, and placeholder boundaries
 - `AGENT_INIT_CONVERGENCE.md` — mapping from external init workspaces to installable AIAST contracts
+- `APP_REPO_IDENTITY.md` — **resolve first**: is this the meta-system template or a blank app-building repo? role-branched directive for every agent
+- `GIT_SIDE_MIRROR_POLICY.md` — local lanes are the authoritative gate; git is a faithful mirror; `main` single source of truth; sanctioned per-infrastructure-target branches; heavy env-dependent CI is manual-only
+- `APP_PERSONA_CONTRACT.md` — modular app-specific world-class persona that bolts onto the meta-system once an app is defined (`_system/personas/APP_PERSONA.md`, forged via the `forge-app-persona` command; optional overlay, template-neutral)
 - `DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md` — master template vs downstream app repo; preserve-first rules; template sync notice + health gate
 - `TEMPLATE_SYNC_NOTICE.md` — latest template sync state for agents (`PENDING_HEALTH_CHECK` vs `CLEARED`); see `LOAD_ORDER.md`
 - `HOST_BUNDLE_CONTRACT.md` — contract for self-contained external host bundles
@@ -30,6 +34,8 @@ This file is the map of the local agent operating system.
 - `EXECUTION_PROTOCOL.md` — how work should be done
 - `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md` — high-risk installable template change classes and required follow-through
 - `_system/SELF_HEALING_BOUNDARY.md` — safe automatic repair versus unsafe repair requiring review
+- `_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md` — downstream-local self-improvement loop: detect, propose, apply (in-repo only), validate, record, optionally tag a generic candidate
+- `_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md` — allowed/guarded/forbidden project-local self-writes, in-repo-only write scope, and git-backed rollback
 - `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md` — how to handle framework, package, platform, installer, and API research that may change over time
 - `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md` — working-directory authority and write containment rules
 - `_system/PROJECT_IDENTITY_AND_SCOPE_PROTOCOL.md` — identity mismatch detection and halt behavior
@@ -47,7 +53,15 @@ This file is the map of the local agent operating system.
 - `SYSTEM_AWARENESS_PROTOCOL.md` — how the operating system tracks its own managed surfaces
 - `HALLUCINATION_DEFENSE_PROTOCOL.md` — how to detect and recover from ungrounded claims
 - `HANDOFF_PROTOCOL.md` — quality requirements for agent-to-agent handoffs
-- `GIT_REMOTE_AND_SYNC_PROTOCOL.md` — remotes, SSH sync discipline, fetch/pull/push expectations for agents
+- `GIT_REMOTE_AND_SYNC_PROTOCOL.md` — GitHub as a private full mirror of local `main`, SSH remotes, `gh` mirror setup, fetch/push expectations
+- `SINGLE_FOUNDER_GIT_OPERATING_SYSTEM.md` — local-authoritative `main` workflow, branch exceptions, GitHub mirror settings, and recovery workflow for solo founder + multi-agent execution
+- `HYBRID_APP_REPO_LAYOUT_CONTRACT.md` — required MyAppZ app-root runtime/meta/snapshot/ops separation
+- `SNAPSHOT_VERSIONING_AND_RETENTION_SPEC.md` — in-house tar.zst snapshot format, naming, encryption, and retention rules
+- `OBSERVABILITY_AND_RECOVERY_LEDGER_PROTOCOL.md` — JSONL operation event schema and note/ledger generation policy
+- `gitops-policy.json` — machine-readable main-only GitHub mirror policy used by `bootstrap/gitops.sh`
+- `git-gate-matrix.json` — machine-readable pre-commit/pre-push/merge gate matrix
+- `snapshot-retention-policy.json` — machine-readable snapshot classes, retention, and compression policy
+- `snapshot-remote-targets.json` — machine-readable snapshot publish target and encryption requirements
 - `ports/PORT_POLICY.md` — governed port allocation protocol (runtime registry + tools)
 - `design-system/THEME_GOVERNANCE.md` — additive themes; no destructive visual overwrites
 - `SYSTEM_REGISTRY.json` — machine-readable registry of AIAST-managed files
@@ -83,14 +97,25 @@ This file is the map of the local agent operating system.
 ## Coordination and continuity
 
 - `MULTI_AGENT_COORDINATION.md` — turn-taking and handoff rules
+- `CONCURRENT_AGENT_FLEET_PROTOCOL.md` — high-concurrency model with one writer lease per scope
+- `AGENT_LOCKING_AND_LEASES.md` — lock, lease, heartbeat, and reclaim contract
 - `AGENT_ROLE_CATALOG.md` — shared role model and write-scope contract
+- `AGENT_DISCOVERY_MATRIX.md` + `READ_BUNDLES.md` — cross-domain task classification and archetype bundle routing
+- `APP_BUILDER_META_SYSTEM_ORCHESTRATION.md` — deterministic builder-lane role routing, domain-adaptive flow, and closure gates for app-builder meta work
+- `APP_BUILDER_DOMAIN_ADAPTATION_RAILS.md` — deterministic category mapping and adaptation guardrails for any-app builder scenarios
+- `APP_BUILDER_SECURITY_AND_AUTO_CORRECTION_CONTRACT.md` — containment tiers and bounded auto-correction policy for builder-lane changes
+- `APP_BUILDER_RELEASE_READINESS_STANDARD.md` — final release and rollout gates for app-builder tranche closure
+- `APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` — benchmark and regression evidence requirements for builder-lane claims
 - `CHECKPOINT_PROTOCOL.md` — agent-neutral mid-session checkpoint flow (rate-limit, crash, and handoff resume)
+- `CONTINUOUS_CONTEXT_RECORDING_PROTOCOL.md` — mandatory continuous event and continuity recording
+- `CONTEXT_COMPACTION_AND_REHYDRATION.md` — long-session context compaction and rehydration model
 - `checkpoints/README.md` — checkpoint directory layout and rules. The LATEST.json + LATEST.md files are written at runtime by any agent; the history subdirectory is append-only.
 - `VALIDATION_GATES.md` — required validation rules
 - `DEBUG_REPAIR_PLAYBOOK.md` — failure triage and repair
 - `PROVENANCE_AND_EVIDENCE.md` — audit and lineage rules
 - `RELEASE_READINESS_PROTOCOL.md` — readiness and signoff rules
 - `FAILURE_MODES_AND_RECOVERY.md` — operating-system failure recovery
+- `GIT_REMOTE_AND_SYNC_PROTOCOL.md` — mandatory end-of-prompt git closure discipline for substantive edits
 - `SYSTEM_EVOLUTION_POLICY.md` — how the operating system itself evolves
 
 ## Security and tooling
@@ -101,14 +126,50 @@ This file is the map of the local agent operating system.
 - `THREAT_MODEL_TEMPLATE.md` — project threat-model starting point
 - `REPO_BOUNDARY_AND_BACKUP.md` — separation between runtime, system, and backups
 - `PLUGIN_CONTRACT.md` — contract for optional AIAST extensions
+- `PLUGGABLE_EXTENSION_ARCHITECTURE.md` — extension architecture and plugin-type taxonomy
+- `TOOL_MEMORY_REDIRECTION_PROTOCOL.md` — project-local memory authority and global-pointer-only policy
+- `SCAFFOLD_PROFILE_MATRIX.md` — scaffold profile include/exclude matrix and defaults
+- `SCAFFOLD_PROFILE_AUTHORING_STANDARD.md` — required fields and authoring rules for scaffold profiles
+- `APP_ARCHETYPE_ROUTING_MATRIX.md` — archetype-driven docs, gates, and packaging routing
+- `APP_ARCHETYPE_PERSONA_CATALOG.md` — canonical persona routing overlays for archetype-first app generation
+- `APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md` — required section model for archetype packs
+- `PROJECT_SPECIFIC_PLACEHOLDER_FILE_STANDARD.md` — required neutral placeholder header and downstream replacement contract
+- `APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md` — how to author app-specific context files (universal + archetype)
+- `APP_CONTEXT_FILE_MATRIX.md` — which context files each archetype needs and where each lives
+- `APP_DELIVERY_AUTOPILOT_PROTOCOL.md` — deterministic delivery autopilot orchestration contract
+- `SAFE_PERMISSION_AND_SETUP_REPAIR_PROTOCOL.md` — bounded safe-repair policy and explicit forbiddens
+- `AGENT_ELEVATION_AND_AUTH_POLICY.md` — operator-prompted elevation authorization (sudo, polkit, KDE Wallet, fingerprint, gh/gcloud auth) for project-specific agents
+- `SCAFFOLD_ISOLATION_COMPLETION_GATE.md` — single aggregator gate covering namespace + agent-instance + MCP isolation + bleed + provenance (run by `bootstrap/check-scaffold-isolation-gate.sh`)
+- `scaffold-isolation-gates.json` — ordered gate manifest (validated against `schemas/scaffold-isolation-gates.schema.json`)
+- `VALIDATION_COMMAND_DISCOVERY_PROTOCOL.md` — validation command discovery and no-fake-results contract
+- `WORKSPACE_SERVICE_REGISTRY_PROTOCOL.md` — optional workspace service registry policy
+- `FLEET_CONTROL_TOWER_PROTOCOL.md` — fleet status/readiness reporting contract
+- `QUALITY_SCORE_AND_STATUS_REPORT_PROTOCOL.md` — weighted quality score and status report contract
+- `QUALITY_SCORE_POLICY.json` — machine-readable quality weighting policy used by `bootstrap/score-quality-gates.sh`
+- `GLOBAL_APP_REPORT_SINK_POLICY.md` — external/global report sink discovery and approval rules
+- `EXTERNAL_AGENT_SURFACE_HARVEST_PROTOCOL.md` — read-only donor-surface harvesting and sanitization policy
+- `TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md` — benchmark test-app campaign contract
+- `EVIDENCE_RETENTION_AND_ROTATION_POLICY.md` — evidence retention windows and report-sink rotation contract
+- `EVIDENCE_RETENTION_PROTECTED_ALLOWLIST.txt` — protected evidence patterns exempt from retention deletion
+- `AUTHORIZED_SECURITY_RESEARCH_MODE.md` — authorized security development scope contract
+- `TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md` — template vs MOS vs builder boundary contract
+- `APP_LOCAL_NAMESPACE_CONTRACT.md` — per-downstream-app identity & namespace contract (MCP, agents, tool-memory, ports, browser, DB)
+- `.aiast-role.json` — parent-template vs downstream-app role sentinel
+- `AGENT_INSTANCE_ISOLATION_POLICY.md` — agent instance naming, lease lifecycle, fencing tokens, concurrency caps, locks-vs-leases reconciliation
+- `agent-instance-policy.json` — machine-form of the above (validated against `schemas/agent-instance-policy.schema.json`)
 - `ci/README.md` — CI template overview
 - `packaging/README.md` — packaging and distribution guide
 - `packaging/templates/appimage.yml.example` — AppImage packaging example
 - `packaging/templates/flatpak-manifest.json.example` — Flatpak packaging example
 - `systemd/README.md` — hardened unit generation and examples
 - `mcp/MCP_SERVER_CATALOG.md` — actual MCP inventory
+- `mcp/MCP_PROJECT_ISOLATION_POLICY.md` — app-scoped MCP boundary rules
+- `mcp/MCP_INSTANCE_REGISTRY_PROTOCOL.md` — per-instance MCP record lifecycle (register/refresh/retire/quarantine)
+- `mcp/MCP_SERVER_CAPABILITY_TIER_MATRIX.md` — MCP server type × isolation tier (T0–T3) catalog
 - `mcp/MCP_SELECTION_POLICY.md` — how to choose MCP servers
 - `mcp/MCP_FAILURE_FALLBACKS.md` — what to do when MCP fails
+- `mcp-instance-policy.json` — per-server-type MCP instance policy (validated against `schemas/mcp-instance-policy.schema.json`)
+- `mcp-server-capability-matrix.json` — machine form of the MCP capability tier matrix (validated against `schemas/mcp-server-capability-matrix.schema.json`)
 
 ## Working state
 
@@ -233,6 +294,15 @@ This file is the map of the local agent operating system.
 - `../bootstrap/check-network-bindings.sh`
 - `../bootstrap/wizard.sh`
 - `../bootstrap/upgrade-assistant.sh`
+- `../bootstrap/gitops.sh`
+- `../bootstrap/hybrid-git-sync.sh`
+- `../bootstrap/snapshotctl.sh`
+- `../bootstrap/generate-ops-notes.sh`
+- `../bootstrap/propose-local-self-improvement.sh` — open a project-local self-improvement proposal
+- `../bootstrap/apply-local-self-improvement.sh` — record an applied self-improvement (in-repo only) with rollback evidence
+- `../bootstrap/check-local-self-improvement.sh` — audit the self-improvement subsystem and its boundary
+- `../bootstrap/generate-app-context-pack.sh` — materialize the selected archetype's app-context files
+- `../bootstrap/validate-app-context-files.sh` — validate the app-context pack (role/state-aware)
 
 ## Structured reviews
 

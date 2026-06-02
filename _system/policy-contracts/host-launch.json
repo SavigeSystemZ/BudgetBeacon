@@ -102,6 +102,30 @@
           "contains": "AGENTS.md"
         }
       }
+    },
+    {
+      "id": "antigravity",
+      "file": ".antigravitycli/settings.aiaast.json",
+      "format": "json",
+      "assertions": {
+        "contextFileName": {
+          "equals": "ANTIGRAVITY.md"
+        },
+        "integrity.verify_meta_sync_before_handoff": {
+          "equals": true
+        },
+        "instructions.context_files": {
+          "contains": "AGENTS.md"
+        },
+        "tools.denied": {
+          "superset": [
+            "shell:rm -rf /",
+            "shell:sudo",
+            "shell:git push --force",
+            "shell:git reset --hard"
+          ]
+        }
+      }
     }
   ]
 }

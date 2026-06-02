@@ -12,6 +12,8 @@ Treat repo-local files as authoritative when instructions conflict.
 - Require evidence-backed validation across orchestration, domain, security, and recovery rails.
 - Reduce regression risk before downstream template adoption.
 
+This standard layers on top of the general `RELEASE_READINESS_PROTOCOL.md`; satisfy that protocol's universal checks first, then apply the app-builder-specific gates below.
+
 ## Required release gates
 
 - Builder orchestration contract is current and cross-linked:

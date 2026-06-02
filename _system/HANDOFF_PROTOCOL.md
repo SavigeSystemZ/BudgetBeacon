@@ -43,6 +43,11 @@ Every handoff must include all of these in `WHERE_LEFT_OFF.md`:
 - **Result**: pass/fail with output summary
 - **Scope**: what the validation covered and what remains unproven
 
+### Context And Git Closure (required for substantive edits)
+- **Context updates**: list which continuity and `_system/context/` files were updated and why.
+- **Git status at close**: clean / dirty / blocked.
+- **Git actions**: status, commit, push outcome; if blocked, include exact blocker and retry instruction.
+
 ### Next Best Step (required)
 - The single most valuable next action, stated as a concrete instruction
 - Bad: "Continue working on the feature"

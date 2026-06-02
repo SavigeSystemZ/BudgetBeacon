@@ -144,6 +144,8 @@ This is a neutral quality-bar example for `_system/PROJECT_PROFILE.md`. Replace 
 
 - Project-scoped servers: [allowed servers]
 - User-level shared servers: [optional shared servers]
+- Isolation boundary: [current app root, repo, database, URL, and namespace limits]
+- State/cache location: [where each MCP stores local state, if anywhere]
 - Read-only defaults: [what default access should be]
 - Elevation rules: [when mutation is allowed]
 - Servers to avoid: [what must stay out]

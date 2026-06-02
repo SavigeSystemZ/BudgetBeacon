@@ -35,27 +35,88 @@ Use these placeholders in new repos unless the operator has pinned a concrete pr
 
 For this AIAST single-developer workflow, GitHub is deliberately simple:
 
-- One local app repo maps to one GitHub repo.
-- The GitHub repo is a **full tracked-file copy** of the local repo, not a
-  separate planning surface, not a partial export, and not a branch farm.
-- The remote name is `origin`; the default branch is `main`.
-- The GitHub repo name matches the local folder name exactly unless the
-  operator explicitly chooses a different slug.
-- Push validated local `main` directly to `origin/main`.
-- Do not create feature/fix/chore branches by default. Use a branch only for
-  operator-approved experiments, emergency recovery, or true collaboration;
-  merge or abandon it quickly, then delete it.
-- Do not require PRs, protected-status checks, or remote CI as a gate for
-  solo work. Local validation is the gate; GitHub mirrors the result.
-- Keep GitHub private by default. Disable Wiki, Projects, and Issues unless
-  the operator wants GitHub to become an active collaboration surface.
-- Annotated tags are allowed for release milestones. Tags are not alternate
-  development streams.
+**PRIMARY PRINCIPLE: GitHub is a cloud backup and archival location, not an operational development surface.**
+
+### Core rules
+
+- **One local app repo = one GitHub repo** (full tracked-file copy, not a branch farm).
+- **Remote name:** `origin`; **default branch:** `main` (this is the only persistent branch).
+- **Remote repo name matches local folder name exactly** (unless operator explicitly chooses a different slug).
+- **Push validated local `main` directly to `origin/main`.**
+- **GitHub is read-only for agents** (pull/fetch only, except when instructed to push by operator).
+
+### Branch discipline (non-negotiable)
+
+- **Default: single `main` branch only.**
+- **Feature/fix/chore branches are FORBIDDEN by default** — no standing branch stacks.
+- **Legacy Branch Remediation (Established Applications):**
+  - If an agent encounters an already established application that has a different GitHub policy with multiple standing branches:
+  - Do your best to merge all branches into `main` so no code is lost.
+  - Alternatively, if there is no difference from the local repository to the remote besides the extra branches (i.e., we don't lose any code), wipe out the remote branches and do a fresh commit and push from the local `main` repository.
+  - The goal is to strictly establish the single `main` branch GitHub policy without losing any code.
+- **Exception cases (require operator approval):**
+  - Emergency recovery (local corruption; recover from remote copy).
+  - Operator-approved experiment (temporary; must be merged or deleted within the same session).
+  - True multi-person collaboration (rare; merge or abandon immediately after the collaboration ends).
+- **When a branch is created (exceptional case):**
+  - Merge or delete the branch before ending the session.
+  - Do NOT leave branches hanging for "future work" or "optional features."
+  - Do NOT use branches as a substitute for feature flags or partial deployment.
+  - Validate locally; if validation passes, merge to `main` and delete the branch.
+
+### CI/PR/status checks
+
+- **Do NOT require PRs** for solo work. GitHub PRs are NOT a development gate.
+- **Do NOT enable protected-branch rules** that block pushing to `main`.
+- **Do NOT enable remote CI gates** that require approval before merging to `main`.
+- **Local validation is the gate** — if tests pass locally, the code is ready for `main`.
+- GitHub Actions, branch protection, and required checks are allowed but **not mandatory** and **not blocking**.
+
+### GitHub as archive and mirror only
+
+- Keep GitHub **private** by default.
+- Disable Wiki, Projects, and Issues unless the operator wants GitHub to become an active collaboration surface.
+- Annotated tags are allowed for release milestones (e.g., `v1.0.0`, `release-2026-01`).
+- **Tags are NOT alternate development streams** — they are archival markers only.
+- If the local repo is lost, clone from GitHub to recover the full state (mirrors the local `main` exactly).
+
+### Cross-machine workflows
 
 The only meaningful concern with this model is cross-machine concurrency:
-if the operator edits from another machine, `git fetch origin main` before
-work and reconcile before pushing. That is still a mirror workflow, not a
-reason to introduce standing branch stacks.
+- **Before starting work on another machine:** `git fetch origin main` to check for unpushed commits.
+- **If local and remote differ:** reconcile locally, commit, validate, then `git push origin main`.
+- That is still a mirror workflow, not a reason to introduce standing branch stacks.
+
+## Enforcement and validation
+
+These scripts validate Git discipline:
+
+- **`bootstrap/check-git-discipline.sh`** (added via meta-sync gate):
+  - Detects standing feature/fix/chore branches and reports them as violations.
+  - Exception: branches approved by operator are documented and whitelisted.
+  - Fails if `main` is not the default branch.
+  - Fails if protected-branch rules block pushing to `main`.
+  - Reports success: `git_discipline_ok`.
+
+## Branch lifecycle
+
+When a temporary branch is created:
+
+1. **Before ending the session:**
+   - Merge the branch to `main`: `git merge <branch> --ff-only` or `--no-ff` (operator choice).
+   - Delete the local branch: `git branch -D <branch>`.
+   - Delete the remote branch: `git push origin --delete <branch>`.
+   - Validate: `git branch -a` shows no standing branches.
+
+2. **If the session is interrupted:**
+   - Document the branch in a handoff note (e.g., `WHERE_LEFT_OFF.md`).
+   - Mark the branch with an annotation comment or prefix (e.g., `wip/`, `review/`).
+   - On resume, merge or delete the branch before continuing.
+
+3. **Never leave the session with:**
+   - Unmerged feature/fix branches.
+   - Uncommitted work on the branch.
+   - Stale branches from previous sessions.
 
 ### Operator profile (SavigeSystemZ / MyAppZ workspace)
 

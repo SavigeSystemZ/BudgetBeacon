@@ -5,6 +5,8 @@ quality gates, and packaging targets.
 
 See `_system/archetypes/` for individual archetype contracts and
 `_system/APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md` for required fields.
+Each archetype also has an app-specific context set — see
+`_system/APP_CONTEXT_FILE_MATRIX.md`.
 
 ## Required Routing Output
 

@@ -176,6 +176,13 @@ require_files \
   "_system/UPGRADE_AND_DRIFT_POLICY.md" \
   "_system/DOWNSTREAM_PRESERVATION_AND_SYNC_NOTICE_POLICY.md" \
   "_system/TEMPLATE_SYNC_NOTICE.md" \
+  "_system/SCAFFOLD_INCLUDE_EXCLUDE_MANIFEST.md" \
+  "_system/scaffold-profiles.json" \
+  "_system/APP_ARCHETYPE_ROUTING_MATRIX.md" \
+  "_system/APP_ARCHETYPE_PERSONA_CATALOG.md" \
+  "_system/TEMPLATE_MOS_AND_BUILDER_APP_BOUNDARY.md" \
+  "_system/MOS_DOWNSTREAM_EXCLUSION_POLICY.md" \
+  "_system/INSTALLER_FIRST_GATE.md" \
   "_system/INSTALLER_AND_UPGRADE_CONTRACT.md" \
   "_system/CODING_STANDARDS.md" \
   "_system/PERFORMANCE_BUDGET.md" \
@@ -261,6 +268,7 @@ require_files \
   "_system/mcp/README.md" \
   "_system/mcp/MCP_SERVER_CATALOG.md" \
   "_system/mcp/MCP_SERVER_CATALOG_TEMPLATE.md" \
+  "_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md" \
   "_system/mcp/MCP_SELECTION_POLICY.md" \
   "_system/mcp/MCP_FAILURE_FALLBACKS.md" \
   "_system/ci/README.md" \
@@ -298,6 +306,7 @@ require_files \
   "bootstrap/update-template.sh" \
   "bootstrap/validate-system.sh" \
   "bootstrap/validate-mcp-health.sh" \
+  "bootstrap/check-mcp-project-isolation.sh" \
   "bootstrap/validate-instruction-layer.sh" \
   "bootstrap/verify-integrity.sh" \
   "bootstrap/generate-system-key.sh" \
@@ -372,6 +381,13 @@ require_files \
   "bootstrap/templates/runtime/ops/install/uninstall.sh" \
   "bootstrap/templates/runtime/ops/install/repair.sh" \
   "bootstrap/templates/runtime/ops/install/purge.sh" \
+  "bootstrap/templates/runtime/ops/install/status.sh" \
+  "bootstrap/templates/runtime/ops/install/doctor.sh" \
+  "bootstrap/templates/runtime/ops/install/logs.sh" \
+  "bootstrap/templates/runtime/ops/install/open.sh" \
+  "bootstrap/templates/runtime/ops/install/start.sh" \
+  "bootstrap/templates/runtime/ops/install/stop.sh" \
+  "bootstrap/templates/runtime/ops/install/restart.sh" \
   "bootstrap/templates/runtime/ops/install/lib/runtime-foundation.sh" \
   "bootstrap/templates/runtime/ops/install/lib/port_allocator.py" \
   "bootstrap/templates/runtime/ops/env/.env.example" \
@@ -397,9 +413,34 @@ require_files \
   "bootstrap/templates/runtime/ai/README.md" \
   "bootstrap/templates/runtime/ai/llm_config.yaml" \
   "bootstrap/templates/runtime/ai/chatbot-intents.md" \
+  "bootstrap/render-scaffold-profile.sh" \
+  "bootstrap/validate-scaffold-output.sh" \
+  "bootstrap/check-scaffold-required-files.sh" \
+  "bootstrap/check-mos-downstream-exclusion.sh" \
+  "bootstrap/check-installer-first-gate.sh" \
+  "bootstrap/run-test-app-campaign.sh" \
   "bootstrap/scaffold-system.sh" \
   "bootstrap/README.md" \
-  "bootstrap/lib/aiaast-lib.sh"
+  "bootstrap/lib/aiaast-lib.sh" \
+  "_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md" \
+  "_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md" \
+  "_system/APP_SPECIFIC_CONTEXT_AUTHORING_STANDARD.md" \
+  "_system/APP_CONTEXT_FILE_MATRIX.md" \
+  "_system/self-improvement/README.md" \
+  "_system/app-context/README.md" \
+  "_system/app-context/APP_IDENTITY.md" \
+  "_system/app-context/DOMAIN_MODEL.md" \
+  "_system/app-context/RUNTIME_SURFACES.md" \
+  "_system/app-context/SECURITY_AND_PRIVACY_CONTEXT.md" \
+  "_system/app-context/VALIDATION_PROFILE.md" \
+  "_system/app-context/INSTALLER_AND_DEPLOYMENT_PROFILE.md" \
+  "_system/app-context/MCP_AND_AGENT_ISOLATION_PROFILE.md" \
+  "_system/app-context/QUALITY_TARGETS.md" \
+  "bootstrap/propose-local-self-improvement.sh" \
+  "bootstrap/apply-local-self-improvement.sh" \
+  "bootstrap/check-local-self-improvement.sh" \
+  "bootstrap/generate-app-context-pack.sh" \
+  "bootstrap/validate-app-context-files.sh"
 
 if [[ ! -f "${TARGET}/README.md" && ! -f "${TARGET}/AI_SYSTEM_README.md" ]]; then
   echo "Missing required system overview: README.md or AI_SYSTEM_README.md" >&2
@@ -500,6 +541,7 @@ jq -e . "${TARGET}/_system/repo-operating-profile.json" >/dev/null 2>&1 || { ech
 jq -e . "${TARGET}/_system/aiaast-capabilities.json" >/dev/null 2>&1 || { echo "Invalid JSON: _system/aiaast-capabilities.json" >&2; exit 1; }
 jq -e . "${TARGET}/_system/golden-examples/golden-example-manifest.json" >/dev/null 2>&1 || { echo "Invalid JSON: _system/golden-examples/golden-example-manifest.json" >&2; exit 1; }
 jq -e . "${TARGET}/_system/context-budget-profiles.json" >/dev/null 2>&1 || { echo "Invalid JSON: _system/context-budget-profiles.json" >&2; exit 1; }
+jq -e . "${TARGET}/_system/scaffold-profiles.json" >/dev/null 2>&1 || { echo "Invalid JSON: _system/scaffold-profiles.json" >&2; exit 1; }
 
 python3 - <<'PY' "${TARGET}" "${REPO_MODE}"
 from __future__ import annotations
@@ -572,10 +614,14 @@ RESOLVED_TARGET="$(cd -- "${TARGET}" && pwd)"
 if [[ "${INFERRED_TEMPLATE_ROOT}" != "${RESOLVED_TARGET}" ]]; then
   # Scan installed repo files for leaked source-template absolute paths while
   # excluding VCS internals that can contain unrelated transient strings.
-  if rg -n "${INFERRED_TEMPLATE_ROOT}" "${TARGET}" \
+  if matches=$(rg -n "${INFERRED_TEMPLATE_ROOT}" "${TARGET}" \
     --glob '!**/.git/**' \
-    --glob '!bootstrap/validate-system.sh' >/dev/null 2>&1; then
+    --glob '!**/bootstrap/validate-system.sh' \
+    --glob '!**/_system/agent-state/**' \
+    --glob '!**/_system/checkpoints/**' 2>/dev/null); then
     echo "Found forbidden absolute master-template path inside installed system" >&2
+    echo "Offending match(es):" >&2
+    echo "$matches" >&2
     exit 1
   fi
 fi
@@ -614,6 +660,14 @@ _run_aiaast_subvalidator "check-instruction-domain-alignment" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-instruction-domain-alignment.sh" "${TARGET}" --validate-manifest
 _run_aiaast_subvalidator "check-system-awareness" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-system-awareness.sh" "${TARGET}"
+_run_aiaast_subvalidator "validate-scaffold-output" \
+  bash "${VALIDATOR_ROOT}/bootstrap/validate-scaffold-output.sh" "${TARGET}" --profile standard --dry-run
+_run_aiaast_subvalidator "check-scaffold-required-files" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-scaffold-required-files.sh" "${TARGET}" --profile standard
+_run_aiaast_subvalidator "check-mos-downstream-exclusion" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-mos-downstream-exclusion.sh" "${TARGET}" --profile standard
+_run_aiaast_subvalidator "check-installer-first-gate" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-installer-first-gate.sh" "${TARGET}"
 _run_aiaast_subvalidator "check-repo-permissions" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-repo-permissions.sh" "${TARGET}"
 _run_aiaast_subvalidator "check-runtime-foundations" \
@@ -624,6 +678,8 @@ _run_aiaast_subvalidator "check-delivery-gate-alignment" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-delivery-gate-alignment.sh" "${TARGET}" "${strict_gate_flag[@]}"
 _run_aiaast_subvalidator "check-environment" \
   bash "${VALIDATOR_ROOT}/bootstrap/check-environment.sh" "${TARGET}"
+_run_aiaast_subvalidator "check-mcp-project-isolation" \
+  bash "${VALIDATOR_ROOT}/bootstrap/check-mcp-project-isolation.sh" "${TARGET}"
 _run_aiaast_subvalidator "validate-mcp-health" \
   bash "${VALIDATOR_ROOT}/bootstrap/validate-mcp-health.sh" "${TARGET}"
 

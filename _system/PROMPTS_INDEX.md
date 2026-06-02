@@ -40,6 +40,7 @@ When authoring or reorganizing prompts, packs, or tiered context, read `_system/
 - `_system/prompt-packs/M14_SECURITY_HARDENING.md`
 - `_system/prompt-packs/M15_WHOLE_REPO_ANALYSIS.md`
 - `_system/prompt-packs/M16_PLATFORM_PRODUCT_EXPANSION.md`
+- `_system/prompt-packs/M17_APP_BUILDER_META_SYSTEM_EXECUTION.md`
 
 ## Prompt effectiveness tracking
 
@@ -58,6 +59,8 @@ When authoring or reorganizing prompts, packs, or tiered context, read `_system/
 ## Rules for all prompt packs
 
 - reference canonical docs by file name; for a map of related OS surfaces, use `_system/SYSTEM_ORCHESTRATION_GUIDE.md`
+- for app-builder meta-system execution, align with `_system/APP_BUILDER_META_SYSTEM_ORCHESTRATION.md`
+- include benchmark evidence expectations from `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` when builder-lane behavior changes
 - follow `_system/PROMPT_EMISSION_CONTRACT.md`
 - state scope explicitly
 - require minimal diffs

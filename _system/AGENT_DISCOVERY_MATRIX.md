@@ -66,6 +66,16 @@ or current-state tooling assumptions:
 - `_system/SESSION_ENVIRONMENT_REPORT_CONTRACT.md`
 - `_system/ORPHAN_META_SNAPSHOT_POLICY.md`
 
+## Cross-domain routing
+
+When the request category is unclear or spans multiple app types:
+
+1. Load `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md` and `_system/PROJECT_DOMAIN_MANIFEST.json`.
+2. Select the nearest archetype preset from `_system/READ_BUNDLES.md` (`web/api`, `mobile`, `desktop/cli`, `data/ai`, `infra/security-heavy`, `hybrid/unknown`).
+3. Route role ownership with `_system/AGENT_ROLE_CATALOG.md` before edits.
+4. Apply benchmark expectations from `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md` for builder-lane behavior changes.
+5. If mismatch persists, halt writes and require explicit confirmation per domain alignment protocol.
+
 ## Golden example pack
 
 Load these when creating or materially rewriting working files, prompt packs, skills, MCP policy docs, or core system surfaces:

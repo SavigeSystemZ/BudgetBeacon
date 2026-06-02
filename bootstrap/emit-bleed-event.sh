@@ -10,7 +10,7 @@ usage() {
 Usage:
   emit-bleed-event.sh <repo-root>
       --severity critical|high|medium|low
-      --type     scope-escape|namespace-collision|lease-violation|host-clash|credential-leak|memory-authority-inversion|schema-violation|provenance-drift|template-app-confusion|remediation|unknown
+      --type     scope-escape|namespace-collision|lease-violation|host-clash|credential-leak|memory-authority-inversion|schema-violation|provenance-drift|template-app-confusion|remediation|meta-sync-blocked|meta-sync-forced|integrity-signature-mismatch|unknown
       --detected-by SCRIPT_NAME
       --scope-path PATH --scope-op register|refresh|retire|quarantine|read|write|claim|release|detect
       [--agent-id ID] [--app-id ID] [--host-fingerprint-id ID]

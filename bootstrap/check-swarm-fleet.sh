@@ -53,6 +53,8 @@ check_file "bootstrap/repair-swarm-integrity.sh"
 check_file "_system/MCP_CONFIG.md"
 check_file "_system/AUTH_RECOVERY_PROTOCOL.md"
 check_file "_system/mcp/MCP_SURVIVAL_PLAYBOOK.md"
+check_file "_system/mcp/MCP_PROJECT_ISOLATION_POLICY.md"
+check_file "bootstrap/check-mcp-project-isolation.sh"
 
 log_info "Verifying Anti-Drift Rules..."
 check_file ".cursor/rules/00-anti-drift-ssot.mdc"

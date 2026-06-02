@@ -18,7 +18,8 @@ This document defines the diagnostic, repair, and re-authentication protocols fo
 - **Failure:** Tool returns "Path not found" or "Access denied."
 - **Recovery:** 
   1. Ensure the server is restricted to the current project root.
-  2. Verify directory permissions: `sudo chown -R whyte:whyte .`
+  2. Run `bash bootstrap/check-mcp-project-isolation.sh .`.
+  3. If repository permissions drifted, use `bash bootstrap/repair-safe-permission-drift.sh .` before considering any elevated repair.
 - **Fallback:** Use native terminal `ls`, `grep`, `find`, and `cat`.
 
 ### github-actions-monitor (or @modelcontextprotocol/server-github)

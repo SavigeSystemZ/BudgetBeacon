@@ -63,6 +63,8 @@ from pathlib import Path
 target = Path(sys.argv[1]).resolve()
 json_mode = sys.argv[2] == "1"
 include_template_assets = sys.argv[3] == "1"
+target_is_installed_repo = (target / "_system").is_dir() and (target / "bootstrap").is_dir()
+target_is_source_template = target.name in {"TEMPLATE", "MOS_TEMPLATE"}
 
 # File extensions to scan
 CODE_EXTS = {
@@ -92,6 +94,11 @@ if not include_template_assets:
 SKIP_FILES = {
     "bootstrap/check-network-bindings.sh",
     "bootstrap/check-runtime-foundations.sh",
+}
+
+TOP_LEVEL_TEMPLATE_SNAPSHOTS = {
+    "TEMPLATE",
+    "MOS_TEMPLATE",
 }
 
 # Patterns that indicate wildcard binding
@@ -126,6 +133,13 @@ findings: list[dict] = []
 def should_skip(path: Path) -> bool:
     rel_path = path.relative_to(target)
     if rel_path.as_posix() in SKIP_FILES:
+        return True
+    if (
+        target_is_installed_repo
+        and not target_is_source_template
+        and rel_path.parts
+        and rel_path.parts[0] in TOP_LEVEL_TEMPLATE_SNAPSHOTS
+    ):
         return True
     for part in rel_path.parts:
         if part in SKIP_DIRS:

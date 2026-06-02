@@ -2,6 +2,31 @@
 
 This policy governs the tool-specific adapter files that sit on top of the shared repo-local AIAST core.
 
+## Cross-agent universality (binding)
+
+Every capability in this repo — rules, skills, commands, policies, hooks,
+modes, fleet/sub-agent roles, abilities, and instructions — is
+**authoritative for every agent**, primarily but not limited to: Claude,
+Codex, Cursor, Windsurf, Gemini, Copilot, Aider, Cline, Continue, DeepSeek,
+PearAI, and local models.
+
+- A capability living under a host-specific namespace (`.cursor/`,
+  `.claude/`, `.windsurf/`, `.github/`, etc.) is a **delivery mechanism for
+  that host, not a scope limit.** The underlying definition is plain,
+  agent-neutral markdown/JSON and applies to all agents.
+- Any agent whose host lacks native support for a mechanism MUST still
+  honor it by reading the underlying file: treat
+  `.cursor/skills/<x>/SKILL.md`, `.cursor/commands/<x>.md`, rules, hooks,
+  and modes as instructions to follow, regardless of which tool's folder
+  they sit in.
+- The universal entry path is `AGENTS.md` → `_system/` canonical load
+  order (`CONTEXT_INDEX.md`, `LOAD_ORDER.md`, `READ_BUNDLES.md`). Every
+  host adapter delegates here; nothing agent-facing may be reachable by
+  only one agent.
+- When adding a capability, register it on the universal surface first;
+  host-native generation (where supported) is additive, never a gate on
+  which agents may use it.
+
 ## Purpose
 
 - Keep all supported tool entry files aligned with `AGENTS.md`, `_system/INSTRUCTION_PRECEDENCE_CONTRACT.md`, and `_system/REPO_OPERATING_PROFILE.md`.
@@ -27,6 +52,7 @@ The following files are generated from `_system/host-adapter-manifest.json`:
 - `CLAUDE.md`
 - `GEMINI.md`
 - `WINDSURF.md`
+- `ANTIGRAVITY.md`
 - `.cursorrules`
 - `.windsurfrules`
 - `.github/copilot-instructions.md`

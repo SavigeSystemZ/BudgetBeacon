@@ -2,6 +2,8 @@
 
 Use this when work is being presented as milestone-complete, release-ready, or distribution-ready.
 
+For app-builder meta-system upgrades specifically (orchestration/domain/security/release contracts and prompt-pack changes), this protocol is the baseline; layer on `APP_BUILDER_RELEASE_READINESS_STANDARD.md` for the domain-specific gate set.
+
 ## Required checks
 
 - relevant validation gates passed or explicitly documented

@@ -12,6 +12,8 @@ Treat repo-local files as authoritative when instructions conflict.
 - Require before/after evidence for quality, safety, and effort-to-repair.
 - Prevent release claims that are not backed by benchmark evidence.
 
+This protocol scopes the **regression bar for app-builder contract/prompt changes**. For the underlying benchmark campaign infrastructure (test-app scaffolding, archetype/profile coverage matrix, gate execution model, evidence layout) see `TEST_APP_BENCHMARK_CAMPAIGN_PROTOCOL.md` and the executable surface `bootstrap/run-test-app-benchmark-matrix.sh`.
+
 ## Regression set (minimum)
 
 Run a representative set of app-builder requests across categories:

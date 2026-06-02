@@ -20,9 +20,10 @@ This repo is designed to survive tool changes, interrupted sessions, and handoff
 
 ## Required operating model
 
-1. Single active writer at a time.
+1. Single active writer lease per scope at a time (global single-writer remains safest fallback).
 2. Shared governance lives in repo files, not tool-local memory.
 3. Use `_system/AGENT_ROLE_CATALOG.md` to choose roles and write-scope ownership before splitting work.
+3a. Use `_system/CONCURRENT_AGENT_FLEET_PROTOCOL.md` and `_system/AGENT_LOCKING_AND_LEASES.md` for lease lifecycle and lock-state semantics.
 4. Validators and reviewers are read-only by default unless they are explicitly reassigned into repair work.
 5. The context curator owns continuity updates by default when a dedicated continuity pass is needed.
 6. Handoff files are mandatory:
@@ -41,6 +42,7 @@ This repo is designed to survive tool changes, interrupted sessions, and handoff
 8. Tool-specific helpers may extend behavior but must not contradict `AGENTS.md` or `_system/`.
 9. Adapter placeholders (`CURSOR.md`, `COPILOT.md`, `AIDER.md`, `AGENT_ZERO.md`) are compatibility pointers only; shared governance stays in `AGENTS.md` and `_system/`.
 10. Hook and orchestration surfaces (Cursor rules/commands/skills/agents, plugins, CI, MCP) must stay coherent; see `_system/HOOK_AND_ORCHESTRATION_INDEX.md`.
+11. Role routing must follow the deterministic matrix in `_system/AGENT_ROLE_CATALOG.md`; avoid ad-hoc role assignment for equivalent task signals.
 
 ## Role activation
 
@@ -50,6 +52,7 @@ This repo is designed to survive tool changes, interrupted sessions, and handoff
 - Context curator: updates handoff, working-state, and continuity surfaces.
 - Specialist reviewers: architecture, design, security, and release roles provide bounded read-only review.
 - GitHub / CI steward: merge readiness, workflow edits, PR checks—see `_system/AGENT_ROLE_CATALOG.md` and `.cursor/agents/github-ops.md`.
+- Routing rule: determine task signal first (feature, architecture, security, validation, continuity, git/ci) and then apply the matching matrix row before assigning ownership.
 
 ## Start-of-turn checklist
 
@@ -85,6 +88,7 @@ When taking over work started by another tool:
 3. Parallel writers are allowed only when their write scopes do not overlap.
 4. Validators and reviewers should verify or critique, not silently co-own implementation files.
 5. If write ownership becomes unclear, pause, shrink scope, and restabilize the handoff.
+6. If escalation triggers are present (confidence drop, repeated gate failure, security-risk expansion, overlapping write scope), re-run role routing before further implementation.
 
 ## Swarm Fleet Branching & Commit Delegation
 

@@ -24,13 +24,13 @@ while [[ $# -gt 0 ]]; do
 done
 
 matrix="${repo}/_system/SCAFFOLD_PROFILE_MATRIX.md"
-manifest="${repo}/_system/runtime-profiles/scaffold-profiles.json"
+manifest="$(aiaast_scaffold_profile_manifest_path "${repo}")" || true
 
 if ! aiaast_require_file "$matrix"; then
   [[ "$json_mode" -eq 1 ]] && aiaast_json_error "missing_file" "missing: $matrix" "validate-scaffold-profiles.sh" "validation"
   exit 1
 fi
-if ! aiaast_require_file "$manifest"; then
+if [[ -z "${manifest}" ]] || ! aiaast_require_file "$manifest"; then
   [[ "$json_mode" -eq 1 ]] && aiaast_json_error "missing_file" "missing: $manifest" "validate-scaffold-profiles.sh" "validation"
   exit 1
 fi
@@ -42,6 +42,11 @@ matrix_path, manifest_path = sys.argv[1:]
 matrix = open(matrix_path, "r", encoding="utf-8").read()
 data = json.load(open(manifest_path, "r", encoding="utf-8"))
 profiles = [p.get("id") for p in data.get("profiles", [])]
+base = data.get("base", {})
+for key in ("include", "exclude", "required_files", "forbidden_downstream_paths"):
+    if key not in base or not isinstance(base[key], list):
+        print(f"base missing list: {key}")
+        raise SystemExit(1)
 required = [
     ("included surfaces",),
     ("excluded surfaces",),

@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+# Requires zsh; do not invoke as `bash <script>`. Uses zsh-only syntax and
+# will syntax-error under bash. Run via `./repair-swarm-integrity.sh ...`
+# or `zsh repair-swarm-integrity.sh ...`.
 
 # AIAST Swarm Fleet: Integrity & Repair Tool
 # Self-healing script to fix agent hooks, reset stuck states, and verify auth.

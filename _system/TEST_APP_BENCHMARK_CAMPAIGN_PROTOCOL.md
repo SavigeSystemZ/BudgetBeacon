@@ -6,6 +6,7 @@ Campaign root (external): `~/.MyAppZ/_AIAST_TEST_APPS/`
 
 Core scripts:
 - `bootstrap/create-test-app-campaign.sh`
+- `bootstrap/run-test-app-campaign.sh`
 - `bootstrap/run-test-app-benchmark-matrix.sh`
 - `_TEMPLATE_FACTORY/smoke-test-app-campaign.sh`
 
@@ -22,6 +23,8 @@ recording, and quality scoring.
 - scoped runs via `--profiles`, `--archetypes`, `--mode`, and `--limit-cells`
 - transient cell repos by default; add `--apply` to retain the scaffolded cell
   repos for inspection
+- `run-test-app-campaign.sh` is a compatibility wrapper for the benchmark
+  matrix runner.
 
 Execution reports must stay in maintainer evidence paths when run from the
 master source tree; benchmark cell repos must stay outside the installable

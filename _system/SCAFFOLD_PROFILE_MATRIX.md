@@ -3,6 +3,11 @@
 Profiles define installable include/exclude behavior, default guardrails, and
 validation expectations for downstream scaffolds.
 
+The machine-readable contract lives in `_system/scaffold-profiles.json`.
+`_system/runtime-profiles/scaffold-profiles.json` remains a legacy compatibility
+surface for older validators. New scaffold behavior must use
+`bootstrap/render-scaffold-profile.sh`.
+
 ## Profile Contract Fields
 
 Each profile must declare:
@@ -207,4 +212,10 @@ Each profile must declare:
 
 - MOS maintainer-only surfaces are excluded from non-meta profiles.
 - Profile authors must follow `_system/SCAFFOLD_PROFILE_AUTHORING_STANDARD.md`.
-
+- Parent-template layers (`_META_AGENT_SYSTEM/`, `_TEMPLATE_FACTORY/`,
+  `_MOS_TEMPLATE_FACTORY/`, `MOS_TEMPLATE/`, `MOS_SOURCE_LIBRARY/`) are never
+  copied by normal app scaffolds. `meta-system-development` exposes maintainer
+  contracts inside `TEMPLATE/_system/`; MOS projects still use MOS bootstrap.
+- Until narrowed profiles have their own strict validators and benchmark
+  evidence, profiles are policy overlays over the full installable AIAST
+  operating layer rather than partial-file installs.

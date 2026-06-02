@@ -14,21 +14,41 @@ parent template repository.
   - enforce runtime and `_system/` separation
   - require validation, installer, and handoff gates
 
+## Persona Contract
+
+Every persona routes to an archetype pack that declares:
+
+- app purpose
+- required docs
+- required runtime surfaces
+- recommended stack options
+- security/privacy posture
+- installer expectations
+- port policy
+- validation gates
+- UI/UX completion requirements where applicable
+- fleet roles
+- prompt-pack hooks
+- benchmark/test-app scenario
+- anti-patterns
+
 ## Archetype Personas
 
-- `web-saas` -> `archetypes/web-saas.md`
-- `local-first-desktop` -> `archetypes/local-first-desktop.md`
-- `mobile-apk` -> `archetypes/mobile-apk.md`
-- `cli-tool` -> `archetypes/cli-tool.md`
-- `ai-agent-app` -> `archetypes/ai-agent-app.md`
-- `cybersecurity-tool` -> `archetypes/cybersecurity-tool.md`
-- `evidence-reporting-app` -> `archetypes/evidence-reporting-app.md`
-- `background-check-or-osint-app` -> `archetypes/background-check-or-osint-app.md`
-- `finance-budgeting-app` -> `archetypes/finance-budgeting-app.md`
-- `home-property-management-app` -> `archetypes/home-property-management-app.md`
-- `fullstack-marketplace` -> `archetypes/fullstack-marketplace.md`
-- `data-dashboard` -> `archetypes/data-dashboard.md`
-- `metasystem-reviewer-app` -> `archetypes/metasystem-reviewer-app.md`
+| Persona | Archetype pack | Primary emphasis |
+| --- | --- | --- |
+| Web SaaS Architect | `archetypes/web-saas.md` | auth, API, web UX, deployment |
+| Local-First Desktop Architect | `archetypes/local-first-desktop.md` | local data, desktop UX, package/install |
+| Mobile APK Architect | `archetypes/mobile-apk.md` | Android permissions, mobile UX, APK build path |
+| CLI/TUI Tool Architect | `archetypes/cli-tool.md` | command UX, config, testable workflows |
+| AI Agent App Architect | `archetypes/ai-agent-app.md` | model policy, prompt safety, tool boundaries |
+| Cybersecurity Tool Architect | `archetypes/cybersecurity-tool.md` | authorized use, audit trail, safe defaults |
+| Evidence Reporting App Architect | `archetypes/evidence-reporting-app.md` | provenance, report integrity, exportable evidence |
+| Background Check / OSINT App Architect | `archetypes/background-check-or-osint-app.md` | privacy, sourcing, evidence attribution |
+| Finance / Budgeting App Architect | `archetypes/finance-budgeting-app.md` | sensitive data handling, auditability |
+| Home / Property Management App Architect | `archetypes/home-property-management-app.md` | records, reminders, local-first ergonomics |
+| Fullstack Marketplace Architect | `archetypes/fullstack-marketplace.md` | roles, listings, payments-ready boundaries |
+| Data Dashboard Architect | `archetypes/data-dashboard.md` | data ingestion, visualization, freshness |
+| Metasystem Reviewer Architect | `archetypes/metasystem-reviewer-app.md` | governance review, validation evidence |
 
 ## Routing Rules
 

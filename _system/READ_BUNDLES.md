@@ -114,9 +114,67 @@ target-repo local truth.
 - `_system/HOST_BUNDLE_CONTRACT.md`
 - target repo local instruction files
 
+## Cross-domain archetype presets
+
+Use these presets when the repo serves multiple app categories or the request is
+domain-ambiguous. Start with the closest preset and expand only as needed.
+
+**App persona overlay (load if present):** in a downstream app repo where
+the app is defined, `_system/personas/APP_PERSONA.md` exists and is the
+authoritative app-specific world-class lens — load it *with* the matching
+preset below; it sharpens the generic preset with this app's domain/stack
+truth (`_system/APP_PERSONA_CONTRACT.md`). Absent in the parent template;
+never overrides precedence/security/validation contracts.
+
+### Web/API preset
+
+- `_system/API_DESIGN_STANDARDS.md`
+- `_system/SECURITY_BASELINE.md`
+- `_system/PERFORMANCE_BUDGET.md`
+- `_system/ACCESSIBILITY_STANDARDS.md`
+
+### Mobile preset
+
+- `_system/MOBILE_GUIDE.md`
+- `_system/CROSS_PLATFORM_DISTRIBUTION_AND_INSTALLER_STANDARD.md`
+- `_system/SECURITY_BASELINE.md`
+- `_system/PERFORMANCE_BUDGET.md`
+
+### Desktop/CLI preset
+
+- `_system/MODERN_UI_PATTERNS.md`
+- `_system/PACKAGING_GUIDE.md`
+- `_system/INSTALLATION_GUIDE.md`
+- `_system/SECURITY_HARDENING_CONTRACT.md`
+
+### Data/AI preset
+
+- `_system/PERFORMANCE_BUDGET.md`
+- `_system/OBSERVABILITY_STANDARDS.md`
+- `_system/DEPENDENCY_GOVERNANCE.md`
+- `_system/SECURITY_REDACTION_AND_AUDIT.md`
+
+### Infra/security-heavy preset
+
+- `_system/WORKSPACE_AUTHORITY_AND_CONTAINMENT_PROTOCOL.md`
+- `_system/SECURITY_HARDENING_CONTRACT.md`
+- `_system/THREAT_MODEL_TEMPLATE.md`
+- `_system/VALIDATION_GATES.md`
+
+### Hybrid/unknown-domain preset
+
+- `_system/INSTRUCTION_DOMAIN_ALIGNMENT_PROTOCOL.md`
+- `_system/PROJECT_DOMAIN_MANIFEST.json`
+- `_system/AGENT_DISCOVERY_MATRIX.md`
+- `_system/CONTEXT_INDEX.md`
+
 ## Related Contracts
 
 - `_system/TEMPLATE_CHANGE_IMPACT_POLICY.md`
 - `_system/SELF_HEALING_BOUNDARY.md`
+- `_system/PROJECT_LOCAL_SELF_IMPROVEMENT_PROTOCOL.md`
+- `_system/SELF_WRITING_BOUNDARY_AND_ROLLBACK.md`
+- `_system/APP_CONTEXT_FILE_MATRIX.md`
 - `_system/VERSION_SENSITIVE_RESEARCH_PROTOCOL.md`
 - `_system/CONTEXT_BUDGET_STRATEGY.md`
+- `_system/APP_BUILDER_REGRESSION_AND_BENCHMARK_PROTOCOL.md`

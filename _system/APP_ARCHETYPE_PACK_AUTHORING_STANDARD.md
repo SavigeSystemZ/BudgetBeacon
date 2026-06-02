@@ -25,3 +25,5 @@ sections:
 - Avoid project-specific credentials, vendors, or deployment secrets.
 - Include explicit safety boundaries for intrusive/security-sensitive domains.
 - Keep benchmark scenarios measurable and machine-checkable where possible.
+- Each archetype pack has a companion app-specific context set defined in
+  `_system/APP_CONTEXT_FILE_MATRIX.md`; keep the two aligned when sections change.

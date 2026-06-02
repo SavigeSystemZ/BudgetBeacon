@@ -265,6 +265,21 @@ for rel in "${source_files[@]}"; do
   fi
 
   if ! diff -q "${RESOLVED_TEMPLATE}/${rel}" "${RESOLVED_TARGET}/${dest_rel}" >/dev/null 2>&1; then
+    mkdir -p "${RESOLVED_TARGET}/.update_backups"
+    backup_name="$(basename "${dest_rel}").local_override.$(date +%s)"
+    backup_path="${RESOLVED_TARGET}/.update_backups/${backup_name}"
+    cp -p "${RESOLVED_TARGET}/${dest_rel}" "${backup_path}"
+    
+    # Generate diff for context
+    diff_file="${RESOLVED_TARGET}/.update_backups/${backup_name}.diff"
+    diff -u "${RESOLVED_TARGET}/${dest_rel}" "${RESOLVED_TEMPLATE}/${rel}" > "${diff_file}" || true
+    
+    # Append to a conflict log
+    echo "## Conflict in ${dest_rel}" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
+    echo "Local file backed up to: \`${backup_name}\`" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
+    echo "Diff saved to: \`${backup_name}.diff\`" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
+    echo "" >> "${RESOLVED_TARGET}/.update_backups/CONFLICT_TODO.md"
+
     aiaast_copy_rel_file "${RESOLVED_TEMPLATE}" "${rel}" "${RESOLVED_TARGET}" "${dest_rel}"
   fi
 done

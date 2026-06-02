@@ -85,7 +85,9 @@ from pathlib import Path
 repo = Path(sys.argv[1])
 profiles = [x for x in sys.argv[2].split(",") if x]
 archetypes = [x for x in sys.argv[3].split(",") if x]
-profile_path = repo / "_system" / "runtime-profiles" / "scaffold-profiles.json"
+profile_path = repo / "_system" / "scaffold-profiles.json"
+if not profile_path.is_file():
+    profile_path = repo / "_system" / "runtime-profiles" / "scaffold-profiles.json"
 archetype_path = repo / "_system" / "archetypes" / "archetype-manifest.json"
 
 known_profiles = {p.get("id") for p in json.loads(profile_path.read_text(encoding="utf-8")).get("profiles", [])}
@@ -302,7 +304,7 @@ for profile in "${profiles[@]}"; do
       app_name="AIASTBench$(printf '%s' "${cell_id}" | tr -c '[:alnum:]' '_')"
       mkdir -p "$cell_dir"
 
-      init_args=(bash "${SCRIPT_DIR}/init-project.sh" "${cell_repo}" --app-name "${app_name}")
+      init_args=(bash "${SCRIPT_DIR}/init-project.sh" "${cell_repo}" --app-name "${app_name}" --profile "${profile}")
       if [[ "${gate_mode}" == "strict" ]]; then
         init_args+=(--strict)
       fi

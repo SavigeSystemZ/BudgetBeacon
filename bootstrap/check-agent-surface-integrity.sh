@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_REPO="${1:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+TARGET_REPO="${1:-$(cd -- "${SCRIPT_DIR}/.." && pwd)}"
 
-python3 - <<'PY' "${TARGET_REPO}"
+# shellcheck source=bootstrap/lib/aiaast-lib.sh
+source "${SCRIPT_DIR}/lib/aiaast-lib.sh"
+
+mapfile -t _AIAST_MANAGED_FILES < <(aiaast_print_managed_files "${TARGET_REPO}")
+export _AIAST_MANAGED_FILES_CSV
+_AIAST_MANAGED_FILES_CSV="$(printf '%s\n' "${_AIAST_MANAGED_FILES[@]}" | paste -sd, -)"
+
+python3 - <<'PY' "${TARGET_REPO}" "${_AIAST_MANAGED_FILES_CSV}"
 from __future__ import annotations
 
 import json
@@ -11,6 +19,8 @@ import sys
 from pathlib import Path
 
 repo = Path(sys.argv[1]).resolve()
+managed_csv = sys.argv[2] if len(sys.argv) > 2 else ""
+managed_files = {item for item in managed_csv.split(",") if item}
 manifest_path = repo / "_system" / "host-adapter-manifest.json"
 issues: list[str] = []
 
@@ -34,6 +44,11 @@ required_placeholders = [str(item) for item in manifest.get("required_placeholde
 for rel in sorted(set(required_placeholders)):
     if not (repo / rel).is_file():
         issues.append(f"missing required placeholder adapter: {rel}")
+    elif managed_files and rel not in managed_files:
+        issues.append(
+            f"required placeholder adapter not registered as managed file: {rel} "
+            "(add to aiaast_print_managed_files in bootstrap/lib/aiaast-lib.sh)"
+        )
 
 deprecated_aliases = manifest.get("deprecated_aliases", {})
 if not isinstance(deprecated_aliases, dict):
