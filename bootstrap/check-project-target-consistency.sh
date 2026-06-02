@@ -37,7 +37,13 @@ normalize_name() {
 import re
 import sys
 
-raw = (sys.argv[1] or "").strip().lower()
+raw = (sys.argv[1] or "").strip()
+# Split camelCase / PascalCase boundaries before normalizing so that a
+# spaced display name and its camelCase repo slug converge, e.g.
+# "Budget Beacon" and "BudgetBeacon" both -> "budget-beacon".
+raw = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "-", raw)
+raw = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", "-", raw)
+raw = raw.lower()
 normalized = re.sub(r"[^a-z0-9]+", "-", raw)
 normalized = re.sub(r"-+", "-", normalized).strip("-")
 print(normalized)

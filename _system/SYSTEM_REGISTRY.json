@@ -16,7 +16,7 @@
       "category": "unclassified",
       "kind": "file",
       "path": ".antigravitycli/settings.json",
-      "size_bytes": 406
+      "size_bytes": 1681
     },
     {
       "category": "host-settings-meta",
@@ -40,13 +40,13 @@
       "category": "host-settings-meta",
       "kind": "file",
       "path": ".codex/config.aiaast.toml",
-      "size_bytes": 1724
+      "size_bytes": 1731
     },
     {
       "category": "host-settings-app",
       "kind": "file",
       "path": ".codex/config.toml",
-      "size_bytes": 1335
+      "size_bytes": 1346
     },
     {
       "category": "entrypoint",
@@ -700,7 +700,7 @@
       "category": "working-state",
       "kind": "file",
       "path": "WHERE_LEFT_OFF.md",
-      "size_bytes": 39992
+      "size_bytes": 40790
     },
     {
       "category": "entrypoint",
@@ -712,7 +712,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/.aiast-role.json",
-      "size_bytes": 492
+      "size_bytes": 491
     },
     {
       "category": "system-core",
@@ -1198,7 +1198,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/INTEGRITY_MANIFEST.sha256",
-      "size_bytes": 93296
+      "size_bytes": 94262
     },
     {
       "category": "system-core",
@@ -1606,7 +1606,7 @@
       "category": "system-core",
       "kind": "file",
       "path": "_system/SYSTEM_REGISTRY.json",
-      "size_bytes": 132211
+      "size_bytes": 133533
     },
     {
       "category": "system-core",
@@ -2087,6 +2087,12 @@
       "kind": "file",
       "path": "_system/app-context/templates/archetype/web-saas/WEB_SAAS_CONTEXT.md",
       "size_bytes": 1104
+    },
+    {
+      "category": "system-core",
+      "kind": "file",
+      "path": "_system/app-local-namespace.json",
+      "size_bytes": 4169
     },
     {
       "category": "system-core",
@@ -3676,7 +3682,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-app-definition-state.sh",
-      "size_bytes": 4735
+      "size_bytes": 5689
     },
     {
       "category": "bootstrap",
@@ -3844,7 +3850,7 @@
       "category": "bootstrap",
       "kind": "file",
       "path": "bootstrap/check-project-target-consistency.sh",
-      "size_bytes": 3075
+      "size_bytes": 3385
     },
     {
       "category": "bootstrap",
@@ -5347,7 +5353,7 @@
       "size_bytes": 3986
     }
   ],
-  "managed_file_count": 891,
+  "managed_file_count": 892,
   "system_readme_path": "README.md",
   "template_name": "AIAST",
   "template_version": "1.24.0"

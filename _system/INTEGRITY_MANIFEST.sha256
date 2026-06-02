@@ -39,7 +39,7 @@ f54e13184a9c75641d7dd4164dffc321acdcab419878b77e0d63bfd093e1a744  ./bootstrap/ch
 e4f75400c881afa385e9abf0194d272e6b2614e4e02ffc6cdf4e4ec3a84386b5  ./bootstrap/check-agent-locks.sh
 6c1280eee8519b0fe2e5281cb70c0562b56574aa9f7bdc2f8b96194c8d39758b  ./bootstrap/check-agent-orchestration.sh
 7c6e3bdde883c4edb2d8a12b9d673262aff01d386592241d59845bd87c1a0a39  ./bootstrap/check-agent-surface-integrity.sh
-3b8a7240b0ab31d54e6ccc4c2bbca6b09991dae95b298bd8af4b77f37d12891e  ./bootstrap/check-app-definition-state.sh
+addd8ec36108f8ed32d4f111b54f89b74db6b8871dabefb5e4f0cd82cf8f3e54  ./bootstrap/check-app-definition-state.sh
 30a34d5cf645d30f20e33a73ec1a29b8d0678ba235555aba2042f8ee4a350888  ./bootstrap/check-app-local-namespace.sh
 3b80303d9ffc7c267d2a81942453a3776ab3dea6ad3ef5d74b603385c01f559a  ./bootstrap/check-bootstrap-permissions.sh
 f3091fa2427089b8a39129613b04f8afc31b5a5ab5423a62bde16394416ef93f  ./bootstrap/check-context-freshness.sh
@@ -67,7 +67,7 @@ f0ca3cee982a884575e9a74fc77a6ad70fea00cbd2856c56775e19fb9d4ddd48  ./bootstrap/ch
 111a1cb7f54c1f5eef4695118ff8b789169f80f68856bf4f3c28cd25459332e9  ./bootstrap/check-packaging-targets.sh
 375d8da14444d4258d0b4c18cf5b70f15295756c471839df8d8d453c24f8bb40  ./bootstrap/check-pending-meta-sync.sh
 02a28cf8559213729b45c338a02de198a594939e4a6cd5a6d06e764046b12633  ./bootstrap/check-placeholders.sh
-d0187d64aea4e9a39b1b26049b59816cc24f113d4cc64ba78044682112fd58af  ./bootstrap/check-project-target-consistency.sh
+5544834c189abb08a0dd6fdf7760c0fe8a74a6f1520bb4f069059c32f0122fbd  ./bootstrap/check-project-target-consistency.sh
 7edc39ecc850029791e9b319e9a1ee3ad442259be6b408f1ad06bdb170f2f060  ./bootstrap/check-repo-permissions.sh
 622f3e84aa50779f332d26c7969b0df92c96fa80ecae2d67c1b35e7e9a311aa1  ./bootstrap/check-runtime-foundations.sh
 3a32561d63ac29859e67e60ea4bbdc7f7bb3214a58d97963a81b61e49e66ddf0  ./bootstrap/check-scaffold-isolation-gate.sh
@@ -262,7 +262,7 @@ ca7498e13822faab7e1d733d2c1fe4646171a46ba9d00065af30ce152ab5b53b  ./_system/agen
 b8691f6c991370c538890a70424345d55fcb6b8bd01625d8616ad42b76bcb35c  ./_system/AGENT_SURFACE_TAXONOMY.md
 4d987a065e9d3228c150cea81d8df32a213b3cefb94ae383df5150d3bf7442e0  ./_system/aiaast-capabilities.json
 1e7abd57e2a0fdf3652abaec6050e40da683bd10829918b0dda90e14f270d38e  ./_system/AIAST_CLI.md
-2fa90b333323cb8639af613e658d07a4ec535780f6afe1d1fccd0ea519f94aaf  ./_system/.aiast-role.json
+4ea75c2fda93e5beb17cf66044d729fdf8932fa2a5a2f05424dcc9ab8d6e43ae  ./_system/.aiast-role.json
 0053eb5fedb62378914aeb60c767bd75648ea0e1358fa02656d122d2a37b0c0e  ./_system/AI_RULES.md
 c7d0be4fb91a7ee9d49acb60c7ea427dcad212e4c440b97287819eb968005548  ./_system/API_DESIGN_STANDARDS.md
 7525d97cfd7a54b363185e72beac20b38af1479d3dccb9bd5f993f87fe1738bc  ./_system/APP_ARCHETYPE_PACK_AUTHORING_STANDARD.md
@@ -337,6 +337,7 @@ ca35b72ef40d33d0f093995c8f32873c20400d32646f701b5b62c670e9865e45  ./_system/app-
 5a8814f8cce3f0990a896e08f428adc71c60998412a14f9e467025583b7664ce  ./_system/app-context/VALIDATION_PROFILE.md
 c5f3f79d57d5f672fac03f6baf3829b09b068743337e394edc8a037b4059b7f9  ./_system/APP_DELIVERY_AUTOPILOT_PROTOCOL.md
 9c1395770b565f4fa380107419f3fbcd65fcf1d82bae58be4e309c11b6b5625a  ./_system/APP_LOCAL_NAMESPACE_CONTRACT.md
+1f7d183506681ba519752f25064f1d9d2fee715b33e71ad9b78c14cacaa032af  ./_system/app-local-namespace.json
 cf9bf8f7d52ed0798735878bab6b686e203840caccd58fbb1836976d2b8e7087  ./_system/app-local-namespace.template.json
 9696c226f69c8c30b1381ad8ef5be2cb8e8439e575e1662bd4a47029edca921b  ./_system/APP_PERSONA_CONTRACT.md
 9d42259045d6261be8e68b4baf39004fb85d4091ce85305dfb39dad24605ede7  ./_system/APP_REPO_IDENTITY.md
@@ -708,8 +709,8 @@ d3a5b21ca9f91a7cbe825ee2f6f9736e7c378da5dabd97008815ab390e19fadd  ./_system/WORK
 0a7c9b3676848c4418069467b563cd7cefa9785c0bdb3f73501bc1a1bfb05df3  ./_system/WORKSPACE_SERVICE_REGISTRY_PROTOCOL.md
 5bf88b5d760bd77a7b467c0e802cad1300f74cd877acdc722f3f4ca436add2bc  ./.claude/settings.aiaast.json
 b070c7f98b2a9394935f7eac438cfe6f41ceb0b0f9c91490487bfc524ae052db  ./.claude/settings.json
-0123e2be2c2b8e7bbe5cd9c62364c8d4452d8ed357faa2b5c3c4047097c3bf74  ./.codex/config.aiaast.toml
-c99b37b0a8ecfeebf3e98928d371edc15ccf42401a20759458aa44140d6bfaa8  ./.codex/config.toml
+d533c91a73561156e27f0bdedf289570f19af55c0a9d664e3e8bceb09571ce35  ./.codex/config.aiaast.toml
+184c767bc0f9f781d406f2370dc3177db6817b3e7cdada9cb961eb64dd766a64  ./.codex/config.toml
 530fa3757378465e0c7a962fa5ad3f76cc41483bf44118ae7f0eae02224bace4  ./.gemini/settings.aiaast.json
 f692a93096b57851f6b3fe29c89d6a7821bd55d46b42acebb49940bcdeaf02b2  ./.gemini/settings.json
 4339817ddd02a24879f98221fc0bc6fc4f5f82c7a8bd831e193f8440dda22d55  ./.windsurf/settings.aiaast.json
@@ -775,7 +776,7 @@ c4a45eff2635f2593fd5b40cba9f5734bd56c97a5275fbd0652659efc03efb97  ./.cursor/skil
 714a9c59c09cf583dc00c76ed0286a6367fb59d5dc0688276d5ab1e38f62baf0  ./.cursor/skills/release-readiness/SKILL.md
 45fcdc8108e320cc2537f0a3f7c64372568fa35ded20169fd3dd9d0b04bedce5  ./.cursor/skills/verify-gate/SKILL.md
 16047eb312b858001f4978926ecc56bd17de3bc7605e0dcbba8279ce0069c0d0  ./.antigravitycli/settings.aiaast.json
-5665409b88df3a069d72637a0217b3e0e0690637146c996b01b192a7bf11ad6a  ./.antigravitycli/settings.json
+db1a5c21fc4af55eb801b3796c04444b16bc03cf640087abd11caa9542e40d68  ./.antigravitycli/settings.json
 8e17fecd66c15e65bb0983ccc6f1732c844f46687fa67c454df8cc94763f7b96  ./.github/copilot-config.aiaast.json
 9dfdc8c303b35fc916686c77e8744a897a374354b32a84d4254916100c57af5e  ./.github/copilot-config.json
 1a93effefeb1ea770a14db9158bddd25cc4fca86c56b1d80fba8bec734d8dc31  ./.github/copilot-instructions.md
