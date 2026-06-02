@@ -4,29 +4,33 @@ import { CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card"
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { ShieldCheck, LogIn, UserPlus, LogOut, Loader2 } from "lucide-react";
+import { ShieldCheck, LogIn, UserPlus, LogOut, Loader2, KeyRound, LifeBuoy } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../db/db";
-import { signUp, login, logout, getSession, restoreSessionPromptIfNeeded } from "../../modules/auth/authService";
+import { signUp, login, logout, getSession, restoreSessionPromptIfNeeded, recoverAccount } from "../../modules/auth/authService";
+import { generateRecoveryCodes, redeemRecoveryCode } from "../../modules/auth/recoveryCodes";
 import { syncService } from "../../modules/sync/syncService";
 import { SyncStatusBadge } from "./SyncStatusBadge";
+import { RecoveryCodesSheet } from "./RecoveryCodesSheet";
 
 const RELAY_URL_KEY = "beacon_sync_relay_url";
 
 export function AuthSyncCard() {
   const accounts = useLiveQuery(() => db.accounts.toArray(), []);
   const [activeId, setActiveId] = useState<string | null>(() => localStorage.getItem("beacon_active_account"));
-  const [mode, setMode] = useState<"signup" | "login">("login");
+  const [mode, setMode] = useState<"signup" | "login" | "recover">("login");
   const [email, setEmail] = useState("");
   const [passphrase, setPassphrase] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
   const [relayUrl, setRelayUrl] = useState<string>(() => localStorage.getItem(RELAY_URL_KEY) ?? "");
-  const [busy, setBusy] = useState<"idle" | "auth" | "boot">("idle");
+  const [busy, setBusy] = useState<"idle" | "auth" | "boot" | "codes">("idle");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [newCodes, setNewCodes] = useState<string[] | null>(null);
 
   // If accounts exist but none active, default to login. If none exist, default to signup.
   // Derived directly from `accounts` rather than via a setState-in-effect.
-  const effectiveMode: "signup" | "login" =
+  const effectiveMode: "signup" | "login" | "recover" =
     accounts && accounts.length === 0 ? "signup" : mode;
 
   // Restore active account row reference (does not unwrap keys).
@@ -42,24 +46,75 @@ export function AuthSyncCard() {
   const handleAuth = async () => {
     setError(null);
     setInfo(null);
-    if (!email.trim() || !passphrase.trim()) {
-      setError("Email and passphrase are both required.");
+    if (!email.trim()) {
+      setError("Email is required.");
       return;
     }
-    if (effectiveMode === "signup" && passphrase.length < 8) {
-      setError("Passphrase must be at least 8 characters.");
-      return;
+    if (effectiveMode === "recover") {
+      if (!recoveryCode.trim()) { setError("Enter a recovery code."); return; }
+      if (passphrase.length < 8) { setError("New passphrase must be at least 8 characters."); return; }
+    } else {
+      if (!passphrase.trim()) { setError("Email and passphrase are both required."); return; }
+      if (effectiveMode === "signup" && passphrase.length < 8) {
+        setError("Passphrase must be at least 8 characters.");
+        return;
+      }
     }
     setBusy("auth");
     try {
+      if (effectiveMode === "recover") {
+        const key = await redeemRecoveryCode(email.trim(), recoveryCode);
+        const account = await recoverAccount(email.trim(), passphrase, key);
+        setActiveId(account.id);
+        setPassphrase("");
+        setRecoveryCode("");
+        setMode("login");
+        // Recovery consumed a code and reset the sync keypair — issue a fresh set.
+        const codes = await generateRecoveryCodes(account.email, key);
+        setNewCodes(codes);
+        setInfo("Account recovered. New passphrase set and fresh recovery codes issued.");
+        return;
+      }
+
       const account = effectiveMode === "signup"
         ? await signUp(email.trim(), passphrase)
         : await login(email.trim(), passphrase);
       setActiveId(account.id);
+      const pass = passphrase;
       setPassphrase("");
-      setInfo(effectiveMode === "signup" ? "Account created. Sync key derived locally." : "Signed in. Sync key unwrapped locally.");
+
+      if (effectiveMode === "signup") {
+        const { currentHouseholdKey } = getSession();
+        if (currentHouseholdKey) {
+          const codes = await generateRecoveryCodes(account.email, currentHouseholdKey);
+          setNewCodes(codes);
+        }
+        setInfo("Account created. Save your recovery codes below.");
+      } else {
+        void pass;
+        setInfo("Signed in. Sync key unwrapped locally.");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
+    } finally {
+      setBusy("idle");
+    }
+  };
+
+  const handleShowNewCodes = async () => {
+    setError(null);
+    setInfo(null);
+    const sess = getSession();
+    if (!sess.currentAccount || !sess.currentHouseholdKey) {
+      setError("Sign in first.");
+      return;
+    }
+    setBusy("codes");
+    try {
+      const codes = await generateRecoveryCodes(sess.currentAccount.email, sess.currentHouseholdKey);
+      setNewCodes(codes);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not generate recovery codes.");
     } finally {
       setBusy("idle");
     }
@@ -135,10 +190,17 @@ export function AuthSyncCard() {
                 {busy === "boot" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
                 Start sync
               </Button>
+              <Button variant="outline" onClick={handleShowNewCodes} disabled={busy !== "idle"}>
+                {busy === "codes" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <KeyRound className="h-4 w-4 mr-2" />}
+                Recovery codes
+              </Button>
               <Button variant="ghost" onClick={handleLogout} disabled={busy !== "idle"}>
                 <LogOut className="h-4 w-4 mr-2" /> Sign out
               </Button>
             </div>
+            <p className="text-xs text-muted-foreground">
+              "Recovery codes" issues a fresh single-use set and invalidates any previous codes.
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -158,6 +220,14 @@ export function AuthSyncCard() {
               >
                 <UserPlus className="h-4 w-4 mr-2" /> Create account
               </Button>
+              <Button
+                type="button"
+                variant={effectiveMode === "recover" ? "default" : "ghost"}
+                onClick={() => setMode("recover")}
+                disabled={accounts?.length === 0}
+              >
+                <LifeBuoy className="h-4 w-4 mr-2" /> Recover
+              </Button>
             </div>
 
             <div className="space-y-2">
@@ -171,26 +241,47 @@ export function AuthSyncCard() {
                 placeholder="you@example.com"
               />
             </div>
+
+            {effectiveMode === "recover" && (
+              <div className="space-y-2">
+                <Label htmlFor="auth-code">Recovery code</Label>
+                <Input
+                  id="auth-code"
+                  type="text"
+                  value={recoveryCode}
+                  onChange={(e) => setRecoveryCode(e.target.value)}
+                  autoComplete="off"
+                  spellCheck={false}
+                  placeholder="ABCDE-FGHJK-MNPQR-STVWX"
+                  className="font-mono tracking-wide"
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
-              <Label htmlFor="auth-pass">Passphrase</Label>
+              <Label htmlFor="auth-pass">
+                {effectiveMode === "recover" ? "New passphrase" : "Passphrase"}
+              </Label>
               <Input
                 id="auth-pass"
                 type="password"
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
-                autoComplete={effectiveMode === "signup" ? "new-password" : "current-password"}
+                autoComplete={effectiveMode === "login" ? "current-password" : "new-password"}
                 placeholder="At least 8 characters"
               />
               <p className="text-xs text-muted-foreground">
                 {effectiveMode === "signup"
-                  ? "Used to derive your household key. Cannot be recovered — store it safely."
+                  ? "Used to derive your household key. Keep it safe — your recovery codes are the only backup."
+                  : effectiveMode === "recover"
+                  ? "Sets a new passphrase after your recovery code unlocks the household key."
                   : "Used locally to unwrap your household key. Never sent over the network."}
               </p>
             </div>
 
             <Button onClick={handleAuth} disabled={busy !== "idle"} className="w-full">
               {busy === "auth" && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {effectiveMode === "signup" ? "Create account" : "Sign in"}
+              {effectiveMode === "signup" ? "Create account" : effectiveMode === "recover" ? "Recover account" : "Sign in"}
             </Button>
           </div>
         )}
@@ -198,6 +289,13 @@ export function AuthSyncCard() {
         {error && <div role="alert" className="text-xs font-bold text-destructive">{error}</div>}
         {info && <div role="status" className="text-xs font-bold text-success">{info}</div>}
       </CardContent>
+
+      <RecoveryCodesSheet
+        isOpen={newCodes !== null}
+        onClose={() => setNewCodes(null)}
+        email={activeAccount?.email ?? email.trim().toLowerCase()}
+        codes={newCodes ?? []}
+      />
     </GlassCard>
   );
 }
