@@ -10,6 +10,7 @@ import { NativeSelect } from "../components/ui/native-select";
 import { FileText, Upload, Trash2, Eye, ShieldCheck, Zap, Plus, Loader2 } from "lucide-react";
 import { PageHeader } from "../components/layout/PageHeader";
 import { GlassCard } from "../components/ui/GlassCard";
+import { CardSkeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/EmptyState";
 import { BeaconModal } from "../components/ui/BeaconModal";
 import { DemoBadge } from "../components/ui/DemoBadge";
