@@ -96,6 +96,57 @@ export async function login(email: string, passphrase: string): Promise<Account>
   }
 }
 
+/**
+ * Complete account recovery after a recovery code has unwrapped the household
+ * key (see modules/auth/recoveryCodes). Sets a new passphrase: re-wraps the
+ * recovered household key under the new KEK and mints a fresh sync keypair
+ * (the prior ECDH private key was wrapped under the lost passphrase and is not
+ * recoverable; it is only used for M11 joint-household key exchange — the
+ * household *data* key is preserved). Establishes the session.
+ */
+export async function recoverAccount(
+  email: string,
+  newPassphrase: string,
+  householdKey: CryptoKey,
+): Promise<Account> {
+  const normalizedEmail = email.trim().toLowerCase();
+  const account = await db.accounts.where("email").equals(normalizedEmail).first();
+  if (!account) {
+    throw new Error("No account found for this email.");
+  }
+
+  const kek = await derivePassphraseKey(normalizedEmail, newPassphrase);
+  const gcmKek = await derivePassphraseGcmKey(normalizedEmail, newPassphrase);
+
+  const syncKeypair = await generateSyncKeypair();
+  const publicKeyStr = await exportPublicKey(syncKeypair.publicKey);
+  const jwk = await exportPrivateKeyJwk(syncKeypair.privateKey);
+  const { ciphertext, iv } = await encryptForSync(jwk, gcmKek);
+  const wrappedPrivateKey = JSON.stringify({ ciphertext, iv });
+
+  const wrappedHouseholdKey = await wrapKey(householdKey, kek);
+
+  await db.accounts.update(account.id, {
+    publicKey: publicKeyStr,
+    privateKeyWrapped: wrappedPrivateKey,
+    householdKeyWrapped: wrappedHouseholdKey,
+  });
+
+  const updated: Account = {
+    ...account,
+    publicKey: publicKeyStr,
+    privateKeyWrapped: wrappedPrivateKey,
+    householdKeyWrapped: wrappedHouseholdKey,
+  };
+
+  currentAccount = updated;
+  currentHouseholdKey = householdKey;
+  currentSyncKeypair = syncKeypair;
+  localStorage.setItem("beacon_active_account", updated.id);
+
+  return updated;
+}
+
 export function logout() {
   currentAccount = null;
   currentHouseholdKey = null;
