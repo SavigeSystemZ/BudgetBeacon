@@ -10,10 +10,12 @@ import { db } from "../../db/db";
 import { signUp, login, logout, getSession, restoreSessionPromptIfNeeded, recoverAccount } from "../../modules/auth/authService";
 import { generateRecoveryCodes, redeemRecoveryCode } from "../../modules/auth/recoveryCodes";
 import { syncService } from "../../modules/sync/syncService";
+import { mintJoinToken } from "../../modules/sync/joinToken";
 import { SyncStatusBadge } from "./SyncStatusBadge";
 import { RecoveryCodesSheet } from "./RecoveryCodesSheet";
 
 const RELAY_URL_KEY = "beacon_sync_relay_url";
+const RELAY_SECRET_KEY = "beacon_sync_relay_secret";
 
 export function AuthSyncCard() {
   const accounts = useLiveQuery(() => db.accounts.toArray(), []);
@@ -23,6 +25,7 @@ export function AuthSyncCard() {
   const [passphrase, setPassphrase] = useState("");
   const [recoveryCode, setRecoveryCode] = useState("");
   const [relayUrl, setRelayUrl] = useState<string>(() => localStorage.getItem(RELAY_URL_KEY) ?? "");
+  const [relaySecret, setRelaySecret] = useState<string>(() => localStorage.getItem(RELAY_SECRET_KEY) ?? "");
   const [busy, setBusy] = useState<"idle" | "auth" | "boot" | "codes">("idle");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -131,9 +134,13 @@ export function AuthSyncCard() {
     setBusy("boot");
     try {
       const url = relayUrl.trim();
+      const secret = relaySecret.trim();
       if (url) localStorage.setItem(RELAY_URL_KEY, url);
       else localStorage.removeItem(RELAY_URL_KEY);
-      await syncService.bootstrap(householdId, sess.currentHouseholdKey, url || null);
+      if (secret) localStorage.setItem(RELAY_SECRET_KEY, secret);
+      else localStorage.removeItem(RELAY_SECRET_KEY);
+      const token = url ? await mintJoinToken(secret || null, householdId) : null;
+      await syncService.bootstrap(householdId, sess.currentHouseholdKey, url || null, token);
       setInfo(url ? "Sync bootstrapped. Connecting to relay…" : "Sync bootstrapped locally (no relay).");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bootstrap failed.");
@@ -182,6 +189,22 @@ export function AuthSyncCard() {
               />
               <p className="text-xs text-muted-foreground">
                 Leave blank to mirror locally without a network. The relay only sees ciphertext.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="relay-secret">Relay secret (optional)</Label>
+              <Input
+                id="relay-secret"
+                type="password"
+                placeholder="Shared join secret for your relay"
+                value={relaySecret}
+                onChange={(e) => setRelaySecret(e.target.value)}
+                autoComplete="off"
+              />
+              <p className="text-xs text-muted-foreground">
+                Matches <code>RELAY_SECRET</code> on your relay (see docs/RELAY_DEPLOY.md). Gates
+                relay access only — not your encryption key. Leave blank for an open/local relay.
               </p>
             </div>
 

@@ -168,6 +168,7 @@ class SyncService {
     householdId: string,
     key: CryptoKey,
     wsUrl?: string | null,
+    token?: string | null,
   ) {
     this.householdKey = key;
     if (this.isBootstrapped) return;
@@ -185,7 +186,10 @@ class SyncService {
 
     try {
       this.setStatus("connecting");
-      this.wsProvider = new WebsocketProvider(wsUrl, householdId, this.ydoc);
+      // The join token (if the relay is token-gated) is passed as a query param
+      // the relay verifies. The relay only ever sees ciphertext regardless.
+      const opts = token ? { params: { token } } : undefined;
+      this.wsProvider = new WebsocketProvider(wsUrl, householdId, this.ydoc, opts);
       this.wsProvider.on("status", (event: { status: string }) => {
         if (event.status === "connected") this.setStatus("connected");
         else if (event.status === "connecting") this.setStatus("connecting");

@@ -121,7 +121,7 @@ export class YjsRoom implements DurableObject {
     await this.state.storage.put(DOC_KEY, Y.encodeStateAsUpdate(this.doc));
   }
 
-  async fetch(request: Request): Promise<Response> {
+  async fetch(_request: Request): Promise<Response> {
     await this.ensureLoaded();
     const pair = new WebSocketPair();
     const client = pair[0];

@@ -270,6 +270,11 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <p className="text-sm text-muted-foreground">
                 Your household is ready. Opening Budget Beacon...
               </p>
+              <p className="text-xs text-muted-foreground/80 pt-2 border-t border-border/40">
+                Everything stays on this device by default. Want it on a second device too?
+                Turn on optional end-to-end-encrypted sync anytime in
+                <span className="font-semibold"> Settings → Sync &amp; Account</span>.
+              </p>
             </div>
           )}
         </CardContent>

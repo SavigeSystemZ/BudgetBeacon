@@ -31,7 +31,7 @@ export const featureFlags = {
 
   // Cross-device sync (M10 owns) — see docs/SYNC_AND_DUAL_ACCOUNT_ARCHITECTURE.md
   syncBundleExport: false, // Manual signed-bundle export/import (legacy path; export already exists)
-  syncE2eeCrdt: false, // E2EE CRDT (Yjs) over thin relay — recommended path; gated on user sign-off
+  syncE2eeCrdt: true, // E2EE CRDT (Yjs) over thin relay — SHIPPED (M10): recovery codes + relay/ (Worker + Node) + HMAC join token. See docs/RELAY_DEPLOY.md.
   syncLocalNetwork: false, // mDNS / Bonjour pairing — alternative C, deferred
   syncWebRTC: false, // P2P over WebRTC — alternative C, deferred
 
