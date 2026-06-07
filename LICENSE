@@ -1,5 +1,14 @@
-Copyright (c) Project Owner Placeholder
+Savige SystemZ Proprietary License
+
+Copyright (c) 2024-2026 Savige SystemZ and respective contributors.
 All rights reserved.
 
-This scaffold defaults to a proprietary placeholder license.
-Replace this file if the cloned project uses a different licensing model.
+Except for the limited rights required by GitHub's Terms of Service to host, display, view, and fork this repository through GitHub's functionality, no license is granted to any person or entity.
+
+Without prior written permission from the applicable copyright holder, you may not use, copy, modify, merge, publish, distribute, sublicense, sell, create derivative works from, or commercially exploit this software or associated documentation, in whole or in part.
+
+You may not remove or alter copyright, attribution, trademark, or proprietary notices, or represent this software or a derivative work as your own original work.
+
+Third-party components and materials remain governed by their respective license terms. Where a file or component contains a different license notice, that notice controls for that file or component.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS USE.
